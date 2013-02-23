@@ -5,6 +5,12 @@ DKIM Signing Agent for Exchange Server.
 
 This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
+## Supported versions
+
+This Transport Agent is fully tested under Exchange 2010 SP3.
+
+If it's running on other version not mentioned here, please notify me, so I can update it here.
+
 ## Installing the Transport Agent
 
 Copy thw whole content from the [release directory](Src/Exchange.DkimSigner/bin/Release) into a directory on the server, where Exchange runs.
@@ -37,6 +43,10 @@ http://www.port25.com/support/domainkeysdkim-wizard/
 
 Or if you have a linux installation, use (from the opendkim package):
     opendkim-genkey -D target_directory/ -d example.com -s sel2012
+
+### Testing the setup
+
+If you want to test, if everything is working, simply send a mail to check-auth@verifier.port25.com and you will get an immediate response with the results of the DKIM check.
 
 ## Updating the Transport Agent
 
