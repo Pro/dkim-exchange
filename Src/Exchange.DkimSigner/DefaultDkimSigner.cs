@@ -1,5 +1,6 @@
 ﻿namespace Exchange.DkimSigner
 {
+    using Exchange.DkimSigner.Config;
     using System;
     using System.Collections.Generic;
     using System.Globalization;
@@ -20,19 +21,9 @@
         private static readonly byte[] HeaderSeparatorSentinel = Encoding.ASCII.GetBytes("\r\n\r\n");
 
         /// <summary>
-        /// The RSA crypto service provider.
-        /// </summary>
-        private RSACryptoServiceProvider cryptoProvider;
-
-        /// <summary>
         /// A value indicating whether or not the instance of the signer has been disposed.
         /// </summary>
         private bool disposed;
-
-        /// <summary>
-        /// The domain that has the TXT record of the public key.
-        /// </summary>
-        private string domain;
 
         /// <summary>
         /// The headers that should be a part of the DKIM signature, if present in the message.
@@ -54,10 +45,11 @@
         /// </summary>
         private string hashAlgorithmCryptoCode;
 
+
         /// <summary>
-        /// The selector that denotes which public key to use.
+        /// The list of domains loaded from config file.
         /// </summary>
-        private string selector;
+        private List<DomainElement> domainSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultDkimSigner"/> class.
@@ -70,32 +62,10 @@
         public DefaultDkimSigner(
             DkimAlgorithmKind signatureKind,
             IEnumerable<string> headersToSign,
-            string selector,
-            string domain,
-            string encodedKey)
+            List<DomainElement> domainSettings)
         {
-            if (encodedKey == null ||
-                encodedKey.Trim().Length == 0)
-            {
-                throw new ArgumentNullException("encodedKey");
-            }
-
-            if (selector == null ||
-                selector.Trim().Length == 0)
-            {
-                throw new ArgumentNullException("selector");
-            }
-
-            if (domain == null ||
-                domain.Trim().Length == 0)
-            {
-                throw new ArgumentNullException("domain");
-            }
-
-            this.cryptoProvider = CryptHelper.GetProviderFromPemEncodedRsaPrivateKey(encodedKey);
-            this.domain = domain;
-            this.selector = selector;
-
+            this.domainSettings = domainSettings;
+        
             switch (signatureKind)
             {
                 case DkimAlgorithmKind.RsaSha1:
@@ -155,7 +125,8 @@
         /// <returns>The output stream.</returns>
         public string CanSign(Stream inputStream)
         {
-            bool canSign;
+            if (domainSettings == null || domainSettings.Count == 0)
+                return "";
             string line;
             StreamReader reader;
 
@@ -169,10 +140,11 @@
                 throw new ArgumentNullException("inputStream");
             }
 
-            canSign = false;
             reader = new StreamReader(inputStream);
 
             inputStream.Seek(0, SeekOrigin.Begin);
+
+            DomainElement domainFound = null;
 
             line = reader.ReadLine();
             while (line != null)
@@ -217,16 +189,20 @@
                         // instance of the From: header (there should be only one, but
                         // if there are multiple, it's the last one that matters).
                         
-                        canSign = header
-                            .ToUpperInvariant()
-                            .Contains("@" + this.domain.ToUpperInvariant());
+                        foreach (DomainElement e in domainSettings) {
+                            if (header
+                                .ToUpperInvariant()
+                                .Contains("@" + e.Domain.ToUpperInvariant())) {
+                                domainFound = e;
+                            }
+                        }
                     }
                 }
             }
 
             inputStream.Seek(0, SeekOrigin.Begin);
 
-            if (!canSign)
+            if (domainFound == null)
             {
                 return "";
             }
@@ -234,9 +210,9 @@
             // Calculate Header
 
             var bodyHash = this.GetBodyHash(inputStream);
-            var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash);
+            var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash, domainFound);
             var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
-            var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders);
+            var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders, domainFound);
 
             return signedDkimHeader;
         }
@@ -333,12 +309,6 @@
         {
             if (disposing)
             {
-                if (this.cryptoProvider != null)
-                {
-                    this.cryptoProvider.Clear();
-                    this.cryptoProvider = null;
-                }
-
                 if (this.hashAlgorithm != null)
                 {
                     this.hashAlgorithm.Clear();
@@ -478,7 +448,9 @@
         /// <returns>The signed DKIM-Signature header.</returns>
         private string GetSignedDkimHeader(
             string unsignedDkimHeader, 
-            IEnumerable<string> canonicalizedHeaders)
+            IEnumerable<string> canonicalizedHeaders,
+            DomainElement domain
+            )
         {
             byte[] signatureBytes;
             string signatureText;
@@ -504,7 +476,7 @@
                     // by the Crypto .NET classes won't recognize the new SHA256CryptoServiceProvider type.
                     // So, we have to use the string method instead. More details available at
                     // http://blogs.msdn.com/b/shawnfa/archive/2008/08/25/using-rsacryptoserviceprovider-for-rsa-sha256-signatures.aspx
-                    signatureBytes = this.cryptoProvider.SignData(stream, this.hashAlgorithmCryptoCode);
+                    signatureBytes = domain.CryptoProvider.SignData(stream, this.hashAlgorithmCryptoCode);
                 }
             }
 
@@ -523,14 +495,14 @@
         /// </summary>
         /// <param name="bodyHash">The hash of the body.</param>
         /// <returns>The unsigned DKIM-Signature header.</returns>
-        private string GetUnsignedDkimHeader(string bodyHash)
+        private string GetUnsignedDkimHeader(string bodyHash, DomainElement domain)
         {
             return string.Format(
                 CultureInfo.InvariantCulture,
                 "DKIM-Signature: v=1; a={0}; s={1}; d={2}; c=simple/simple; q=dns/txt; h={3}; bh={4}; b=;",
                 this.hashAlgorithmDkimCode,
-                this.selector,
-                this.domain,
+                domain.Selector,
+                domain.Domain,
                 string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),
                 bodyHash);
         }

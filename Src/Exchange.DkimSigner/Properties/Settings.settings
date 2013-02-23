@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Exchange.DkimSigner.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Algorithm" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">RsaSha1</Value>
+    </Setting>
+    <Setting Name="HeadersToSign" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">From; Subject; To; Date; Message-ID;</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

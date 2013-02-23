@@ -4,7 +4,6 @@
     using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.IO;
-    using log4net;
     using Microsoft.Exchange.Data.Transport;
     using Microsoft.Exchange.Data.Transport.Routing;
     using Exchange.DkimSigner.Properties;
@@ -14,11 +13,6 @@
     /// </summary>
     public sealed class DkimSigningRoutingAgent : RoutingAgent
     {
-        /// <summary>
-        /// Instance of logger for this class.
-        /// </summary>
-        private static ILog log = LogManager.GetLogger(
-            MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// The object that knows how to sign messages.
@@ -69,9 +63,7 @@
             }
             catch (Exception ex)
             {
-                log.Error(
-                    Resources.DkimSigningRoutingAgent_SignFailed,
-                    ex);
+                Logger.LogError(Resources.DkimSigningRoutingAgent_SignFailed + "\n" + ex.ToString());
             }
         }
 
@@ -85,6 +77,7 @@
             // and we can't sign it. Additionally, if the message has a "TnefPart",
             // then it is in a proprietary format used by Outlook and Exchange Server,
             // which means we shouldn't bother signing it.
+
             if (!mailItem.Message.IsSystemMessage &&
                 mailItem.Message.TnefPart == null)
             {
@@ -98,9 +91,18 @@
 
                         inputStream.Close();
 
+                        Logger.LogInformation("Signing mail with header: " + dkim);
+
                         using (var outputStream = mailItem.GetMimeWriteStream())
                         {
-                            this.dkimSigner.Sign(source, outputStream, dkim);
+                            try
+                            {
+                                this.dkimSigner.Sign(source, outputStream, dkim);
+                            }
+                            catch (Exception ex)
+                            {
+                                Logger.LogError("Signing went terribly wrong: " + ex.ToString());
+                            }
 
                             outputStream.Close();
                         }

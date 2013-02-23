@@ -5,11 +5,11 @@
     using System.Configuration;
     using System.IO;
     using System.Reflection;
-    using log4net;
-    using log4net.Config;
     using Microsoft.Exchange.Data.Transport;
     using Microsoft.Exchange.Data.Transport.Routing;
     using Exchange.DkimSigner.Properties;
+    using Exchange.DkimSigner.Config;
+    using System.Xml;
 
     /// <summary>
     /// Creates new instances of the DkimSigningRoutingAgent.
@@ -17,25 +17,9 @@
     public sealed class DkimSigningRoutingAgentFactory : RoutingAgentFactory
     {
         /// <summary>
-        /// Instance of logger for this class.
-        /// </summary>
-        private static ILog log = LogManager.GetLogger(
-            MethodBase.GetCurrentMethod().DeclaringType);
-
-        /// <summary>
         /// The algorithm that should be used in signing.
         /// </summary>
         private DkimAlgorithmKind algorithm;
-
-        /// <summary>
-        /// The domain that is used when signing.
-        /// </summary>
-        private string domain;
-
-        /// <summary>
-        /// The PEM-encoded private key.
-        /// </summary>
-        private string encodedKey;
 
         /// <summary>
         /// The headers to sign in each message.
@@ -43,9 +27,9 @@
         private IEnumerable<string> headersToSign;
 
         /// <summary>
-        /// The selector to use when signing a message.
+        /// The list of domains loaded from config file.
         /// </summary>
-        private string selector;
+        private List<DomainElement> domainSettings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgentFactory"/> class.
@@ -54,7 +38,7 @@
         {
             this.Initialize();
 
-            log.Debug("Creating new instance of DkimSigningRoutingAgentFactory.");
+            Logger.LogInformation("Creating new instance of DkimSigningRoutingAgentFactory.");
         }
 
         /// <summary>
@@ -66,33 +50,27 @@
         /// <returns>The <see cref="DkimSigningRoutingAgent"/> instance.</returns>
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            log.Debug("Creating new instance of DkimSigningRoutingAgent.");
+            Logger.LogInformation("Creating new instance of DkimSigningRoutingAgent.");
 
             var dkimSigner = new DefaultDkimSigner(
                 this.algorithm,
                 this.headersToSign,
-                this.selector,
-                this.domain,
-                this.encodedKey);
+                domainSettings);
 
             return new DkimSigningRoutingAgent(dkimSigner);
         }
-
+        
         /// <summary>
         /// Initializes various settings based on configuration.
         /// </summary>
         private void Initialize()
         {
-            var config = ConfigurationManager.OpenExeConfiguration(
-                this.GetType().Assembly.Location);
-            var appSettings = config.AppSettings.Settings;
-
             // Load the signing algorithm.
             try
             {
                 this.algorithm = (DkimAlgorithmKind)Enum.Parse(
                     typeof(DkimAlgorithmKind),
-                    appSettings["DefaultDkimSigner_Algorithm"].Value,
+                    Properties.Settings.Default.Algorithm,
                     true);
             }
             catch (Exception ex)
@@ -103,42 +81,46 @@
             }
 
             // Load the list of headers to sign in each message.
-            var unparsedHeaders = appSettings["DefaultDkimSigner_HeadersToSign"].Value;
+            var unparsedHeaders = Properties.Settings.Default.HeadersToSign;
             if (unparsedHeaders != null)
             {
                 this.headersToSign = unparsedHeaders
                     .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
-            // Load the selector that is used when signing messages.
-            this.selector = appSettings["DefaultDkimSigner_Selector"].Value;
-            if (this.selector == null ||
-                this.selector.Length == 0)
+            try
             {
-                throw new ConfigurationErrorsException(
-                    Resources.DkimSigningRoutingAgentFactory_BadSelectorConfig);
-            }
+                XmlDocument xmlDoc = new XmlDocument(); //* create an xml document object.
+                xmlDoc.Load(this.GetType().Assembly.Location + ".config"); //* load the XML document from the specified file.
+                XmlNodeList domainInfoList = xmlDoc.GetElementsByTagName("domainInfo");
+                if (domainInfoList == null || domainInfoList.Count != 1)
+                {
+                    Logger.LogError("There is an error in your configuration file. domainInfo couldn't be initialized properly.");
+                    return;
+                }
+                XmlNode domainInfo = domainInfoList.Item(0);
 
-            // Load the domain that is used when signing messages.
-            this.domain = appSettings["DefaultDkimSigner_Domain"].Value;
-            if (this.domain == null ||
-                this.domain.Length == 0)
+                domainSettings = new List<DomainElement>();
+
+                foreach (XmlNode n in domainInfo.ChildNodes)
+                {
+                    DomainElement e = new DomainElement();
+                    e.Domain = n.Attributes["Domain"].Value;
+                    e.Selector = n.Attributes["Selector"].Value;
+                    e.PrivateKeyFile = n.Attributes["PrivateKeyFile"].Value;
+                    if (e.initElement(Path.GetDirectoryName(this.GetType().Assembly.Location)))
+                        domainSettings.Add(e);
+                }
+                if (domainSettings.Count == 0)
+                {
+                    Logger.LogWarning("No domain configuration found. DKIM will do nothing.");
+                }
+            }
+            catch (Exception e)
             {
-                throw new ConfigurationErrorsException(
-                    Resources.DkimSigningRoutingAgentFactory_BadDomainConfig);
+                Logger.LogError("Couldn't load config: " + e.ToString());
             }
-
-            // Load the PEM-encoded private RSA key.
-            this.encodedKey = appSettings["DefaultDkimSigner_PrivateKey"].Value;
-            if (this.encodedKey == null ||
-                this.encodedKey.Length == 0)
-            {
-                throw new ConfigurationErrorsException(
-                    Resources.DkimSigningRoutingAgentFactory_BadPrivateKeyConfig);
-            }
-
-            // Initialize Log4Net.
-            XmlConfigurator.Configure(new FileInfo(config.FilePath));
+            Logger.LogInformation("Exchange DKIM started. Algorithm: " + algorithm.ToString() + " Number of domains: " + domainSettings.Count);
         }
     }
 }
