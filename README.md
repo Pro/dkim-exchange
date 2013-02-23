@@ -5,12 +5,10 @@ DKIM Signing Agent for Exchange Server.
 
 This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
-# Installing the Transport Agent
+## Installing the Transport Agent
 
 Copy thw whole content from the release of the project directory into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
-
-Add this path to the Path environment variable and REBOOT your server so that these changes take affect.
 
 Then open Exchange Management Shell
 
@@ -21,28 +19,41 @@ Then open Exchange Management Shell
 
 Interestingly, there will be a note telling you to close the Powershell window. It is not kidding. For some reason, the Install-TransportAgent cmdlet will keep a file handle open on our DLL, preventing Exchange from actually loading it until we close the Powershell window.
 
-## Configuring the agent
+### Configuring the agent
 Edit the .config file to fit your needs.
 
+    <domainInfo>
+      <domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private"/>
+      <domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private"/>
+    </domainInfo>
 
-# Updating the Transport Agent
+You can add as many domain items as you need. For each domain item, the domain, the selector and the path to the private key file is needed.
+This path may be relative (based on the location of the .dll) or absolute.
+
+### Creating the keys
+
+You can use the following service for creating public and private keys:
+http://www.port25.com/support/domainkeysdkim-wizard/
+
+Or if you have a linux installation, use (from the opendkim package):
+    opendkim-genkey -D target_directory/ -d example.com -s sel2012
+
+## Updating the Transport Agent
 
 If you want to update the Exchange DKIM Transport Agent, you need to do the following:
 
 * Open Powershell and stop the services, which block the .dll
 
         StopService MSExchangeTransport
-        StopService W3SVC
        
 * Then copy and overwrite the existing .dll
 * Start the services again
 
-        StartService W3SVC
         StartService MSExchangeTransport
 
-# Notes for developers
+## Notes for developers
 
-## Required DLLs for developing
+### Required DLLs for developing
 
 It isn't allowed to distribute the .dll required for development of this transport agent.
 http://blogs.msdn.com/b/webdav_101/archive/2009/04/02/don-t-redistribute-product-dlls-unless-you-know-its-safe-and-legal-to-do-so.aspx
