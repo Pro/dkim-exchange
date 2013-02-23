@@ -66,4 +66,8 @@ Microsoft.Exchange.Data.Transport.dll
 Microsoft.Exchange.Data.Transport.xml
 into the Lib directory of this project.
 
+## Changelog
+
+* 24.02.2013:
+	Added multi domain support
 
