@@ -14,3 +14,19 @@ Microsoft.Exchange.Data.Common.xml
 Microsoft.Exchange.Data.Transport.dll
 Microsoft.Exchange.Data.Transport.xml
 into the Lib directory of this project.
+
+
+Installing the Transport Agent:
+
+Copy thw whole content from the release of the project directory into a directory on the server, where Exchange runs.
+Eg. into C:\Program Files\Exchange DKIM\
+
+Then open Exchange Management Shell
+
+Install-TransportAgent -Name "Exchange DKIM" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll"
+	 
+Enable-TransportAgent -Identity "Exchange DKIM"
+
+Interestingly, there will be a note telling you to close the Powershell window. It is not kidding. For some reason, the Install-TransportAgent cmdlet will keep a file handle open on our DLL, preventing Exchange from actually loading it until we close the Powershell window.
+
+To make it actually work, we need to restart the Microsoft Exchange Transport service. I’ve found that restarting the Microsoft Exchange Mail Submission right after that is a good idea; otherwise, there can be a short delay of about 15 minutes before people’s Outlooks attempt to send outbound mail again.
