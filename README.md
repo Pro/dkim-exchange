@@ -7,7 +7,7 @@ This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010
 
 ## Installing the Transport Agent
 
-Copy thw whole content from the release of the project directory into a directory on the server, where Exchange runs.
+Copy thw whole content from the [release directory](Src/Exchange.DkimSigner/bin/Release) into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
 
 Then open Exchange Management Shell
@@ -46,7 +46,7 @@ If you want to update the Exchange DKIM Transport Agent, you need to do the foll
 
         StopService MSExchangeTransport
        
-* Then copy and overwrite the existing .dll
+* Then download [Exchange.DkimSigner.dll](Src/Exchange.DkimSigner/bin/Release/Exchange.DkimSigner.dll) and overwrite the existing .dll
 * Start the services again
 
         StartService MSExchangeTransport
