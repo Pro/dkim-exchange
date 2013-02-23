@@ -13,10 +13,9 @@ Then open Exchange Management Shell
 	Install-TransportAgent -Name "Exchange DKIM" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll"
 	 
 	Enable-TransportAgent -Identity "Exchange DKIM"
+	Restart-Service MSExchangeTransport
 
 Interestingly, there will be a note telling you to close the Powershell window. It is not kidding. For some reason, the Install-TransportAgent cmdlet will keep a file handle open on our DLL, preventing Exchange from actually loading it until we close the Powershell window.
-
-To make it actually work, we need to restart the Microsoft Exchange Transport service.
 
 ## Configuring the agent
 Edit the .config file to fit your needs.
