@@ -45,12 +45,10 @@ If you want to update the Exchange DKIM Transport Agent, you need to do the foll
 * Open Powershell and stop the services, which block the .dll
 
         StopService MSExchangeTransport
-        StopService W3SVC
        
 * Then copy and overwrite the existing .dll
 * Start the services again
 
-        StartService W3SVC
         StartService MSExchangeTransport
 
 # Notes for developers
