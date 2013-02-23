@@ -14,7 +14,9 @@
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <returns>The output stream.</returns>
-        bool CanSign(Stream inputStream);
+        string CanSign(Stream inputStream);
+
+        string SourceMessage(Stream inputStream);
 
         /// <summary>
         /// Writes a signed version of the unsigned MIME message in the input stream
@@ -22,6 +24,6 @@
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <param name="outputStream">The output stream.</param>
-        void Sign(Stream inputStream, Stream outputStream);
+        void Sign(string inputsource, Stream outputStream, string signeddkim);
     }
 }

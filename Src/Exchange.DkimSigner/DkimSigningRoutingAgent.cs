@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
+    using System.IO;
     using log4net;
     using Microsoft.Exchange.Data.Transport;
     using Microsoft.Exchange.Data.Transport.Routing;
@@ -89,11 +90,19 @@
             {
                 using (var inputStream = mailItem.GetMimeReadStream())
                 {
-                    if (this.dkimSigner.CanSign(inputStream))
+                    string dkim = this.dkimSigner.CanSign(inputStream);
+
+                    if (dkim.Length != 0)
                     {
+                        string source = this.dkimSigner.SourceMessage(inputStream);
+
+                        inputStream.Close();
+
                         using (var outputStream = mailItem.GetMimeWriteStream())
                         {
-                            this.dkimSigner.Sign(inputStream, outputStream);
+                            this.dkimSigner.Sign(source, outputStream, dkim);
+
+                            outputStream.Close();
                         }
                     }
                 }

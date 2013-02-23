@@ -153,7 +153,7 @@
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <returns>The output stream.</returns>
-        public bool CanSign(Stream inputStream)
+        public string CanSign(Stream inputStream)
         {
             bool canSign;
             string line;
@@ -216,6 +216,7 @@
                         // We don't break here because we want to read the bottom-most
                         // instance of the From: header (there should be only one, but
                         // if there are multiple, it's the last one that matters).
+                        
                         canSign = header
                             .ToUpperInvariant()
                             .Contains("@" + this.domain.ToUpperInvariant());
@@ -225,8 +226,35 @@
 
             inputStream.Seek(0, SeekOrigin.Begin);
 
-            return canSign;
+            if (!canSign)
+            {
+                return "";
+            }
+
+            // Calculate Header
+
+            var bodyHash = this.GetBodyHash(inputStream);
+            var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash);
+            var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
+            var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders);
+
+            return signedDkimHeader;
         }
+
+
+        public string SourceMessage(Stream inputStream)
+        {
+            string bodyText;
+
+            inputStream.Seek(0, SeekOrigin.Begin);
+
+            bodyText = new StreamReader(inputStream).ReadToEnd();
+
+            inputStream.Seek(0, SeekOrigin.Begin);
+
+            return bodyText;
+        }
+
 
         /// <summary>
         /// Writes a signed version of the unsigned MIME message in the input stream
@@ -234,16 +262,11 @@
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <param name="outputStream">The output stream.</param>
-        public void Sign(Stream inputStream, Stream outputStream)
+        public void Sign(string inputsource, Stream outputStream, string signeddkim)
         {
             if (this.disposed)
             {
                 throw new ObjectDisposedException("DomainKeysSigner");
-            }
-
-            if (inputStream == null)
-            {
-                throw new ArgumentNullException("inputStream");
             }
 
             if (outputStream == null)
@@ -251,12 +274,12 @@
                 throw new ArgumentNullException("outputStream");
             }
 
-            var bodyHash = this.GetBodyHash(inputStream);
-            var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash);
-            var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
-            var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders);
+            //var bodyHash = this.GetBodyHash(inputStream);
+            //var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash);
+            //var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
+            //var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders);
 
-            WriteSignedMimeMessage(inputStream, outputStream, signedDkimHeader);
+            WriteSignedMimeMessage(inputsource, outputStream, signeddkim);
         }
 
         /// <summary>
@@ -289,22 +312,16 @@
         /// <param name="input">The stream containing the original MIME message.</param>
         /// <param name="output">The stream containing the output MIME message.</param>
         /// <param name="signedDkimHeader">The signed DKIM-Signature header.</param>
-        private static void WriteSignedMimeMessage(Stream input, Stream output, string signedDkimHeader)
+        private static void WriteSignedMimeMessage(string input, Stream output, string signedDkimHeader)
         {
-            int bytesRead;
             byte[] headerBuffer;
-            byte[] streamBuffer;
-
-            input.Seek(0, SeekOrigin.Begin);
+            byte[] inputBytes;
 
             headerBuffer = Encoding.ASCII.GetBytes(signedDkimHeader);
             output.Write(headerBuffer, 0, headerBuffer.Length);
 
-            streamBuffer = new byte[1024];
-            while ((bytesRead = input.Read(streamBuffer, 0, streamBuffer.Length)) > 0)
-            {
-                output.Write(streamBuffer, 0, bytesRead);
-            }
+            inputBytes = Encoding.ASCII.GetBytes(input);
+            output.Write(inputBytes, 0, inputBytes.Length);
         }
 
         /// <summary>
@@ -369,11 +386,13 @@
             // We have to ignore all empty lines at the end of the message body.
             // This means we have to read the whole body and fix up the end of the
             // body if necessary.
-            bodyText = new StreamReader(stream).ReadToEnd();
+            
+			bodyText = new StreamReader(stream).ReadToEnd();
             bodyText = Regex.Replace(bodyText, "(\r?\n)*$", string.Empty);
             bodyText += "\r\n";
-            bodyBytes = Encoding.ASCII.GetBytes(bodyText);
-
+            
+			bodyBytes = Encoding.ASCII.GetBytes(bodyText);
+			
             hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
 
             stream.Seek(0, SeekOrigin.Begin);
