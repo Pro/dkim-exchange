@@ -13,25 +13,31 @@ If it's running on other version not mentioned here, please notify me, so I can 
 
 ## Installing the Transport Agent
 
-Copy thw whole content from the [release directory](Src/Exchange.DkimSigner/bin/Release) into a directory on the server, where Exchange runs.
+1. Copy thw whole content from the [release directory](Src/Exchange.DkimSigner/bin/Release) into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
 
-Then open Exchange Management Shell
+2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create Key.reg?raw=true)
 
+
+3. Then open Exchange Management Shell
+<pre>
 	Install-TransportAgent -Name "Exchange DKIM" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll"
 	 
 	Enable-TransportAgent -Identity "Exchange DKIM"
 	Restart-Service MSExchangeTransport
-
-Interestingly, there will be a note telling you to close the Powershell window. It is not kidding. For some reason, the Install-TransportAgent cmdlet will keep a file handle open on our DLL, preventing Exchange from actually loading it until we close the Powershell window.
+</pre>
+4. Close the Exchange Management Shell Window
+5. Check EventLog for errors or warnings
 
 ### Configuring the agent
 Edit the .config file to fit your needs.
 
-    <domainInfo>
-      <domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private"/>
-      <domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private"/>
-    </domainInfo>
+```xml
+<domainInfo>
+  <domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private"/>
+  <domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private"/>
+</domainInfo>
+```
 
 You can add as many domain items as you need. For each domain item, the domain, the selector and the path to the private key file is needed.
 This path may be relative (based on the location of the .dll) or absolute.
