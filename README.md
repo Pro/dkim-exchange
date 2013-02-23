@@ -21,7 +21,22 @@ Interestingly, there will be a note telling you to close the Powershell window. 
 Edit the .config file to fit your needs.
 
 
-# Notes for developer
+# Updating the Transport Agent
+
+If you want to update the Exchange DKIM Transport Agent, you need to do the following:
+
+* Open Powershell and stop the services, which block the .dll
+
+        StopService MSExchangeTransport
+        StopService W3SVC
+       
+* Then copy and overwrite the existing .dll
+* Start the services again
+
+        StartService W3SVC
+        StartService MSExchangeTransport
+
+# Notes for developers
 
 ## Required DLLs for developing
 
