@@ -7,7 +7,7 @@ This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010
 
 ## Supported versions
 
-This Transport Agent is fully tested under Exchange 2010 SP3.
+This Transport Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
 
 If it's running on other version not mentioned here, please notify me, so I can update it here.
 
