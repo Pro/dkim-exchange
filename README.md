@@ -1,7 +1,9 @@
 dkim-exchange
 =============
 
-DKIM Signing Agent for Exchange Server
+DKIM Signing Agent for Exchange Server.
+
+This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
 # Installing the Transport Agent
 
