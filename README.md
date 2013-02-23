@@ -10,6 +10,8 @@ This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010
 Copy thw whole content from the release of the project directory into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
 
+Add this path to the Path environment variable and REBOOT your server so that these changes take affect.
+
 Then open Exchange Management Shell
 
 	Install-TransportAgent -Name "Exchange DKIM" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll"
