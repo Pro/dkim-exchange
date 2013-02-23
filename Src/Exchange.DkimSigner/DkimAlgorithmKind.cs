@@ -1,4 +1,4 @@
-﻿namespace Skiviez.Wolverine.Exchange.DkimSigner
+﻿namespace Exchange.DkimSigner
 {
     /// <summary>
     /// Enumeration of the kinds of signature and hashing algorithms 

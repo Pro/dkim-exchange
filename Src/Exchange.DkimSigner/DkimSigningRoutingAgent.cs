@@ -1,4 +1,4 @@
-﻿namespace Skiviez.Wolverine.Exchange.DkimSigner
+﻿namespace Exchange.DkimSigner
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -7,7 +7,7 @@
     using log4net;
     using Microsoft.Exchange.Data.Transport;
     using Microsoft.Exchange.Data.Transport.Routing;
-    using Skiviez.Wolverine.Exchange.DkimSigner.Properties;
+    using Exchange.DkimSigner.Properties;
 
     /// <summary>
     /// Signs outgoing MIME messages according to the DKIM protocol.

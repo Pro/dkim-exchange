@@ -1,4 +1,4 @@
-﻿namespace Skiviez.Wolverine.Exchange.DkimSigner
+﻿namespace Exchange.DkimSigner
 {
     using System;
     using System.Collections.Generic;
@@ -9,7 +9,7 @@
     using log4net.Config;
     using Microsoft.Exchange.Data.Transport;
     using Microsoft.Exchange.Data.Transport.Routing;
-    using Skiviez.Wolverine.Exchange.DkimSigner.Properties;
+    using Exchange.DkimSigner.Properties;
 
     /// <summary>
     /// Creates new instances of the DkimSigningRoutingAgent.

@@ -1,10 +1,10 @@
-﻿namespace Skiviez.Wolverine.Exchange.DkimSigner
+﻿namespace Exchange.DkimSigner
 {
     using System;
     using System.IO;
     using System.Security.Cryptography;
     using System.Text;
-    using Skiviez.Wolverine.Exchange.DkimSigner.Properties;
+    using Exchange.DkimSigner.Properties;
 
     /// <summary>
     /// Contains helper methods for retrieving encryption objects.

@@ -7,16 +7,16 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("Wolverine (DKIM Signer for Exchange)")]
+[assembly: AssemblyTitle("DKIM Signer for Exchange")]
 [assembly: AssemblyDescription("Signs outbound e-mails using DKIM.")]
 #if DEBUG
 [assembly: AssemblyConfiguration("DEBUG")]
 #else
 [assembly: AssemblyConfiguration("RELEASE")]
 #endif
-[assembly: AssemblyCompany("Skiviez, Inc.")]
-[assembly: AssemblyProduct("Wolverine")]
-[assembly: AssemblyCopyright("Copyright © 2010 Skiviez, Inc.")]
+[assembly: AssemblyCompany("Open Source")]
+[assembly: AssemblyProduct("Exchange DKIM")]
+[assembly: AssemblyCopyright("Published under Gnu GPL 3")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]

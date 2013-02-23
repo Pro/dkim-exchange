@@ -1,4 +1,4 @@
-﻿namespace Skiviez.Wolverine.Exchange.DkimSigner
+﻿namespace Exchange.DkimSigner
 {
     using System;
     using System.IO;
