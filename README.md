@@ -3,7 +3,7 @@ dkim-exchange
 
 DKIM Signing Agent for Exchange Server
 
-# Installing the Transport Agent:
+# Installing the Transport Agent
 
 Copy thw whole content from the release of the project directory into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
@@ -17,6 +17,12 @@ Then open Exchange Management Shell
 Interestingly, there will be a note telling you to close the Powershell window. It is not kidding. For some reason, the Install-TransportAgent cmdlet will keep a file handle open on our DLL, preventing Exchange from actually loading it until we close the Powershell window.
 
 To make it actually work, we need to restart the Microsoft Exchange Transport service.
+
+## Configuring the agent
+Edit the .config file to fit your needs.
+
+
+# Notes for developer
 
 ## Required DLLs for developing
 
