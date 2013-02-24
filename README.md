@@ -89,3 +89,6 @@ into the Lib directory of this project.
 * 24.02.2013:
 	Added multi domain support
 
+## TODO
+
+* Allow use of relaxed or any combination between relaxed and simple
