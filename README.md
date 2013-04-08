@@ -42,6 +42,22 @@ Edit the .config file to fit your needs.
 You can add as many domain items as you need. For each domain item, the domain, the selector and the path to the private key file is needed.
 This path may be relative (based on the location of the .dll) or absolute.
 
+#### Logging
+The dkim signing agent logs by default all errors and warnings into EventLog.
+You can set the LogLevel in the .config file:
+
+```xml
+<setting name="LogLevel" serializeAs="String">
+  <value>2</value>
+</setting> 
+```
+
+Possible values:
+0 = no logging
+1 = Error only
+2 = Warn+Error
+3 = Info+Warn+Error
+
 ### Creating the keys
 
 You can use the following service for creating public and private keys:
