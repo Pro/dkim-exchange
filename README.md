@@ -5,6 +5,8 @@ DKIM Signing Agent for Exchange Server.
 
 This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
+WARNING: Please read the 'Known Bugs' section before you continue!
+
 ## Supported versions
 
 This Transport Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
@@ -16,7 +18,7 @@ If it's running on other version not mentioned here, please notify me, so I can 
 1. Copy thw whole content from the [release directory](Src/Exchange.DkimSigner/bin/Release) into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
 
-2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create Key.reg?raw=true)
+2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create key.reg?raw=true)
 
 
 3. Then open Exchange Management Shell
@@ -82,6 +84,10 @@ If you want to update the Exchange DKIM Transport Agent, you need to do the foll
 * Start the services again
 
         StartService MSExchangeTransport
+
+## Known bugs
+
+* [unconfirmed] When using internal Receive Connectors as Relay, unicode characters may break and will be replaced with '?'. See: Issue #2
 
 ## Notes for developers
 
