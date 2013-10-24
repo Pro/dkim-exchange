@@ -17,7 +17,7 @@ Exchange 2010 SP2 doesn't seem to be supported. See Issue #5. If you have SP2 in
 
 ## Installing the Transport Agent
 
-1. Copy thw whole content from the [release directory](Src/Exchange.DkimSigner/bin/Release) into a directory on the server, where Exchange runs.
+1. Copy thw whole content from the [release directory](Release) into a directory on the server, where Exchange runs.
 Eg. into C:\Program Files\Exchange DKIM\
 
 2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create key.reg?raw=true)
@@ -82,7 +82,7 @@ If you want to update the Exchange DKIM Transport Agent, you need to do the foll
 
         StopService MSExchangeTransport
        
-* Then download [Exchange.DkimSigner.dll](Src/Exchange.DkimSigner/bin/Release/Exchange.DkimSigner.dll?raw=true) and overwrite the existing .dll
+* Then download [Exchange.DkimSigner.dll](Release/) and overwrite the existing .dll
 * Start the services again
 
         StartService MSExchangeTransport
