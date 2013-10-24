@@ -15,6 +15,8 @@ If it's running on other version not mentioned here, please notify me, so I can 
 
 Exchange 2010 SP2 doesn't seem to be supported. See Issue #5. If you have SP2 installed, please read Issue #5 and send me the requested files so that I can recompile it for SP2, then it should work.
 
+Exchange 2007 SP3 .dll is build and can be found in the release directory. Please check if those are working for you and send me a short notice.
+
 ## Installing the Transport Agent
 
 1. Copy thw whole content from the [release directory](Release) into a directory on the server, where Exchange runs.
