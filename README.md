@@ -24,16 +24,22 @@ Eg. into C:\Program Files\Exchange DKIM\
 
 2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create key.reg?raw=true)
 
+4. Add `C:\Program Files\Exchange DKIM\` to your PATH environment variable:
 
-3. Then open Exchange Management Shell
+Normal command prompt: `set "path=%path%;C:\Program Files\Exchange DKIM"`
+or in the Power shell: `setx PATH "$env:path;C:\Program Files\Exchange DKIM" -m`
+
+(If you execute the following command in the same shell, you need to first restart the shell load the new environment vaiable)
+
+5. Then open Exchange Management Shell
 <pre>
 	Install-TransportAgent -Name "Exchange DKIM" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll"
 	 
 	Enable-TransportAgent -Identity "Exchange DKIM"
 	Restart-Service MSExchangeTransport
 </pre>
-4. Close the Exchange Management Shell Window
-5. Check EventLog for errors or warnings
+6. Close the Exchange Management Shell Window
+7. Check EventLog for errors or warnings
 
 ### Configuring the agent
 Edit the .config file to fit your needs.
