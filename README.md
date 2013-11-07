@@ -19,8 +19,12 @@ Exchange 2007 SP3 .dll is build and can be found in the release directory. Pleas
 
 ## Installing the Transport Agent
 
-1. Copy thw whole content from the [release directory](Release) into a directory on the server, where Exchange runs.
-Eg. into C:\Program Files\Exchange DKIM\
+1. Copy the .dll mathing your Exchange Server version from the [release directory](Release) into a directory on the server, where Exchange runs.
+Eg. into `C:\Program Files\Exchange DKIM\`. Also copy the `Exchange.DkimSigner.dll.config` to the same directory. The final structure should be:
+<pre>
+C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll
+C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll.config
+</pre>
 
 2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create key.reg?raw=true)
 
