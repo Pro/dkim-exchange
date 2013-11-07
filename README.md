@@ -9,7 +9,7 @@ WARNING: Please read the 'Known Bugs' section before you continue!
 
 ## Supported versions
 
-The .dll is compiled for .NET 4.0
+The .dll is compiled for .NET 3.5
 
 If it's running on other Exchange versions not mentioned here, please notify me, so I can update it here.
 
