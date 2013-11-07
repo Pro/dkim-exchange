@@ -26,10 +26,11 @@ Eg. into C:\Program Files\Exchange DKIM\
 
 4. Add `C:\Program Files\Exchange DKIM\` to your PATH environment variable:
 
-Normal command prompt: `set "path=%path%;C:\Program Files\Exchange DKIM"`
-or in the Power shell: `setx PATH "$env:path;C:\Program Files\Exchange DKIM" -m`
+ Normal command prompt: `set "path=%path%;C:\Program Files\Exchange DKIM"`
+ 
+ or in the Power shell: `setx PATH "$env:path;C:\Program Files\Exchange DKIM" -m`
 
-(If you execute the following command in the same shell, you need to first restart the shell load the new environment vaiable)
+ (If you execute the following command in the same shell, you need to first restart the shell load the new environment vaiable)
 
 5. Then open Exchange Management Shell
 <pre>
