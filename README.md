@@ -9,11 +9,22 @@ WARNING: Please read the 'Known Bugs' section before you continue!
 
 ## Supported versions
 
+The .dll is compiled for .NET 4.0
+
+If it's running on other Exchange versions not mentioned here, please notify me, so I can update it here.
+
+### Exchange 2013
+
+See http://technet.microsoft.com/en-us/library/jj591524%28v=exchg.150%29.aspx for instructions on how to use .dll compiled for Exchange 2010
+
+### Exchange 2010
+
 This Transport Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
 
-If it's running on other version not mentioned here, please notify me, so I can update it here.
+Other Service Pack versions need to be compiled separately. See https://github.com/Pro/dkim-exchange/issues/5
+Please send me the .dll's mentioned at the end of this document so I can recompile the DKIM signer.
 
-Exchange 2010 SP2 doesn't seem to be supported. See Issue #5. If you have SP2 installed, please read Issue #5 and send me the requested files so that I can recompile it for SP2, then it should work.
+### Exchange 2007
 
 Exchange 2007 SP3 .dll is build and can be found in the release directory. Please check if those are working for you and send me a short notice.
 
