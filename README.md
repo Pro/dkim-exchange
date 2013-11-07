@@ -21,7 +21,7 @@ See http://technet.microsoft.com/en-us/library/jj591524%28v=exchg.150%29.aspx fo
 
 This Transport Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
 
-Other Service Pack versions need to be compiled separately. See https://github.com/Pro/dkim-exchange/issues/5
+Other Service Pack versions need to be compiled separately. See Issue #5
 Please send me the .dll's mentioned at the end of this document so I can recompile the DKIM signer.
 
 ### Exchange 2007
