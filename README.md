@@ -107,7 +107,7 @@ If you want to update the Exchange DKIM Transport Agent, you need to do the foll
 
         StopService MSExchangeTransport
        
-* Then download [Exchange.DkimSigner.dll](Release/) and overwrite the existing .dll
+* Then download [Exchange.DkimSigner.dll](Src/Exchange.DkimSigner/bin) and overwrite the existing .dll
 * Start the services again
 
         StartService MSExchangeTransport
