@@ -5,14 +5,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exchange.DkimSigner", "Src\
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug Ex2010 SP3|Any CPU = Debug Ex2010 SP3|Any CPU
+		Release Ex2007 SP3|Any CPU = Release Ex2007 SP3|Any CPU
+		Release Ex2010 SP3|Any CPU = Release Ex2010 SP3|Any CPU
+		Release Ex2010|Any CPU = Release Ex2010|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Debug Ex2010 SP3|Any CPU.ActiveCfg = Debug Ex2010 SP3|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Debug Ex2010 SP3|Any CPU.Build.0 = Debug Ex2010 SP3|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release Ex2007 SP3|Any CPU.ActiveCfg = Release Ex2007 SP3|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release Ex2007 SP3|Any CPU.Build.0 = Release Ex2007 SP3|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release Ex2010 SP3|Any CPU.ActiveCfg = Release Ex2010 SP3|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release Ex2010 SP3|Any CPU.Build.0 = Release Ex2010 SP3|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release Ex2010|Any CPU.ActiveCfg = Release Ex2010|Any CPU
+		{3AF0EAB4-6135-4908-A659-5E3C974E4718}.Release Ex2010|Any CPU.Build.0 = Release Ex2010|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
