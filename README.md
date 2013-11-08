@@ -9,31 +9,53 @@ WARNING: Please read the 'Known Bugs' section before you continue!
 
 ## Supported versions
 
+The .dll is compiled for .NET 3.5
+
+If it's running on other Exchange versions not mentioned here, please notify me, so I can update it here.
+
+### Exchange 2013
+
+See http://technet.microsoft.com/en-us/library/jj591524%28v=exchg.150%29.aspx for instructions on how to use .dll compiled for Exchange 2010
+
+### Exchange 2010
+
 This Transport Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
 
-If it's running on other version not mentioned here, please notify me, so I can update it here.
+Other Service Pack versions need to be compiled separately. See Issue #5
+Please send me the .dll's mentioned at the end of this document so I can recompile the DKIM signer.
 
-Exchange 2010 SP2 doesn't seem to be supported. See Issue #5. If you have SP2 installed, please read Issue #5 and send me the requested files so that I can recompile it for SP2, then it should work.
+### Exchange 2007
 
 Exchange 2007 SP3 .dll is build and can be found in the release directory. Please check if those are working for you and send me a short notice.
 
 ## Installing the Transport Agent
 
-1. Copy thw whole content from the [release directory](Release) into a directory on the server, where Exchange runs.
-Eg. into C:\Program Files\Exchange DKIM\
+1. Copy the .dll mathing your Exchange Server version from the [release directory](Release) into a directory on the server, where Exchange runs.
+Eg. into `C:\Program Files\Exchange DKIM\`. Also copy the `Exchange.DkimSigner.dll.config` to the same directory. The final structure should be:
+<pre>
+C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll
+C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll.config
+</pre>
 
 2. Create the registry key for EventLog by executing the script: [Create Key.reg](Utils/Create key.reg?raw=true)
 
+4. Add `C:\Program Files\Exchange DKIM\` to your PATH environment variable:
 
-3. Then open Exchange Management Shell
+ Normal command prompt: `set "path=%path%;C:\Program Files\Exchange DKIM"`
+ 
+ or in the Power shell: `setx PATH "$env:path;C:\Program Files\Exchange DKIM" -m`
+
+ (If you execute the following command in the same shell, you need to first restart the shell load the new environment vaiable)
+
+5. Then open Exchange Management Shell
 <pre>
 	Install-TransportAgent -Name "Exchange DKIM" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll"
 	 
 	Enable-TransportAgent -Identity "Exchange DKIM"
 	Restart-Service MSExchangeTransport
 </pre>
-4. Close the Exchange Management Shell Window
-5. Check EventLog for errors or warnings
+6. Close the Exchange Management Shell Window
+7. Check EventLog for errors or warnings
 
 ### Configuring the agent
 Edit the .config file to fit your needs.
