@@ -21,8 +21,7 @@ See http://technet.microsoft.com/en-us/library/jj591524%28v=exchg.150%29.aspx fo
 
 This Transport Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
 
-Other Service Pack versions need to be compiled separately. See Issue #5
-Please send me the .dll's mentioned at the end of this document so I can recompile the DKIM signer.
+There's also a version for Exchange 2010 without any Service Packs installed.
 
 ### Exchange 2007
 
@@ -30,7 +29,7 @@ Exchange 2007 SP3 .dll is build and can be found in the release directory. Pleas
 
 ## Installing the Transport Agent
 
-1. Copy the .dll mathing your Exchange Server version from the [release directory](Release) into a directory on the server, where Exchange runs.
+1. Copy all the files from the folder mathing your Exchange Server version from the [release directory](Src/Exchange.DkimSigner/bin) into a directory on the server, where Exchange runs.
 Eg. into `C:\Program Files\Exchange DKIM\`. Also copy the `Exchange.DkimSigner.dll.config` to the same directory. The final structure should be:
 <pre>
 C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll
@@ -94,6 +93,8 @@ http://www.port25.com/support/domainkeysdkim-wizard/
 Or if you have a linux installation, use (from the opendkim package):
     opendkim-genkey -D target_directory/ -d example.com -s sel2012
 
+The keys need to bee in DER format, not PEM.
+	
 ### Testing the setup
 
 If you want to test, if everything is working, simply send a mail to check-auth@verifier.port25.com and you will get an immediate response with the results of the DKIM check.
@@ -130,10 +131,13 @@ Microsoft.Exchange.Data.Common.xml
 Microsoft.Exchange.Data.Transport.dll
 Microsoft.Exchange.Data.Transport.xml
 </pre>
-into the Lib directory of this project.
+into the corresponding subdirectory from the Lib directory of this project.
 
 ## Changelog
 
+* 08.11.2013:
+    Changed build structure to do a batch build for different Exchange versions.
+	Build for Exchange 2010 and Exchange 2007.
 * 24.02.2013:
 	Added multi domain support
 
