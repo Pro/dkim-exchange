@@ -93,7 +93,7 @@ http://www.port25.com/support/domainkeysdkim-wizard/
 Or if you have a linux installation, use (from the opendkim package):
     opendkim-genkey -D target_directory/ -d example.com -s sel2012
 
-The keys need to bee in DER format, not PEM.
+The keys can be in DER or PEM format (the format will be automatically detected).
 	
 ### Testing the setup
 
