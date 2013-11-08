@@ -54,7 +54,8 @@ C:\Program Files\Exchange DKIM\Exchange.DkimSigner.dll.config
 	Restart-Service MSExchangeTransport
 </pre>
 6. Close the Exchange Management Shell Window
-7. Check EventLog for errors or warnings
+7. Check EventLog for errors or warnings.
+ Hint: you can create a user defined view in EventLog and then select "Per Source" and as the value "Exchange DKIM"
 
 ### Configuring the agent
 Edit the .config file to fit your needs.
