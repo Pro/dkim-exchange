@@ -456,6 +456,11 @@
             string signatureText;
             StringBuilder signedDkimHeader;
 
+            if (domain.CryptoProvider == null)
+            {
+                throw new Exception("CryptoProvider for domain " + domain.Domain + " is null.");
+            }
+
             using (var stream = new MemoryStream())
             {
                 using (var writer = new StreamWriter(stream))

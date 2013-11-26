@@ -7,6 +7,8 @@ This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010
 
 WARNING: Please read the 'Known Bugs' section before you continue!
 
+If you have a version installed previous to 26.11.2013 read the Section [Update from Version 0.5](#update-from-version-0.5)
+
 ## Supported versions
 
 The .dll is compiled for .NET 3.5
@@ -89,6 +91,23 @@ If you want to test, if everything is working, simply send a mail to check-auth@
 ## Updating the Transport Agent
 
 If you want to update the Exchange DKIM Transport Agent simply re-download the .zip file and follow the steps in the installation section.
+
+### Update from Version 0.5
+
+If you have a version installed previous to 26.11.2013 (i.e. 0.5) read the following instructions to update to version 1.5 or above:
+
+1. Backup your folder `C:\Program Files\Exchange DKIM`
+2. Then execute the following commands in Exchange Management Shell:
+<pre>
+Net Stop MSExchangeTransport 
+Disable-TransportAgent -Identity "Exchange DKIM" 
+Uninstall-TransportAgent -Identity "Exchange DKIM" 
+</pre>
+3. Now delete the folder `C:\Program Files\Exchange DKIM` (keep the backup!!)
+4. You will need some parts of your old config file in the new one. You also have to copy the keys back after installation (if in this folder).
+5. Follow the instructions in the [Install Section](#installing-the-transport-agent).
+6. When you copy the `<domain ...` parts from the old config, please change the tag to upper case: `<Domain ...`
+7. That's it!
 
 ## Uninstalling the Transport Agent
 
