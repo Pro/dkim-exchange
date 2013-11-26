@@ -1,6 +1,6 @@
 ﻿namespace Exchange.DkimSigner
 {
-    using Exchange.DkimSigner.Config;
+    using ConfigurationSettings;
     using System;
     using System.Collections.Generic;
     using System.Globalization;

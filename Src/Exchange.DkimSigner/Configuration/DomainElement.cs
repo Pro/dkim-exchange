@@ -5,27 +5,28 @@ using System.Text;
 using System.Configuration;
 using System.Security.Cryptography;
 using System.IO;
+using Exchange.DkimSigner;
 
-namespace Exchange.DkimSigner.Config
+namespace ConfigurationSettings
 {
     public class DomainElement : ConfigurationElement
     {
 
-        [ConfigurationProperty("Domain", IsRequired = true)]
+        [ConfigurationProperty("Domain", DefaultValue = "", IsKey = true, IsRequired = true)]
         public string Domain
         {
             get { return (string)base["Domain"]; }
             set { base["Domain"] = value; }
         }
 
-        [ConfigurationProperty("Selector", IsRequired = true)]
+        [ConfigurationProperty("Selector", DefaultValue = "", IsRequired = true)]
         public string Selector
         {
             get { return (string)base["Selector"]; }
             set { base["Selector"] = value; }
         }
 
-        [ConfigurationProperty("PrivateKeyFile", IsRequired = true)]
+        [ConfigurationProperty("PrivateKeyFile", DefaultValue = "", IsRequired = true)]
         public string PrivateKeyFile
         {
             get { return (string)base["PrivateKeyFile"]; }

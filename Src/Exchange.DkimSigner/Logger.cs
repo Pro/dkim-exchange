@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
-using Exchange.DkimSigner.Properties;
 
 namespace Exchange.DkimSigner
 {
@@ -13,19 +12,19 @@ namespace Exchange.DkimSigner
 
         public static void LogInformation(string message, int id = 0)
         {
-            if (Settings.Default.LogLevel >= 3)
+            if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 3)
                 LogEntry(message, id, EventLogEntryType.Information);
         }
 
         public static void LogWarning(string message, int id = 0)
         {
-            if (Settings.Default.LogLevel >= 2)
+            if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 2)
                 LogEntry(message, id, EventLogEntryType.Warning);
         }
 
         public static void LogError(string message, int id = 0)
         {
-            if (Settings.Default.LogLevel >= 1)
+            if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 1)
                 LogEntry(message, id, EventLogEntryType.Error);
         }
 

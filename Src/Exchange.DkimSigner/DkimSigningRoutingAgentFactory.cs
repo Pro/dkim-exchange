@@ -8,8 +8,8 @@
     using Microsoft.Exchange.Data.Transport;
     using Microsoft.Exchange.Data.Transport.Routing;
     using Exchange.DkimSigner.Properties;
-    using Exchange.DkimSigner.Config;
     using System.Xml;
+    using ConfigurationSettings;
 
     /// <summary>
     /// Creates new instances of the DkimSigningRoutingAgent.
@@ -37,8 +37,6 @@
         public DkimSigningRoutingAgentFactory()
         {
             this.Initialize();
-
-            Logger.LogInformation("Creating new instance of DkimSigningRoutingAgentFactory.");
         }
 
         /// <summary>
@@ -65,62 +63,65 @@
         /// </summary>
         private void Initialize()
         {
+
+            AppSettings = GetCustomConfig<General>("customSection/general");
             // Load the signing algorithm.
             try
             {
-                this.algorithm = (DkimAlgorithmKind)Enum.Parse(
-                    typeof(DkimAlgorithmKind),
-                    Properties.Settings.Default.Algorithm,
-                    true);
+                this.algorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), AppSettings.Algorithm, true);
             }
             catch (Exception ex)
             {
-                throw new ConfigurationErrorsException(
-                    Resources.DkimSigningRoutingAgentFactory_BadAlgorithmConfig,
-                    ex);
+                throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadAlgorithmConfig, ex);
             }
 
             // Load the list of headers to sign in each message.
-            var unparsedHeaders = Properties.Settings.Default.HeadersToSign;
+            var unparsedHeaders = AppSettings.HeadersToSign;
             if (unparsedHeaders != null)
             {
                 this.headersToSign = unparsedHeaders
                     .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
-            try
+            DomainSection domains = GetCustomConfig<DomainSection>("domainSection");
+            if (domains == null)
             {
-                XmlDocument xmlDoc = new XmlDocument(); //* create an xml document object.
-                xmlDoc.Load(this.GetType().Assembly.Location + ".config"); //* load the XML document from the specified file.
-                XmlNodeList domainInfoList = xmlDoc.GetElementsByTagName("domainInfo");
-                if (domainInfoList == null || domainInfoList.Count != 1)
-                {
-                    Logger.LogError("There is an error in your configuration file. domainInfo couldn't be initialized properly.");
-                    return;
-                }
-                XmlNode domainInfo = domainInfoList.Item(0);
-
-                domainSettings = new List<DomainElement>();
-
-                foreach (XmlNode n in domainInfo.ChildNodes)
-                {
-                    DomainElement e = new DomainElement();
-                    e.Domain = n.Attributes["Domain"].Value;
-                    e.Selector = n.Attributes["Selector"].Value;
-                    e.PrivateKeyFile = n.Attributes["PrivateKeyFile"].Value;
-                    if (e.initElement(Path.GetDirectoryName(this.GetType().Assembly.Location)))
-                        domainSettings.Add(e);
-                }
-                if (domainSettings.Count == 0)
-                {
-                    Logger.LogWarning("No domain configuration found. DKIM will do nothing.");
-                }
+                Logger.LogError("domainSection not found in configuration.");
+                return;
             }
-            catch (Exception e)
+
+            domainSettings = new List<DomainElement>();
+            foreach (DomainElement e in domains.Domains)
             {
-                Logger.LogError("Couldn't load config: " + e.ToString());
+                if (e.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                    domainSettings.Add(e);
+
             }
+
             Logger.LogInformation("Exchange DKIM started. Algorithm: " + algorithm.ToString() + " Number of domains: " + domainSettings.Count);
+        }
+
+        private static Assembly configurationDefiningAssembly;
+
+        public static General AppSettings;
+
+        public static TConfig GetCustomConfig<TConfig>(string sectionName) where TConfig : ConfigurationSection
+        {
+            AppDomain.CurrentDomain.AssemblyResolve += new
+                ResolveEventHandler(ConfigResolveEventHandler);
+            configurationDefiningAssembly = Assembly.LoadFrom(Assembly.GetExecutingAssembly().Location);
+            var exeFileMap = new ExeConfigurationFileMap();
+            exeFileMap.ExeConfigFilename = Assembly.GetExecutingAssembly().Location + ".config";
+            var customConfig = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap,
+                ConfigurationUserLevel.None);
+            var returnConfig = customConfig.GetSection(sectionName) as TConfig;
+            AppDomain.CurrentDomain.AssemblyResolve -= ConfigResolveEventHandler;
+            return returnConfig;
+        }
+
+        private static Assembly ConfigResolveEventHandler(object sender, ResolveEventArgs args)
+        {
+            return configurationDefiningAssembly;
         }
     }
 }
