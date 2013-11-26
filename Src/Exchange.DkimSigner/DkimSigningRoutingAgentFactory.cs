@@ -48,8 +48,6 @@
         /// <returns>The <see cref="DkimSigningRoutingAgent"/> instance.</returns>
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            Logger.LogInformation("Creating new instance of DkimSigningRoutingAgent.");
-
             var dkimSigner = new DefaultDkimSigner(
                 this.algorithm,
                 this.headersToSign,
