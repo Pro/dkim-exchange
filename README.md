@@ -11,13 +11,13 @@ If you have a version installed previous to 26.11.2013 read the Section [Update 
 
 ## Supported versions
 
-The .dll is compiled for .NET 3.5
+The .dll is compiled for .NET 4
 
 If it's running on other Exchange versions not mentioned here, please notify me, so I can update it here.
 
 ### Exchange 2013
 
-See http://technet.microsoft.com/en-us/library/jj591524%28v=exchg.150%29.aspx for instructions on how to use .dll compiled for Exchange 2010
+There's a .dll for Exchange 2013, but not yet fully tested
 
 ### Exchange 2010
 
@@ -32,13 +32,14 @@ Exchange 2007 SP3 .dll is build and can be found in the release directory. Pleas
 ## Installing the Transport Agent
 
 1. Download the .zip and extract it e.g. on the Desktop: [Exchange DkimSigner Master.zip](https://github.com/Pro/dkim-exchange/archive/master.zip)
-2. Open "Exchange Management Shell" from the Startmenu
-3. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
-4. Cd into the folder where the zip has been extracted.
-5. Execute the install script `.\install.ps1`
-6. Follow the instructions. For the configuration see next section.
-7. Reset the execution policy: `Set-ExecutionPolicy Restricted`
-8. Check EventLog for errors or warnings.
+2. Install [.NET Framework 4](http://www.microsoft.com/downloads/details.aspx?FamilyID=0a391abd-25c1-4fc0-919f-b21f31ab88b7&displaylang=en) (on Windows Server 2012 already installed): 
+3. Open "Exchange Management Shell" from the Startmenu
+4. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
+5. Cd into the folder where the zip has been extracted.
+6. Execute the install script `.\install.ps1`
+7. Follow the instructions. For the configuration see next section.
+8. Reset the execution policy: `Set-ExecutionPolicy Restricted`
+9. Check EventLog for errors or warnings.
  Hint: you can create a user defined view in EventLog and then select "Per Source" and as the value "Exchange DkimSigner"
 
 Make sure that the priority of the DkimSigner Agent is quite low so that no other agent messes around with the headers. Best set it to lowest priority.
