@@ -11,7 +11,7 @@ If you have a version installed previous to 26.11.2013 read the Section [Update 
 
 ## Supported versions
 
-The .dll is compiled for .NET 4
+The .dll is compiled for .Net 4
 
 If it's running on other Exchange versions not mentioned here, please notify me, so I can update it here.
 
@@ -32,7 +32,7 @@ Exchange 2007 SP3 .dll is build and can be found in the release directory. Pleas
 ## Installing the Transport Agent
 
 1. Download the .zip and extract it e.g. on the Desktop: [Exchange DkimSigner Master.zip](https://github.com/Pro/dkim-exchange/archive/master.zip)
-2. Install [.NET Framework 4](http://www.microsoft.com/downloads/details.aspx?FamilyID=0a391abd-25c1-4fc0-919f-b21f31ab88b7&displaylang=en) (on Windows Server 2012 already installed): 
+2. Install [.Net Framework 4](http://www.microsoft.com/downloads/details.aspx?FamilyID=0a391abd-25c1-4fc0-919f-b21f31ab88b7&displaylang=en) (on Windows Server 2012 already installed): 
 3. Open "Exchange Management Shell" from the Startmenu
 4. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
 5. Cd into the folder where the zip has been extracted.
