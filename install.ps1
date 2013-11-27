@@ -5,6 +5,7 @@ write-host "[2] Exchange 2010 (no Service Pack)" -f "cyan"
 write-host "[3] Exchange 2010 SP1" -f "cyan"
 write-host "[4] Exchange 2010 SP2" -f "cyan"
 write-host "[5] Exchange 2010 SP3" -f "cyan"
+write-host "[6] Exchange 2013" -f "cyan"
 
 write-host ""
 do { 
@@ -25,6 +26,8 @@ if ($version -eq 1) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 S23"
 } elseif ($version -eq 5) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP3"
+} elseif ($version -eq 6) {
+	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013"
 }
 
 write-host "Creating registry key for EventLog" -f "green"
@@ -41,14 +44,11 @@ write-host "Creating install directory: '$EXDIR' and copying data from '$SRCDIR'
 new-item -Type Directory -path $EXDIR -ErrorAction SilentlyContinue 
 
 copy-item "$SRCDIR\ExchangeDkimSigner.dll" $EXDIR -force 
-if (Test-Path "$SRCDIR\ExchangeDkimSigner.dll.config")
-{
-	$overwrite = read-host "Configuration already exists. Do you want to overwrite it? [Y/N]"
-	if ($overwrite -eq "Y") {
-		copy-item "$SRCDIR\ExchangeDkimSigner.dll.config" $EXDIR -force
-	}
-} else {
+$overwrite = read-host "Do you want to copy (and overwrite) the config file: '$SRCDIR\ExchangeDkimSigner.dll'? [Y/N]"
+if ($overwrite -eq "Y" -or $overwrite -eq "y") {
 	copy-item "$SRCDIR\ExchangeDkimSigner.dll.config" $EXDIR -force
+} else {
+	write-host "Not copying config file" -f "yellow"
 }
 
 read-host "Now open '$EXDIR\ExchangeDkimSigner.dll.config' to configure Exchange DkimSigner.\nDon't forget to setup all the keys! When done and saved press 'Return'"
