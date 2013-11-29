@@ -10,10 +10,10 @@ write-host "[6] Exchange 2013" -f "cyan"
 write-host ""
 do { 
 	$version = read-host "Your selection"
-	if ($version -lt 1 -or $version -gt 5) {
+	if ($version -lt 1 -or $version -gt 6) {
 		write-host "Invalid selection. Please input the number in the squares." -f "red"
 	} 
-} until ($version -ge 1 -and $version -le 5) 
+} until ($version -ge 1 -and $version -le 6) 
 
 $EXDIR="C:\Program Files\Exchange DkimSigner" 
 if ($version -eq 1) {
