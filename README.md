@@ -7,7 +7,7 @@ This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010
 
 WARNING: Please read the 'Known Bugs' section before you continue!
 
-If you have a version installed previous to 26.11.2013 read the Section [Update from Version 0.5](#update-from-version-0.5)
+If you have a version installed previous to 26.11.2013 read the Section [Update from Version 0.5](#update-from-version-05)
 
 ## Supported versions
 
@@ -133,7 +133,7 @@ Microsoft.Exchange.Data.Transport.xml
 into the corresponding subdirectory from the Lib directory of this project.
 
 #### Debugging
-If you want to debug the .dll on your Exchange Server, you need to install [Visual Studio Remote Debugging](msdn.microsoft.com/en-us/library/vstudio/bt727f1t.aspx) on the Server.
+If you want to debug the .dll on your Exchange Server, you need to install [Visual Studio Remote Debugging](http://msdn.microsoft.com/en-us/library/vstudio/bt727f1t.aspx) on the Server.
 
 1. After the Remote Debugging Tools are installed on the Server, open Visual Studio
 2. Compile the .dll with Debug information
