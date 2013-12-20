@@ -24,7 +24,7 @@ if ($version -eq 1) {
 } elseif ($version -eq 3) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP1"
 } elseif ($version -eq 4) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 S23"
+	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP2"
 } elseif ($version -eq 5) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP3"
 } elseif ($version -eq 6) {
