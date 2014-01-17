@@ -7,14 +7,15 @@ write-host "[4] Exchange 2010 SP2" -f "cyan"
 write-host "[5] Exchange 2010 SP3" -f "cyan"
 write-host "[6] Exchange 2013" -f "cyan"
 write-host "[7] Exchange 2013 CU2" -f "cyan"
+write-host "[8] Exchange 2013 CU3" -f "cyan"
 
 write-host ""
 do { 
 	$version = read-host "Your selection"
-	if ($version -lt 1 -or $version -gt 7) {
+	if ($version -lt 1 -or $version -gt 8) {
 		write-host "Invalid selection. Please input the number in the squares." -f "red"
 	} 
-} until ($version -ge 1 -and $version -le 7) 
+} until ($version -ge 1 -and $version -le 8) 
 
 $EXDIR="C:\Program Files\Exchange DkimSigner" 
 if ($version -eq 1) {
@@ -31,6 +32,8 @@ if ($version -eq 1) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013"
 } elseif ($version -eq 7) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU2"
+} elseif ($version -eq 8) {
+	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU3"
 }
 
 write-host "Creating registry key for EventLog" -f "green"
