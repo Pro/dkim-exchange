@@ -108,3 +108,9 @@ Microsoft.Exchange.Data.Common.dll
 Microsoft.Exchange.Data.Common.xml
 Microsoft.Exchange.Data.Transport.dll
 Microsoft.Exchange.Data.Transport.xml
+
+/Src/Exchange.DkimSigner/bin/Debug Exchange 2013 CU2
+
+/Src/Exchange.DkimSigner/bin/Debug Exchange 2013
+
+/Src/Exchange.DkimSigner/bin/Debug Exchange 2010 SP3
