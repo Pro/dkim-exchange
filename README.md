@@ -132,6 +132,10 @@ Microsoft.Exchange.Data.Transport.xml
 </pre>
 into the corresponding subdirectory from the Lib directory of this project.
 
+### Compiling
+
+You need to compile the .dll for Exchange 2010 for .Net Framework 3.5 (double click Properties in Visual Studio). Exchange 2012 needs .Net Framework 4 as target framework.
+
 #### Debugging
 If you want to debug the .dll on your Exchange Server, you need to install [Visual Studio Remote Debugging](http://msdn.microsoft.com/en-us/library/vstudio/bt727f1t.aspx) on the Server.
 
