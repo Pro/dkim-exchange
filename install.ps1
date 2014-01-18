@@ -1,21 +1,24 @@
 write-host " *** Exchange DkimSigner Install Script ***" -f "blue"
-write-host "Please select your Exchange Version from the following list:" -f "cyan"
-write-host "[1] Exchange 2007 SP3" -f "cyan"
-write-host "[2] Exchange 2010 (no Service Pack)" -f "cyan"
-write-host "[3] Exchange 2010 SP1" -f "cyan"
-write-host "[4] Exchange 2010 SP2" -f "cyan"
-write-host "[5] Exchange 2010 SP3" -f "cyan"
-write-host "[6] Exchange 2013" -f "cyan"
-write-host "[7] Exchange 2013 CU2" -f "cyan"
-write-host "[8] Exchange 2013 CU3" -f "cyan"
+write-host "Please select your Exchange Version from the following list." -f "cyan"
+write-host "Here's your version:" -f "cyan"
+Get-ExchangeServer | fl Name,AdminDisplayVersion
+write-host "[1] Exchange 2007 SP3 	(8.3.*)" -f "cyan"
+write-host "[2] Exchange 2010 	(14.0.*)" -f "cyan"
+write-host "[3] Exchange 2010 SP1 	(14.1.*)" -f "cyan"
+write-host "[4] Exchange 2010 SP2 	(14.2.*)" -f "cyan"
+write-host "[5] Exchange 2010 SP3 	(14.3.*)" -f "cyan"
+write-host "[6] Exchange 2013 	(15.0.516.32)" -f "cyan"
+write-host "[7] Exchange 2013 CU1 	(15.0.620.29)" -f "cyan"
+write-host "[8] Exchange 2013 CU2 	(15.0.712.24)" -f "cyan"
+write-host "[9] Exchange 2013 CU3 	(15.0.775.38)" -f "cyan"
 
 write-host ""
 do { 
 	$version = read-host "Your selection"
-	if ($version -lt 1 -or $version -gt 8) {
+	if ($version -lt 1 -or $version -gt 9) {
 		write-host "Invalid selection. Please input the number in the squares." -f "red"
 	} 
-} until ($version -ge 1 -and $version -le 8) 
+} until ($version -ge 1 -and $version -le 9) 
 
 $EXDIR="C:\Program Files\Exchange DkimSigner" 
 if ($version -eq 1) {
@@ -31,8 +34,10 @@ if ($version -eq 1) {
 } elseif ($version -eq 6) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013"
 } elseif ($version -eq 7) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU2"
+	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU1"
 } elseif ($version -eq 8) {
+	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU2"
+} elseif ($version -eq 9) {
 	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU3"
 }
 

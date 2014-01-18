@@ -87,17 +87,18 @@
 
                     if (dkim.Length != 0)
                     {
-                        string source = this.dkimSigner.SourceMessage(inputStream);
-
-                        inputStream.Close();
-
                         Logger.LogInformation("Signing mail with header: " + dkim);
+
+
+                        inputStream.Seek(0, SeekOrigin.Begin);
+                        byte[] inputBuffer = ReadFully(inputStream);
+                        inputStream.Close();
 
                         using (var outputStream = mailItem.GetMimeWriteStream())
                         {
                             try
                             {
-                                this.dkimSigner.Sign(source, outputStream, dkim);
+                                this.dkimSigner.Sign(inputBuffer, outputStream, dkim);
                             }
                             catch (Exception ex)
                             {
@@ -106,8 +107,29 @@
 
                             outputStream.Close();
                         }
+
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Slurp the stream and convert it to a binary array.
+        /// http://stackoverflow.com/a/221941/869402
+        /// </summary>
+        /// <param name="input">The stream to read</param>
+        /// <returns>All the data from the stream as byte array</returns>
+        public static byte[] ReadFully(Stream input)
+        {
+            byte[] buffer = new byte[16 * 1024];
+            using (MemoryStream ms = new MemoryStream())
+            {
+                int read;
+                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    ms.Write(buffer, 0, read);
+                }
+                return ms.ToArray();
             }
         }
     }

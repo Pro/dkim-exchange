@@ -236,9 +236,9 @@
         /// Writes a signed version of the unsigned MIME message in the input stream
         /// to the output stream.
         /// </summary>
-        /// <param name="inputStream">The input stream.</param>
+        /// <param name="inputStream">The input stream byte data.</param>
         /// <param name="outputStream">The output stream.</param>
-        public void Sign(string inputsource, Stream outputStream, string signeddkim)
+        public void Sign(byte[] inputBytes, Stream outputStream, string signeddkim)
         {
             if (this.disposed)
             {
@@ -255,7 +255,7 @@
             //var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
             //var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders);
 
-            WriteSignedMimeMessage(inputsource, outputStream, signeddkim);
+            WriteSignedMimeMessage(inputBytes, outputStream, signeddkim);
         }
 
         /// <summary>
@@ -285,20 +285,19 @@
         /// <summary>
         /// Writes the message containing the signed DKIM-Signature header to the output stream.
         /// </summary>
-        /// <param name="input">The stream containing the original MIME message.</param>
+        /// <param name="input">The bytes from the stream containing the original MIME message.</param>
         /// <param name="output">The stream containing the output MIME message.</param>
         /// <param name="signedDkimHeader">The signed DKIM-Signature header.</param>
-        private static void WriteSignedMimeMessage(string input, Stream output, string signedDkimHeader)
+        private static void WriteSignedMimeMessage(byte[] inputBytes, Stream output, string signedDkimHeader)
         {
             byte[] headerBuffer;
-            byte[] inputBytes;
 
             headerBuffer = Encoding.ASCII.GetBytes(signedDkimHeader);
             output.Write(headerBuffer, 0, headerBuffer.Length);
 
-            inputBytes = Encoding.ASCII.GetBytes(input);
             output.Write(inputBytes, 0, inputBytes.Length);
         }
+
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources

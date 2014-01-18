@@ -5,8 +5,6 @@ DKIM Signing Agent for Exchange Server.
 
 This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
-WARNING: Please read the 'Known Bugs' section before you continue!
-
 If you have a version installed previous to 26.11.2013 read the Section [Update from Version 0.5](#update-from-version-05)
 
 ## Supported versions
@@ -20,8 +18,6 @@ This Receive Agent is fully tested under Exchange 2013
 ### Exchange 2010
 
 This Receive Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
-
-There's are also compiled versions for no Service Pack, SP1 and SP2 installed.
 
 ### Exchange 2007
 
@@ -111,10 +107,6 @@ Uninstall-TransportAgent -Identity "Exchange DKIM"
 
 Follow the install instructions but execute `.\uninstall.ps1` instead.
 
-## Known bugs
-
-* [unconfirmed] When using internal Receive Connectors as Relay, unicode characters may break and will be replaced with '?'. See: Issue #2
-
 ## Notes for developers
 
 ### Required DLLs for developing
@@ -150,6 +142,9 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
+* 18.01.2013 [1.5.2]:
+	Fixed message subject and body unicode encoding bug
+	Added support for Exchange 2013 CU1, CU2, CU3
 * 27.11.2013 [1.5.1]:
 	Added support for Exchange 2013
 * 26.11.2013 [1.5]:
@@ -165,3 +160,4 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 ## TODO
 
 * Allow use of relaxed or any combination between relaxed and simple
+* Change install script to automatically detect exchange version. If not supported, allow user to upload .dll and then notify developer.
