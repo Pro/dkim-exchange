@@ -160,4 +160,3 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 ## TODO
 
 * Allow use of relaxed or any combination between relaxed and simple
-* Change install script to automatically detect exchange version. If not supported, allow user to upload .dll and then notify developer.
