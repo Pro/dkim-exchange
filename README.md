@@ -11,17 +11,15 @@ If you have a version installed previous to 26.11.2013 read the Section [Update 
 
 The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2012)
 
-### Exchange 2013
-
-This Receive Agent is fully tested under Exchange 2013
-
-### Exchange 2010
-
-This Receive Agent is fully tested under Exchange 2010 SP3 with Windows Server 2008 R2.
-
-### Exchange 2007
-
-Exchange 2007 SP3 .dll is build and can be found in the release directory. Please check if those are working for you and send me a short notice.
+* Exchange 2007 SP3 (8.3.*)
+* Exchange 2010     (14.0.*)
+* Exchange 2010 SP1 (14.1.*)
+* Exchange 2010 SP2 (14.2.*)
+* Exchange 2010 SP3 (14.3.*)
+* Exchange 2013     (15.0.516.32)
+* Exchange 2013 CU1 (15.0.620.29)
+* Exchange 2013 CU2 (15.0.712.24)
+* Exchange 2013 CU3 (15.0.775.38)
 
 ## Installing the Transport Agent
 
