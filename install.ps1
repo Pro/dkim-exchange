@@ -1,4 +1,4 @@
-write-host " *** Exchange DkimSigner Install Script ***" -f "blue"
+write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 
 # Exchange 2007 SP3 (8.3.*)
 # Exchange 2010     (14.0.*)
@@ -9,32 +9,37 @@ write-host " *** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2013 CU1 (15.0.620.29)
 # Exchange 2013 CU2 (15.0.712.24)
 # Exchange 2013 CU3 (15.0.775.38)
-
+write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
 $exchserver = Get-ExchangeServer -Identity $hostname
 $EXDIR="C:\Program Files\Exchange DkimSigner" 
+$EXVER="Unknown"
 if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplayversion).minor -eq 3) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2007 SP3"
+	$EXVER="Exchange 2007 SP3"
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 0) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010"
+	$EXVER="Exchange 2010"
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 1) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP1"
+	$EXVER="Exchange 2010 SP1"
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 2) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP2"
+	$EXVER="Exchange 2010 SP2"
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 3) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2010 SP3"
+	$EXVER="Exchange 2010 SP3"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 516) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013"
+	$EXVER="Exchange 2013"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 620) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU1"
+	$EXVER="Exchange 2013 CU1"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 712) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU2"
+	$EXVER="Exchange 2013 CU2"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 775) {
-	$SRCDIR="Src\Exchange.DkimSigner\bin\Exchange 2013 CU3"
+	$EXVER="Exchange 2013 CU3"
 }
 else {
-	throw "The exchange version is undefine."
+	throw "The exchange version is not yet supported: $exchserver.admindisplayversion"
 }
+
+$SRCDIR="Src\Exchange.DkimSigner\bin\$EXVER"
+
+write-host "Found $EXVER" -f "green"
 
 write-host "Creating registry key for EventLog" -f "green"
 if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM") {
