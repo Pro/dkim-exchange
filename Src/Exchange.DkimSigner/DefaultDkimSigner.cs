@@ -147,7 +147,7 @@
 
             DomainElement domainFound = null;
 
-            Boolean ruleMatch = false;
+            System.Collections.ArrayList toDomains = new System.Collections.ArrayList();
 
             line = reader.ReadLine();
             while (line != null)
@@ -201,22 +201,30 @@
                         }
                     }
                     
-                    if (!ruleMatch && headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
-                        // check each To header and check if any of them matches the rule
+                    if (headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
+                        // check each To header and add it to the collection
+                        toDomains.Add(headerParts[1].ToLowerInvariant());
 
-                        foreach (DomainElement e in domainSettings) {
-                            MailAddress addr = new MailAddress(header.ToLowerInvariant());
-
-                            ruleMatch |= Regex.Match(addr.Host, e.Rule).Success;
-                        }
                     }
                 }
             }
 
             inputStream.Seek(0, SeekOrigin.Begin);
-
-            if (domainFound == null || !ruleMatch)
+            if (domainFound == null)
             {
+                return "";
+            }
+
+            bool ruleMatch = false;
+            foreach (string to in toDomains) {
+                MailAddress addr = new MailAddress(to);
+                ruleMatch |= Regex.Match(addr.Host, domainFound.Rule).Success;
+                if (ruleMatch)
+                    break;
+            }
+
+            if (!ruleMatch) {
+                Logger.LogInformation("Skipping '" + domainFound.Domain + "' because rule '" + domainFound.Rule + "' not matched");
                 return "";
             }
 

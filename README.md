@@ -150,6 +150,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
+* 04.02.2013 [1.6.0]:
+	Added `Rule` config parameter
 * 18.01.2013 [1.5.2]:
 	Fixed message subject and body unicode encoding bug
 	Added support for Exchange 2013 CU1, CU2, CU3
