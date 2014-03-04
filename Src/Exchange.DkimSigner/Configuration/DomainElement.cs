@@ -33,6 +33,12 @@ namespace ConfigurationSettings
             set { base["PrivateKeyFile"] = value; }
         }
 
+        [ConfigurationProperty("Rules", DefaultValue = "", IsRequired = true)]
+        public string Rules
+        {
+            get { return (string)base["Rules"]; }
+            set { base["Rules"] = value; }
+        }
 
         /// <summary>
         /// The RSA crypto service provider.
