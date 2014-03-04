@@ -197,12 +197,19 @@
                             }
                         }
                     }
+                    
+                    if (headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
+                        outgoingDomain = Regex.Match(header.ToLowerInvariant(), "@[-0-9a-z.+_]+.[a-z]{2,4}").ToString().Substring(1);
+                    }
                 }
             }
 
             inputStream.Seek(0, SeekOrigin.Begin);
 
-            if (domainFound == null)
+            if (domainFound == null ||
+                outgoingDomain == null ||
+                (!domainFound.Rules.ToLowerInvariant().Contains("*") &&
+                !domainFound.Rules.ToLowerInvariant().Contains(outgoingDomain)))
             {
                 return "";
             }
