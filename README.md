@@ -47,8 +47,8 @@ Edit the .config file to fit your needs.
 ```xml
   <domainSection>
     <Domains>
-      <Domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private"/>
-      <Domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private"/>
+      <Domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private" />
+      <Domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private" Rule="yahoo\.[^\.]+"/>
     </Domains>
   </domainSection>
   <customSection>
@@ -57,6 +57,13 @@ Edit the .config file to fit your needs.
 ```
 
 You can add as many domain items as you need. For each domain item, the domain, the selector and the path to the private key file is needed.
+
+The `Rule` attribute is a Regular Expression defining on which `To` domains the DKIM should be applied.
+The RegEx is applied to the domain part of the `To` E-Mail header. Default is set to match any domain `.*`.
+
+You can use this tool to test your regular expressions: http://derekslager.com/blog/posts/2007/09/a-better-dotnet-regular-expression-tester.ashx (activate IgnoreCase) and use e.g as Source `yahoo.com` and Pattern `yahoo\.[^\.]+`.
+E.g. the pattern `yahoo\.[^\.]+` matches all yahoo domains, regardless the TLD (top level domain).
+
 This path may be relative (based on the location of the .dll) or absolute.
 
 #### Logging

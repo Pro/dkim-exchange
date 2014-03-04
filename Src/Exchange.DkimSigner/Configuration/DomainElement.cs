@@ -33,11 +33,11 @@ namespace ConfigurationSettings
             set { base["PrivateKeyFile"] = value; }
         }
 
-        [ConfigurationProperty("Rules", DefaultValue = "", IsRequired = true)]
-        public string Rules
+        [ConfigurationProperty("Rule", DefaultValue = ".*", IsRequired = false)]
+        public string Rule
         {
-            get { return (string)base["Rules"]; }
-            set { base["Rules"] = value; }
+            get { return (string)base["Rule"]; }
+            set { base["Rule"] = value; }
         }
 
         /// <summary>

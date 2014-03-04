@@ -6,6 +6,7 @@
     using System.Globalization;
     using System.IO;
     using System.Linq;
+    using System.Net.Mail;
     using System.Security.Cryptography;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -146,6 +147,8 @@
 
             DomainElement domainFound = null;
 
+            Boolean ruleMatch = false;
+
             line = reader.ReadLine();
             while (line != null)
             {
@@ -198,18 +201,21 @@
                         }
                     }
                     
-                    if (headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
-                        outgoingDomain = Regex.Match(header.ToLowerInvariant(), "@[-0-9a-z.+_]+.[a-z]{2,4}").ToString().Substring(1);
+                    if (!ruleMatch && headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
+                        // check each To header and check if any of them matches the rule
+
+                        foreach (DomainElement e in domainSettings) {
+                            MailAddress addr = new MailAddress(header.ToLowerInvariant());
+
+                            ruleMatch |= Regex.Match(addr.Host, e.Rule).Success;
+                        }
                     }
                 }
             }
 
             inputStream.Seek(0, SeekOrigin.Begin);
 
-            if (domainFound == null ||
-                outgoingDomain == null ||
-                (!domainFound.Rules.ToLowerInvariant().Contains("*") &&
-                !domainFound.Rules.ToLowerInvariant().Contains(outgoingDomain)))
+            if (domainFound == null || !ruleMatch)
             {
                 return "";
             }
