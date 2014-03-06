@@ -48,6 +48,30 @@ namespace ConfigurationSettings
             }
         }
 
+        [ConfigurationProperty("HeaderCanonicalization", DefaultValue = "Simple", IsKey = false, IsRequired = true)]
+        public string HeaderCanonicalization
+        {
+            get
+            {
+                return (string)this["HeaderCanonicalization"];
+            }
+            set
+            {
+                this["HeaderCanonicalization"] = value;
+            }
+        }
 
+        [ConfigurationProperty("BodyCanonicalization", DefaultValue = "Simple", IsKey = false, IsRequired = true)]
+        public string BodyCanonicalization
+        {
+            get
+            {
+                return (string)this["BodyCanonicalization"];
+            }
+            set
+            {
+                this["BodyCanonicalization"] = value;
+            }
+        }
     }
 }

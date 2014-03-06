@@ -35,8 +35,8 @@ namespace Exchange.DkimSigner
                 logger = new EventLog();
                 logger.Source = "Exchange DKIM";
             }
-            logger.WriteEntry(message, logType, id);
 
+            logger.WriteEntry(message, logType, id);
         }
     }
 }
