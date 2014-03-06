@@ -33,6 +33,26 @@ check if the .dll's are unlocked:
 
 ![unlock-software-unblock](https://f.cloud.github.com/assets/251973/2304090/064ecbbe-a203-11e3-9b06-892b70bf380e.png)
 
+## Could not load file or assembly... BadImageFormatException
+
+### Error message
+
+```
+Could not load file or assembly 'file:///C:\Program Files\Exchange DkimSigner\ExchangeDkimSigner.dll' or one of its
+dependencies. This assembly is built by a runtime newer than the currently loaded runtime and cannot be loaded.
+    + CategoryInfo          : InvalidArgument: (:) [Install-TransportAgent], BadImageFormatException
+    + FullyQualifiedErrorId : 9AA5EBB5,Microsoft.Exchange.Management.AgentTasks.InstallTransportAgent
+```
+
+### Solution
+
+Change the target framework
+
+1. In Visual Studio, ight click on the project ("Exchange.DkimSigner")
+2. Go in the properties
+3. Go to the "Application" tab
+4. Change the target framework to .NET 3.5 (Exchange 2007 & 2010) or to .NET 4.0 (Exchange 2013)
+
 ## The process cannot access the file ...
 
 ### Error message
