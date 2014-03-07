@@ -493,6 +493,33 @@
                     // We only want to sign the header if we were told to sign it!
                     if (this.eligibleHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
                     {
+                        if (this.headerCanonicalization == "relaxed")
+                        {
+                            // Unfold all header field continuation lines as described in
+                            // [RFC5322]; in particular, lines with terminators embedded in
+                            // continued header field values (that is, CRLF sequences followed by
+                            // WSP) MUST be interpreted without the CRLF.  Implementations MUST
+                            // NOT remove the CRLF at the end of the header field value.
+                            // Delete all WSP characters at the end of each unfolded header field
+                            // value.
+                            // Convert all sequences of one or more WSP characters to a single SP
+                            // character.  WSP characters here include those before and after a
+                            // line folding boundary.
+
+                            header = CompactWhitespaces(header);
+                            header += "\r\n";
+
+                            // Delete any WSP characters remaining before and after the colon
+                            // separating the header field name from the header field value.  The
+                            // colon separator MUST be retained.
+                            header = Regex.Replace(header, @" ?: ?", ":");
+
+                            // Convert all header field names (not the header field values) to
+                            // lowercase.  For example, convert "SUBJect: AbC" to "subject: AbC".
+                            string[] temp = header.Split(new char[] { ':' }, 2);
+                            header = temp[0].ToLower() + ":" + temp[1];
+                        }
+
                         headerNameToLineMap[headerName] = header;
                     }
                 }
@@ -510,11 +537,7 @@
         /// <param name="unsignedDkimHeader">The unsigned DKIM header, to use as a template.</param>
         /// <param name="canonicalizedHeaders">The headers to be included as part of the signature.</param>
         /// <returns>The signed DKIM-Signature header.</returns>
-        private string GetSignedDkimHeader(
-            string unsignedDkimHeader, 
-            IEnumerable<string> canonicalizedHeaders,
-            DomainElement domain
-            )
+        private string GetSignedDkimHeader(string unsignedDkimHeader, IEnumerable<string> canonicalizedHeaders, DomainElement domain)
         {
             byte[] signatureBytes;
             string signatureText;
@@ -533,6 +556,10 @@
                     {
                         writer.Write(canonicalizedHeader);
                     }
+
+                    unsignedDkimHeader = Regex.Replace(unsignedDkimHeader, @" ?: ?", ":");
+                    string[] temp = unsignedDkimHeader.Split(new char[] { ':' }, 2);
+                    unsignedDkimHeader = temp[0].ToLower() + ":" + temp[1];
 
                     writer.Write(unsignedDkimHeader);
                     writer.Flush();
@@ -577,7 +604,6 @@
                 string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),
                 bodyHash);
         }
-
 
         /// <summary>
         /// Remove extra white spaces
