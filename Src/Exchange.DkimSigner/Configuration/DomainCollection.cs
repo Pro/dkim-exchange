@@ -18,6 +18,7 @@ namespace ConfigurationSettings
                 return ConfigurationElementCollectionType.BasicMapAlternate;
             }
         }
+
         protected override string ElementName
         {
             get
@@ -31,12 +32,10 @@ namespace ConfigurationSettings
             return elementName.Equals(PropertyName, StringComparison.InvariantCultureIgnoreCase);
         }
 
-
         public override bool IsReadOnly()
         {
             return false;
         }
-
 
         protected override ConfigurationElement CreateNewElement()
         {

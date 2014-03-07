@@ -19,7 +19,17 @@
         /// <summary>
         /// The algorithm that should be used in signing.
         /// </summary>
-        private DkimAlgorithmKind algorithm;
+        private DkimAlgorithmKind signingAlgorithm;
+
+        /// <summary>
+        /// The canonolization algorithm that should be used for the header.
+        /// </summary>
+        private DkimCanonicalizationKind headerCanonicalization;
+
+        /// <summary>
+        /// The canonolization algorithm that should be used for the body.
+        /// </summary>
+        private DkimCanonicalizationKind bodyCanonicalization;
 
         /// <summary>
         /// The headers to sign in each message.
@@ -49,7 +59,9 @@
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
             var dkimSigner = new DefaultDkimSigner(
-                this.algorithm,
+                this.signingAlgorithm,
+                this.headerCanonicalization,
+                this.bodyCanonicalization,
                 this.headersToSign,
                 domainSettings);
 
@@ -66,19 +78,54 @@
             // Load the signing algorithm.
             try
             {
-                this.algorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), AppSettings.Algorithm, true);
+                this.signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), AppSettings.Algorithm, true);
             }
             catch (Exception ex)
             {
                 throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadAlgorithmConfig, ex);
             }
 
+            AppSettings = GetCustomConfig<General>("customSection/general");
+            if (AppSettings.HeaderCanonicalization != null)
+            {
+                // Load the header canonicalization algorithm.
+                try
+                {
+                    this.headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), AppSettings.HeaderCanonicalization, true);
+                }
+                catch (Exception ex)
+                {
+                    throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig, ex);
+                }
+            }
+            else
+            {
+                this.headerCanonicalization = DkimCanonicalizationKind.Simple;
+            }
+
+            AppSettings = GetCustomConfig<General>("customSection/general");
+            if (AppSettings.BodyCanonicalization != null)
+            {
+                // Load the body canonicalization algorithm.
+                try
+                {
+                    this.bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), AppSettings.BodyCanonicalization, true);
+                }
+                catch (Exception ex)
+                {
+                    throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadCanonicalizationBodyConfig, ex);
+                }
+            }
+            else
+            {
+                this.bodyCanonicalization = DkimCanonicalizationKind.Simple;
+            }
+
             // Load the list of headers to sign in each message.
             var unparsedHeaders = AppSettings.HeadersToSign;
             if (unparsedHeaders != null)
             {
-                this.headersToSign = unparsedHeaders
-                    .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                this.headersToSign = unparsedHeaders.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
             }
 
             DomainSection domains = GetCustomConfig<DomainSection>("domainSection");
@@ -93,10 +140,9 @@
             {
                 if (e.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
                     domainSettings.Add(e);
-
             }
 
-            Logger.LogInformation("Exchange DKIM started. Algorithm: " + algorithm.ToString() + " Number of domains: " + domainSettings.Count);
+            Logger.LogInformation("Exchange DKIM started. Signing Algorithm: " + signingAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + headerCanonicalization.ToString() + ", Canonicalization Header Algorithm: " + bodyCanonicalization.ToString() + ", Number of domains: " + domainSettings.Count);
         }
 
         private static Assembly configurationDefiningAssembly;
@@ -105,13 +151,11 @@
 
         public static TConfig GetCustomConfig<TConfig>(string sectionName) where TConfig : ConfigurationSection
         {
-            AppDomain.CurrentDomain.AssemblyResolve += new
-                ResolveEventHandler(ConfigResolveEventHandler);
+            AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(ConfigResolveEventHandler);
             configurationDefiningAssembly = Assembly.LoadFrom(Assembly.GetExecutingAssembly().Location);
             var exeFileMap = new ExeConfigurationFileMap();
             exeFileMap.ExeConfigFilename = Assembly.GetExecutingAssembly().Location + ".config";
-            var customConfig = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap,
-                ConfigurationUserLevel.None);
+            var customConfig = ConfigurationManager.OpenMappedExeConfiguration(exeFileMap, ConfigurationUserLevel.None);
             var returnConfig = customConfig.GetSection(sectionName) as TConfig;
             AppDomain.CurrentDomain.AssemblyResolve -= ConfigResolveEventHandler;
             return returnConfig;
