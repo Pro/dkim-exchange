@@ -252,13 +252,12 @@
             }
 
             bool ruleMatch = true;
-            // TEST
-            //foreach (string to in toDomains) {
-            //    MailAddress addr = new MailAddress(to);
-            //    ruleMatch |= Regex.Match(addr.Host, domainFound.Rule).Success;
-            //    if (ruleMatch)
-            //        break;
-            //}
+            foreach (string to in toDomains) {
+                MailAddress addr = new MailAddress(to);
+                ruleMatch |= Regex.Match(addr.Host, domainFound.Rule).Success;
+                if (ruleMatch)
+                    break;
+            }
 
             if (!ruleMatch) {
                 Logger.LogInformation("Skipping '" + domainFound.Domain + "' because rule '" + domainFound.Rule + "' not matched");

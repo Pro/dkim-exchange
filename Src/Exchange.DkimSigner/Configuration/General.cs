@@ -48,7 +48,7 @@ namespace ConfigurationSettings
             }
         }
 
-        [ConfigurationProperty("HeaderCanonicalization", DefaultValue = "Simple", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("HeaderCanonicalization", DefaultValue = "Simple", IsKey = false, IsRequired = false)]
         public string HeaderCanonicalization
         {
             get
@@ -61,7 +61,7 @@ namespace ConfigurationSettings
             }
         }
 
-        [ConfigurationProperty("BodyCanonicalization", DefaultValue = "Simple", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("BodyCanonicalization", DefaultValue = "Simple", IsKey = false, IsRequired = false)]
         public string BodyCanonicalization
         {
             get
