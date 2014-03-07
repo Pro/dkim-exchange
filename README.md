@@ -52,7 +52,7 @@ Edit the .config file to fit your needs.
     </Domains>
   </domainSection>
   <customSection>
-    <general LogLevel="3" HeadersToSign="From; Subject; To; Date; Message-ID;" Algorithm="RsaSha1" />
+    <general LogLevel="3" HeadersToSign="From; Subject; To; Date; Message-ID;" Algorithm="RsaSha1" HeaderCanonicalization="Simple" BodyCanonicalization="Simple" />
   </customSection>
 ```
 
@@ -65,6 +65,8 @@ The RegEx is applied to the domain part of the `To` E-Mail header. Default is se
 
 You can use this tool to test your regular expressions: http://derekslager.com/blog/posts/2007/09/a-better-dotnet-regular-expression-tester.ashx (activate IgnoreCase) and use e.g as Source `yahoo.com` and Pattern `yahoo\.[^\.]+`.
 E.g. the pattern `yahoo\.[^\.]+` matches all yahoo domains, regardless the TLD (top level domain).
+
+Possible values for `HeaderCanonicalization` and `BodyCanonicalization` are `Simple` (recommended) and `Relaxed`.
 
 #### Logging
 The dkim signing agent logs by default all errors and warnings into EventLog.
@@ -150,9 +152,11 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* 04.02.2013 [1.6.0]:  
+* 07.03.2014 [1.7.0]:
+	Added relaxed canonicalization (Thanks to @AlexLaroche)
+* 04.02.2014 [1.6.0]:  
 	Added `Rule` config parameter
-* 18.01.2013 [1.5.2]:  
+* 18.01.2014 [1.5.2]:  
 	Fixed message subject and body unicode encoding bug
 	Added support for Exchange 2013 CU1, CU2, CU3
 * 27.11.2013 [1.5.1]:  
