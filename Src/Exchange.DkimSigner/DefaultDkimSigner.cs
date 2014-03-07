@@ -251,7 +251,7 @@
                 return "";
             }
 
-            bool ruleMatch = true;
+            bool ruleMatch = false;
             foreach (string to in toDomains) {
                 MailAddress addr = new MailAddress(to);
                 ruleMatch |= Regex.Match(addr.Host, domainFound.Rule).Success;
