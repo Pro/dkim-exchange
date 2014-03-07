@@ -152,7 +152,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* 07.03.2014 [1.7.0]:
+* 07.03.2014 [1.7.0]:  
 	Added relaxed canonicalization (Thanks to @AlexLaroche)
 * 04.02.2014 [1.6.0]:  
 	Added `Rule` config parameter
