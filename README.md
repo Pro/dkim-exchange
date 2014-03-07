@@ -145,7 +145,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 2. Compile the .dll with Debug information
 3. Copy the recompiled .dll to the server
 4. In Visual Studio select Debug->Attach to Process
-5. Under 'Qualifier' input the server IP oder Host Name
+5. Under 'Qualifier' input the server IP or Host Name
 6. Select "Show processes from all users"
 7. Select the process `EdgeTransport.exe` and then press 'Attach'
 8. When reached, the process should stop at the breakpoint
