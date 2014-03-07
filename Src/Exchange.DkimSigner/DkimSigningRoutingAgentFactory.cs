@@ -85,40 +85,24 @@
                 throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadAlgorithmConfig, ex);
             }
 
-            AppSettings = GetCustomConfig<General>("customSection/general");
-            if (AppSettings.HeaderCanonicalization != null)
+            // Load the header canonicalization algorithm.
+            try
             {
-                // Load the header canonicalization algorithm.
-                try
-                {
-                    this.headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), AppSettings.HeaderCanonicalization, true);
-                }
-                catch (Exception ex)
-                {
-                    throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig, ex);
-                }
+                this.headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), AppSettings.HeaderCanonicalization, true);
             }
-            else
+            catch (Exception ex)
             {
-                this.headerCanonicalization = DkimCanonicalizationKind.Simple;
+                throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig, ex);
             }
 
-            AppSettings = GetCustomConfig<General>("customSection/general");
-            if (AppSettings.BodyCanonicalization != null)
+            // Load the body canonicalization algorithm.
+            try
             {
-                // Load the body canonicalization algorithm.
-                try
-                {
-                    this.bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), AppSettings.BodyCanonicalization, true);
-                }
-                catch (Exception ex)
-                {
-                    throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadCanonicalizationBodyConfig, ex);
-                }
+                this.bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), AppSettings.BodyCanonicalization, true);
             }
-            else
+            catch (Exception ex)
             {
-                this.bodyCanonicalization = DkimCanonicalizationKind.Simple;
+                throw new ConfigurationErrorsException(Resources.DkimSigningRoutingAgentFactory_BadCanonicalizationBodyConfig, ex);
             }
 
             // Load the list of headers to sign in each message.
