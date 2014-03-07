@@ -170,7 +170,3 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 	Build for Exchange 2010 and Exchange 2007.
 * 24.02.2013:  
 	Added multi domain support
-
-## TODO
-
-* Allow use of relaxed or any combination between relaxed and simple
