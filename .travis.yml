@@ -4,4 +4,6 @@ install:
   - sudo apt-get install mono-devel mono-gmcs nunit-console
 
 script:
-  - xbuild Build/Exchange 2007 SP3.proj
+  - xbuild travis_3.5.proj
+  - xbuild /p:TargetFrameworkProfile="" /p:TargetFrameworkVersion="v4.0" /p:Framework="NET40" travis_4.0.proj
+
