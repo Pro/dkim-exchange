@@ -1,10 +1,12 @@
 <?xml version="1.0"?>
 <Project ToolsVersion="4.0" DefaultTargets="CI" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
  
-  <Target Name="CI" DependsOnTargets="Build" />
+  <Target Name="CI" DependsOnTargets="Ex2007SP3;Ex2010" />
  
-  <Target Name="Build">
+  <Target Name="Ex2007SP3">
     <MSBuild Projects="./../Src/Exchange.DkimSigner\Exchange.DkimSigner (.NET 3.5).csproj" Properties="Configuration=Release Ex2007 SP3;Platform=Any CPU" />
   </Target>
- 
-</Project>
+  <Target Name="Ex2010">
+    <MSBuild Projects="./../Src/Exchange.DkimSigner\Exchange.DkimSigner (.NET 3.5).csproj" Properties="Configuration=Release Ex2010;Platform=Any CPU" />
+  </Target>
+ </Project>
