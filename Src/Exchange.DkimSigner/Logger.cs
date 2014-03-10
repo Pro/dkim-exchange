@@ -10,19 +10,34 @@ namespace Exchange.DkimSigner
     {
         private static EventLog logger = null;
 
-        public static void LogInformation(string message, int id = 0)
+        public static void LogInformation(string message)
+        {
+            LogInformation(message, 0);
+        }
+
+        public static void LogInformation(string message, int id)
         {
             if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 3)
                 LogEntry(message, id, EventLogEntryType.Information);
         }
 
-        public static void LogWarning(string message, int id = 0)
+        public static void LogWarning(string message)
+        {
+            LogWarning(message, 0);
+        }
+
+        public static void LogWarning(string message, int id)
         {
             if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 2)
                 LogEntry(message, id, EventLogEntryType.Warning);
         }
 
-        public static void LogError(string message, int id = 0)
+        public static void LogError(string message)
+        {
+            LogError(message, 0);
+        }
+
+        public static void LogError(string message, int id)
         {
             if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 1)
                 LogEntry(message, id, EventLogEntryType.Error);
