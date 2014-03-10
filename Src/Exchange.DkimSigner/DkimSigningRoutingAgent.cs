@@ -53,9 +53,7 @@
             Justification = "If an exception is thrown, then the message is eaten " +
                 "by Exchange. Better to catch the exception and write it to a log " +
                 "than to end up with a non-functioning MTA.")]
-        private void WhenMessageCategorized(
-            CategorizedMessageEventSource source,
-            QueuedMessageEventArgs e)
+        private void WhenMessageCategorized(CategorizedMessageEventSource source, QueuedMessageEventArgs e)
         {
             try
             {
@@ -88,7 +86,6 @@
                     if (dkim.Length != 0)
                     {
                         Logger.LogInformation("Signing mail with header: " + dkim);
-
 
                         inputStream.Seek(0, SeekOrigin.Begin);
                         byte[] inputBuffer = ReadFully(inputStream);

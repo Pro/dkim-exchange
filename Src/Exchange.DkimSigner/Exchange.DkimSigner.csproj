@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Exchange.DkimSigner</RootNamespace>
     <AssemblyName>ExchangeDkimSigner</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -241,6 +241,7 @@
     <Compile Include="Configuration\DomainSection.cs" />
     <Compile Include="Configuration\General.cs" />
     <Compile Include="CryptHelper.cs" />
+    <Compile Include="DkimCanonicalizationKind.cs" />
     <Compile Include="DkimSigningRoutingAgent.cs" />
     <Compile Include="DkimSigningRoutingAgentFactory.cs" />
     <Compile Include="DkimAlgorithmKind.cs" />

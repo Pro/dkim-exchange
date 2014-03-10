@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DkimSigningRoutingAgent_SignFailed" xml:space="preserve">
     <value>Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.</value>
@@ -143,5 +143,11 @@
   </data>
   <data name="DkimSigningRoutingAgentFactory_BadPrivateKeyConfig" xml:space="preserve">
     <value>The PEM-encoded private RSA key was not found in the configuration file or is blank. Check the value of the 'DefaultDkimSigner_PrivateKey' key in the &lt;appSettings&gt; section.</value>
+  </data>
+  <data name="DkimSigningRoutingAgentFactory_BadCanonicalizationBodyConfig" xml:space="preserve">
+    <value>The  body canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the 'DefaultDkimSigner_Algorithm' key under &amp;lt;appSettings&amp;gt;. Currently accepted values are 'Simple' (recommended) and 'Relaxed'.</value>
+  </data>
+  <data name="DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig" xml:space="preserve">
+    <value>The  header canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the 'DefaultDkimSigner_Algorithm' key under &amp;lt;appSettings&amp;gt;. Currently accepted values are 'Simple' (recommended) and 'Relaxed'.</value>
   </data>
 </root>

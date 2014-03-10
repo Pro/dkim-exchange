@@ -115,6 +115,24 @@ namespace Exchange.DkimSigner.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The  body canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the &apos;DefaultDkimSigner_Algorithm&apos; key under &amp;lt;appSettings&amp;gt;. Currently accepted values are &apos;Simple&apos; (recommended) and &apos;Relaxed&apos;..
+        /// </summary>
+        internal static string DkimSigningRoutingAgentFactory_BadCanonicalizationBodyConfig {
+            get {
+                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadCanonicalizationBodyConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The  header canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the &apos;DefaultDkimSigner_Algorithm&apos; key under &amp;lt;appSettings&amp;gt;. Currently accepted values are &apos;Simple&apos; (recommended) and &apos;Relaxed&apos;..
+        /// </summary>
+        internal static string DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig {
+            get {
+                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The domain was not found in the configuration file or is blank. Check the value of the &apos;DefaultDkimSigner_Domain&apos; key under the &lt;appSettings&gt; section..
         /// </summary>
         internal static string DkimSigningRoutingAgentFactory_BadDomainConfig {

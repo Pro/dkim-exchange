@@ -46,6 +46,15 @@
         /// </summary>
         private string hashAlgorithmCryptoCode;
 
+        /// <summary>
+        /// The DKIM canonicalization algorithm that is to be employed for the header.
+        /// </summary>
+        private string headerCanonicalization;
+
+        /// <summary>
+        /// The DKIM canonicalization algorithm that is to be employed for the header.
+        /// </summary>
+        private string bodyCanonicalization;
 
         /// <summary>
         /// The list of domains loaded from config file.
@@ -62,6 +71,8 @@
         /// <param name="encodedKey">The PEM-encoded key.</param>
         public DefaultDkimSigner(
             DkimAlgorithmKind signatureKind,
+            DkimCanonicalizationKind headerCanonicalizationKind,
+            DkimCanonicalizationKind bodyCanonicalizationKind,
             IEnumerable<string> headersToSign,
             List<DomainElement> domainSettings)
         {
@@ -81,6 +92,30 @@
                     break;
                 default:
                     throw new ArgumentOutOfRangeException("signatureKind");
+            }
+
+            switch (headerCanonicalizationKind)
+            {
+                case DkimCanonicalizationKind.Simple:
+                    this.headerCanonicalization = "simple";
+                    break;
+                case DkimCanonicalizationKind.Relaxed:
+                    this.headerCanonicalization = "relaxed";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("headerCanonicalizationKind");
+            }
+
+            switch (bodyCanonicalizationKind)
+            {
+                case DkimCanonicalizationKind.Simple:
+                    this.bodyCanonicalization = "simple";
+                    break;
+                case DkimCanonicalizationKind.Relaxed:
+                    this.bodyCanonicalization = "relaxed";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("bodyCanonicalizationKind");
             }
 
             this.eligibleHeaders = new HashSet<string>();
@@ -128,7 +163,8 @@
         {
             if (domainSettings == null || domainSettings.Count == 0)
                 return "";
-            string line;
+
+            string line = string.Empty;
             StreamReader reader;
 
             if (this.disposed)
@@ -228,16 +264,16 @@
                 return "";
             }
 
-            // Calculate Header
-
+            // Generate the hash for the body
             var bodyHash = this.GetBodyHash(inputStream);
             var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash, domainFound);
+
+            // Generate the hash for the header
             var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
             var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders, domainFound);
 
             return signedDkimHeader;
         }
-
 
         public string SourceMessage(Stream inputStream)
         {
@@ -251,7 +287,6 @@
 
             return bodyText;
         }
-
 
         /// <summary>
         /// Writes a signed version of the unsigned MIME message in the input stream
@@ -270,11 +305,6 @@
             {
                 throw new ArgumentNullException("outputStream");
             }
-
-            //var bodyHash = this.GetBodyHash(inputStream);
-            //var unsignedDkimHeader = this.GetUnsignedDkimHeader(bodyHash);
-            //var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
-            //var signedDkimHeader = this.GetSignedDkimHeader(unsignedDkimHeader, canonicalizedHeaders);
 
             WriteSignedMimeMessage(inputBytes, outputStream, signeddkim);
         }
@@ -318,7 +348,6 @@
 
             output.Write(inputBytes, 0, inputBytes.Length);
         }
-
 
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
@@ -372,19 +401,33 @@
                     "The stream did not have a MIME body.",
                     "stream");
             }
+
+            bodyText = new StreamReader(stream).ReadToEnd();
+
+            if (this.bodyCanonicalization == "relaxed")
+            {
+                string tempText = bodyText;
+                bodyText = "";
+
+                // Reduces all sequences of WSP within a line to a single SP
+                // character.
+                // Ignores all whitespace at the end of lines.  Implementations MUST
+                // NOT remove the CRLF at the end of the line.
+
+                foreach (string line in Regex.Split(tempText, @"\r?\n|\r"))
+                {
+                    string temp = CompactWhitespaces(line);
+                    temp += "\r\n";
+                    bodyText += temp;
+                }
+            }
             
             // We have to ignore all empty lines at the end of the message body.
-            // This means we have to read the whole body and fix up the end of the
-            // body if necessary.
-            
-			bodyText = new StreamReader(stream).ReadToEnd();
             bodyText = Regex.Replace(bodyText, "(\r?\n)*$", string.Empty);
             bodyText += "\r\n";
             
-			bodyBytes = Encoding.ASCII.GetBytes(bodyText);
-			
+            bodyBytes = Encoding.ASCII.GetBytes(bodyText);
             hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
-
             stream.Seek(0, SeekOrigin.Begin);
 
             return hashText;
@@ -449,6 +492,33 @@
                     // We only want to sign the header if we were told to sign it!
                     if (this.eligibleHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
                     {
+                        if (this.headerCanonicalization == "relaxed")
+                        {
+                            // Unfold all header field continuation lines as described in
+                            // [RFC5322]; in particular, lines with terminators embedded in
+                            // continued header field values (that is, CRLF sequences followed by
+                            // WSP) MUST be interpreted without the CRLF.  Implementations MUST
+                            // NOT remove the CRLF at the end of the header field value.
+                            // Delete all WSP characters at the end of each unfolded header field
+                            // value.
+                            // Convert all sequences of one or more WSP characters to a single SP
+                            // character.  WSP characters here include those before and after a
+                            // line folding boundary.
+
+                            header = CompactWhitespaces(header);
+                            header += "\r\n";
+
+                            // Delete any WSP characters remaining before and after the colon
+                            // separating the header field name from the header field value.  The
+                            // colon separator MUST be retained.
+                            header = Regex.Replace(header, @" ?: ?", ":");
+
+                            // Convert all header field names (not the header field values) to
+                            // lowercase.  For example, convert "SUBJect: AbC" to "subject: AbC".
+                            string[] temp = header.Split(new char[] { ':' }, 2);
+                            header = temp[0].ToLower() + ":" + temp[1];
+                        }
+
                         headerNameToLineMap[headerName] = header;
                     }
                 }
@@ -466,11 +536,7 @@
         /// <param name="unsignedDkimHeader">The unsigned DKIM header, to use as a template.</param>
         /// <param name="canonicalizedHeaders">The headers to be included as part of the signature.</param>
         /// <returns>The signed DKIM-Signature header.</returns>
-        private string GetSignedDkimHeader(
-            string unsignedDkimHeader, 
-            IEnumerable<string> canonicalizedHeaders,
-            DomainElement domain
-            )
+        private string GetSignedDkimHeader(string unsignedDkimHeader, IEnumerable<string> canonicalizedHeaders, DomainElement domain)
         {
             byte[] signatureBytes;
             string signatureText;
@@ -489,6 +555,10 @@
                     {
                         writer.Write(canonicalizedHeader);
                     }
+
+                    unsignedDkimHeader = Regex.Replace(unsignedDkimHeader, @" ?: ?", ":");
+                    string[] temp = unsignedDkimHeader.Split(new char[] { ':' }, 2);
+                    unsignedDkimHeader = temp[0].ToLower() + ":" + temp[1];
 
                     writer.Write(unsignedDkimHeader);
                     writer.Flush();
@@ -524,12 +594,98 @@
         {
             return string.Format(
                 CultureInfo.InvariantCulture,
-                "DKIM-Signature: v=1; a={0}; s={1}; d={2}; c=simple/simple; q=dns/txt; h={3}; bh={4}; b=;",
+                "DKIM-Signature: v=1; a={0}; s={1}; d={2}; c={3}/{4}; q=dns/txt; h={5}; bh={6}; b=;",
                 this.hashAlgorithmDkimCode,
                 domain.Selector,
                 domain.Domain,
+                this.headerCanonicalization,
+                this.bodyCanonicalization,
                 string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),
                 bodyHash);
+        }
+
+        /// <summary>
+        /// Remove extra white spaces
+        /// http://stackoverflow.com/questions/6442421/c-sharp-fastest-way-to-remove-extra-white-spaces
+        /// </summary>
+        /// <param name="s">A string</param>
+        /// <returns>The convert string</returns>
+        public static String CompactWhitespaces(String s)
+        {
+            StringBuilder sb = new StringBuilder(s);
+
+            CompactWhitespaces(sb);
+
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// Remove extra white spaces
+        /// http://stackoverflow.com/questions/6442421/c-sharp-fastest-way-to-remove-extra-white-spaces
+        /// </summary>
+        /// <param name="sb">A string</param>
+        public static void CompactWhitespaces(StringBuilder sb)
+        {
+            if (sb.Length == 0)
+                return;
+
+            // set [start] to first not-whitespace char or to sb.Length
+
+            int start = 0;
+
+            while (start < sb.Length)
+            {
+                if (Char.IsWhiteSpace(sb[start]))
+                    start++;
+                else
+                    break;
+            }
+
+            // if [sb] has only whitespaces, then return empty string
+
+            if (start == sb.Length)
+            {
+                sb.Length = 0;
+                return;
+            }
+
+            // set [end] to last not-whitespace char
+
+            int end = sb.Length - 1;
+
+            while (end >= 0)
+            {
+                if (Char.IsWhiteSpace(sb[end]))
+                    end--;
+                else
+                    break;
+            }
+
+            // compact string
+
+            int dest = 0;
+            bool previousIsWhitespace = false;
+
+            for (int i = 0; i <= end; i++)
+            {
+                if (Char.IsWhiteSpace(sb[i]))
+                {
+                    if (!previousIsWhitespace)
+                    {
+                        previousIsWhitespace = true;
+                        sb[dest] = ' ';
+                        dest++;
+                    }
+                }
+                else
+                {
+                    previousIsWhitespace = false;
+                    sb[dest] = sb[i];
+                    dest++;
+                }
+            }
+
+            sb.Length = dest;
         }
     }
 }

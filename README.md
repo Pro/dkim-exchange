@@ -52,7 +52,7 @@ Edit the .config file to fit your needs.
     </Domains>
   </domainSection>
   <customSection>
-    <general LogLevel="3" HeadersToSign="From; Subject; To; Date; Message-ID;" Algorithm="RsaSha1" />
+    <general LogLevel="3" HeadersToSign="From; Subject; To; Date; Message-ID;" Algorithm="RsaSha1" HeaderCanonicalization="Simple" BodyCanonicalization="Simple" />
   </customSection>
 ```
 
@@ -65,6 +65,8 @@ The RegEx is applied to the domain part of the `To` E-Mail header. Default is se
 
 You can use this tool to test your regular expressions: http://derekslager.com/blog/posts/2007/09/a-better-dotnet-regular-expression-tester.ashx (activate IgnoreCase) and use e.g as Source `yahoo.com` and Pattern `yahoo\.[^\.]+`.
 E.g. the pattern `yahoo\.[^\.]+` matches all yahoo domains, regardless the TLD (top level domain).
+
+Possible values for `HeaderCanonicalization` and `BodyCanonicalization` are `Simple` (recommended) and `Relaxed`.
 
 #### Logging
 The dkim signing agent logs by default all errors and warnings into EventLog.
@@ -143,30 +145,28 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 2. Compile the .dll with Debug information
 3. Copy the recompiled .dll to the server
 4. In Visual Studio select Debug->Attach to Process
-5. Under 'Qualifier' input the server IP oder Host Name
+5. Under 'Qualifier' input the server IP or Host Name
 6. Select "Show processes from all users"
 7. Select the process `EdgeTransport.exe` and then press 'Attach'
 8. When reached, the process should stop at the breakpoint
 
 ## Changelog
 
-* 04.02.2013 [1.6.0]:
+* 07.03.2014 [1.7.0]:  
+	Added relaxed canonicalization (Thanks to @AlexLaroche)
+* 04.02.2014 [1.6.0]:  
 	Added `Rule` config parameter
-* 18.01.2013 [1.5.2]:
-	Fixed message subject and body unicode encoding bug
+* 18.01.2014 [1.5.2]:  
+	Fixed message subject and body unicode encoding bug  
 	Added support for Exchange 2013 CU1, CU2, CU3
-* 27.11.2013 [1.5.1]:
+* 27.11.2013 [1.5.1]:  
 	Added support for Exchange 2013
-* 26.11.2013 [1.5]:
-	Changed configuration file for better reading
-	Added compiled files for Exchange 2010 SP1&SP2
+* 26.11.2013 [1.5]:  
+	Changed configuration file for better reading  
+	Added compiled files for Exchange 2010 SP1&SP2  
 	Added install and uninstall script
-* 08.11.2013 [0.5]:
-    Changed build structure to do a batch build for different Exchange versions.
+* 08.11.2013 [0.5]:  
+    	Changed build structure to do a batch build for different Exchange versions.  
 	Build for Exchange 2010 and Exchange 2007.
-* 24.02.2013:
+* 24.02.2013:  
 	Added multi domain support
-
-## TODO
-
-* Allow use of relaxed or any combination between relaxed and simple
