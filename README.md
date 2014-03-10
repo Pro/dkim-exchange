@@ -1,4 +1,4 @@
-Exchange DKIM Signer
+Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)
 =============
 
 DKIM Signing Agent for Exchange Server.
