@@ -69,3 +69,18 @@ being used by another process.
 3. Delete the file `C:\Program Files\Exchange DkimSigner\ExchangeDkimSigner.dll`
 4. Execute `net start W3SVC`
 5. Rerun the install script
+
+## The module was expected to contain an assembly manifest
+
+### Error message
+
+```
+Registering agent:
+Could not load file or assembly '...' or one of its dependencies. The module was expected to contain an assembly manifest
+```
+
+### Solution
+
+The .dll may be corrupted. Possible cause: you are using a FTP Client to put the .dll on the server.
+
+You need to directly download the .zip from github to the server or transfer the files via Windows Share.
