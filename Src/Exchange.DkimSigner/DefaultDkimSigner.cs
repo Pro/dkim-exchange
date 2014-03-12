@@ -49,12 +49,12 @@
         /// <summary>
         /// The DKIM canonicalization algorithm that is to be employed for the header.
         /// </summary>
-        private string headerCanonicalization;
+        private DkimCanonicalizationKind headerCanonicalization;
 
         /// <summary>
         /// The DKIM canonicalization algorithm that is to be employed for the header.
         /// </summary>
-        private string bodyCanonicalization;
+        private DkimCanonicalizationKind bodyCanonicalization;
 
         /// <summary>
         /// The list of domains loaded from config file.
@@ -94,29 +94,9 @@
                     throw new ArgumentOutOfRangeException("signatureKind");
             }
 
-            switch (headerCanonicalizationKind)
-            {
-                case DkimCanonicalizationKind.Simple:
-                    this.headerCanonicalization = "simple";
-                    break;
-                case DkimCanonicalizationKind.Relaxed:
-                    this.headerCanonicalization = "relaxed";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("headerCanonicalizationKind");
-            }
+            this.headerCanonicalization = headerCanonicalizationKind;
 
-            switch (bodyCanonicalizationKind)
-            {
-                case DkimCanonicalizationKind.Simple:
-                    this.bodyCanonicalization = "simple";
-                    break;
-                case DkimCanonicalizationKind.Relaxed:
-                    this.bodyCanonicalization = "relaxed";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("bodyCanonicalizationKind");
-            }
+            this.bodyCanonicalization = bodyCanonicalizationKind;
 
             this.eligibleHeaders = new HashSet<string>();
 
@@ -412,7 +392,7 @@
 
             bodyText = new StreamReader(stream).ReadToEnd();
 
-            if (this.bodyCanonicalization == "relaxed")
+            if (this.bodyCanonicalization == DkimCanonicalizationKind.Relaxed)
             {
                 string tempText = bodyText;
                 bodyText = "";
@@ -500,7 +480,7 @@
                     // We only want to sign the header if we were told to sign it!
                     if (this.eligibleHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
                     {
-                        if (this.headerCanonicalization == "relaxed")
+                        if (this.headerCanonicalization == DkimCanonicalizationKind.Relaxed)
                         {
                             // Unfold all header field continuation lines as described in
                             // [RFC5322]; in particular, lines with terminators embedded in
@@ -564,9 +544,12 @@
                         writer.Write(canonicalizedHeader);
                     }
 
-                    unsignedDkimHeader = Regex.Replace(unsignedDkimHeader, @" ?: ?", ":");
-                    string[] temp = unsignedDkimHeader.Split(new char[] { ':' }, 2);
-                    unsignedDkimHeader = temp[0].ToLower() + ":" + temp[1];
+                    if (this.headerCanonicalization == DkimCanonicalizationKind.Relaxed)
+                    {
+                        unsignedDkimHeader = Regex.Replace(unsignedDkimHeader, @" ?: ?", ":");
+                        string[] temp = unsignedDkimHeader.Split(new char[] { ':' }, 2);
+                        unsignedDkimHeader = temp[0].ToLower() + ":" + temp[1];
+                    }
 
                     writer.Write(unsignedDkimHeader);
                     writer.Flush();
@@ -606,8 +589,8 @@
                 this.hashAlgorithmDkimCode,
                 domain.Selector,
                 domain.Domain,
-                this.headerCanonicalization,
-                this.bodyCanonicalization,
+                this.headerCanonicalization.ToString().ToLower(),
+                this.bodyCanonicalization.ToString().ToLower(),
                 string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),
                 bodyHash);
         }
