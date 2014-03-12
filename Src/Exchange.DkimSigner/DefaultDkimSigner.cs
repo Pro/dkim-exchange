@@ -184,6 +184,7 @@
             DomainElement domainFound = null;
 
             System.Collections.ArrayList toDomains = new System.Collections.ArrayList();
+            MailAddress from = null;
 
             line = reader.ReadLine();
             while (line != null)
@@ -235,12 +236,13 @@
                                 domainFound = e;
                             }
                         }
+
+                        from = new MailAddress(headerParts[1].ToLowerInvariant());
                     }
                     
                     if (headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
                         // check each To header and add it to the collection
                         toDomains.Add(headerParts[1].ToLowerInvariant());
-
                     }
                 }
             }
@@ -248,6 +250,14 @@
             inputStream.Seek(0, SeekOrigin.Begin);
             if (domainFound == null)
             {
+                return "";
+            }
+
+            bool fromMatch = false;
+            fromMatch |= Regex.Match(from.Address, DkimSigningRoutingAgentFactory.AppSettings.Sender).Success;
+
+            if (!fromMatch) {
+                Logger.LogInformation("Skipping '" + from.Address + "' because sender '" + DkimSigningRoutingAgentFactory.AppSettings.Sender + "' not matched");
                 return "";
             }
 

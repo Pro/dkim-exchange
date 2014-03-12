@@ -73,5 +73,18 @@ namespace ConfigurationSettings
                 this["BodyCanonicalization"] = value;
             }
         }
+
+        [ConfigurationProperty("Sender", DefaultValue = ".*", IsKey = false, IsRequired = false)]
+        public string Sender
+        {
+            get
+            {
+                return (string)this["Sender"];
+            }
+            set
+            {
+                this["Sender"] = value;
+            }
+        }
     }
 }
