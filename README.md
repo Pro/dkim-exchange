@@ -156,7 +156,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* 12.03.2014 [1.8.0]:
+* 12.03.2014 [1.8.0]:  
 	Added 'Sender' config parameter
 * 07.03.2014 [1.7.0]:  
 	Added relaxed canonicalization (Thanks to @AlexLaroche)
