@@ -252,12 +252,10 @@
             {
                 return "";
             }
-
-            bool fromMatch = false;
-            fromMatch |= Regex.Match(from.Address, DkimSigningRoutingAgentFactory.AppSettings.Sender).Success;
-
-            if (!fromMatch) {
-                Logger.LogInformation("Skipping '" + from.Address + "' because sender '" + DkimSigningRoutingAgentFactory.AppSettings.Sender + "' not matched");
+            
+            if (!Regex.Match(from.Address, domainFound.SenderRule).Success)
+            {
+                Logger.LogInformation("Skipping '" + from.Address + "' because sender rule '" + domainFound.SenderRule + "' not matched");
                 return "";
             }
 
@@ -270,7 +268,7 @@
             }
 
             if (!ruleMatch) {
-                Logger.LogInformation("Skipping '" + domainFound.Domain + "' because rule '" + domainFound.Rule + "' not matched");
+                Logger.LogInformation("Skipping '" + domainFound.Domain + "' because rule '" + domainFound.RecipientRule + "' not matched");
                 return "";
             }
 

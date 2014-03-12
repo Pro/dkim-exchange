@@ -48,7 +48,8 @@ Edit the .config file to fit your needs.
   <domainSection>
     <Domains>
       <Domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private" />
-      <Domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private" Rule="yahoo\.[^\.]+"/>
+      <Domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private" RecipientRule="yahoo\.[^\.]+"/>
+      <Domain Domain="example.net" Selector="sel2013" PrivateKeyFile="keys/example.net.private" SenderRule="user@.*" RecipientRule="yahoo\.[^\.]+"/>
     </Domains>
   </domainSection>
   <customSection>
@@ -60,8 +61,11 @@ You can add as many domain items as you need. For each domain item, the domain, 
 
 This path may be relative (based on the location of the .dll) or absolute.
 
-The `Rule` attribute is a Regular Expression defining on which `To` domains the DKIM should be applied.
-The RegEx is applied to the domain part of the `To` E-Mail header. Default is set to match any domain `.*`.
+The `RecipientRule` attribute is an optional parameter defined as a Regular Expression telling the agent on which `To` domains the DKIM should be applied.
+The RegEx is checked against the domain part of the `To` E-Mail header. Default is set to match any domain `.*`.
+
+The `SenderRule` attribute is also optional and defined as a Regular Expression. It defines on which `From` E-Mail addresses the DKIM should be applied.
+The RegEx is checked against the whole E-Mail address of the `From` header. Default is set to match any address `.*`.
 
 You can use this tool to test your regular expressions: http://derekslager.com/blog/posts/2007/09/a-better-dotnet-regular-expression-tester.ashx (activate IgnoreCase) and use e.g as Source `yahoo.com` and Pattern `yahoo\.[^\.]+`.
 E.g. the pattern `yahoo\.[^\.]+` matches all yahoo domains, regardless the TLD (top level domain).
@@ -152,6 +156,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
+* 12.03.2014 [1.8.0]:
+	Added 'Sender' config parameter
 * 07.03.2014 [1.7.0]:  
 	Added relaxed canonicalization (Thanks to @AlexLaroche)
 * 04.02.2014 [1.6.0]:  

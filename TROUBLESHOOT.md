@@ -84,3 +84,9 @@ Could not load file or assembly '...' or one of its dependencies. The module was
 The .dll may be corrupted. Possible cause: you are using a FTP Client to put the .dll on the server.
 
 You need to directly download the .zip from github to the server or transfer the files via Windows Share.
+
+Another possible solution is to either restart your server or restart the `WWW Publishing Service`:
+```
+net stop W3SVC
+net start W3SVC
+```

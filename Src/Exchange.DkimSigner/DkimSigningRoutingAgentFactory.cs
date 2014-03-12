@@ -123,7 +123,15 @@
             foreach (DomainElement e in domains.Domains)
             {
                 if (e.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                {
+                    #pragma warning disable 0618
+                    if (e.RecipientRule.Equals(".*") && !e.Rule.Equals(".*"))
+                    {
+                        Logger.LogWarning("The Rule parameter is obsolete. Use 'RecipientRule' instead.");
+                        e.RecipientRule = e.Rule;
+                    }
                     domainSettings.Add(e);
+                }
             }
 
             Logger.LogInformation("Exchange DKIM started. Signing Algorithm: " + signingAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + headerCanonicalization.ToString() + ", Canonicalization Header Algorithm: " + bodyCanonicalization.ToString() + ", Number of domains: " + domainSettings.Count);

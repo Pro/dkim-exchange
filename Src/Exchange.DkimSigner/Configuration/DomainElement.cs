@@ -33,11 +33,29 @@ namespace ConfigurationSettings
             set { base["PrivateKeyFile"] = value; }
         }
 
+        /// <summary>
+        /// Only for backwards compatibility. Use RecipientRule instead
+        /// </summary>
         [ConfigurationProperty("Rule", DefaultValue = ".*", IsRequired = false)]
+        [Obsolete("Use RecipientRule instead")]
         public string Rule
         {
             get { return (string)base["Rule"]; }
             set { base["Rule"] = value; }
+        }
+
+        [ConfigurationProperty("RecipientRule", DefaultValue = ".*", IsRequired = false)]
+        public string RecipientRule
+        {
+            get { return (string)base["RecipientRule"]; }
+            set { base["RecipientRule"] = value; }
+        }
+
+        [ConfigurationProperty("SenderRule", DefaultValue = ".*", IsKey = false, IsRequired = false)]
+        public string SenderRule
+        {
+            get { return (string)this["SenderRule"]; }
+            set { this["SenderRule"] = value; }
         }
 
         /// <summary>
