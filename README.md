@@ -39,7 +39,8 @@ To get a list of all the Export Agents use the Command `Get-TransportAgent`
 
 To change the priority use `Set-TransportAgent -Identity "Exchange DkimSigner" -Priority 3`
 
-If you have any problems installing, please check out the [troubleshooting guideline](https://github.com/Pro/dkim-exchange/blob/master/TROUBLESHOOT.md)
+If you have any problems installing, please check out the [troubleshooting guideline](https://github.com/Pro/dkim-exchange/blob/master/TROUBLESHOOT.md).  
+**Exchange 2013 SP1**: If you have any problems installing the agent on Exchange 2013 SP1 please first try to apply the fix mentioned in issue [#24](https://github.com/Pro/dkim-exchange/issues/24)
 
 ### Configuring the agent
 Edit the .config file to fit your needs.
