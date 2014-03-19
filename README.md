@@ -157,6 +157,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
+* 19.03.2014 [1.8.2]:  
+	Fixed recipient rule not evaluated correctly (#26)
 * 12.03.2014 [1.8.1]:  
 	Fixed simple/simple signing fail introduced in version 1.7.0
 * 12.03.2014 [1.8.0]:  
