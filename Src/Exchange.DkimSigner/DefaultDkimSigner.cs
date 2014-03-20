@@ -132,6 +132,18 @@
         }
 
         /// <summary>
+        /// In .NET 3.5 the MailAddress constructor doesn't allow newline between display name and address part.
+        /// Therefore we need to fix it first and then pass the address to the constructor.
+        /// Replaces the newlines and tabs with space.
+        /// </summary>
+        /// <param name="addr">The address to fix</param>
+        /// <returns></returns>
+        private string fixEmailAddress(string addr)
+        {
+            return Regex.Replace(addr, @"(?:[\r\n\t]+)", " ").Trim();
+        }
+
+        /// <summary>
         /// Returns a value indicating whether or not the unsigned MIME message in the
         /// given stream can be signed. In this case, we iterate until we see the From:
         /// header, and then we only sign it if our domain matches the domain of the From:
@@ -218,7 +230,7 @@
                         }
                         try
                         {
-                            from = new MailAddress(headerParts[1].ToLowerInvariant());
+                            from = new MailAddress(fixEmailAddress(headerParts[1].ToLowerInvariant()));
                         }
                         catch (System.FormatException ex)
                         {
@@ -251,7 +263,7 @@
                 MailAddress addr = null;
                 try
                 {
-                    addr = new MailAddress(to);
+                    addr = new MailAddress(fixEmailAddress(to));
                     ruleMatch |= Regex.Match(addr.Address, domainFound.RecipientRule).Success;
                 }
                 catch (System.FormatException ex)
