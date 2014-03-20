@@ -246,6 +246,7 @@
             }
 
             bool ruleMatch = false;
+
             foreach (string to in toDomains) {
                 MailAddress addr = null;
                 try
@@ -256,6 +257,7 @@
                 catch (System.FormatException ex)
                 {
                     Logger.LogError("Couldn't parse to address: '" + to + "': " + ex.Message + ". Ignoring recipient rule");
+                    ruleMatch = true;
                 }
                 if (ruleMatch)
                     break;
