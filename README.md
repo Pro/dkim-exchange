@@ -159,27 +159,30 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
+* master:
+	Fix: RecipientRule now matching whole address
+	Fix: Invalid E-Mail address doesn't cause a crash anymore. Rule will be ignored if error.
 * 19.03.2014 [1.8.2]:  
-	Fixed recipient rule not evaluated correctly (#26)
+	Fix: recipient rule not evaluated correctly (#26)
 * 12.03.2014 [1.8.1]:  
-	Fixed simple/simple signing fail introduced in version 1.7.0
+	Fix: simple/simple signing fail introduced in version 1.7.0
 * 12.03.2014 [1.8.0]:  
-	Added 'Sender' config parameter
+	New: 'Sender' config parameter
 * 07.03.2014 [1.7.0]:  
-	Added relaxed canonicalization (Thanks to @AlexLaroche)
+	New: relaxed canonicalization (Thanks to @AlexLaroche)
 * 04.02.2014 [1.6.0]:  
-	Added `Rule` config parameter
+	New: `Rule` config parameter
 * 18.01.2014 [1.5.2]:  
-	Fixed message subject and body unicode encoding bug  
-	Added support for Exchange 2013 CU1, CU2, CU3
+	Fix: message subject and body unicode encoding bug  
+	New: support for Exchange 2013 CU1, CU2, CU3
 * 27.11.2013 [1.5.1]:  
-	Added support for Exchange 2013
+	New: support for Exchange 2013
 * 26.11.2013 [1.5]:  
 	Changed configuration file for better reading  
-	Added compiled files for Exchange 2010 SP1&SP2  
-	Added install and uninstall script
+	New: compiled files for Exchange 2010 SP1&SP2  
+	New: install and uninstall script
 * 08.11.2013 [0.5]:  
-    	Changed build structure to do a batch build for different Exchange versions.  
-	Build for Exchange 2010 and Exchange 2007.
+    Changed build structure to do a batch build for different Exchange versions.  
+	New: Build for Exchange 2010 and Exchange 2007.
 * 24.02.2013:  
-	Added multi domain support
+	New: multi domain support
