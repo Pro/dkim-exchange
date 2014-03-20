@@ -58,7 +58,8 @@ write-host "Creating install directory: '$EXDIR' and copying data from '$SRCDIR'
 new-item -Type Directory -path $EXDIR -ErrorAction SilentlyContinue 
 
 copy-item "$SRCDIR\ExchangeDkimSigner.dll" $EXDIR -force 
-$overwrite = read-host "Do you want to copy (and overwrite) the config file: '$SRCDIR\ExchangeDkimSigner.dll'? [Y/N]"
+copy-item "$SRCDIR\ExchangeDkimSigner.pdb" $EXDIR -force 
+$overwrite = read-host "Do you want to copy (and overwrite) the config file: '$SRCDIR\ExchangeDkimSigner.dll.config'? [Y/N]"
 if ($overwrite -eq "Y" -or $overwrite -eq "y") {
 	copy-item "$SRCDIR\ExchangeDkimSigner.dll.config" $EXDIR -force
 } else {
