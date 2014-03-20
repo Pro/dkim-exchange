@@ -216,8 +216,14 @@
                                 domainFound = e;
                             }
                         }
-
-                        from = new MailAddress(headerParts[1].ToLowerInvariant());
+                        try
+                        {
+                            from = new MailAddress(headerParts[1].ToLowerInvariant());
+                        }
+                        catch (System.FormatException ex)
+                        {
+                            Logger.LogError("Couldn't parse from address: '" + headerParts[1].ToLowerInvariant() + "': " + ex.Message + ". Ignoring sender rule");
+                        }
                     }
                     
                     if (headerName.Equals("To", StringComparison.OrdinalIgnoreCase)) {
@@ -233,7 +239,7 @@
                 return "";
             }
             
-            if (!Regex.Match(from.Address, domainFound.SenderRule).Success)
+            if (from!=null && !Regex.Match(from.Address, domainFound.SenderRule).Success)
             {
                 Logger.LogInformation("Skipping '" + from.Address + "' because sender rule '" + domainFound.SenderRule + "' not matched");
                 return "";
@@ -241,8 +247,16 @@
 
             bool ruleMatch = false;
             foreach (string to in toDomains) {
-                MailAddress addr = new MailAddress(to);
-                ruleMatch |= Regex.Match(addr.Host, domainFound.RecipientRule).Success;
+                MailAddress addr = null;
+                try
+                {
+                    addr = new MailAddress(to);
+                    ruleMatch |= Regex.Match(addr.Host, domainFound.RecipientRule).Success;
+                }
+                catch (System.FormatException ex)
+                {
+                    Logger.LogError("Couldn't parse to address: '" + to + "': " + ex.Message + ". Ignoring recipient rule");
+                }
                 if (ruleMatch)
                     break;
             }
