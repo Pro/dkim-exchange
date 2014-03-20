@@ -62,11 +62,13 @@ You can add as many domain items as you need. For each domain item, the domain, 
 
 This path may be relative (based on the location of the .dll) or absolute.
 
-The `RecipientRule` attribute is an optional parameter defined as a Regular Expression telling the agent on which `To` domains the DKIM should be applied.
-The RegEx is checked against the domain part of the `To` E-Mail header. Default is set to match any domain `.*`.
+The `RecipientRule` attribute is an optional parameter defined as a Regular Expression telling the agent on which `To` E-Mail addresses the DKIM should be applied.
+The RegEx is checked against the whole E-Mail address of the `To` E-Mail header. Default is set to match any address `.*`.
 
 The `SenderRule` attribute is also optional and defined as a Regular Expression. It defines on which `From` E-Mail addresses the DKIM should be applied.
 The RegEx is checked against the whole E-Mail address of the `From` header. Default is set to match any address `.*`.
+
+Keep in mind that you need to escape the dot `.` if you want to match it explicitly as `\.` otherwise the dot means to match any character which you most probably don't want.
 
 You can use this tool to test your regular expressions: http://derekslager.com/blog/posts/2007/09/a-better-dotnet-regular-expression-tester.ashx (activate IgnoreCase) and use e.g as Source `yahoo.com` and Pattern `yahoo\.[^\.]+`.
 E.g. the pattern `yahoo\.[^\.]+` matches all yahoo domains, regardless the TLD (top level domain).

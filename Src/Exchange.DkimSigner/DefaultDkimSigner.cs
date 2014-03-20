@@ -252,7 +252,7 @@
                 try
                 {
                     addr = new MailAddress(to);
-                    ruleMatch |= Regex.Match(addr.Host, domainFound.RecipientRule).Success;
+                    ruleMatch |= Regex.Match(addr.Address, domainFound.RecipientRule).Success;
                 }
                 catch (System.FormatException ex)
                 {
