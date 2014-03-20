@@ -24,7 +24,7 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 
 ## Installing the Transport Agent
 
-1. Download the .zip and extract it e.g. on the Desktop: [Exchange DkimSigner Master.zip](https://github.com/Pro/dkim-exchange/archive/master.zip)
+1. Download the .zip and extract it e.g. on the Desktop: [Latest Release](https://github.com/Pro/dkim-exchange/releases/latest)
 2. Open "Exchange Management Shell" from the Startmenu
 3. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
 4. Cd into the folder where the zip has been extracted.
