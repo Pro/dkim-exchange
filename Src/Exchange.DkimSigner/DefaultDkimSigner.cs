@@ -242,7 +242,7 @@
             bool ruleMatch = false;
             foreach (string to in toDomains) {
                 MailAddress addr = new MailAddress(to);
-                ruleMatch |= Regex.Match(addr.Host, domainFound.RecipientRule).Success;
+                ruleMatch |= Regex.Match(addr.Address, domainFound.RecipientRule).Success;
                 if (ruleMatch)
                     break;
             }
