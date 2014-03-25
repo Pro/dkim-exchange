@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DkimSigningRoutingAgent_SignFailed" xml:space="preserve">
     <value>Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.</value>
@@ -149,5 +149,11 @@
   </data>
   <data name="DkimSigningRoutingAgentFactory_BadCanonicalizationHeaderConfig" xml:space="preserve">
     <value>The  header canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the 'DefaultDkimSigner_Algorithm' key under &amp;lt;appSettings&amp;gt;. Currently accepted values are 'Simple' (recommended) and 'Relaxed'.</value>
+  </data>
+  <data name="CryptHelper_BadXmlFormat" xml:space="preserve">
+    <value>The encoded key is not in the proper XML format.</value>
+  </data>
+  <data name="CryptHelper_UnknownFormat" xml:space="preserve">
+    <value>The encoded key is not in a proper format.</value>
   </data>
 </root>
