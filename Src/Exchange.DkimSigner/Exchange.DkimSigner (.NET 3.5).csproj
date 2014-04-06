@@ -242,7 +242,8 @@
     <Compile Include="Configuration\DomainCollection.cs" />
     <Compile Include="Configuration\DomainSection.cs" />
     <Compile Include="Configuration\General.cs" />
-    <Compile Include="CryptHelper.cs" />
+    <Compile Include="RSACryptoHelper.cs" />
+    <Compile Include="RSACryptoFormat.cs" />
     <Compile Include="DkimCanonicalizationKind.cs" />
     <Compile Include="DkimSigningRoutingAgent.cs" />
     <Compile Include="DkimSigningRoutingAgentFactory.cs" />

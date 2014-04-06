@@ -6,6 +6,7 @@ using System.Configuration;
 using System.Security.Cryptography;
 using System.IO;
 using Exchange.DkimSigner;
+using Exchange.DkimSigner.Properties;
 
 namespace ConfigurationSettings
 {
@@ -82,8 +83,26 @@ namespace ConfigurationSettings
                 return false;
             }
 
-            string key = File.ReadAllText(path, Encoding.ASCII);
-            cryptoProvider = CryptHelper.GetProviderFromPemEncodedRsaPrivateKey(key);
+            byte[] key = File.ReadAllBytes(path);
+            switch (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(key))
+            {
+                case RSACryptoFormat.PEM:
+                    string pemkey = File.ReadAllText(path, Encoding.ASCII);
+                    cryptoProvider = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(pemkey);
+                    break;
+                case RSACryptoFormat.DER:
+                    cryptoProvider = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(key);
+                    break;
+                case RSACryptoFormat.XML:
+                    string xmlkey = File.ReadAllText(path, Encoding.ASCII);
+                    cryptoProvider = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(xmlkey);
+                    break;
+                default:
+                    throw new ArgumentException(
+                            Resources.CryptHelper_UnknownFormat,
+                            "encodedKey");
+            }
+
             return true;
         }
 

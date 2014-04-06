@@ -79,6 +79,24 @@ namespace Exchange.DkimSigner.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The encoded key is not in the proper XML format..
+        /// </summary>
+        internal static string CryptHelper_BadXmlFormat {
+            get {
+                return ResourceManager.GetString("CryptHelper_BadXmlFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The encoded key is not in a proper format..
+        /// </summary>
+        internal static string CryptHelper_UnknownFormat {
+            get {
+                return ResourceManager.GetString("CryptHelper_UnknownFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The MIME body could not be located, so DKIM signing was skipped..
         /// </summary>
         internal static string DkimSigningRoutingAgent_MimeBodyNotFound {
