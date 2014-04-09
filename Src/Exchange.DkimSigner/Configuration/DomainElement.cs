@@ -112,7 +112,7 @@ namespace ConfigurationSettings
         }
 
         /// <summary>
-        /// Finalizes an instance of the <see cref="DefaultDkimSigner"/> class.
+        /// Finalizes an instance of the <see cref="DkimSigner"/> class.
         /// </summary>
         ~DomainElement()
         {

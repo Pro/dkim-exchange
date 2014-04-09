@@ -17,13 +17,13 @@
         /// <summary>
         /// The object that knows how to sign messages.
         /// </summary>
-        private IDkimSigner dkimSigner;
+        private ISigner dkimSigner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
-        public DkimSigningRoutingAgent(IDkimSigner dkimSigner)
+        public DkimSigningRoutingAgent(ISigner dkimSigner)
         {
             if (dkimSigner == null)
             {

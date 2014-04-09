@@ -58,7 +58,7 @@
         /// <returns>The <see cref="DkimSigningRoutingAgent"/> instance.</returns>
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            var dkimSigner = new DefaultDkimSigner(
+            var dkimSigner = new DkimSigner(
                 this.signingAlgorithm,
                 this.headerCanonicalization,
                 this.bodyCanonicalization,
