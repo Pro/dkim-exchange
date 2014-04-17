@@ -139,6 +139,24 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
+      <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
+      <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+	    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2013'">
+      <HintPath>..\..\Lib\Exchange 2013\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2013'">
+      <HintPath>..\..\Lib\Exchange 2013\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2013 CU2'">
+      <HintPath>..\..\Lib\Exchange 2013 CU2\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2013 CU2'">
+      <HintPath>..\..\Lib\Exchange 2013 CU2\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2007 SP3'">
       <HintPath>..\..\Lib\Exchange 2007 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
       <Private>False</Private>
