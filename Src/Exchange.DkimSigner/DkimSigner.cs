@@ -1,16 +1,16 @@
-﻿namespace Exchange.DkimSigner
-{
-    using ConfigurationSettings;
-    using System;
-    using System.Collections.Generic;
-    using System.Globalization;
-    using System.IO;
-    using System.Linq;
-    using System.Net.Mail;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Text.RegularExpressions;
+﻿using ConfigurationSettings;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net.Mail;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 
+namespace Exchange.DkimSigner
+{
     /// <summary>
     /// Signs MIME messages according to the DKIM standard.
     /// </summary>

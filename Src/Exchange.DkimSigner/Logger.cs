@@ -17,7 +17,7 @@ namespace Exchange.DkimSigner
 
         public static void LogInformation(string message, int id)
         {
-            if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 3)
+            if (DkimSigningRoutingAgentFactory.logLevel >= 3)
                 LogEntry(message, id, EventLogEntryType.Information);
         }
 
@@ -28,7 +28,7 @@ namespace Exchange.DkimSigner
 
         public static void LogWarning(string message, int id)
         {
-            if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 2)
+            if (DkimSigningRoutingAgentFactory.logLevel >= 2)
                 LogEntry(message, id, EventLogEntryType.Warning);
         }
 
@@ -39,7 +39,7 @@ namespace Exchange.DkimSigner
 
         public static void LogError(string message, int id)
         {
-            if (DkimSigningRoutingAgentFactory.AppSettings.LogLevel >= 1)
+            if (DkimSigningRoutingAgentFactory.logLevel >= 1)
                 LogEntry(message, id, EventLogEntryType.Error);
         }
 

@@ -31,6 +31,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>WebSecurity.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -47,7 +53,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\General.cs" />
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DkimAlgorithmKind.cs">
+      <Link>Configuration\DkimAlgorithmKind.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
+      <Link>Configuration\DkimCanonicalizationKind.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\RegistryHelper.cs">
+      <Link>Configuration\RegistryHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
+      <Link>RSA\RSACryptoFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
+      <Link>RSA\RSACryptoHelper.cs</Link>
+    </Compile>
     <Compile Include="ExchangeHelper.cs" />
     <Compile Include="MainWindows.cs">
       <SubType>Form</SubType>
@@ -57,30 +77,37 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RuleWindows.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RuleWindows.Designer.cs">
+      <DependentUpon>RuleWindows.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainWindows.resx">
       <DependentUpon>MainWindows.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="RuleWindows.resx">
+      <DependentUpon>RuleWindows.cs</DependentUpon>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
+    <None Include="App.config" />
+    <Compile Include="..\Exchange.DkimSigner\Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+      <Link>Properties\Resources.Designer.cs</Link>
     </Compile>
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
+    <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <EmbeddedResource Include="..\Exchange.DkimSigner\Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Link>Properties\Resources.resx</Link>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="WebSecurity.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

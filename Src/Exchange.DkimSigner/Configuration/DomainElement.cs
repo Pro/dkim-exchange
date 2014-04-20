@@ -5,14 +5,15 @@ using System.Text;
 using System.Configuration;
 using System.Security.Cryptography;
 using System.IO;
+
 using Exchange.DkimSigner;
-using Exchange.DkimSigner.Properties;
+using DkimSigner.Properties;
+using DkimSigner.RSA;
 
 namespace ConfigurationSettings
 {
     public class DomainElement : ConfigurationElement
     {
-
         [ConfigurationProperty("Domain", DefaultValue = "", IsKey = true, IsRequired = true)]
         public string Domain
         {
@@ -32,17 +33,6 @@ namespace ConfigurationSettings
         {
             get { return (string)base["PrivateKeyFile"]; }
             set { base["PrivateKeyFile"] = value; }
-        }
-
-        /// <summary>
-        /// Only for backwards compatibility. Use RecipientRule instead
-        /// </summary>
-        [ConfigurationProperty("Rule", DefaultValue = ".*", IsRequired = false)]
-        [Obsolete("Use RecipientRule instead")]
-        public string Rule
-        {
-            get { return (string)base["Rule"]; }
-            set { base["Rule"] = value; }
         }
 
         [ConfigurationProperty("RecipientRule", DefaultValue = ".*", IsRequired = false)]
@@ -99,7 +89,7 @@ namespace ConfigurationSettings
                     break;
                 default:
                     throw new ArgumentException(
-                            Resources.CryptHelper_UnknownFormat,
+                            Resources.RSACryptHelper_UnknownFormat,
                             "encodedKey");
             }
 
@@ -120,7 +110,7 @@ namespace ConfigurationSettings
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, 
+        /// Performs application-defined tasks associated with freeing,
         /// releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()

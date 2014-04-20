@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindows));
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbAvailable = new System.Windows.Forms.GroupBox();
@@ -60,8 +61,8 @@
             this.dgvcDomain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSelector = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -361,6 +362,7 @@
             this.btDownload.TabIndex = 4;
             this.btDownload.Text = "Download";
             this.btDownload.UseVisualStyleBackColor = true;
+            this.btDownload.Click += new System.EventHandler(this.btDownload_Click);
             // 
             // btUpload
             // 
@@ -370,6 +372,7 @@
             this.btUpload.TabIndex = 3;
             this.btUpload.Text = "Upload";
             this.btUpload.UseVisualStyleBackColor = true;
+            this.btUpload.Click += new System.EventHandler(this.btUpload_Click);
             // 
             // dgvDomainConfiguration
             // 
@@ -378,13 +381,14 @@
             this.dgvcDomain,
             this.dgvcSelector,
             this.dgvcPrivateKeyFile,
-            this.dgvcSenderRule,
-            this.dgvcRecipientRule});
+            this.dgvcRecipientRule,
+            this.dgvcSenderRule});
             this.dgvDomainConfiguration.Location = new System.Drawing.Point(3, 3);
             this.dgvDomainConfiguration.Name = "dgvDomainConfiguration";
             this.dgvDomainConfiguration.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDomainConfiguration.Size = new System.Drawing.Size(546, 281);
             this.dgvDomainConfiguration.TabIndex = 0;
+            this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
             // 
             // dgvcDomain
             // 
@@ -404,17 +408,17 @@
             this.dgvcPrivateKeyFile.ReadOnly = true;
             this.dgvcPrivateKeyFile.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
-            // dgvcSenderRule
-            // 
-            this.dgvcSenderRule.HeaderText = "SenderRule";
-            this.dgvcSenderRule.Name = "dgvcSenderRule";
-            this.dgvcSenderRule.Visible = false;
-            // 
             // dgvcRecipientRule
             // 
             this.dgvcRecipientRule.HeaderText = "RecipientRule";
             this.dgvcRecipientRule.Name = "dgvcRecipientRule";
             this.dgvcRecipientRule.Visible = false;
+            // 
+            // dgvcSenderRule
+            // 
+            this.dgvcSenderRule.HeaderText = "SenderRule";
+            this.dgvcSenderRule.Name = "dgvcSenderRule";
+            this.dgvcSenderRule.Visible = false;
             // 
             // MainWindows
             // 
@@ -422,8 +426,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 381);
             this.Controls.Add(this.tcConfiguration);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindows";
-            this.ShowIcon = false;
             this.Text = "Exchange DkimSigner";
             this.tcConfiguration.ResumeLayout(false);
             this.tbInformation.ResumeLayout(false);
@@ -475,14 +479,14 @@
         private System.Windows.Forms.GroupBox gbHeaderToSign;
         private System.Windows.Forms.TextBox txtHeaderToSign;
         private System.Windows.Forms.DataGridView dgvDomainConfiguration;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcDomain;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSelector;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPrivateKeyFile;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcRecipientRule;
         private System.Windows.Forms.Button btDownload;
         private System.Windows.Forms.Button btUpload;
         private System.Windows.Forms.Button btSave;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcDomain;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSelector;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPrivateKeyFile;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcRecipientRule;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
     }
 }
 

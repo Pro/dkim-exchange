@@ -10,13 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Exchange.DkimSigner</RootNamespace>
     <AssemblyName>ExchangeDkimSigner</AssemblyName>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Debug Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Debug Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -145,7 +145,7 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-	    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2013'">
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2013'">
       <HintPath>..\..\Lib\Exchange 2013\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2013'">
@@ -227,15 +227,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\DomainElement.cs" />
-    <Compile Include="Configuration\DomainCollection.cs" />
-    <Compile Include="Configuration\DomainSection.cs" />
-    <Compile Include="Configuration\General.cs" />
-    <Compile Include="RSACryptoHelper.cs" />
-    <Compile Include="RSACryptoFormat.cs" />
-    <Compile Include="DkimCanonicalizationKind.cs" />
+    <Compile Include="Configuration\RegistryHelper.cs" />
+    <Compile Include="RSA\RSACryptoHelper.cs" />
+    <Compile Include="RSA\RSACryptoFormat.cs" />
+    <Compile Include="Configuration\DkimCanonicalizationKind.cs" />
     <Compile Include="DkimSigningRoutingAgent.cs" />
     <Compile Include="DkimSigningRoutingAgentFactory.cs" />
-    <Compile Include="DkimAlgorithmKind.cs" />
+    <Compile Include="Configuration\DkimAlgorithmKind.cs" />
     <Compile Include="DkimSigner.cs" />
     <Compile Include="ISigner.cs" />
     <Compile Include="Logger.cs" />
@@ -250,6 +248,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
