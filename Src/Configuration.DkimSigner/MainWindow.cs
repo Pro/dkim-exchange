@@ -24,7 +24,6 @@ namespace Configuration.DkimSigner
     {
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
-        private const string DKIM_SIGNER_URI = @"https://raw.githubusercontent.com/Pro/dkim-exchange/master/VERSION";
 
         private Dictionary<string, byte[]> attachments;
         private Release currentRelease = null;
@@ -34,7 +33,6 @@ namespace Configuration.DkimSigner
             InitializeComponent();
 
             attachments = new Dictionary<string, byte[]>();
-
         }
         
 
@@ -55,7 +53,6 @@ namespace Configuration.DkimSigner
 
             var centerFormat = new StringFormat()
             {
-                // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
             };

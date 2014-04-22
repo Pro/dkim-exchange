@@ -14,7 +14,15 @@ namespace ConfigurationSettings
     /// </summary>
     class RegistryHelper
     {
+        /******************************************************************/
+        /*************************** Constants ****************************/
+        /******************************************************************/
+
         private const string BASE_REGISTRY_KEY = @"Software\";
+
+        /******************************************************************/
+        /****************************** Enum ******************************/
+        /******************************************************************/
 
         enum RegWow64Options
         {
@@ -28,7 +36,55 @@ namespace ConfigurationSettings
             ReadKey = 131097,
             WriteKey = 131078
         }
- 
+
+        /******************************************************************/
+        /*************************** DLL Import ***************************/
+        /******************************************************************/
+
+        [DllImport("advapi32.dll", CharSet = CharSet.Auto)]
+        public static extern int RegOpenKeyEx(IntPtr hKey, string subKey, int ulOptions, int samDesired, out int phkResult);
+
+        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool IsWow64Process(
+            [In] IntPtr hProcess,
+            [Out] out bool wow64Process
+        );
+
+        /******************************************************************/
+        /************************ Private functions ***********************/
+        /******************************************************************/
+
+        /// <summary>
+        /// Check if the OS is in 64 bits
+        /// </summary>
+        /// <returns></returns>
+        private static bool InternalCheckIsWow64()
+        {
+            // Check if the system is Windows XP or higher or Windows server 2000 or higher
+            if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
+                Environment.OSVersion.Version.Major >= 6)
+            {
+                // Get the current process
+                using (Process p = Process.GetCurrentProcess())
+                {
+                    bool retVal;
+
+                    // Check if the current process is running in 64 bits
+                    if (!IsWow64Process(p.Handle, out retVal))
+                    {
+                        return false;
+                    }
+
+                    return retVal;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         /// <summary>
         /// Open a registry key using the Wow64 node instead of the default 32-bit node.
         /// </summary>
@@ -73,12 +129,13 @@ namespace ConfigurationSettings
         {
             //Get the type of the RegistryKey
             Type registryKeyType = typeof(RegistryKey);
+
             //Get the FieldInfo of the 'hkey' member of RegistryKey
-            System.Reflection.FieldInfo fieldInfo =
-            registryKeyType.GetField("hkey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            System.Reflection.FieldInfo fieldInfo = registryKeyType.GetField("hkey", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
  
             //Get the handle held by hkey
             SafeHandle handle = (SafeHandle)fieldInfo.GetValue(registryKey);
+
             //Get the unsafe handle
             IntPtr dangerousHandle = handle.DangerousGetHandle();
             return dangerousHandle;
@@ -95,60 +152,44 @@ namespace ConfigurationSettings
         {
             //Get the BindingFlags for private contructors
             System.Reflection.BindingFlags privateConstructors = System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic;
+
             //Get the Type for the SafeRegistryHandle
             Type safeRegistryHandleType = typeof(Microsoft.Win32.SafeHandles.SafeHandleZeroOrMinusOneIsInvalid).Assembly.GetType("Microsoft.Win32.SafeHandles.SafeRegistryHandle");
+            
             //Get the array of types matching the args of the ctor we want
             Type[] safeRegistryHandleCtorTypes = new Type[] { typeof(IntPtr), typeof(bool) };
+            
             //Get the constructorinfo for our object
             System.Reflection.ConstructorInfo safeRegistryHandleCtorInfo = safeRegistryHandleType.GetConstructor(
             privateConstructors, null, safeRegistryHandleCtorTypes, null);
+            
             //Invoke the constructor, getting us a SafeRegistryHandle
             Object safeHandle = safeRegistryHandleCtorInfo.Invoke(new Object[] { hKey, ownsHandle });
  
             //Get the type of a RegistryKey
             Type registryKeyType = typeof(RegistryKey);
+            
             //Get the array of types matching the args of the ctor we want
             Type[] registryKeyConstructorTypes = new Type[] { safeRegistryHandleType, typeof(bool) };
+            
             //Get the constructorinfo for our object
             System.Reflection.ConstructorInfo registryKeyCtorInfo = registryKeyType.GetConstructor(
             privateConstructors, null, registryKeyConstructorTypes, null);
+            
             //Invoke the constructor, getting us a RegistryKey
             RegistryKey resultKey = (RegistryKey)registryKeyCtorInfo.Invoke(new Object[] { safeHandle, writable });
-            //return the resulting key
             return resultKey;
         }
- 
-        [DllImport("advapi32.dll", CharSet = CharSet.Auto)]
-        public static extern int RegOpenKeyEx(IntPtr hKey, string subKey, int ulOptions, int samDesired, out int phkResult);
 
-        [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool IsWow64Process(
-            [In] IntPtr hProcess,
-            [Out] out bool wow64Process
-        );
+        /******************************************************************/
+        /************************ Public functions ************************/
+        /******************************************************************/
 
-        private static bool InternalCheckIsWow64()
-        {
-            if ((Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1) ||
-                Environment.OSVersion.Version.Major >= 6)
-            {
-                using (Process p = Process.GetCurrentProcess())
-                {
-                    bool retVal;
-                    if (!IsWow64Process(p.Handle, out retVal))
-                    {
-                        return false;
-                    }
-                    return retVal;
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
+        /// <summary>
+        /// Open a subkey and return it for manipulation
+        /// </summary>
+        /// <param name="subKey">Subkey to open</param>
+        /// <returns></returns>
         public static RegistryKey Open(string subKey = "")
         {
             bool is64BitProcess = (IntPtr.Size == 8);
@@ -157,6 +198,11 @@ namespace ConfigurationSettings
             return _openSubKey(Registry.LocalMachine, BASE_REGISTRY_KEY + subKey, false, is64BitOperatingSystem ? RegWow64Options.KEY_WOW64_64KEY : RegWow64Options.KEY_WOW64_32KEY);
         }
 
+        /// <summary>
+        /// Get all subkey names in the specific subkey
+        /// </summary>
+        /// <param name="subKey">Specific subkey</param>
+        /// <returns></returns>
         public static string[] GetSubKeyName(string subKey = "")
         {
             string[] value = null;
@@ -174,6 +220,12 @@ namespace ConfigurationSettings
             return value;
         }
 
+        /// <summary>
+        /// Read value from a key
+        /// </summary>
+        /// <param name="KeyName">Key name</param>
+        /// <param name="subKey">Subkey that contain key name</param>
+        /// <returns></returns>
         public static string Read(string KeyName, string subKey = "")
         {
             string value = null;
@@ -189,23 +241,6 @@ namespace ConfigurationSettings
             }
 
             return value;
-        }
-
-        public static bool Write(string KeyName, object Value, string subKey = "")
-        {
-            try
-            {
-                RegistryKey rk = _openSubKey(Registry.LocalMachine, @"SOFTWARE\" + BASE_REGISTRY_KEY + subKey, false, RegWow64Options.KEY_WOW64_64KEY);
-
-                RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
-                sk1.SetValue(KeyName, Value, RegistryValueKind.String);
-
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
         }
     }
 }

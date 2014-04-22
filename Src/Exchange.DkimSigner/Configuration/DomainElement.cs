@@ -72,12 +72,20 @@ namespace ConfigurationSettings
             return this.senderRule;
         }
 
+        /// <summary>
+        /// RSACryptoServiceProvider to manipulate to encrypt the information
+        /// </summary>
         public RSACryptoServiceProvider CryptoProvider
         {
             get { return cryptoProvider; }
         }
         private RSACryptoServiceProvider cryptoProvider;
 
+        /// <summary>
+        /// Create the RSACryptoServiceProvider for the domain
+        /// </summary>
+        /// <param name="basePath">Path of the private key to open</param>
+        /// <returns></returns>
         public bool initElement(string basePath)
         {
             string path;
