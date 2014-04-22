@@ -63,6 +63,9 @@
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tbxChangelog = new System.Windows.Forms.TextBox();
+            this.lblChangelog = new System.Windows.Forms.Label();
+            this.btnUpateInstall = new System.Windows.Forms.Button();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -79,6 +82,9 @@
             // 
             // tcConfiguration
             // 
+            this.tcConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tcConfiguration.Controls.Add(this.tbInformation);
             this.tcConfiguration.Controls.Add(this.tpDKIM);
             this.tcConfiguration.Controls.Add(this.tpDomain);
@@ -102,21 +108,27 @@
             // 
             // gbAvailable
             // 
+            this.gbAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbAvailable.Controls.Add(this.btnUpateInstall);
+            this.gbAvailable.Controls.Add(this.lblChangelog);
+            this.gbAvailable.Controls.Add(this.tbxChangelog);
             this.gbAvailable.Controls.Add(this.txtDkimSignerAvailable);
             this.gbAvailable.Controls.Add(this.lbDkimSignerAvailable);
-            this.gbAvailable.Location = new System.Drawing.Point(131, 162);
+            this.gbAvailable.Location = new System.Drawing.Point(3, 67);
             this.gbAvailable.Name = "gbAvailable";
-            this.gbAvailable.Size = new System.Drawing.Size(275, 54);
+            this.gbAvailable.Size = new System.Drawing.Size(546, 254);
             this.gbAvailable.TabIndex = 5;
             this.gbAvailable.TabStop = false;
             this.gbAvailable.Text = "Available";
             // 
             // txtDkimSignerAvailable
             // 
-            this.txtDkimSignerAvailable.Enabled = false;
             this.txtDkimSignerAvailable.Location = new System.Drawing.Point(82, 21);
             this.txtDkimSignerAvailable.Name = "txtDkimSignerAvailable";
-            this.txtDkimSignerAvailable.Size = new System.Drawing.Size(168, 20);
+            this.txtDkimSignerAvailable.ReadOnly = true;
+            this.txtDkimSignerAvailable.Size = new System.Drawing.Size(138, 20);
             this.txtDkimSignerAvailable.TabIndex = 5;
             // 
             // lbDkimSignerAvailable
@@ -130,13 +142,15 @@
             // 
             // gbInstalled
             // 
+            this.gbInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gbInstalled.Controls.Add(this.lbExchangeInstalled);
             this.gbInstalled.Controls.Add(this.txtDkimSignerInstalled);
             this.gbInstalled.Controls.Add(this.txtExchangeInstalled);
             this.gbInstalled.Controls.Add(this.lbDkimSignerInstalled);
-            this.gbInstalled.Location = new System.Drawing.Point(131, 34);
+            this.gbInstalled.Location = new System.Drawing.Point(3, 3);
             this.gbInstalled.Name = "gbInstalled";
-            this.gbInstalled.Size = new System.Drawing.Size(275, 100);
+            this.gbInstalled.Size = new System.Drawing.Size(546, 58);
             this.gbInstalled.TabIndex = 4;
             this.gbInstalled.TabStop = false;
             this.gbInstalled.Text = "Installed";
@@ -144,7 +158,7 @@
             // lbExchangeInstalled
             // 
             this.lbExchangeInstalled.AutoSize = true;
-            this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 29);
+            this.lbExchangeInstalled.Location = new System.Drawing.Point(235, 29);
             this.lbExchangeInstalled.Name = "lbExchangeInstalled";
             this.lbExchangeInstalled.Size = new System.Drawing.Size(61, 13);
             this.lbExchangeInstalled.TabIndex = 0;
@@ -152,24 +166,24 @@
             // 
             // txtDkimSignerInstalled
             // 
-            this.txtDkimSignerInstalled.Enabled = false;
-            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 61);
+            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 26);
             this.txtDkimSignerInstalled.Name = "txtDkimSignerInstalled";
-            this.txtDkimSignerInstalled.Size = new System.Drawing.Size(168, 20);
+            this.txtDkimSignerInstalled.ReadOnly = true;
+            this.txtDkimSignerInstalled.Size = new System.Drawing.Size(138, 20);
             this.txtDkimSignerInstalled.TabIndex = 3;
             // 
             // txtExchangeInstalled
             // 
-            this.txtExchangeInstalled.Enabled = false;
-            this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 26);
+            this.txtExchangeInstalled.Location = new System.Drawing.Point(302, 26);
             this.txtExchangeInstalled.Name = "txtExchangeInstalled";
-            this.txtExchangeInstalled.Size = new System.Drawing.Size(168, 20);
+            this.txtExchangeInstalled.ReadOnly = true;
+            this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
             this.txtExchangeInstalled.TabIndex = 1;
             // 
             // lbDkimSignerInstalled
             // 
             this.lbDkimSignerInstalled.AutoSize = true;
-            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 64);
+            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 29);
             this.lbDkimSignerInstalled.Name = "lbDkimSignerInstalled";
             this.lbDkimSignerInstalled.Size = new System.Drawing.Size(70, 13);
             this.lbDkimSignerInstalled.TabIndex = 2;
@@ -376,6 +390,9 @@
             // 
             // dgvDomainConfiguration
             // 
+            this.dgvDomainConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.dgvDomainConfiguration.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvDomainConfiguration.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvcDomain,
@@ -420,6 +437,39 @@
             this.dgvcSenderRule.HeaderText = "SenderRule";
             this.dgvcSenderRule.Name = "dgvcSenderRule";
             this.dgvcSenderRule.Visible = false;
+            // 
+            // tbxChangelog
+            // 
+            this.tbxChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxChangelog.Location = new System.Drawing.Point(9, 70);
+            this.tbxChangelog.Multiline = true;
+            this.tbxChangelog.Name = "tbxChangelog";
+            this.tbxChangelog.ReadOnly = true;
+            this.tbxChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbxChangelog.Size = new System.Drawing.Size(531, 178);
+            this.tbxChangelog.TabIndex = 6;
+            // 
+            // lblChangelog
+            // 
+            this.lblChangelog.AutoSize = true;
+            this.lblChangelog.Location = new System.Drawing.Point(6, 54);
+            this.lblChangelog.Name = "lblChangelog";
+            this.lblChangelog.Size = new System.Drawing.Size(61, 13);
+            this.lblChangelog.TabIndex = 7;
+            this.lblChangelog.Text = "Changelog:";
+            // 
+            // btnUpateInstall
+            // 
+            this.btnUpateInstall.Enabled = false;
+            this.btnUpateInstall.Location = new System.Drawing.Point(302, 19);
+            this.btnUpateInstall.Name = "btnUpateInstall";
+            this.btnUpateInstall.Size = new System.Drawing.Size(138, 23);
+            this.btnUpateInstall.TabIndex = 8;
+            this.btnUpateInstall.Text = "Update";
+            this.btnUpateInstall.UseVisualStyleBackColor = true;
+            this.btnUpateInstall.Click += new System.EventHandler(this.btnUpateInstall_Click);
             // 
             // MainWindow
             // 
@@ -489,6 +539,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPrivateKeyFile;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcRecipientRule;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
+        private System.Windows.Forms.Label lblChangelog;
+        private System.Windows.Forms.TextBox tbxChangelog;
+        private System.Windows.Forms.Button btnUpateInstall;
     }
 }
 

@@ -44,6 +44,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -67,6 +68,9 @@
       <Link>RSA\RSACryptoHelper.cs</Link>
     </Compile>
     <Compile Include="ExchangeHelper.cs" />
+    <Compile Include="GitHub\Api.cs" />
+    <Compile Include="GitHub\ApiWrapper.cs" />
+    <Compile Include="GitHub\DataContract.cs" />
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -107,9 +111,7 @@
   <ItemGroup>
     <Content Include="WebSecurity.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="GitHub\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

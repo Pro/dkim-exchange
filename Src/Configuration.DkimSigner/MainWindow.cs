@@ -16,6 +16,7 @@ using System.Windows.Forms;
 using ConfigurationSettings;
 using DkimSigner.RSA;
 using DkimSigner.Properties;
+using Configuration.DkimSigner.GitHub;
 
 namespace Configuration.DkimSigner
 {
@@ -26,6 +27,7 @@ namespace Configuration.DkimSigner
         private const string DKIM_SIGNER_URI = @"https://raw.githubusercontent.com/Pro/dkim-exchange/master/VERSION";
 
         private Dictionary<string, byte[]> attachments;
+        private Release currentRelease = null;
 
         public MainWindow()
         {
@@ -78,29 +80,23 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                WebClient client = new WebClient();
-                client.DownloadFileCompleted += new AsyncCompletedEventHandler(downloadFileCompleted);
-                client.DownloadFileAsync(new Uri(DKIM_SIGNER_URI), Path.GetTempPath() + "VERSION_DkimSigner");
-            }
-            catch (Exception)
-            {
-                txtDkimSignerAvailable.Text = "Unknown";
-            }
-        }
-
-        private void downloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-
-            try
-            {
-                using (StreamReader sr = new StreamReader(Path.GetTempPath() + "VERSION_DkimSigner"))
+                currentRelease = ApiWrapper.getNewestRelease();
+                if (currentRelease != null)
                 {
-                    txtDkimSignerAvailable.Text = sr.ReadToEnd();
+                    txtDkimSignerAvailable.Text = currentRelease.Version.ToString();
+                    tbxChangelog.Text = currentRelease.Body;
+                }
+                else
+                {
+                    txtDkimSignerAvailable.Text = "Unknown";
+                    tbxChangelog.Text = "";
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 txtDkimSignerAvailable.Text = "Unknown";
+                tbxChangelog.Text = "";
+                MessageBox.Show(this, "Couldn't get current version:\n" + e.Message, "Version detect error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -361,6 +357,11 @@ namespace Configuration.DkimSigner
             {
                 MessageBox.Show("Select a row for download the private key.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnUpateInstall_Click(object sender, EventArgs e)
+        {
+           
         }
     }
 }
