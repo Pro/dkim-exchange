@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Management" />
+    <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -59,9 +60,7 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
       <Link>Configuration\DkimCanonicalizationKind.cs</Link>
     </Compile>
-    <Compile Include="..\Exchange.DkimSigner\Configuration\RegistryHelper.cs">
-      <Link>Configuration\RegistryHelper.cs</Link>
-    </Compile>
+    <Compile Include="Configuration\RegistryHelper.cs" />
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
       <Link>RSA\RSACryptoFormat.cs</Link>
     </Compile>

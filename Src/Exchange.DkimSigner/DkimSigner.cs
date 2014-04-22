@@ -224,7 +224,7 @@ namespace Exchange.DkimSigner
                         foreach (DomainElement e in domainSettings) {
                             if (header
                                 .ToUpperInvariant()
-                                .Contains("@" + e.Domain.ToUpperInvariant())) {
+                                .Contains("@" + e.getDomain().ToUpperInvariant())) {
                                 domainFound = e;
                             }
                         }
@@ -251,9 +251,9 @@ namespace Exchange.DkimSigner
                 return "";
             }
             
-            if (from!=null && !Regex.Match(from.Address, domainFound.SenderRule).Success)
+            if (from!=null && !Regex.Match(from.Address, domainFound.getSenderRule()).Success)
             {
-                Logger.LogInformation("Skipping '" + from.Address + "' because sender rule '" + domainFound.SenderRule + "' not matched");
+                Logger.LogInformation("Skipping '" + from.Address + "' because sender rule '" + domainFound.getSenderRule() + "' not matched");
                 return "";
             }
 
@@ -264,7 +264,7 @@ namespace Exchange.DkimSigner
                 try
                 {
                     addr = new MailAddress(fixEmailAddress(to));
-                    ruleMatch |= Regex.Match(addr.Address, domainFound.RecipientRule).Success;
+                    ruleMatch |= Regex.Match(addr.Address, domainFound.getRecipientRule()).Success;
                 }
                 catch (System.FormatException ex)
                 {
@@ -276,7 +276,7 @@ namespace Exchange.DkimSigner
             }
 
             if (!ruleMatch) {
-                Logger.LogInformation("Skipping '" + domainFound.Domain + "' because rule '" + domainFound.RecipientRule + "' not matched");
+                Logger.LogInformation("Skipping '" + domainFound.getDomain() + "' because rule '" + domainFound.getRecipientRule() + "' not matched");
                 return "";
             }
 
@@ -560,7 +560,7 @@ namespace Exchange.DkimSigner
 
             if (domain.CryptoProvider == null)
             {
-                throw new Exception("CryptoProvider for domain " + domain.Domain + " is null.");
+                throw new Exception("CryptoProvider for domain " + domain.getDomain() + " is null.");
             }
 
             using (var stream = new MemoryStream())
@@ -615,8 +615,8 @@ namespace Exchange.DkimSigner
                 CultureInfo.InvariantCulture,
                 "DKIM-Signature: v=1; a={0}; s={1}; d={2}; c={3}/{4}; q=dns/txt; h={5}; bh={6}; b=;",
                 this.hashAlgorithmDkimCode,
-                domain.Selector,
-                domain.Domain,
+                domain.getSelector(),
+                domain.getDomain(),
                 this.headerCanonicalization.ToString().ToLower(),
                 this.bodyCanonicalization.ToString().ToLower(),
                 string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),

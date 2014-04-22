@@ -4,7 +4,8 @@ using System.Reflection;
 using System.IO;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
-using Exchange.DkimSigner.Properties;
+
+using DkimSigner.Properties;
 
 namespace Exchange.DkimSigner
 {

@@ -187,6 +187,15 @@ namespace DkimSigner.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The log level is not defined or is invalid. The &quot;information&quot; log level have been selected..
+        /// </summary>
+        internal static string MainWindows_BadLogLevel {
+            get {
+                return ResourceManager.GetString("MainWindows_BadLogLevel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The encoded key is not in the proper DER format..
         /// </summary>
         internal static string RSACryptHelper_BadDerFormat {

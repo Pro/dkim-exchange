@@ -171,4 +171,7 @@
   <data name="DkimSigningRoutingAgentFactory_BadDkimConfig" xml:space="preserve">
     <value>The configuration for Exchange Dkim Agent is not defined.</value>
   </data>
+  <data name="MainWindows_BadLogLevel" xml:space="preserve">
+    <value>The log level is not defined or is invalid. The "information" log level have been selected.</value>
+  </data>
 </root>

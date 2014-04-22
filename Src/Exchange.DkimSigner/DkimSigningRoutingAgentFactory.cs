@@ -133,15 +133,30 @@ namespace Exchange.DkimSigner
                     this.headersToSign = unparsedHeaders.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 }
 
-                // TODO Domain load
-                /*domainSettings = new List<DomainElement>();
-                foreach (DomainElement e in domains.Domains)
+                // Load the list of domains
+                domainSettings = new List<DomainElement>();
+                string[] domainNames = RegistryHelper.GetSubKeyName(@"Exchange DkimSigner\Domain");
+                if (domainNames != null)
                 {
-                    if (e.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                    foreach (string domainName in domainNames)
                     {
-                        domainSettings.Add(e);
+                        string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
+                        string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Exchange DkimSigner\Domain\" + domainName);
+                        string recipientRule = RegistryHelper.Read("RecipientRule", @"Exchange DkimSigner\Domain\" + domainName);
+                        string senderRule = RegistryHelper.Read("SenderRule", @"Exchange DkimSigner\Domain\" + domainName);
+
+                        DomainElement domainElement = new DomainElement(domainName,
+                                                                selector,
+                                                                privateKeyFile,
+                                                                recipientRule != null ? recipientRule : ".*",
+                                                                senderRule != null ? senderRule : ".*");
+
+                        if (domainElement.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                        {
+                            domainSettings.Add(domainElement);
+                        }
                     }
-                }*/
+                }
 
                 Logger.LogInformation("Exchange DKIM started. Signing Algorithm: " + signingAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + headerCanonicalization.ToString() + ", Canonicalization Header Algorithm: " + bodyCanonicalization.ToString() + ", Number of domains: " + domainSettings.Count);
             }

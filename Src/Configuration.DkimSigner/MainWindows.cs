@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Configuration;
+using System.Data;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -23,13 +25,13 @@ namespace Configuration.DkimSigner
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
         private const string DKIM_SIGNER_URI = @"https://raw.githubusercontent.com/Pro/dkim-exchange/master/VERSION";
 
-        private Dictionary<int, byte[]> attachments;
+        private Dictionary<string, byte[]> attachments;
 
         public MainWindows()
         {
             InitializeComponent();
 
-            attachments = new Dictionary<int, byte[]>();
+            attachments = new Dictionary<string, byte[]>();
             cbLogLevel.SelectedItem = "Information";
             txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
 
@@ -38,108 +40,20 @@ namespace Configuration.DkimSigner
             loadDkimSignerConfig();
         }
 
-        private void loadDkimSignerConfig()
+        void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
-            if (RegistryHelper.Open(@"Exchange DkimSigner") != null)
+            var grid = sender as DataGridView;
+            var rowIdx = (e.RowIndex + 1).ToString();
+
+            var centerFormat = new StringFormat()
             {
-                // Load the log level.
-                int logLevel = 0;
-                try
-                {
-                    string temp = RegistryHelper.Read("LogLevel", @"Exchange DkimSigner");
+                // right alignment might actually make more sense for numbers
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
-                    if (temp != null)
-                        logLevel = Convert.ToInt32(RegistryHelper.Read("LogLevel", @"Exchange DkimSigner"));
-                }
-                catch (FormatException){}
-                catch (OverflowException){}
-
-                if(logLevel == 1)
-                {
-                    this.cbLogLevel.Text = "Error";
-                }
-                else if(logLevel == 2)
-                {
-                    this.cbLogLevel.Text = "Warning";
-                }
-                else if(logLevel == 3)
-                {
-                    this.cbLogLevel.Text = "Information";
-                }
-                else
-                {
-                    this.cbLogLevel.Text = "Information";
-                    //MessageBox.Show("Impossible to load ");
-                }
-
-                // Load the signing algorithm.
-                try
-                {
-                    DkimAlgorithmKind signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Exchange DkimSigner\DKIM"), true);
-
-                    if (signingAlgorithm == DkimAlgorithmKind.RsaSha1)
-                        this.rbRsaSha1.Checked = true;
-                    else
-                        this.rbRsaSha256.Checked = true;
-                }
-                catch (Exception ex)
-                {
-                    throw new ConfigurationErrorsException(Resources.MainWindows_BadDkimAlgorithmConfig, ex);
-                }
-
-                // Load the header canonicalization algorithm.
-                try
-                {
-                    DkimCanonicalizationKind headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Exchange DkimSigner\DKIM"), true);
-
-                    if (headerCanonicalization == DkimCanonicalizationKind.Simple)
-                        this.rbSimpleHeaderCanonicalization.Checked = true;
-                    else
-                        this.rbRelaxedHeaderCanonicalization.Checked = true;
-                }
-                catch (Exception ex)
-                {
-                    throw new ConfigurationErrorsException(Resources.MainWindows_BadDkimCanonicalizationHeaderConfig, ex);
-                }
-
-                // Load the body canonicalization algorithm.
-                try
-                {
-                    DkimCanonicalizationKind bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Exchange DkimSigner\DKIM"), true);
-
-                    if (bodyCanonicalization == DkimCanonicalizationKind.Simple)
-                        this.rbSimpleBodyCanonicalization.Checked = true;
-                    else
-                        this.rbRelaxedBodyCanonicalization.Checked = true;
-                }
-                catch (Exception ex)
-                {
-                    throw new ConfigurationErrorsException(Resources.MainWindows_BadDkimCanonicalizationBodyConfig, ex);
-                }
-
-                // Load the list of headers to sign in each message.
-                string unparsedHeaders = RegistryHelper.Read("HeadersToSign", @"Exchange DkimSigner\DKIM");
-                if (unparsedHeaders != null)
-                {
-                    this.txtHeaderToSign.Text = unparsedHeaders;
-                }
-
-                // Load the list of domains
-                string[] domainNames = RegistryHelper.GetSubKeyName(@"Exchange DkimSigner\Domain");
-                foreach (string domainName in domainNames)
-                {
-                    string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
-                    string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Exchange DkimSigner\Domain\" + domainName);
-                    string recipientRule = RegistryHelper.Read("RecipientRule", @"Exchange DkimSigner\Domain\" + domainName);
-                    string senderRule = RegistryHelper.Read("SenderRule", @"Exchange DkimSigner\Domain\" + domainName);
-
-                    this.dgvDomainConfiguration.Rows.Add(   domainName,
-                                                            selector,
-                                                            privateKeyFile,
-                                                            recipientRule != null ? recipientRule: string.Empty,
-                                                            senderRule != null ? senderRule : string.Empty);
-                }
-            }
+            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
+            e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
         private void checkDkimSignerInstalled()
@@ -183,6 +97,184 @@ namespace Configuration.DkimSigner
             }
         }
 
+        private void loadDkimSignerConfig()
+        {
+            if (RegistryHelper.Open(@"Exchange DkimSigner") != null)
+            {
+                // Load the log level.
+                int logLevel = 0;
+                try
+                {
+                    string temp = RegistryHelper.Read("LogLevel", @"Exchange DkimSigner");
+
+                    if (temp != null)
+                        logLevel = Convert.ToInt32(RegistryHelper.Read("LogLevel", @"Exchange DkimSigner"));
+                }
+                catch (FormatException){}
+                catch (OverflowException){}
+
+                if(logLevel == 1)
+                {
+                    this.cbLogLevel.Text = "Error";
+                }
+                else if(logLevel == 2)
+                {
+                    this.cbLogLevel.Text = "Warning";
+                }
+                else if(logLevel == 3)
+                {
+                    this.cbLogLevel.Text = "Information";
+                }
+                else
+                {
+                    this.cbLogLevel.Text = "Information";
+                    MessageBox.Show(Resources.MainWindows_BadLogLevel);
+                }
+
+                // Load the signing algorithm.
+                try
+                {
+                    DkimAlgorithmKind signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Exchange DkimSigner\DKIM"), true);
+
+                    if (signingAlgorithm == DkimAlgorithmKind.RsaSha1)
+                        this.rbRsaSha1.Checked = true;
+                    else
+                        this.rbRsaSha256.Checked = true;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(Resources.MainWindows_BadDkimAlgorithmConfig);
+                }
+
+                // Load the header canonicalization algorithm.
+                try
+                {
+                    DkimCanonicalizationKind headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Exchange DkimSigner\DKIM"), true);
+
+                    if (headerCanonicalization == DkimCanonicalizationKind.Simple)
+                        this.rbSimpleHeaderCanonicalization.Checked = true;
+                    else
+                        this.rbRelaxedHeaderCanonicalization.Checked = true;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(Resources.MainWindows_BadDkimCanonicalizationHeaderConfig);
+                }
+
+                // Load the body canonicalization algorithm.
+                try
+                {
+                    DkimCanonicalizationKind bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Exchange DkimSigner\DKIM"), true);
+
+                    if (bodyCanonicalization == DkimCanonicalizationKind.Simple)
+                        this.rbSimpleBodyCanonicalization.Checked = true;
+                    else
+                        this.rbRelaxedBodyCanonicalization.Checked = true;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show(Resources.MainWindows_BadDkimCanonicalizationBodyConfig);
+                }
+
+                // Load the list of headers to sign in each message.
+                string unparsedHeaders = RegistryHelper.Read("HeadersToSign", @"Exchange DkimSigner\DKIM");
+                if (unparsedHeaders != null)
+                {
+                    this.txtHeaderToSign.Text = unparsedHeaders;
+                }
+
+                // Load the list of domains
+                string[] domainNames = RegistryHelper.GetSubKeyName(@"Exchange DkimSigner\Domain");
+                if (domainNames != null)
+                {
+                    foreach (string domainName in domainNames)
+                    {
+                        string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
+                        string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Exchange DkimSigner\Domain\" + domainName);
+                        string recipientRule = RegistryHelper.Read("RecipientRule", @"Exchange DkimSigner\Domain\" + domainName);
+                        string senderRule = RegistryHelper.Read("SenderRule", @"Exchange DkimSigner\Domain\" + domainName);
+
+                        this.dgvDomainConfiguration.Rows.Add(   domainName,
+                                                                selector,
+                                                                privateKeyFile,
+                                                                recipientRule != null ? recipientRule : string.Empty,
+                                                                senderRule != null ? senderRule : string.Empty);
+
+                        attachments[domainName] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
+                    }
+                }
+            }
+        }
+
+        private void btSave_Click(object sender, EventArgs e)
+        {
+            bool status = true;
+
+            status = status && RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Exchange DkimSigner");
+            if (!status)
+                MessageBox.Show("Error! Impossible to change the log level.");
+
+            status = status && RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Exchange DkimSigner\DKIM");
+            if (!status)
+                MessageBox.Show("Error! Impossible to change the algorithm.");
+
+            status = status && RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Exchange DkimSigner\DKIM");
+            if (!status)
+                MessageBox.Show("Error! Impossible to change the header canonicalization.");
+
+            status = status && RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Exchange DkimSigner\DKIM");
+            if (!status)
+                MessageBox.Show("Error! Impossible to change the body canonicalization.");
+
+            status = status && RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Exchange DkimSigner\DKIM");
+            if (!status)
+                MessageBox.Show("Error! Impossible to change the headers to sign.");
+
+            dgvDomainConfiguration.AllowUserToAddRows = false;
+            if (dgvDomainConfiguration.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in this.dgvDomainConfiguration.Rows)
+                {
+                    if (row.Cells[0].Value != null &&
+                        row.Cells[0].Value.ToString() != string.Empty &&
+                        row.Cells[1].Value != null &&
+                        row.Cells[1].Value.ToString() != string.Empty &&
+                        row.Cells[2].Value != null &&
+                        row.Cells[2].Value.ToString() != string.Empty)
+                    {
+                        string domainName = row.Cells[0].Value.ToString();
+                        string selector = row.Cells[1].Value.ToString();
+                        string privateKeyFile = row.Cells[2].Value.ToString();
+                        string recipientRule = row.Cells[3].Value != null ? row.Cells[3].Value.ToString() : string.Empty;
+                        string senderRule = row.Cells[4].Value != null ? row.Cells[4].Value.ToString() : string.Empty;
+
+                        status = status && RegistryHelper.Write("Selector", selector, @"Exchange DkimSigner\Domain\" + domainName);
+                        status = status && RegistryHelper.Write("PrivateKeyFile", privateKeyFile, @"Exchange DkimSigner\Domain\" + domainName);
+
+                        if (recipientRule != string.Empty)
+                            status = status && RegistryHelper.Write("RecipientRule", recipientRule, @"Exchange DkimSigner\Domain\" + domainName);
+
+                        if (senderRule != string.Empty)
+                            status = status && RegistryHelper.Write("SenderRule", senderRule, @"Exchange DkimSigner\Domain\" + domainName);
+
+                        byte[] byteData = null;
+                        byteData = attachments[domainName];
+                        File.WriteAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile, byteData);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Impossible to save the configuration for all the domain configurations. The line number " + row.Index + " is incomplet.");
+                    }
+                }
+            }
+            dgvDomainConfiguration.AllowUserToAddRows = true;
+
+            if (status)
+                MessageBox.Show("The configuration has been updated.");
+            else
+                MessageBox.Show("One or many errors happened! All specified configurations haven't been updated.");
+        }
+
         void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
             string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
@@ -213,13 +305,13 @@ namespace Configuration.DkimSigner
                         byte[] binaryData = File.ReadAllBytes(fileDialog.FileName);
                         dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
 
-                        if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
+                        if (attachments.ContainsKey(dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString()))
                         {
-                            attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
+                            attachments[dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString()] = binaryData;
                         }
                         else
                         {
-                            attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
+                            attachments.Add(dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString(), binaryData);
                         }
                     }
                 }
@@ -253,7 +345,7 @@ namespace Configuration.DkimSigner
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        byteData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
+                        byteData = attachments[dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[2].RowIndex].Cells[0].Value.ToString()];
                         File.WriteAllBytes(saveFileDialog.FileName, byteData);
                     }
                 }
@@ -262,59 +354,6 @@ namespace Configuration.DkimSigner
             {
                 MessageBox.Show("Select a row for download the private key.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        private void btSave_Click(object sender, EventArgs e)
-        {
-            bool status = true;
-
-            status = status && RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Exchange DkimSigner");
-            if(!status)
-                MessageBox.Show("Error! Impossible to change the log level.");
-
-            status = status && RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the algorithm.");
-
-            status = status && RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the header canonicalization.");
-            
-            status = status && RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the body canonicalization.");
-
-            status = status && RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the headers to sign.");
-
-            dgvDomainConfiguration.AllowUserToAddRows = false;
-            if (dgvDomainConfiguration.Rows.Count > 0)
-            {
-                foreach (DataGridViewRow row in this.dgvDomainConfiguration.Rows)
-                {
-                    string domainName = row.Cells[0].Value.ToString();
-                    string selector = row.Cells[1].Value.ToString();
-                    string privateKeyFile = row.Cells[2].Value.ToString();
-                    string recipientRule = row.Cells[3].Value != null ? row.Cells[3].Value.ToString() : string.Empty;
-                    string senderRule = row.Cells[4].Value != null ? row.Cells[4].Value.ToString() : string.Empty;
-
-                    status = status && RegistryHelper.Write("Selector", selector, @"Exchange DkimSigner\Domain\" + domainName);
-                    status = status && RegistryHelper.Write("PrivateKeyFile", "keys/" + privateKeyFile, @"Exchange DkimSigner\Domain\" + domainName);
-
-                    if (recipientRule != string.Empty)
-                        status = status && RegistryHelper.Write("RecipientRule", recipientRule, @"Exchange DkimSigner\Domain\" + domainName);
-
-                    if (senderRule != string.Empty)
-                        status = status && RegistryHelper.Write("SenderRule", senderRule, @"Exchange DkimSigner\Domain\" + domainName);
-                }
-            }
-            dgvDomainConfiguration.AllowUserToAddRows = true;
-
-            if (status)
-                MessageBox.Show("The configuration has been updated.");
-            else
-                MessageBox.Show("One or many errors happened! All specified configurations haven't been updated.");
         }
     }
 }

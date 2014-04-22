@@ -389,6 +389,7 @@
             this.dgvDomainConfiguration.Size = new System.Drawing.Size(546, 281);
             this.dgvDomainConfiguration.TabIndex = 0;
             this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
+            this.dgvDomainConfiguration.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvDomainConfiguration_RowPostPaint);
             // 
             // dgvcDomain
             // 
