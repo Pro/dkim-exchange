@@ -32,6 +32,12 @@ namespace Configuration.DkimSigner
             InitializeComponent();
 
             attachments = new Dictionary<string, byte[]>();
+
+        }
+        
+
+        private void MainWindow_Load(object sender, EventArgs e)
+        {
             cbLogLevel.SelectedItem = "Information";
             txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
 
@@ -84,6 +90,7 @@ namespace Configuration.DkimSigner
 
         private void downloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
+
             try
             {
                 using (StreamReader sr = new StreamReader(Path.GetTempPath() + "VERSION_DkimSigner"))

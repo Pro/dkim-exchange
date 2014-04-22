@@ -421,15 +421,16 @@
             this.dgvcSenderRule.Name = "dgvcSenderRule";
             this.dgvcSenderRule.Visible = false;
             // 
-            // MainWindows
+            // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 381);
             this.Controls.Add(this.tcConfiguration);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "MainWindows";
+            this.Name = "MainWindow";
             this.Text = "Exchange DkimSigner";
+            this.Load += new System.EventHandler(this.MainWindow_Load);
             this.tcConfiguration.ResumeLayout(false);
             this.tbInformation.ResumeLayout(false);
             this.gbAvailable.ResumeLayout(false);
