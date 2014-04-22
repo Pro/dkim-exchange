@@ -1,13 +1,14 @@
-﻿namespace Exchange.DkimSigner
-{
-    using System;
-    using System.Diagnostics.CodeAnalysis;
-    using System.Reflection;
-    using System.IO;
-    using Microsoft.Exchange.Data.Transport;
-    using Microsoft.Exchange.Data.Transport.Routing;
-    using Exchange.DkimSigner.Properties;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
+using System.IO;
+using Microsoft.Exchange.Data.Transport;
+using Microsoft.Exchange.Data.Transport.Routing;
 
+using DkimSigner.Properties;
+
+namespace Exchange.DkimSigner
+{
     /// <summary>
     /// Signs outgoing MIME messages according to the DKIM protocol.
     /// </summary>

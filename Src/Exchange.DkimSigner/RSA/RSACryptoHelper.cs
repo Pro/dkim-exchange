@@ -1,12 +1,13 @@
-﻿namespace Exchange.DkimSigner
-{
-    using System;
-    using System.IO;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using Exchange.DkimSigner.Properties;
+﻿using System;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
 
+using DkimSigner.Properties;
+
+namespace DkimSigner.RSA
+{
     /// <summary>
     /// Contains helper methods for retrieving encryption objects.
     /// </summary>
@@ -55,10 +56,7 @@
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException(
-                            Resources.CryptHelper_UnknownFormat,
-                            "encodedKey",
-                            ex);
+                        throw new ArgumentException(Resources.RSACryptHelper_UnknownFormat, "encodedKey", ex);
                     }
                 }
             }
@@ -81,9 +79,7 @@
             if (!encodedKey.StartsWith(PemRsaPrivateKeyHeader, StringComparison.Ordinal) ||
                 !encodedKey.EndsWith(PemRsaPrivateKeyFooter, StringComparison.Ordinal))
             {
-                throw new ArgumentException(
-                    Resources.CryptHelper_BadPemFormat,
-                    "encodedKey");
+                throw new ArgumentException(Resources.RSACryptHelper_BadPemFormat, "encodedKey");
             }
 
             encodedKey = encodedKey.Substring(
@@ -179,10 +175,7 @@
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException(
-                            Resources.CryptHelper_BadDerFormat,
-                            "encodedKey",
-                            ex);
+                        throw new ArgumentException(Resources.RSACryptHelper_BadDerFormat, "encodedKey", ex);
                     }
                 }
             }
@@ -211,10 +204,7 @@
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(
-                    Resources.CryptHelper_BadXmlFormat,
-                    "encodedKey",
-                    ex);
+                throw new ArgumentException(Resources.RSACryptHelper_BadXmlFormat, "encodedKey", ex);
             }
 
             return provider;

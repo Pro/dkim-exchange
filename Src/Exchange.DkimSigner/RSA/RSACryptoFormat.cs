@@ -1,4 +1,4 @@
-﻿namespace Exchange.DkimSigner
+﻿namespace DkimSigner.RSA
 {
     /// <summary>
     /// Enumeration of the kinds of RSA key format

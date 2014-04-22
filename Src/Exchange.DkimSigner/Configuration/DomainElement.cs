@@ -5,63 +5,73 @@ using System.Text;
 using System.Configuration;
 using System.Security.Cryptography;
 using System.IO;
+
 using Exchange.DkimSigner;
-using Exchange.DkimSigner.Properties;
+using DkimSigner.Properties;
+using DkimSigner.RSA;
 
 namespace ConfigurationSettings
 {
-    public class DomainElement : ConfigurationElement
+    public class DomainElement
     {
+        private string domain;
+        private string selector;
+        private string privateKeyFile;
+        private string recipientRule;
+        private string senderRule;
 
-        [ConfigurationProperty("Domain", DefaultValue = "", IsKey = true, IsRequired = true)]
-        public string Domain
+        /// <summary>
+        /// Domain element constructor
+        /// </summary>
+        public DomainElement(string domain, string selector, string privateKeyFile, string recipientRule = null, string senderRule = null)
         {
-            get { return (string)base["Domain"]; }
-            set { base["Domain"] = value; }
-        }
-
-        [ConfigurationProperty("Selector", DefaultValue = "", IsRequired = true)]
-        public string Selector
-        {
-            get { return (string)base["Selector"]; }
-            set { base["Selector"] = value; }
-        }
-
-        [ConfigurationProperty("PrivateKeyFile", DefaultValue = "", IsRequired = true)]
-        public string PrivateKeyFile
-        {
-            get { return (string)base["PrivateKeyFile"]; }
-            set { base["PrivateKeyFile"] = value; }
+            this.domain = domain;
+            this.selector = selector;
+            this.privateKeyFile = privateKeyFile;
+            this.recipientRule = recipientRule;
+            this.senderRule = senderRule;
         }
 
         /// <summary>
-        /// Only for backwards compatibility. Use RecipientRule instead
+        /// Get domain name
         /// </summary>
-        [ConfigurationProperty("Rule", DefaultValue = ".*", IsRequired = false)]
-        [Obsolete("Use RecipientRule instead")]
-        public string Rule
+        public string getDomain()
         {
-            get { return (string)base["Rule"]; }
-            set { base["Rule"] = value; }
-        }
-
-        [ConfigurationProperty("RecipientRule", DefaultValue = ".*", IsRequired = false)]
-        public string RecipientRule
-        {
-            get { return (string)base["RecipientRule"]; }
-            set { base["RecipientRule"] = value; }
-        }
-
-        [ConfigurationProperty("SenderRule", DefaultValue = ".*", IsKey = false, IsRequired = false)]
-        public string SenderRule
-        {
-            get { return (string)this["SenderRule"]; }
-            set { this["SenderRule"] = value; }
+            return this.domain;
         }
 
         /// <summary>
-        /// The RSA crypto service provider.
+        /// Get domain selector
         /// </summary>
+        public string getSelector()
+        {
+            return this.selector;
+        }
+
+        /// <summary>
+        /// Get private keys file name
+        /// </summary>
+        public string getPrivateKeyFile()
+        {
+            return this.privateKeyFile;
+        }
+
+        /// <summary>
+        /// Get recipient rule regex
+        /// </summary>
+        public string getRecipientRule()
+        {
+            return this.recipientRule;
+        }
+
+        /// <summary>
+        /// Get sender rule regex
+        /// </summary>
+        public string getSenderRule()
+        {
+            return this.senderRule;
+        }
+
         public RSACryptoServiceProvider CryptoProvider
         {
             get { return cryptoProvider; }
@@ -71,15 +81,16 @@ namespace ConfigurationSettings
         public bool initElement(string basePath)
         {
             string path;
-            if (Path.IsPathRooted(PrivateKeyFile))
-                path = PrivateKeyFile;
+            if (Path.IsPathRooted(privateKeyFile))
+                path =  @"keys\" + privateKeyFile;
             else
             {
-                path = Path.Combine(basePath, PrivateKeyFile);
+                path = Path.Combine(basePath,  @"keys\" + privateKeyFile);
             }
+
             if (!File.Exists(path))
             {
-                Logger.LogError("PrivateKey for domain " + Domain + " not found: " + path);
+                Logger.LogError("PrivateKey for domain " + domain + " not found: " + path);
                 return false;
             }
 
@@ -99,7 +110,7 @@ namespace ConfigurationSettings
                     break;
                 default:
                     throw new ArgumentException(
-                            Resources.CryptHelper_UnknownFormat,
+                            Resources.RSACryptHelper_UnknownFormat,
                             "encodedKey");
             }
 
@@ -108,7 +119,7 @@ namespace ConfigurationSettings
 
         internal string Key
         {
-            get { return string.Format("{0}|{1}", Selector, Domain); }
+            get { return string.Format("{0}|{1}", selector, domain); }
         }
 
         /// <summary>
@@ -120,7 +131,7 @@ namespace ConfigurationSettings
         }
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, 
+        /// Performs application-defined tasks associated with freeing,
         /// releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()

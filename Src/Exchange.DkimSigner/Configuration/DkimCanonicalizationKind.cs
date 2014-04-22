@@ -1,4 +1,4 @@
-namespace Exchange.DkimSigner
+namespace ConfigurationSettings
 {
     /// <summary>
     /// Enumeration of the kinds of canonicalization algorithms 
