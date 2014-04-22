@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -15,7 +14,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                string domain = Domain.GetCurrentDomain().ToString();
+                string domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
                 DirectoryEntry rootDSE = new DirectoryEntry(string.Format("LDAP://{0}/rootDSE", domain));
                 DirectoryEntry objDirectoryEntry = new DirectoryEntry(string.Format("LDAP://{0}/{1}", domain, rootDSE.Properties["configurationNamingContext"].Value.ToString()));
                 DirectorySearcher searcher = new DirectorySearcher(objDirectoryEntry, "(&(objectClass=msExchExchangeServer))");
@@ -31,7 +30,7 @@ namespace Configuration.DkimSigner
                     }
                 }
 
-                return version;
+                return version != string.Empty ? version: "Not installed";
             }
             catch (Exception)
             {
