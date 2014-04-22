@@ -16,7 +16,7 @@ namespace Configuration.DkimSigner
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainWindows());
+            Application.Run(new MainWindow());
         }
     }
 }

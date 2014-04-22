@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
 {
-    public partial class RuleWindows : Form
+    public partial class RuleWindow : Form
     {
-        public RuleWindows(string recipientRule = "", string senderRule = "")
+        public RuleWindow(string recipientRule = "", string senderRule = "")
         {
             InitializeComponent();
 

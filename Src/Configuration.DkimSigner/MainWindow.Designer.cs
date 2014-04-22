@@ -1,6 +1,6 @@
 ﻿namespace Configuration.DkimSigner
 {
-    partial class MainWindows
+    partial class MainWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindows));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbAvailable = new System.Windows.Forms.GroupBox();

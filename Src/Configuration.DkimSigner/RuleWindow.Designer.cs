@@ -1,6 +1,6 @@
 ﻿namespace Configuration.DkimSigner
 {
-    partial class RuleWindows
+    partial class RuleWindow
     {
         /// <summary>
         /// Required designer variable.

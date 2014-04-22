@@ -19,7 +19,7 @@ using DkimSigner.Properties;
 
 namespace Configuration.DkimSigner
 {
-    public partial class MainWindows : Form
+    public partial class MainWindow : Form
     {
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
@@ -27,7 +27,7 @@ namespace Configuration.DkimSigner
 
         private Dictionary<string, byte[]> attachments;
 
-        public MainWindows()
+        public MainWindow()
         {
             InitializeComponent();
 
@@ -280,7 +280,7 @@ namespace Configuration.DkimSigner
             string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
             string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
 
-            RuleWindows form = new RuleWindows(recipientRule, senderRule);
+            RuleWindow form = new RuleWindow(recipientRule, senderRule);
             form.ShowDialog();
 
             this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
