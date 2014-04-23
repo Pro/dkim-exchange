@@ -32,6 +32,9 @@
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbAvailable = new System.Windows.Forms.GroupBox();
+            this.btUpateInstall = new System.Windows.Forms.Button();
+            this.lblChangelog = new System.Windows.Forms.Label();
+            this.tbxChangelog = new System.Windows.Forms.TextBox();
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
             this.gbInstalled = new System.Windows.Forms.GroupBox();
@@ -63,9 +66,6 @@
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tbxChangelog = new System.Windows.Forms.TextBox();
-            this.lblChangelog = new System.Windows.Forms.Label();
-            this.btnUpateInstall = new System.Windows.Forms.Button();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -111,7 +111,7 @@
             this.gbAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbAvailable.Controls.Add(this.btnUpateInstall);
+            this.gbAvailable.Controls.Add(this.btUpateInstall);
             this.gbAvailable.Controls.Add(this.lblChangelog);
             this.gbAvailable.Controls.Add(this.tbxChangelog);
             this.gbAvailable.Controls.Add(this.txtDkimSignerAvailable);
@@ -122,6 +122,39 @@
             this.gbAvailable.TabIndex = 5;
             this.gbAvailable.TabStop = false;
             this.gbAvailable.Text = "Available";
+            // 
+            // btUpateInstall
+            // 
+            this.btUpateInstall.Enabled = false;
+            this.btUpateInstall.Location = new System.Drawing.Point(302, 19);
+            this.btUpateInstall.Name = "btUpateInstall";
+            this.btUpateInstall.Size = new System.Drawing.Size(138, 23);
+            this.btUpateInstall.TabIndex = 8;
+            this.btUpateInstall.Text = "Update";
+            this.btUpateInstall.UseVisualStyleBackColor = true;
+            this.btUpateInstall.Click += new System.EventHandler(this.btUpateInstall_Click);
+            // 
+            // lblChangelog
+            // 
+            this.lblChangelog.AutoSize = true;
+            this.lblChangelog.Location = new System.Drawing.Point(6, 54);
+            this.lblChangelog.Name = "lblChangelog";
+            this.lblChangelog.Size = new System.Drawing.Size(61, 13);
+            this.lblChangelog.TabIndex = 7;
+            this.lblChangelog.Text = "Changelog:";
+            // 
+            // tbxChangelog
+            // 
+            this.tbxChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxChangelog.Location = new System.Drawing.Point(9, 70);
+            this.tbxChangelog.Multiline = true;
+            this.tbxChangelog.Name = "tbxChangelog";
+            this.tbxChangelog.ReadOnly = true;
+            this.tbxChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.tbxChangelog.Size = new System.Drawing.Size(531, 178);
+            this.tbxChangelog.TabIndex = 6;
             // 
             // txtDkimSignerAvailable
             // 
@@ -438,39 +471,6 @@
             this.dgvcSenderRule.Name = "dgvcSenderRule";
             this.dgvcSenderRule.Visible = false;
             // 
-            // tbxChangelog
-            // 
-            this.tbxChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbxChangelog.Location = new System.Drawing.Point(9, 70);
-            this.tbxChangelog.Multiline = true;
-            this.tbxChangelog.Name = "tbxChangelog";
-            this.tbxChangelog.ReadOnly = true;
-            this.tbxChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbxChangelog.Size = new System.Drawing.Size(531, 178);
-            this.tbxChangelog.TabIndex = 6;
-            // 
-            // lblChangelog
-            // 
-            this.lblChangelog.AutoSize = true;
-            this.lblChangelog.Location = new System.Drawing.Point(6, 54);
-            this.lblChangelog.Name = "lblChangelog";
-            this.lblChangelog.Size = new System.Drawing.Size(61, 13);
-            this.lblChangelog.TabIndex = 7;
-            this.lblChangelog.Text = "Changelog:";
-            // 
-            // btnUpateInstall
-            // 
-            this.btnUpateInstall.Enabled = false;
-            this.btnUpateInstall.Location = new System.Drawing.Point(302, 19);
-            this.btnUpateInstall.Name = "btnUpateInstall";
-            this.btnUpateInstall.Size = new System.Drawing.Size(138, 23);
-            this.btnUpateInstall.TabIndex = 8;
-            this.btnUpateInstall.Text = "Update";
-            this.btnUpateInstall.UseVisualStyleBackColor = true;
-            this.btnUpateInstall.Click += new System.EventHandler(this.btnUpateInstall_Click);
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -480,6 +480,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.Text = "Exchange DkimSigner";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.tcConfiguration.ResumeLayout(false);
             this.tbInformation.ResumeLayout(false);
@@ -541,7 +542,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
         private System.Windows.Forms.Label lblChangelog;
         private System.Windows.Forms.TextBox tbxChangelog;
-        private System.Windows.Forms.Button btnUpateInstall;
+        private System.Windows.Forms.Button btUpateInstall;
     }
 }
 

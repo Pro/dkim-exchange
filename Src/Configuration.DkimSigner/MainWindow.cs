@@ -46,7 +46,21 @@ namespace Configuration.DkimSigner
             loadDkimSignerConfig();
         }
 
-        void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Want to save your changes?", "Confirmation", MessageBoxButtons.YesNoCancel);
+            
+            if (result == DialogResult.Yes)
+            {
+                this.saveDkimSignerConfig();
+            }
+            else if (result == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        private void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var grid = sender as DataGridView;
             var rowIdx = (e.RowIndex + 1).ToString();
@@ -207,7 +221,7 @@ namespace Configuration.DkimSigner
             }
         }
 
-        private void btSave_Click(object sender, EventArgs e)
+        private void saveDkimSignerConfig()
         {
             bool status = true;
 
@@ -275,6 +289,11 @@ namespace Configuration.DkimSigner
                 MessageBox.Show("The configuration has been updated.");
             else
                 MessageBox.Show("One or many errors happened! All specified configurations haven't been updated.");
+        }
+
+        private void btSave_Click(object sender, EventArgs e)
+        {
+            this.saveDkimSignerConfig();
         }
 
         void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
@@ -358,7 +377,7 @@ namespace Configuration.DkimSigner
             }
         }
 
-        private void btnUpateInstall_Click(object sender, EventArgs e)
+        private void btUpateInstall_Click(object sender, EventArgs e)
         {
            
         }
