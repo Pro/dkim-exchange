@@ -54,7 +54,7 @@ namespace ConfigurationSettings
         /// <param name="KeyName">Key name</param>
         /// <param name="subKey">Subkey that contain key name</param>
         /// <returns></returns>
-        public static string Read(string KeyName, string subKey = "")
+        public static string Read(string keyName, string subKey = "")
         {
             string value = null;
             RegistryKey sk1 = Open(subKey);
@@ -63,7 +63,7 @@ namespace ConfigurationSettings
             {
                 try
                 {
-                    value = (string)sk1.GetValue(KeyName);
+                    value = (string)sk1.GetValue(keyName);
                 }
                 catch (Exception) { }
             }
@@ -78,7 +78,7 @@ namespace ConfigurationSettings
         /// <param name="Value">Value to write</param>
         /// <param name="subKey">Subkey that contain key name</param>
         /// <returns></returns>
-        public static bool Write(string KeyName, object Value, string subKey = "")
+        public static bool Write(string keyName, object Value, string subKey = "")
         {
             try
             {
@@ -87,7 +87,7 @@ namespace ConfigurationSettings
                                                             ? RegistryView.Registry64
                                                             : RegistryView.Registry32);
                 RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
-                sk1.SetValue(KeyName, Value, RegistryValueKind.String);
+                sk1.SetValue(keyName, Value, RegistryValueKind.String);
 
                 return true;
             }
@@ -103,7 +103,7 @@ namespace ConfigurationSettings
         /// <param name="KeyName">Key to delete</param>
         /// <param name="subKey">Subkey that contain key name</param>
         /// <returns></returns>
-        public bool DeleteKey(string KeyName, string subKey = "")
+        public static bool DeleteKey(string keyName, string subKey = "")
         {
             try
             {
@@ -114,7 +114,7 @@ namespace ConfigurationSettings
                 RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
 
                 if(sk1 != null)
-                    sk1.DeleteValue(KeyName);
+                    sk1.DeleteValue(keyName);
 
                 return true;
             }
@@ -129,7 +129,7 @@ namespace ConfigurationSettings
         /// </summary>
         /// <param name="subKey">Subkey to delete</param>
         /// <returns></returns>
-        public bool DeleteSubKeyTree(string subKey = "")
+        public static bool DeleteSubKeyTree(string keyName, string subKey = "")
         {
             try
             {
@@ -140,7 +140,7 @@ namespace ConfigurationSettings
                 RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
 
                 if (sk1 != null)
-                    rk.DeleteSubKeyTree(subKey);
+                    sk1.DeleteSubKeyTree(keyName);
 
                 return true;
             }

@@ -25,14 +25,14 @@ namespace Configuration.DkimSigner
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
 
-        private Dictionary<string, byte[]> attachments;
+        private Dictionary<int, byte[]> attachments;
         private Release currentRelease = null;
 
         public MainWindow()
         {
             InitializeComponent();
 
-            attachments = new Dictionary<string, byte[]>();
+            attachments = new Dictionary<int, byte[]>();
         }
         
 
@@ -187,6 +187,7 @@ namespace Configuration.DkimSigner
                 string[] domainNames = RegistryHelper.GetSubKeyName(@"Exchange DkimSigner\Domain");
                 if (domainNames != null)
                 {
+                    int i = 0;
                     foreach (string domainName in domainNames)
                     {
                         string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
@@ -200,7 +201,7 @@ namespace Configuration.DkimSigner
                                                                 recipientRule != null ? recipientRule : string.Empty,
                                                                 senderRule != null ? senderRule : string.Empty);
 
-                        attachments[domainName] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
+                        attachments[i++] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
                     }
                 }
             }
@@ -230,6 +231,7 @@ namespace Configuration.DkimSigner
             if (!status)
                 MessageBox.Show("Error! Impossible to change the headers to sign.");
 
+            RegistryHelper.DeleteSubKeyTree("Domain", @"Exchange DkimSigner\");
             dgvDomainConfiguration.AllowUserToAddRows = false;
             if (dgvDomainConfiguration.Rows.Count > 0)
             {
@@ -258,7 +260,7 @@ namespace Configuration.DkimSigner
                             status = status && RegistryHelper.Write("SenderRule", senderRule, @"Exchange DkimSigner\Domain\" + domainName);
 
                         byte[] byteData = null;
-                        byteData = attachments[domainName];
+                        byteData = attachments[row.Index];
                         File.WriteAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile, byteData);
                     }
                     else
@@ -305,13 +307,13 @@ namespace Configuration.DkimSigner
                         byte[] binaryData = File.ReadAllBytes(fileDialog.FileName);
                         dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
 
-                        if (attachments.ContainsKey(dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString()))
+                        if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
                         {
-                            attachments[dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString()] = binaryData;
+                            attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
                         }
                         else
                         {
-                            attachments.Add(dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString(), binaryData);
+                            attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
                         }
                     }
                 }
@@ -345,7 +347,7 @@ namespace Configuration.DkimSigner
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        byteData = attachments[dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[2].RowIndex].Cells[0].Value.ToString()];
+                        byteData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
                         File.WriteAllBytes(saveFileDialog.FileName, byteData);
                     }
                 }
