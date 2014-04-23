@@ -279,7 +279,7 @@ namespace Configuration.DkimSigner
                     }
                     else
                     {
-                        MessageBox.Show("Impossible to save the configuration for all the domain configurations. The line number " + row.Index + " is incomplet.");
+                        MessageBox.Show("Impossible to save the configuration for all the domain configurations. The line number " + (row.Index+1) + " is incomplet.");
                     }
                 }
             }
@@ -324,15 +324,22 @@ namespace Configuration.DkimSigner
                     {
                         FileInfo fileInfo = new FileInfo(fileDialog.FileName);
                         byte[] binaryData = File.ReadAllBytes(fileDialog.FileName);
-                        dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
-
-                        if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
+                        if (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(binaryData) != RSACryptoFormat.UNKNOWN)
                         {
-                            attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
+                            dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
+
+                            if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
+                            {
+                                attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
+                            }
+                            else
+                            {
+                                attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
+                            }
                         }
                         else
                         {
-                            attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
+                            MessageBox.Show("The format of the private key file you try to import is invalid.");
                         }
                     }
                 }
