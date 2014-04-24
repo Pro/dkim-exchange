@@ -28,13 +28,20 @@ namespace Configuration.DkimSigner
         private Dictionary<int, byte[]> attachments;
         private Release currentRelease = null;
 
+        /**********************************************************/
+        /*********************** Construtor ***********************/
+        /**********************************************************/
+
         public MainWindow()
         {
             InitializeComponent();
 
             attachments = new Dictionary<int, byte[]>();
         }
-        
+
+        /**********************************************************/
+        /************************* Events *************************/
+        /**********************************************************/
 
         private void MainWindow_Load(object sender, EventArgs e)
         {
@@ -74,6 +81,36 @@ namespace Configuration.DkimSigner
             var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
+
+        void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
+            string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
+
+            RuleWindow form = new RuleWindow(recipientRule, senderRule);
+            form.ShowDialog();
+
+            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
+            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
+        }
+
+        private void dgvDomainConfiguration_UserDeletingRow(object sender, System.Windows.Forms.DataGridViewRowCancelEventArgs e)
+        {
+            int total = attachments.Count;
+            int rowIndex = dgvDomainConfiguration.SelectedCells[0].RowIndex;
+
+            attachments.Remove(rowIndex);
+            for (int i = rowIndex+1; i < total; i++)
+            {
+                byte[] value = attachments[i];
+                attachments.Remove(i);
+                attachments[i-1] = value;
+            }
+        }
+
+        /**********************************************************/
+        /******************* Internal functions *******************/
+        /**********************************************************/
 
         private void checkDkimSignerInstalled()
         {
@@ -246,6 +283,7 @@ namespace Configuration.DkimSigner
                 MessageBox.Show("Error! Impossible to change the headers to sign.");
 
             RegistryHelper.DeleteSubKeyTree("Domain", @"Exchange DkimSigner\");
+            Array.ForEach(Directory.GetFiles(DKIM_SIGNER_PATH + @"\keys\"), File.Delete);
             dgvDomainConfiguration.AllowUserToAddRows = false;
             if (dgvDomainConfiguration.Rows.Count > 0)
             {
@@ -291,21 +329,13 @@ namespace Configuration.DkimSigner
                 MessageBox.Show("One or many errors happened! All specified configurations haven't been updated.");
         }
 
+        /**********************************************************/
+        /********************** Button click **********************/
+        /**********************************************************/
+
         private void btSave_Click(object sender, EventArgs e)
         {
             this.saveDkimSignerConfig();
-        }
-
-        void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-            string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
-            string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
-
-            RuleWindow form = new RuleWindow(recipientRule, senderRule);
-            form.ShowDialog();
-
-            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
-            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
         }
 
         private void btUpload_Click(object sender, EventArgs e)

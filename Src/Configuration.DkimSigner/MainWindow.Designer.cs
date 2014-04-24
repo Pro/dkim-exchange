@@ -440,6 +440,7 @@
             this.dgvDomainConfiguration.TabIndex = 0;
             this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
             this.dgvDomainConfiguration.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvDomainConfiguration_RowPostPaint);
+            this.dgvDomainConfiguration.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvDomainConfiguration_UserDeletingRow);
             // 
             // dgvcDomain
             // 
