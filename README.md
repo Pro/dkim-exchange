@@ -161,7 +161,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 * Current Master :  
         New: Private key support (PEM, DER, XML)
-* 21.03.2014 [1.8.3]:
+* 21.03.2014 [1.8.3]:  
 	Fix: RecipientRule now matching whole address  
 	Fix: Invalid E-Mail address doesn't cause a crash anymore. Rule will be ignored if error.  
 	Fix: E-Mail address parsing in .NET 3.5 (Exchange 2007 & 2010)  
