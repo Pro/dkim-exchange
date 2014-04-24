@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -26,7 +27,10 @@ namespace Configuration.DkimSigner
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
 
         private Dictionary<int, byte[]> attachments;
-        private Release currentRelease = null;
+
+        delegate void SetDkimSignerInstalledCallback(string dkimSignerInstalled);
+        delegate void SetDkimSignerAvailableCallback(string dkimSignerAvailable);
+        delegate void SetChangelogCallback(string changelog);
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -46,10 +50,17 @@ namespace Configuration.DkimSigner
         private void MainWindow_Load(object sender, EventArgs e)
         {
             cbLogLevel.SelectedItem = "Information";
-            txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
 
-            checkDkimSignerInstalled();
-            checkDkimSignerAvailable();
+            // Get Exchange.DkimSigner version installed
+            Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
+            thDkimSignerInstalled.Start();
+
+            // Get Exchange.DkimSigner version available
+            Thread thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
+            thDkimSignerAvailable.Start();
+
+            // Get Exchange version installed + load the current configuration
+            txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
             loadDkimSignerConfig();
         }
 
@@ -112,39 +123,87 @@ namespace Configuration.DkimSigner
         /******************* Internal functions *******************/
         /**********************************************************/
 
-        private void checkDkimSignerInstalled()
+        private void SetDkimSignerInstalled(string dkimSignerInstalled)
         {
+            this.txtDkimSignerInstalled.Text = dkimSignerInstalled;
+        }
+
+        private void CheckDkimSignerInstalledSafe()
+        {
+            string dkimSignerInstalled = string.Empty;
+
             try
             {
-                txtDkimSignerInstalled.Text = FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion;
+                dkimSignerInstalled = FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion;
             }
             catch (Exception)
             {
-                txtDkimSignerInstalled.Text = "Not installed";
+               dkimSignerInstalled = "Not installed";
+            }
+            
+            if (this.txtDkimSignerInstalled.InvokeRequired)
+            {
+                SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
+                this.Invoke(d, new object[] { dkimSignerInstalled});
+            }
+            else
+            {
+                this.txtDkimSignerInstalled.Text = dkimSignerInstalled;
             }
         }
 
-        private void checkDkimSignerAvailable()
+        private void SetDkimSignerAvailable(string dkimSignerAvailable)
         {
+            this.txtDkimSignerAvailable.Text = dkimSignerAvailable;
+        }
+
+        private void SetChangelog(string changelog)
+        {
+            this.txtChangelog.Text = changelog;
+        }
+
+        private void CheckDkimSignerAvailableSafe()
+        {
+            string dkimSignerAvailable = string.Empty;
+            string changelog = string.Empty;
+
             try
             {
-                currentRelease = ApiWrapper.getNewestRelease();
+                Release currentRelease = ApiWrapper.getNewestRelease();
                 if (currentRelease != null)
                 {
-                    txtDkimSignerAvailable.Text = currentRelease.Version.ToString();
-                    tbxChangelog.Text = currentRelease.Body;
+                    dkimSignerAvailable = currentRelease.Version.ToString();
+                    changelog = currentRelease.Body;
                 }
                 else
                 {
-                    txtDkimSignerAvailable.Text = "Unknown";
-                    tbxChangelog.Text = "";
+                    dkimSignerAvailable = "Unknown";
                 }
             }
             catch (Exception e)
             {
-                txtDkimSignerAvailable.Text = "Unknown";
-                tbxChangelog.Text = "";
+                dkimSignerAvailable = "Unknown";
                 MessageBox.Show(this, "Couldn't get current version:\n" + e.Message, "Version detect error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (this.txtDkimSignerInstalled.InvokeRequired)
+            {
+                SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
+                this.Invoke(d, new object[] { dkimSignerAvailable});
+            }
+            else
+            {
+                this.txtDkimSignerInstalled.Text = dkimSignerAvailable;
+            }
+
+            if (this.txtChangelog.InvokeRequired)
+            {
+                SetChangelogCallback d = new SetChangelogCallback(SetChangelog);
+                this.Invoke(d, new object[] { changelog });
+            }
+            else
+            {
+                this.txtChangelog.Text = changelog;
             }
         }
 

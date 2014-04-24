@@ -34,7 +34,7 @@
             this.gbAvailable = new System.Windows.Forms.GroupBox();
             this.btUpateInstall = new System.Windows.Forms.Button();
             this.lblChangelog = new System.Windows.Forms.Label();
-            this.tbxChangelog = new System.Windows.Forms.TextBox();
+            this.txtChangelog = new System.Windows.Forms.TextBox();
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
             this.gbInstalled = new System.Windows.Forms.GroupBox();
@@ -113,7 +113,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbAvailable.Controls.Add(this.btUpateInstall);
             this.gbAvailable.Controls.Add(this.lblChangelog);
-            this.gbAvailable.Controls.Add(this.tbxChangelog);
+            this.gbAvailable.Controls.Add(this.txtChangelog);
             this.gbAvailable.Controls.Add(this.txtDkimSignerAvailable);
             this.gbAvailable.Controls.Add(this.lbDkimSignerAvailable);
             this.gbAvailable.Location = new System.Drawing.Point(3, 67);
@@ -143,18 +143,18 @@
             this.lblChangelog.TabIndex = 7;
             this.lblChangelog.Text = "Changelog:";
             // 
-            // tbxChangelog
+            // txtChangelog
             // 
-            this.tbxChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.txtChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbxChangelog.Location = new System.Drawing.Point(9, 70);
-            this.tbxChangelog.Multiline = true;
-            this.tbxChangelog.Name = "tbxChangelog";
-            this.tbxChangelog.ReadOnly = true;
-            this.tbxChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbxChangelog.Size = new System.Drawing.Size(531, 178);
-            this.tbxChangelog.TabIndex = 6;
+            this.txtChangelog.Location = new System.Drawing.Point(9, 70);
+            this.txtChangelog.Multiline = true;
+            this.txtChangelog.Name = "txtChangelog";
+            this.txtChangelog.ReadOnly = true;
+            this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtChangelog.Size = new System.Drawing.Size(531, 178);
+            this.txtChangelog.TabIndex = 6;
             // 
             // txtDkimSignerAvailable
             // 
@@ -542,7 +542,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcRecipientRule;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
         private System.Windows.Forms.Label lblChangelog;
-        private System.Windows.Forms.TextBox tbxChangelog;
+        private System.Windows.Forms.TextBox txtChangelog;
         private System.Windows.Forms.Button btUpateInstall;
     }
 }
