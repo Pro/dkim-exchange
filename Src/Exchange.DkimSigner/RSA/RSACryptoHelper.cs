@@ -65,6 +65,15 @@ namespace DkimSigner.RSA
         }
 
         /// <summary>
+        /// Generate a RSA Private Key in XML format
+        /// </summary>
+        /// <returns>RSA Private Key in a byte array</returns>
+        public static byte[] GenerateXMLEncodedRsaPrivateKey()
+        {
+            return Encoding.ASCII.GetBytes(new RSACryptoServiceProvider().ToXmlString(true));
+        }
+
+        /// <summary>
         /// Attempts to get an instance of an RSACryptoServiceProvider from a 
         /// PEM-encoded RSA private key, commonly used by OpenSSL. You would think
         /// that this would be built into the .NET framework, but oh well.

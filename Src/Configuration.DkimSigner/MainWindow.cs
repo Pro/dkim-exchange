@@ -55,7 +55,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            cbLogLevel.SelectedItem = "Information";
+            this.cbLogLevel.SelectedItem = "Information";
 
             // Get Exchange.DkimSigner version installed
             Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
@@ -127,6 +127,37 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
+        /// Open private key information by clicking in private key file in the dgvDomainConfiguration DataGridView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_CellClick(object sender, System.Windows.Forms.DataGridViewCellEventArgs e)
+        {
+            string domain = string.Empty;
+            string selector = string.Empty;
+            string filename = string.Empty;
+
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value != null)
+                domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value != null)
+                selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
+
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value != null)
+                filename = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value.ToString();
+
+            if (e.ColumnIndex == 2 && domain != string.Empty && selector != string.Empty && filename != string.Empty)
+            {
+                byte[] binaryData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
+
+                PrivateKeyWindows form = new PrivateKeyWindows(domain, binaryData, filename);
+                form.ShowDialog();
+
+                dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
+            }
+        }
+
+        /// <summary>
         /// Reconfigure the private key internal structure when a row have been deleted in the dgvDomainConfiguration DataGridView
         /// </summary>
         /// <param name="sender"></param>
@@ -142,6 +173,74 @@ namespace Configuration.DkimSigner
                 byte[] value = attachments[i];
                 attachments.Remove(i);
                 attachments[i-1] = value;
+            }
+        }
+
+        /// <summary>
+        /// Disable all domain configuration buttons when a cell begin to be editing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_CellBeginEdit(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
+        {
+            this.btGenerate.Enabled = false;
+            this.btUpload.Enabled = false;
+            this.btDownload.Enabled = false;
+        }
+
+        /// <summary>
+        /// Enable / Disable the buttons when the current cell changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_CurrentCellChanged(object sender, System.EventArgs e)
+        {
+            string domain = string.Empty;
+            string selector = string.Empty;
+
+            if (dgvDomainConfiguration.SelectedRows[0].Cells[0].Value != null)
+                domain = dgvDomainConfiguration.SelectedRows[0].Cells[0].Value.ToString();
+
+            if (dgvDomainConfiguration.SelectedRows[0].Cells[1].Value != null)
+                selector = dgvDomainConfiguration.SelectedRows[0].Cells[1].Value.ToString();
+
+            if (domain != string.Empty && selector != string.Empty)
+            {
+                this.btGenerate.Enabled = true;
+                this.btUpload.Enabled = true;
+                this.btDownload.Enabled = true;
+            }
+            else
+            {
+                this.btGenerate.Enabled = false;
+                this.btUpload.Enabled = false;
+                this.btDownload.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Validate the current row
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_RowValidating(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
+        {
+            string domain = string.Empty;
+            string selector = string.Empty;
+            string filename = string.Empty;
+
+            // Get the domain
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value != null)
+                domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+
+            // Get the domain
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value != null)
+                selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
+
+            // If (the domain or the selector is empty string) and the domain and selector are both empty
+            if ((domain == string.Empty || selector == string.Empty) && domain != selector)
+            {
+                e.Cancel = true;
             }
         }
 
@@ -360,6 +459,8 @@ namespace Configuration.DkimSigner
 
                         attachments[i++] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
                     }
+
+                    this.dgvDomainConfiguration.Rows[0].Selected = true;
                 }
             }
         }
@@ -453,6 +554,31 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
+        /// Button "Generate" in domain configuration action - Generate a new private key file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btGenerate_Click(object sender, EventArgs e)
+        {
+            byte[] binaryData = RSACryptoHelper.GenerateXMLEncodedRsaPrivateKey();
+            string domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+
+            PrivateKeyWindows form = new PrivateKeyWindows(domain, binaryData);
+            form.ShowDialog();
+
+            dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
+
+            if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
+            {
+                attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
+            }
+            else
+            {
+                attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
+            }
+        }
+
+        /// <summary>
         /// Button "Upload" in domain configuration action - Upload the selected private key file
         /// </summary>
         /// <param name="sender"></param>
@@ -500,7 +626,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// Button "Download" in domain configuration action - download the selected private key file
+        /// Button "Download" in domain configuration action - Download the selected private key file
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
