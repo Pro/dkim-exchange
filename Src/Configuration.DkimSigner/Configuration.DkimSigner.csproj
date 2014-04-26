@@ -67,6 +67,7 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
       <Link>RSA\RSACryptoHelper.cs</Link>
     </Compile>
+    <Compile Include="DNSHelper.cs" />
     <Compile Include="ExchangeHelper.cs" />
     <Compile Include="GitHub\Api.cs" />
     <Compile Include="GitHub\ApiWrapper.cs" />

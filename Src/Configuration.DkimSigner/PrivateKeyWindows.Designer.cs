@@ -28,22 +28,22 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.btValidate = new System.Windows.Forms.Button();
+            this.btConfirm = new System.Windows.Forms.Button();
             this.txtFilename = new System.Windows.Forms.TextBox();
             this.lbDnsSelectorRecord = new System.Windows.Forms.Label();
             this.lbFilename = new System.Windows.Forms.Label();
             this.txtDnsSelectorRecord = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // btValidate
+            // btConfirm
             // 
-            this.btValidate.Location = new System.Drawing.Point(204, 126);
-            this.btValidate.Name = "btValidate";
-            this.btValidate.Size = new System.Drawing.Size(79, 23);
-            this.btValidate.TabIndex = 16;
-            this.btValidate.Text = "Valiade";
-            this.btValidate.UseVisualStyleBackColor = true;
-            this.btValidate.Click += new System.EventHandler(this.btValidate_Click);
+            this.btConfirm.Location = new System.Drawing.Point(204, 176);
+            this.btConfirm.Name = "btConfirm";
+            this.btConfirm.Size = new System.Drawing.Size(79, 23);
+            this.btConfirm.TabIndex = 16;
+            this.btConfirm.Text = "Confirm";
+            this.btConfirm.UseVisualStyleBackColor = true;
+            this.btConfirm.Click += new System.EventHandler(this.btValidate_Click);
             // 
             // txtFilename
             // 
@@ -80,21 +80,21 @@
             this.txtDnsSelectorRecord.Name = "txtDnsSelectorRecord";
             this.txtDnsSelectorRecord.ReadOnly = true;
             this.txtDnsSelectorRecord.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtDnsSelectorRecord.Size = new System.Drawing.Size(452, 60);
+            this.txtDnsSelectorRecord.Size = new System.Drawing.Size(452, 110);
             this.txtDnsSelectorRecord.TabIndex = 20;
             // 
             // PrivateKeyWindows
             // 
-            this.AcceptButton = this.btValidate;
+            this.AcceptButton = this.btConfirm;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(479, 161);
+            this.ClientSize = new System.Drawing.Size(479, 211);
             this.ControlBox = false;
             this.Controls.Add(this.txtDnsSelectorRecord);
             this.Controls.Add(this.txtFilename);
             this.Controls.Add(this.lbDnsSelectorRecord);
             this.Controls.Add(this.lbFilename);
-            this.Controls.Add(this.btValidate);
+            this.Controls.Add(this.btConfirm);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -110,7 +110,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btValidate;
+        private System.Windows.Forms.Button btConfirm;
         public System.Windows.Forms.TextBox txtFilename;
         private System.Windows.Forms.Label lbDnsSelectorRecord;
         private System.Windows.Forms.Label lbFilename;

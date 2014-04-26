@@ -150,7 +150,7 @@ namespace Configuration.DkimSigner
             {
                 byte[] binaryData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
 
-                PrivateKeyWindows form = new PrivateKeyWindows(domain, binaryData, filename);
+                PrivateKeyWindows form = new PrivateKeyWindows(domain, selector, filename);
                 form.ShowDialog();
 
                 dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
@@ -562,8 +562,9 @@ namespace Configuration.DkimSigner
         {
             byte[] binaryData = RSACryptoHelper.GenerateXMLEncodedRsaPrivateKey();
             string domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+            string selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
 
-            PrivateKeyWindows form = new PrivateKeyWindows(domain, binaryData);
+            PrivateKeyWindows form = new PrivateKeyWindows(domain, selector);
             form.ShowDialog();
 
             dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
