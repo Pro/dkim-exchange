@@ -33,6 +33,9 @@
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbAvailable = new System.Windows.Forms.GroupBox();
+            this.btUpateInstall = new System.Windows.Forms.Button();
+            this.lblChangelog = new System.Windows.Forms.Label();
+            this.txtChangelog = new System.Windows.Forms.TextBox();
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
             this.gbInstalled = new System.Windows.Forms.GroupBox();
@@ -56,6 +59,7 @@
             this.rbRsaSha256 = new System.Windows.Forms.RadioButton();
             this.rbRsaSha1 = new System.Windows.Forms.RadioButton();
             this.tpDomain = new System.Windows.Forms.TabPage();
+            this.btGenerate = new System.Windows.Forms.Button();
             this.btDownload = new System.Windows.Forms.Button();
             this.btUpload = new System.Windows.Forms.Button();
             this.dgvDomainConfiguration = new System.Windows.Forms.DataGridView();
@@ -64,9 +68,6 @@
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tbxChangelog = new System.Windows.Forms.TextBox();
-            this.lblChangelog = new System.Windows.Forms.Label();
-            this.btnUpateInstall = new System.Windows.Forms.Button();
             this.timFetch = new System.Windows.Forms.Timer(this.components);
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
@@ -113,17 +114,50 @@
             this.gbAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbAvailable.Controls.Add(this.btnUpateInstall);
+            this.gbAvailable.Controls.Add(this.btUpateInstall);
             this.gbAvailable.Controls.Add(this.lblChangelog);
-            this.gbAvailable.Controls.Add(this.tbxChangelog);
+            this.gbAvailable.Controls.Add(this.txtChangelog);
             this.gbAvailable.Controls.Add(this.txtDkimSignerAvailable);
             this.gbAvailable.Controls.Add(this.lbDkimSignerAvailable);
             this.gbAvailable.Location = new System.Drawing.Point(3, 67);
             this.gbAvailable.Name = "gbAvailable";
             this.gbAvailable.Size = new System.Drawing.Size(546, 254);
-            this.gbAvailable.TabIndex = 5;
+            this.gbAvailable.TabIndex = 6;
             this.gbAvailable.TabStop = false;
             this.gbAvailable.Text = "Current version:";
+            // 
+            // btUpateInstall
+            // 
+            this.btUpateInstall.Enabled = false;
+            this.btUpateInstall.Location = new System.Drawing.Point(302, 19);
+            this.btUpateInstall.Name = "btUpateInstall";
+            this.btUpateInstall.Size = new System.Drawing.Size(138, 23);
+            this.btUpateInstall.TabIndex = 9;
+            this.btUpateInstall.Text = "Update";
+            this.btUpateInstall.UseVisualStyleBackColor = true;
+            this.btUpateInstall.Click += new System.EventHandler(this.btUpateInstall_Click);
+            // 
+            // lblChangelog
+            // 
+            this.lblChangelog.AutoSize = true;
+            this.lblChangelog.Location = new System.Drawing.Point(6, 54);
+            this.lblChangelog.Name = "lblChangelog";
+            this.lblChangelog.Size = new System.Drawing.Size(61, 13);
+            this.lblChangelog.TabIndex = 10;
+            this.lblChangelog.Text = "Changelog:";
+            // 
+            // txtChangelog
+            // 
+            this.txtChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtChangelog.Location = new System.Drawing.Point(9, 70);
+            this.txtChangelog.Multiline = true;
+            this.txtChangelog.Name = "txtChangelog";
+            this.txtChangelog.ReadOnly = true;
+            this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtChangelog.Size = new System.Drawing.Size(531, 178);
+            this.txtChangelog.TabIndex = 11;
             // 
             // txtDkimSignerAvailable
             // 
@@ -131,7 +165,7 @@
             this.txtDkimSignerAvailable.Name = "txtDkimSignerAvailable";
             this.txtDkimSignerAvailable.ReadOnly = true;
             this.txtDkimSignerAvailable.Size = new System.Drawing.Size(138, 20);
-            this.txtDkimSignerAvailable.TabIndex = 5;
+            this.txtDkimSignerAvailable.TabIndex = 8;
             // 
             // lbDkimSignerAvailable
             // 
@@ -139,7 +173,7 @@
             this.lbDkimSignerAvailable.Location = new System.Drawing.Point(6, 24);
             this.lbDkimSignerAvailable.Name = "lbDkimSignerAvailable";
             this.lbDkimSignerAvailable.Size = new System.Drawing.Size(70, 13);
-            this.lbDkimSignerAvailable.TabIndex = 4;
+            this.lbDkimSignerAvailable.TabIndex = 7;
             this.lbDkimSignerAvailable.Text = "Dkim Signer :";
             // 
             // gbInstalled
@@ -153,7 +187,7 @@
             this.gbInstalled.Location = new System.Drawing.Point(3, 3);
             this.gbInstalled.Name = "gbInstalled";
             this.gbInstalled.Size = new System.Drawing.Size(546, 58);
-            this.gbInstalled.TabIndex = 4;
+            this.gbInstalled.TabIndex = 1;
             this.gbInstalled.TabStop = false;
             this.gbInstalled.Text = "Installed";
             // 
@@ -163,7 +197,7 @@
             this.lbExchangeInstalled.Location = new System.Drawing.Point(235, 29);
             this.lbExchangeInstalled.Name = "lbExchangeInstalled";
             this.lbExchangeInstalled.Size = new System.Drawing.Size(61, 13);
-            this.lbExchangeInstalled.TabIndex = 0;
+            this.lbExchangeInstalled.TabIndex = 4;
             this.lbExchangeInstalled.Text = "Exchange :";
             // 
             // txtDkimSignerInstalled
@@ -180,7 +214,7 @@
             this.txtExchangeInstalled.Name = "txtExchangeInstalled";
             this.txtExchangeInstalled.ReadOnly = true;
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
-            this.txtExchangeInstalled.TabIndex = 1;
+            this.txtExchangeInstalled.TabIndex = 5;
             // 
             // lbDkimSignerInstalled
             // 
@@ -223,7 +257,7 @@
             this.gbHeaderToSign.Location = new System.Drawing.Point(62, 42);
             this.gbHeaderToSign.Name = "gbHeaderToSign";
             this.gbHeaderToSign.Size = new System.Drawing.Size(426, 52);
-            this.gbHeaderToSign.TabIndex = 6;
+            this.gbHeaderToSign.TabIndex = 1;
             this.gbHeaderToSign.TabStop = false;
             this.gbHeaderToSign.Text = "Header to sign";
             // 
@@ -232,7 +266,7 @@
             this.txtHeaderToSign.Location = new System.Drawing.Point(6, 22);
             this.txtHeaderToSign.Name = "txtHeaderToSign";
             this.txtHeaderToSign.Size = new System.Drawing.Size(414, 20);
-            this.txtHeaderToSign.TabIndex = 0;
+            this.txtHeaderToSign.TabIndex = 2;
             this.txtHeaderToSign.Text = "From; Subject; To; Date; Message-ID;";
             // 
             // gbLogLevel
@@ -241,7 +275,7 @@
             this.gbLogLevel.Location = new System.Drawing.Point(62, 170);
             this.gbLogLevel.Name = "gbLogLevel";
             this.gbLogLevel.Size = new System.Drawing.Size(203, 52);
-            this.gbLogLevel.TabIndex = 4;
+            this.gbLogLevel.TabIndex = 6;
             this.gbLogLevel.TabStop = false;
             this.gbLogLevel.Text = "Log Level";
             // 
@@ -256,7 +290,7 @@
             this.cbLogLevel.Location = new System.Drawing.Point(6, 22);
             this.cbLogLevel.Name = "cbLogLevel";
             this.cbLogLevel.Size = new System.Drawing.Size(191, 21);
-            this.cbLogLevel.TabIndex = 0;
+            this.cbLogLevel.TabIndex = 7;
             // 
             // gbBodyCanonicalization
             // 
@@ -265,7 +299,7 @@
             this.gbBodyCanonicalization.Location = new System.Drawing.Point(285, 171);
             this.gbBodyCanonicalization.Name = "gbBodyCanonicalization";
             this.gbBodyCanonicalization.Size = new System.Drawing.Size(203, 52);
-            this.gbBodyCanonicalization.TabIndex = 2;
+            this.gbBodyCanonicalization.TabIndex = 11;
             this.gbBodyCanonicalization.TabStop = false;
             this.gbBodyCanonicalization.Text = "Body Canonicalization";
             // 
@@ -275,7 +309,7 @@
             this.rbRelaxedBodyCanonicalization.Location = new System.Drawing.Point(105, 20);
             this.rbRelaxedBodyCanonicalization.Name = "rbRelaxedBodyCanonicalization";
             this.rbRelaxedBodyCanonicalization.Size = new System.Drawing.Size(64, 17);
-            this.rbRelaxedBodyCanonicalization.TabIndex = 1;
+            this.rbRelaxedBodyCanonicalization.TabIndex = 13;
             this.rbRelaxedBodyCanonicalization.Text = "Relaxed";
             this.rbRelaxedBodyCanonicalization.UseVisualStyleBackColor = true;
             // 
@@ -286,7 +320,7 @@
             this.rbSimpleBodyCanonicalization.Location = new System.Drawing.Point(21, 20);
             this.rbSimpleBodyCanonicalization.Name = "rbSimpleBodyCanonicalization";
             this.rbSimpleBodyCanonicalization.Size = new System.Drawing.Size(56, 17);
-            this.rbSimpleBodyCanonicalization.TabIndex = 0;
+            this.rbSimpleBodyCanonicalization.TabIndex = 12;
             this.rbSimpleBodyCanonicalization.TabStop = true;
             this.rbSimpleBodyCanonicalization.Text = "Simple";
             this.rbSimpleBodyCanonicalization.UseVisualStyleBackColor = true;
@@ -298,7 +332,7 @@
             this.gbHeaderCanonicalization.Location = new System.Drawing.Point(284, 103);
             this.gbHeaderCanonicalization.Name = "gbHeaderCanonicalization";
             this.gbHeaderCanonicalization.Size = new System.Drawing.Size(203, 52);
-            this.gbHeaderCanonicalization.TabIndex = 1;
+            this.gbHeaderCanonicalization.TabIndex = 8;
             this.gbHeaderCanonicalization.TabStop = false;
             this.gbHeaderCanonicalization.Text = "Header Canonicalization";
             // 
@@ -308,7 +342,7 @@
             this.rbRelaxedHeaderCanonicalization.Location = new System.Drawing.Point(105, 20);
             this.rbRelaxedHeaderCanonicalization.Name = "rbRelaxedHeaderCanonicalization";
             this.rbRelaxedHeaderCanonicalization.Size = new System.Drawing.Size(64, 17);
-            this.rbRelaxedHeaderCanonicalization.TabIndex = 1;
+            this.rbRelaxedHeaderCanonicalization.TabIndex = 10;
             this.rbRelaxedHeaderCanonicalization.Text = "Relaxed";
             this.rbRelaxedHeaderCanonicalization.UseVisualStyleBackColor = true;
             // 
@@ -319,7 +353,7 @@
             this.rbSimpleHeaderCanonicalization.Location = new System.Drawing.Point(21, 20);
             this.rbSimpleHeaderCanonicalization.Name = "rbSimpleHeaderCanonicalization";
             this.rbSimpleHeaderCanonicalization.Size = new System.Drawing.Size(56, 17);
-            this.rbSimpleHeaderCanonicalization.TabIndex = 0;
+            this.rbSimpleHeaderCanonicalization.TabIndex = 9;
             this.rbSimpleHeaderCanonicalization.TabStop = true;
             this.rbSimpleHeaderCanonicalization.Text = "Simple";
             this.rbSimpleHeaderCanonicalization.UseVisualStyleBackColor = true;
@@ -331,7 +365,7 @@
             this.gbAlgorithm.Location = new System.Drawing.Point(62, 104);
             this.gbAlgorithm.Name = "gbAlgorithm";
             this.gbAlgorithm.Size = new System.Drawing.Size(203, 52);
-            this.gbAlgorithm.TabIndex = 0;
+            this.gbAlgorithm.TabIndex = 3;
             this.gbAlgorithm.TabStop = false;
             this.gbAlgorithm.Text = "Algorithm";
             // 
@@ -341,7 +375,7 @@
             this.rbRsaSha256.Location = new System.Drawing.Point(105, 20);
             this.rbRsaSha256.Name = "rbRsaSha256";
             this.rbRsaSha256.Size = new System.Drawing.Size(81, 17);
-            this.rbRsaSha256.TabIndex = 1;
+            this.rbRsaSha256.TabIndex = 5;
             this.rbRsaSha256.Text = "RsaSha256";
             this.rbRsaSha256.UseVisualStyleBackColor = true;
             // 
@@ -352,13 +386,14 @@
             this.rbRsaSha1.Location = new System.Drawing.Point(21, 20);
             this.rbRsaSha1.Name = "rbRsaSha1";
             this.rbRsaSha1.Size = new System.Drawing.Size(69, 17);
-            this.rbRsaSha1.TabIndex = 0;
+            this.rbRsaSha1.TabIndex = 4;
             this.rbRsaSha1.TabStop = true;
             this.rbRsaSha1.Text = "RsaSha1";
             this.rbRsaSha1.UseVisualStyleBackColor = true;
             // 
             // tpDomain
             // 
+            this.tpDomain.Controls.Add(this.btGenerate);
             this.tpDomain.Controls.Add(this.btDownload);
             this.tpDomain.Controls.Add(this.btUpload);
             this.tpDomain.Controls.Add(this.dgvDomainConfiguration);
@@ -369,6 +404,16 @@
             this.tpDomain.TabIndex = 1;
             this.tpDomain.Text = "Domain";
             this.tpDomain.UseVisualStyleBackColor = true;
+            // 
+            // btGenerate
+            // 
+            this.btGenerate.Location = new System.Drawing.Point(307, 291);
+            this.btGenerate.Name = "btGenerate";
+            this.btGenerate.Size = new System.Drawing.Size(75, 23);
+            this.btGenerate.TabIndex = 2;
+            this.btGenerate.Text = "Generate";
+            this.btGenerate.UseVisualStyleBackColor = true;
+            this.btGenerate.Click += new System.EventHandler(this.btGenerate_Click);
             // 
             // btDownload
             // 
@@ -382,7 +427,7 @@
             // 
             // btUpload
             // 
-            this.btUpload.Location = new System.Drawing.Point(381, 291);
+            this.btUpload.Location = new System.Drawing.Point(388, 291);
             this.btUpload.Name = "btUpload";
             this.btUpload.Size = new System.Drawing.Size(75, 23);
             this.btUpload.TabIndex = 3;
@@ -406,9 +451,14 @@
             this.dgvDomainConfiguration.Name = "dgvDomainConfiguration";
             this.dgvDomainConfiguration.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDomainConfiguration.Size = new System.Drawing.Size(546, 281);
-            this.dgvDomainConfiguration.TabIndex = 0;
-            this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
+            this.dgvDomainConfiguration.TabIndex = 1;
             this.dgvDomainConfiguration.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvDomainConfiguration_RowPostPaint);
+            this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
+            this.dgvDomainConfiguration.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDomainConfiguration_CellClick);
+            this.dgvDomainConfiguration.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvDomainConfiguration_UserDeletingRow);
+            this.dgvDomainConfiguration.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvDomainConfiguration_CellBeginEdit);
+            this.dgvDomainConfiguration.CurrentCellChanged += new System.EventHandler(this.dgvDomainConfiguration_CurrentCellChanged);
+            this.dgvDomainConfiguration.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvDomainConfiguration_RowValidating);
             // 
             // dgvcDomain
             // 
@@ -487,6 +537,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
             this.Text = "Exchange DkimSigner";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.Shown += new System.EventHandler(this.MainWindow_Shown);
             this.tcConfiguration.ResumeLayout(false);
@@ -508,7 +559,6 @@
             this.tpDomain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvDomainConfiguration)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         #endregion
@@ -548,8 +598,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcRecipientRule;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
         private System.Windows.Forms.Label lblChangelog;
-        private System.Windows.Forms.TextBox tbxChangelog;
-        private System.Windows.Forms.Button btnUpateInstall;
+        private System.Windows.Forms.TextBox txtChangelog;
+        private System.Windows.Forms.Button btUpateInstall;
+        private System.Windows.Forms.Button btGenerate;
         private System.Windows.Forms.Timer timFetch;
     }
 }

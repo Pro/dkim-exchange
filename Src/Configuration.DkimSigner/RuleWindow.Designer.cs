@@ -32,7 +32,7 @@
             this.lbRecipientRule = new System.Windows.Forms.Label();
             this.txtSenderRule = new System.Windows.Forms.TextBox();
             this.txtRecipientRule = new System.Windows.Forms.TextBox();
-            this.btValidate = new System.Windows.Forms.Button();
+            this.btConfirm = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbSenderRule
@@ -67,24 +67,24 @@
             this.txtRecipientRule.Size = new System.Drawing.Size(210, 20);
             this.txtRecipientRule.TabIndex = 3;
             // 
-            // btValidate
+            // btConfirm
             // 
-            this.btValidate.Location = new System.Drawing.Point(128, 70);
-            this.btValidate.Name = "btValidate";
-            this.btValidate.Size = new System.Drawing.Size(79, 23);
-            this.btValidate.TabIndex = 15;
-            this.btValidate.Text = "Valiade";
-            this.btValidate.UseVisualStyleBackColor = true;
-            this.btValidate.Click += new System.EventHandler(this.btValidate_Click);
+            this.btConfirm.Location = new System.Drawing.Point(128, 70);
+            this.btConfirm.Name = "btConfirm";
+            this.btConfirm.Size = new System.Drawing.Size(79, 23);
+            this.btConfirm.TabIndex = 15;
+            this.btConfirm.Text = "Confirm";
+            this.btConfirm.UseVisualStyleBackColor = true;
+            this.btConfirm.Click += new System.EventHandler(this.btValidate_Click);
             // 
-            // RuleWindows
+            // RuleWindow
             // 
-            this.AcceptButton = this.btValidate;
+            this.AcceptButton = this.btConfirm;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(329, 105);
             this.ControlBox = false;
-            this.Controls.Add(this.btValidate);
+            this.Controls.Add(this.btConfirm);
             this.Controls.Add(this.txtRecipientRule);
             this.Controls.Add(this.txtSenderRule);
             this.Controls.Add(this.lbRecipientRule);
@@ -92,7 +92,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "RuleWindows";
+            this.Name = "RuleWindow";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -108,6 +108,6 @@
         private System.Windows.Forms.Label lbRecipientRule;
         public System.Windows.Forms.TextBox txtSenderRule;
         public System.Windows.Forms.TextBox txtRecipientRule;
-        private System.Windows.Forms.Button btValidate;
+        private System.Windows.Forms.Button btConfirm;
     }
 }

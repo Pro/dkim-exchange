@@ -15,6 +15,10 @@ namespace Configuration.DkimSigner
 {
     public class ExchangeHelper
     {
+        /// <summary>
+        /// Get the current Exchange version for the current server from Active Directy (ldap)
+        /// </summary>
+        /// <returns></returns>
         public static string checkExchangeVersionInstalled()
         {
             try

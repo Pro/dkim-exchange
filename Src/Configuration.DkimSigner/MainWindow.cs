@@ -10,6 +10,7 @@ using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -24,38 +25,82 @@ namespace Configuration.DkimSigner
     {
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
-        private const string DKIM_SIGNER_URI = @"https://raw.githubusercontent.com/Pro/dkim-exchange/master/VERSION";
 
-        private Dictionary<string, byte[]> attachments;
-        private Release currentRelease = null;
+        private Dictionary<int, byte[]> attachments;
+        private Release currentRelease;
+
+        delegate void SetDkimSignerInstalledCallback(string dkimSignerInstalled);
+        delegate void SetDkimSignerAvailableCallback(string dkimSignerAvailable);
+        delegate void SetChangelogCallback(string changelog);
+
+        /**********************************************************/
+        /*********************** Construtor ***********************/
+        /**********************************************************/
 
         public MainWindow()
         {
             InitializeComponent();
 
-            attachments = new Dictionary<string, byte[]>();
-
+            attachments = new Dictionary<int, byte[]>();
         }
-        
 
+        /**********************************************************/
+        /************************* Events *************************/
+        /**********************************************************/
+
+        /// <summary>
+        /// Load information in the Windowform
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            cbLogLevel.SelectedItem = "Information";
+            this.cbLogLevel.SelectedItem = "Information";
+
+            // Get Exchange.DkimSigner version installed
+            Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
+            thDkimSignerInstalled.Start();
+
+            // Get Exchange.DkimSigner version available
+            Thread thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
+            thDkimSignerAvailable.Start();
+
+            // Get Exchange version installed + load the current configuration
+        }
+            loadDkimSignerConfig();
         }
 
-        private void MainWindow_Shown(object sender, EventArgs e)
+        /// <summary>
+        /// Confirm the configuration saving before quit the application
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
-
+            DialogResult result = MessageBox.Show("Want to save your changes?", "Confirmation", MessageBoxButtons.YesNoCancel);
+            
+            if (result == DialogResult.Yes)
+            {
+                this.saveDkimSignerConfig();
+            }
+            else if (result == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+            }
         }
 
-        void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        /// <summary>
+        /// Add row numbers in the dgvDomainConfiguration DataGridView in the row header
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var grid = sender as DataGridView;
             var rowIdx = (e.RowIndex + 1).ToString();
 
             var centerFormat = new StringFormat()
             {
-                // right alignment might actually make more sense for numbers
                 Alignment = StringAlignment.Center,
                 LineAlignment = StringAlignment.Center
             };
@@ -64,42 +109,250 @@ namespace Configuration.DkimSigner
             e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
         }
 
-        private void checkDkimSignerInstalled()
+        /// <summary>
+        /// Open RuleWindows when the row header have been clicked in the dgvDomainConfiguration DataGridView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            try
+            string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
+            string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
+
+            RuleWindow form = new RuleWindow(recipientRule, senderRule);
+            form.ShowDialog();
+
+            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
+            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
+        }
+
+        /// <summary>
+        /// Open private key information by clicking in private key file in the dgvDomainConfiguration DataGridView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_CellClick(object sender, System.Windows.Forms.DataGridViewCellEventArgs e)
+        {
+            string domain = string.Empty;
+            string selector = string.Empty;
+            string filename = string.Empty;
+
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value != null)
+                domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value != null)
+                selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
+
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value != null)
+                filename = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value.ToString();
+
+            if (e.ColumnIndex == 2 && domain != string.Empty && selector != string.Empty && filename != string.Empty)
             {
-                txtDkimSignerInstalled.Text = FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion;
-            }
-            catch (Exception)
-            {
-                txtDkimSignerInstalled.Text = "Not installed";
+                byte[] binaryData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
+
+                PrivateKeyWindows form = new PrivateKeyWindows(domain, selector, filename);
+                form.ShowDialog();
+
+                dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
             }
         }
 
-        private void checkDkimSignerAvailable()
+        /// <summary>
+        /// Reconfigure the private key internal structure when a row have been deleted in the dgvDomainConfiguration DataGridView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_UserDeletingRow(object sender, System.Windows.Forms.DataGridViewRowCancelEventArgs e)
         {
+            int total = attachments.Count;
+            int rowIndex = dgvDomainConfiguration.SelectedCells[0].RowIndex;
+
+            attachments.Remove(rowIndex);
+            for (int i = rowIndex+1; i < total; i++)
+            {
+                byte[] value = attachments[i];
+                attachments.Remove(i);
+                attachments[i-1] = value;
+            }
+        }
+
+        /// <summary>
+        /// Disable all domain configuration buttons when a cell begin to be editing
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_CellBeginEdit(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
+        {
+            this.btGenerate.Enabled = false;
+            this.btUpload.Enabled = false;
+            this.btDownload.Enabled = false;
+        }
+
+        /// <summary>
+        /// Enable / Disable the buttons when the current cell changed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_CurrentCellChanged(object sender, System.EventArgs e)
+        {
+            string domain = string.Empty;
+            string selector = string.Empty;
+
+            if (dgvDomainConfiguration.SelectedRows[0].Cells[0].Value != null)
+                domain = dgvDomainConfiguration.SelectedRows[0].Cells[0].Value.ToString();
+
+            if (dgvDomainConfiguration.SelectedRows[0].Cells[1].Value != null)
+                selector = dgvDomainConfiguration.SelectedRows[0].Cells[1].Value.ToString();
+
+            if (domain != string.Empty && selector != string.Empty)
+            {
+                this.btGenerate.Enabled = true;
+                this.btUpload.Enabled = true;
+                this.btDownload.Enabled = true;
+            }
+            else
+            {
+                this.btGenerate.Enabled = false;
+                this.btUpload.Enabled = false;
+                this.btDownload.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Validate the current row
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void dgvDomainConfiguration_RowValidating(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
+        {
+            string domain = string.Empty;
+            string selector = string.Empty;
+            string filename = string.Empty;
+
+            // Get the domain
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value != null)
+                domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+
+            // Get the domain
+            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value != null)
+                selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
+
+            // If (the domain or the selector is empty string) and the domain and selector are both empty
+            if ((domain == string.Empty || selector == string.Empty) && domain != selector)
+            {
+                e.Cancel = true;
+            }
+        }
+
+        /**********************************************************/
+        /******************* Internal functions *******************/
+        /**********************************************************/
+
+        /// <summary>
+        /// Set the value of txtDkimSignerInstalled from CheckDkimSignerInstalledSafe (use by thread DkimSignerInstalled)
+        /// </summary>
+        /// <param name="dkimSignerInstalled"></param>
+        private void SetDkimSignerInstalled(string dkimSignerInstalled)
+        {
+            this.txtDkimSignerInstalled.Text = dkimSignerInstalled;
+        }
+
+        /// <summary>
+        ///  Set the value of txtDkimSignerAvailable from CheckDkimSignerAvailableSafe (use by thread DkimSignerAvailable)
+        /// </summary>
+        /// <param name="dkimSignerAvailable"></param>
+        private void SetDkimSignerAvailable(string dkimSignerAvailable)
+        {
+            this.txtDkimSignerAvailable.Text = dkimSignerAvailable;
+        }
+
+        /// <summary>
+        ///  Set the value of txtChangelog from CheckDkimSignerAvailableSafe (use by thread DkimSignerAvailable)
+        /// </summary>
+        /// <param name="changelog"></param>
+        private void SetChangelog(string changelog)
+        {
+            this.txtChangelog.Text = changelog;
+        }
+
+        /// <summary>
+        /// Thread safe function for the thread DkimSignerInstalled
+        /// </summary>
+        private void CheckDkimSignerInstalledSafe()
+        {
+            string dkimSignerInstalled = string.Empty;
+
+            try
+            {
+                dkimSignerInstalled = FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion;
+            }
+            catch (Exception)
+            {
+               dkimSignerInstalled = "Not installed";
+            }
+            
+            if (this.txtDkimSignerInstalled.InvokeRequired)
+            {
+                SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
+                this.Invoke(d, new object[] { dkimSignerInstalled});
+            }
+            else
+            {
+                this.txtDkimSignerInstalled.Text = dkimSignerInstalled;
+            }
+        }
+
+        /// <summary>
+        /// Thread safe function for the thread DkimSignerAvailable
+        /// </summary>
+        private void CheckDkimSignerAvailableSafe()
+        {
+            string dkimSignerAvailable = string.Empty;
+            string changelog = string.Empty;
+
             try
             {
                 currentRelease = ApiWrapper.getNewestRelease();
                 if (currentRelease != null)
                 {
-                    txtDkimSignerAvailable.Text = currentRelease.Version.ToString();
-                    tbxChangelog.Text = currentRelease.Body;
+                    dkimSignerAvailable = currentRelease.Version.ToString();
+                    changelog = currentRelease.Body;
                 }
                 else
                 {
-                    txtDkimSignerAvailable.Text = "Unknown";
-                    tbxChangelog.Text = "";
+                    dkimSignerAvailable = "Unknown";
                 }
             }
             catch (Exception e)
             {
-                txtDkimSignerAvailable.Text = "Unknown";
-                tbxChangelog.Text = "";
+                dkimSignerAvailable = "Unknown";
                 MessageBox.Show(this, "Couldn't get current version:\n" + e.Message, "Version detect error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (this.txtDkimSignerInstalled.InvokeRequired)
+            {
+                SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
+                this.Invoke(d, new object[] { dkimSignerAvailable});
+            }
+            else
+            {
+                this.txtDkimSignerInstalled.Text = dkimSignerAvailable;
+            }
+
+            if (this.txtChangelog.InvokeRequired)
+            {
+                SetChangelogCallback d = new SetChangelogCallback(SetChangelog);
+                this.Invoke(d, new object[] { changelog });
+            }
+            else
+            {
+                this.txtChangelog.Text = changelog;
             }
         }
 
+        /// <summary>
+        /// Load the current configuration for Exchange DkimSigner from the registry
+        /// </summary>
         private void loadDkimSignerConfig()
         {
             if (RegistryHelper.Open(@"Exchange DkimSigner") != null)
@@ -190,6 +443,7 @@ namespace Configuration.DkimSigner
                 string[] domainNames = RegistryHelper.GetSubKeyName(@"Exchange DkimSigner\Domain");
                 if (domainNames != null)
                 {
+                    int i = 0;
                     foreach (string domainName in domainNames)
                     {
                         string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
@@ -203,13 +457,18 @@ namespace Configuration.DkimSigner
                                                                 recipientRule != null ? recipientRule : string.Empty,
                                                                 senderRule != null ? senderRule : string.Empty);
 
-                        attachments[domainName] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
+                        attachments[i++] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
                     }
+
+                    this.dgvDomainConfiguration.Rows[0].Selected = true;
                 }
             }
         }
 
-        private void btSave_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Save the new configuration into registry for Exchange DkimSigner
+        /// </summary>
+        private void saveDkimSignerConfig()
         {
             bool status = true;
 
@@ -233,6 +492,8 @@ namespace Configuration.DkimSigner
             if (!status)
                 MessageBox.Show("Error! Impossible to change the headers to sign.");
 
+            RegistryHelper.DeleteSubKeyTree("Domain", @"Exchange DkimSigner\");
+            Array.ForEach(Directory.GetFiles(DKIM_SIGNER_PATH + @"\keys\"), File.Delete);
             dgvDomainConfiguration.AllowUserToAddRows = false;
             if (dgvDomainConfiguration.Rows.Count > 0)
             {
@@ -261,12 +522,12 @@ namespace Configuration.DkimSigner
                             status = status && RegistryHelper.Write("SenderRule", senderRule, @"Exchange DkimSigner\Domain\" + domainName);
 
                         byte[] byteData = null;
-                        byteData = attachments[domainName];
+                        byteData = attachments[row.Index];
                         File.WriteAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile, byteData);
                     }
                     else
                     {
-                        MessageBox.Show("Impossible to save the configuration for all the domain configurations. The line number " + row.Index + " is incomplet.");
+                        MessageBox.Show("Impossible to save the configuration for all the domain configurations. The line number " + (row.Index+1) + " is incomplet.");
                     }
                 }
             }
@@ -278,18 +539,51 @@ namespace Configuration.DkimSigner
                 MessageBox.Show("One or many errors happened! All specified configurations haven't been updated.");
         }
 
-        void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
+        /**********************************************************/
+        /********************** Button click **********************/
+        /**********************************************************/
+
+        /// <summary>
+        /// Button "Save configuration" action
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btSave_Click(object sender, EventArgs e)
         {
-            string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
-            string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
-
-            RuleWindow form = new RuleWindow(recipientRule, senderRule);
-            form.ShowDialog();
-
-            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
-            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
+            this.saveDkimSignerConfig();
         }
 
+        /// <summary>
+        /// Button "Generate" in domain configuration action - Generate a new private key file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btGenerate_Click(object sender, EventArgs e)
+        {
+            byte[] binaryData = RSACryptoHelper.GenerateXMLEncodedRsaPrivateKey();
+            string domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
+            string selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
+
+            PrivateKeyWindows form = new PrivateKeyWindows(domain, selector);
+            form.ShowDialog();
+
+            dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
+
+            if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
+            {
+                attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
+            }
+            else
+            {
+                attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
+            }
+        }
+
+        /// <summary>
+        /// Button "Upload" in domain configuration action - Upload the selected private key file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btUpload_Click(object sender, EventArgs e)
         {
             if (dgvDomainConfiguration.SelectedCells.Count > 0)
@@ -306,15 +600,22 @@ namespace Configuration.DkimSigner
                     {
                         FileInfo fileInfo = new FileInfo(fileDialog.FileName);
                         byte[] binaryData = File.ReadAllBytes(fileDialog.FileName);
-                        dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
-
-                        if (attachments.ContainsKey(dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString()))
+                        if (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(binaryData) != RSACryptoFormat.UNKNOWN)
                         {
-                            attachments[dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString()] = binaryData;
+                            dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
+
+                            if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
+                            {
+                                attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
+                            }
+                            else
+                            {
+                                attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
+                            }
                         }
                         else
                         {
-                            attachments.Add(dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString(), binaryData);
+                            MessageBox.Show("The format of the private key file you try to import is invalid.");
                         }
                     }
                 }
@@ -325,6 +626,11 @@ namespace Configuration.DkimSigner
             }
         }
 
+        /// <summary>
+        /// Button "Download" in domain configuration action - Download the selected private key file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btDownload_Click(object sender, EventArgs e)
         {
             if (dgvDomainConfiguration.SelectedCells.Count > 0)
@@ -348,7 +654,7 @@ namespace Configuration.DkimSigner
 
                     if (saveFileDialog.ShowDialog() == DialogResult.OK)
                     {
-                        byteData = attachments[dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[2].RowIndex].Cells[0].Value.ToString()];
+                        byteData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
                         File.WriteAllBytes(saveFileDialog.FileName, byteData);
                     }
                 }
@@ -359,7 +665,12 @@ namespace Configuration.DkimSigner
             }
         }
 
-        private void btnUpateInstall_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Update the current Configuration.ExchangeDkimSigner WindowsForm and the Exchange.DkimSigner transport agent
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btUpateInstall_Click(object sender, EventArgs e)
         {
             ExchangeHelper.installTransoportAgent();
         }
