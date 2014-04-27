@@ -66,6 +66,8 @@ namespace Configuration.DkimSigner
             thDkimSignerAvailable.Start();
 
             // Get Exchange version installed + load the current configuration
+            txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
+            loadDkimSignerConfig();
         }
 
         /// <summary>
@@ -148,7 +150,7 @@ namespace Configuration.DkimSigner
             {
                 byte[] binaryData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
 
-                PrivateKeyWindows form = new PrivateKeyWindows(domain, selector, filename);
+                PrivateKeyWindows form = new PrivateKeyWindows(domain, binaryData, filename);
                 form.ShowDialog();
 
                 dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
@@ -560,9 +562,8 @@ namespace Configuration.DkimSigner
         {
             byte[] binaryData = RSACryptoHelper.GenerateXMLEncodedRsaPrivateKey();
             string domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
-            string selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
 
-            PrivateKeyWindows form = new PrivateKeyWindows(domain, selector);
+            PrivateKeyWindows form = new PrivateKeyWindows(domain, binaryData);
             form.ShowDialog();
 
             dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
@@ -670,19 +671,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btUpateInstall_Click(object sender, EventArgs e)
         {
-            ExchangeHelper.installTransoportAgent();
-        }
-
-        private void timFetch_Tick(object sender, EventArgs e)
-        {
-            timFetch.Enabled = false;
-
-
-          /*  txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
-
-            checkDkimSignerInstalled();
-            checkDkimSignerAvailable();
-            loadDkimSignerConfig();*/
+           
         }
     }
 }

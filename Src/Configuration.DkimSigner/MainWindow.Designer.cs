@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
@@ -68,7 +67,6 @@
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.timFetch = new System.Windows.Forms.Timer(this.components);
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -124,7 +122,7 @@
             this.gbAvailable.Size = new System.Drawing.Size(546, 254);
             this.gbAvailable.TabIndex = 6;
             this.gbAvailable.TabStop = false;
-            this.gbAvailable.Text = "Current version:";
+            this.gbAvailable.Text = "Available";
             // 
             // btUpateInstall
             // 
@@ -489,23 +487,6 @@
             this.dgvcSenderRule.HeaderText = "SenderRule";
             this.dgvcSenderRule.Name = "dgvcSenderRule";
             this.dgvcSenderRule.Visible = false;
-          
-            // 
-            // lblChangelog
-            // 
-            this.lblChangelog.AutoSize = true;
-            this.lblChangelog.Location = new System.Drawing.Point(6, 54);
-            this.lblChangelog.Name = "lblChangelog";
-            this.lblChangelog.Size = new System.Drawing.Size(61, 13);
-            this.lblChangelog.TabIndex = 7;
-            this.lblChangelog.Text = "Changelog:";
-           
-            // 
-            // timFetch
-            // 
-            this.timFetch.Enabled = true;
-            this.timFetch.Interval = 1;
-            this.timFetch.Tick += new System.EventHandler(this.timFetch_Tick);
             // 
             // MainWindow
             // 
@@ -579,7 +560,6 @@
         private System.Windows.Forms.TextBox txtChangelog;
         private System.Windows.Forms.Button btUpateInstall;
         private System.Windows.Forms.Button btGenerate;
-        private System.Windows.Forms.Timer timFetch;
     }
 }
 
