@@ -672,7 +672,10 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btUpateInstall_Click(object sender, EventArgs e)
         {
-           
+
+            //testing:
+            MessageBox.Show("Uninstall retval: " + ExchangeHelper.uninstallTransportAgent().ToString());
+            MessageBox.Show("Install retval: " + ExchangeHelper.installTransoportAgent().ToString());
         }
     }
 }
