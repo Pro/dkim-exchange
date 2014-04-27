@@ -489,19 +489,7 @@
             this.dgvcSenderRule.HeaderText = "SenderRule";
             this.dgvcSenderRule.Name = "dgvcSenderRule";
             this.dgvcSenderRule.Visible = false;
-            // 
-            // tbxChangelog
-            // 
-            this.tbxChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbxChangelog.Location = new System.Drawing.Point(9, 70);
-            this.tbxChangelog.Multiline = true;
-            this.tbxChangelog.Name = "tbxChangelog";
-            this.tbxChangelog.ReadOnly = true;
-            this.tbxChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.tbxChangelog.Size = new System.Drawing.Size(531, 178);
-            this.tbxChangelog.TabIndex = 6;
+          
             // 
             // lblChangelog
             // 
@@ -511,16 +499,7 @@
             this.lblChangelog.Size = new System.Drawing.Size(61, 13);
             this.lblChangelog.TabIndex = 7;
             this.lblChangelog.Text = "Changelog:";
-            // 
-            // btnUpateInstall
-            // 
-            this.btnUpateInstall.Location = new System.Drawing.Point(302, 19);
-            this.btnUpateInstall.Name = "btnUpateInstall";
-            this.btnUpateInstall.Size = new System.Drawing.Size(138, 23);
-            this.btnUpateInstall.TabIndex = 8;
-            this.btnUpateInstall.Text = "Update";
-            this.btnUpateInstall.UseVisualStyleBackColor = true;
-            this.btnUpateInstall.Click += new System.EventHandler(this.btnUpateInstall_Click);
+           
             // 
             // timFetch
             // 
@@ -539,7 +518,6 @@
             this.Text = "Exchange DkimSigner";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
-            this.Shown += new System.EventHandler(this.MainWindow_Shown);
             this.tcConfiguration.ResumeLayout(false);
             this.tbInformation.ResumeLayout(false);
             this.gbAvailable.ResumeLayout(false);

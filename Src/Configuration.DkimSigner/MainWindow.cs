@@ -67,8 +67,6 @@ namespace Configuration.DkimSigner
 
             // Get Exchange version installed + load the current configuration
         }
-            loadDkimSignerConfig();
-        }
 
         /// <summary>
         /// Confirm the configuration saving before quit the application

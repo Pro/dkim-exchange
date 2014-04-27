@@ -10,6 +10,7 @@ using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
+using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
 {
