@@ -126,7 +126,6 @@
             // 
             // btUpateInstall
             // 
-            this.btUpateInstall.Enabled = false;
             this.btUpateInstall.Location = new System.Drawing.Point(302, 19);
             this.btUpateInstall.Name = "btUpateInstall";
             this.btUpateInstall.Size = new System.Drawing.Size(138, 23);
@@ -450,13 +449,13 @@
             this.dgvDomainConfiguration.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvDomainConfiguration.Size = new System.Drawing.Size(546, 281);
             this.dgvDomainConfiguration.TabIndex = 1;
-            this.dgvDomainConfiguration.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvDomainConfiguration_RowPostPaint);
-            this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
-            this.dgvDomainConfiguration.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDomainConfiguration_CellClick);
-            this.dgvDomainConfiguration.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvDomainConfiguration_UserDeletingRow);
             this.dgvDomainConfiguration.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvDomainConfiguration_CellBeginEdit);
+            this.dgvDomainConfiguration.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDomainConfiguration_CellClick);
             this.dgvDomainConfiguration.CurrentCellChanged += new System.EventHandler(this.dgvDomainConfiguration_CurrentCellChanged);
+            this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
+            this.dgvDomainConfiguration.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvDomainConfiguration_RowPostPaint);
             this.dgvDomainConfiguration.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvDomainConfiguration_RowValidating);
+            this.dgvDomainConfiguration.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvDomainConfiguration_UserDeletingRow);
             // 
             // dgvcDomain
             // 
@@ -518,6 +517,7 @@
             this.tpDomain.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvDomainConfiguration)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         #endregion
