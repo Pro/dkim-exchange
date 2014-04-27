@@ -99,7 +99,7 @@ namespace Configuration.DkimSigner
 
         public static bool restartTransportService()
         {
-            int timeoutMS = 30 * 1000; //ms
+            int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
             try
             {
