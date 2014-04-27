@@ -17,6 +17,9 @@ namespace Configuration.DkimSigner
 {
     public class ExchangeHelper
     {
+
+        public static const string AGENT_NAME = "Exchange DkimSigner";
+
         /// <summary>
         /// Get the current Exchange version for the current server from Active Directy (ldap)
         /// </summary>
@@ -49,6 +52,10 @@ namespace Configuration.DkimSigner
             }
         }
 
+        /// <summary>
+        /// Create the connection info needed to execute power shell commands using exchange management cmdlets
+        /// </summary>
+        /// <returns>The connection info</returns>
         private static WSManConnectionInfo getPSConnectionInfo()
         {
 
@@ -61,6 +68,10 @@ namespace Configuration.DkimSigner
             return connectionInfo;
         }
 
+        /// <summary>
+        /// Checks if the Exchange DKIM TransportAgent is already installed or not. It doesn't check if the agent is enabled.
+        /// </summary>
+        /// <returns>true if it is installed.</returns>
         public static bool isAgentInstalled()
         {
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
@@ -86,7 +97,7 @@ namespace Configuration.DkimSigner
                     }
                     foreach (PSObject result in results)
                     {
-                        if (result.Properties["Identity"].Value.ToString().Equals("Exchange DkimSigner"))
+                        if (result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME))
                         {
                             return true;
                         }
@@ -97,6 +108,10 @@ namespace Configuration.DkimSigner
             return false;
         }
 
+        /// <summary>
+        /// Restart the MSExchangeTransport service. Needs to be called after changes on transport agent
+        /// </summary>
+        /// <returns>true if successfully restarted</returns>
         public static bool restartTransportService()
         {
             int timeoutMS = 60 * 1000; //ms
@@ -124,6 +139,11 @@ namespace Configuration.DkimSigner
             return true;
         }
 
+        /// <summary>
+        /// Uninstalls the transport agent by calling the corresponding PowerShell commands (Disable-TransportAgent and Uninstall-TransportAgent).
+        /// After uninstalling the agent, the MSExchangeTransport service will be restarted.
+        /// </summary>
+        /// <returns>true if successfully uninstalled</returns>
         public static bool uninstallTransportAgent()
         {
 
@@ -139,9 +159,9 @@ namespace Configuration.DkimSigner
                     powershell.Runspace = runspace;
 
                     // Disable-TransportAgent -Identity "Exchange DkimSigner" 
-                    powershell.AddScript("Disable-TransportAgent -Confirm:$false -Identity \"Exchange DkimSigner\"");
+                    powershell.AddScript("Disable-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
                     // Uninstall-TransportAgent -Identity "Exchange DkimSigner"  
-                    powershell.AddScript("Uninstall-TransportAgent -Confirm:$false -Identity \"Exchange DkimSigner\"");
+                    powershell.AddScript("Uninstall-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
 
                     Collection<PSObject> results = null;
                     try
@@ -167,6 +187,12 @@ namespace Configuration.DkimSigner
             return restartTransportService();
         }
 
+        /// <summary>
+        /// Installs the transport agent by calling the corresponding PowerShell commands (Install-TransportAgent and Enable-TransportAgent).
+        /// The priority of the agent is set to the highest one.
+        /// After installing the agent, the MSExchangeTransport service will be restarted.
+        /// </summary>
+        /// <returns>true if successfully installed</returns>
         public static bool installTransoportAgent()
         {
 
@@ -203,7 +229,7 @@ namespace Configuration.DkimSigner
                     {
                         // Install-TransportAgent -Name "Exchange DkimSigner" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "$EXDIR\ExchangeDkimSigner.dll"
                         powershell.AddCommand("Install-TransportAgent");
-                        powershell.AddParameter("Name", "Exchange DkimSigner");
+                        powershell.AddParameter("Name", AGENT_NAME);
                         powershell.AddParameter("TransportAgentFactory", "Exchange.DkimSigner.DkimSigningRoutingAgentFactory");
                         powershell.AddParameter("AssemblyPath", System.IO.Path.Combine(baseDir, "ExchangeDkimSigner.dll"));
 
@@ -225,7 +251,7 @@ namespace Configuration.DkimSigner
                         powershell.Commands.Clear();
                         // Enable-TransportAgent -Identity "Exchange DkimSigner"
                         powershell.AddCommand("Enable-TransportAgent");
-                        powershell.AddParameter("Identity", "Exchange DkimSigner");
+                        powershell.AddParameter("Identity", AGENT_NAME);
 
 
 
@@ -259,7 +285,7 @@ namespace Configuration.DkimSigner
                     foreach (PSObject result in results)
                     {
                         
-                        if (!result.Properties["Identity"].Value.ToString().Equals("Exchange DkimSigner")){
+                        if (!result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME)){
                             maxPrio = Math.Max(maxPrio, Int32.Parse(result.Properties["Priority"].Value.ToString()));
                         }
                     }
@@ -271,7 +297,7 @@ namespace Configuration.DkimSigner
 
                         //Set-TransportAgent -Identity "Exchange DkimSigner" -Priority 3
                         powershell.AddCommand("Set-TransportAgent");
-                        powershell.AddParameter("Identity", "Exchange DkimSigner");
+                        powershell.AddParameter("Identity", AGENT_NAME);
                         powershell.AddParameter("Priority", maxPrio + 1);
                         results = powershell.Invoke();
                         if (powershell.Streams.Error.Count > 0)
