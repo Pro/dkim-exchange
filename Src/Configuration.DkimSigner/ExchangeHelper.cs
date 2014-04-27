@@ -18,7 +18,7 @@ namespace Configuration.DkimSigner
     public class ExchangeHelper
     {
 
-        public static const string AGENT_NAME = "Exchange DkimSigner";
+        public const string AGENT_NAME = "Exchange DkimSigner";
 
         /// <summary>
         /// Get the current Exchange version for the current server from Active Directy (ldap)
