@@ -66,6 +66,12 @@ if ($overwrite -eq "Y" -or $overwrite -eq "y") {
 	write-host "Not copying config file" -f "yellow"
 }
 
+# Unblocks files that were downloaded from the Internet.
+unblock-file "$EXDIR\ExchangeCatchAll.dll"
+unblock-file "$EXDIR\ExchangeCatchAll.pdb"
+unblock-file "$EXDIR\mysql.data.dll"
+
+
 read-host "Now open '$EXDIR\ExchangeDkimSigner.dll.config' to configure Exchange DkimSigner.\nDon't forget to setup all the keys! When done and saved press 'Return'"
 
 write-host "Registering agent" -f "green"

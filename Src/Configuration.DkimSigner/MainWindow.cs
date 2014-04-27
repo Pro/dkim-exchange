@@ -41,11 +41,11 @@ namespace Configuration.DkimSigner
         private void MainWindow_Load(object sender, EventArgs e)
         {
             cbLogLevel.SelectedItem = "Information";
-            txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
+        }
 
-            checkDkimSignerInstalled();
-            checkDkimSignerAvailable();
-            loadDkimSignerConfig();
+        private void MainWindow_Shown(object sender, EventArgs e)
+        {
+
         }
 
         void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
@@ -361,7 +361,19 @@ namespace Configuration.DkimSigner
 
         private void btnUpateInstall_Click(object sender, EventArgs e)
         {
-           
+            ExchangeHelper.installTransoportAgent();
+        }
+
+        private void timFetch_Tick(object sender, EventArgs e)
+        {
+            timFetch.Enabled = false;
+
+
+          /*  txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
+
+            checkDkimSignerInstalled();
+            checkDkimSignerAvailable();
+            loadDkimSignerConfig();*/
         }
     }
 }

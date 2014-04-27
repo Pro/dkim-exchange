@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
@@ -66,6 +67,7 @@
             this.tbxChangelog = new System.Windows.Forms.TextBox();
             this.lblChangelog = new System.Windows.Forms.Label();
             this.btnUpateInstall = new System.Windows.Forms.Button();
+            this.timFetch = new System.Windows.Forms.Timer(this.components);
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -121,7 +123,7 @@
             this.gbAvailable.Size = new System.Drawing.Size(546, 254);
             this.gbAvailable.TabIndex = 5;
             this.gbAvailable.TabStop = false;
-            this.gbAvailable.Text = "Available";
+            this.gbAvailable.Text = "Current version:";
             // 
             // txtDkimSignerAvailable
             // 
@@ -462,7 +464,6 @@
             // 
             // btnUpateInstall
             // 
-            this.btnUpateInstall.Enabled = false;
             this.btnUpateInstall.Location = new System.Drawing.Point(302, 19);
             this.btnUpateInstall.Name = "btnUpateInstall";
             this.btnUpateInstall.Size = new System.Drawing.Size(138, 23);
@@ -470,6 +471,12 @@
             this.btnUpateInstall.Text = "Update";
             this.btnUpateInstall.UseVisualStyleBackColor = true;
             this.btnUpateInstall.Click += new System.EventHandler(this.btnUpateInstall_Click);
+            // 
+            // timFetch
+            // 
+            this.timFetch.Enabled = true;
+            this.timFetch.Interval = 1;
+            this.timFetch.Tick += new System.EventHandler(this.timFetch_Tick);
             // 
             // MainWindow
             // 
@@ -481,6 +488,7 @@
             this.Name = "MainWindow";
             this.Text = "Exchange DkimSigner";
             this.Load += new System.EventHandler(this.MainWindow_Load);
+            this.Shown += new System.EventHandler(this.MainWindow_Shown);
             this.tcConfiguration.ResumeLayout(false);
             this.tbInformation.ResumeLayout(false);
             this.gbAvailable.ResumeLayout(false);
@@ -542,6 +550,7 @@
         private System.Windows.Forms.Label lblChangelog;
         private System.Windows.Forms.TextBox tbxChangelog;
         private System.Windows.Forms.Button btnUpateInstall;
+        private System.Windows.Forms.Timer timFetch;
     }
 }
 
