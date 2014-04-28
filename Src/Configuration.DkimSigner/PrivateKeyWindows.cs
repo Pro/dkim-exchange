@@ -23,9 +23,18 @@ namespace Configuration.DkimSigner
 
         private string DnsSelector(string domain, string selector)
         {
-            string record = DNSHelper.GetTxtRecord(selector + "._domainkey." + domain);
+            string record = null;
+            try
+            {
+                record = DNSHelper.GetTxtRecord(selector + "._domainkey." + domain);
+                record = record != null ? "Current published DKIM record : \r\n" + record : "No DKIM record is currently publish!";
+            }
+            catch(Exception)
+            {
+                record = "Couldn't get current version.\r\nCheck your Internet connexion and restart the application.";
+            }
 
-            return record != null ? "Current published DKIM record : \r\n" + record : "No DKIM record is currently publish!";
+            return record;
         }
 
         private void btValidate_Click(object sender, EventArgs e)

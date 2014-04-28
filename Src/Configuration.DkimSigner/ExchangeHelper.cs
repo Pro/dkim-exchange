@@ -1,23 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Net;
+using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
-using System.Collections.ObjectModel;
-using Microsoft.Win32;
 using System.Windows.Forms;
-using System.ServiceProcess;
+
+using ConfigurationSettings;
 
 namespace Configuration.DkimSigner
 {
     public class ExchangeHelper
     {
-
         public const string AGENT_NAME = "Exchange DkimSigner";
 
         /// <summary>
@@ -58,7 +58,6 @@ namespace Configuration.DkimSigner
         /// <returns>The connection info</returns>
         private static WSManConnectionInfo getPSConnectionInfo()
         {
-
             string hostName = System.Net.Dns.GetHostEntry("").HostName;
 
             PSCredential psCredential = (PSCredential)null;
@@ -76,8 +75,8 @@ namespace Configuration.DkimSigner
         {
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
             {
-
                 runspace.Open();
+                
                 using (PowerShell powershell = PowerShell.Create())
                 {
                     powershell.Runspace = runspace;
@@ -90,9 +89,9 @@ namespace Configuration.DkimSigner
                     {
                         foreach (ErrorRecord error in powershell.Streams.Error)
                         {
-
                             MessageBox.Show("Error getting list of Transport Agents\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+
                         return false;
                     }
                     foreach (PSObject result in results)
@@ -105,6 +104,7 @@ namespace Configuration.DkimSigner
 
                 }
             }
+
             return false;
         }
 
@@ -136,6 +136,7 @@ namespace Configuration.DkimSigner
                 MessageBox.Show("Couldn't restart 'MSExchangeTransport' service\n" + e.Message, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
             return true;
         }
 
@@ -146,20 +147,20 @@ namespace Configuration.DkimSigner
         /// <returns>true if successfully uninstalled</returns>
         public static bool uninstallTransportAgent()
         {
-
             if (!isAgentInstalled())
                 return true;
 
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
             {
-
                 runspace.Open();
+
                 using (PowerShell powershell = PowerShell.Create())
                 {
                     powershell.Runspace = runspace;
 
                     // Disable-TransportAgent -Identity "Exchange DkimSigner" 
                     powershell.AddScript("Disable-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
+
                     // Uninstall-TransportAgent -Identity "Exchange DkimSigner"  
                     powershell.AddScript("Uninstall-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
 
@@ -173,6 +174,7 @@ namespace Configuration.DkimSigner
                         MessageBox.Show("Error uninstalling Transport Agent\n" + e.Message, "PowerShell exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return false;
                     }
+
                     if (powershell.Streams.Error.Count > 0)
                     {
                         foreach (ErrorRecord error in powershell.Streams.Error)
@@ -193,26 +195,19 @@ namespace Configuration.DkimSigner
         /// After installing the agent, the MSExchangeTransport service will be restarted.
         /// </summary>
         /// <returns>true if successfully installed</returns>
-        public static bool installTransoportAgent()
+        public static bool installTransportAgent()
         {
-
-
             // First make sure the following Registry key exists
             // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
-
-            RegistryKey root = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM", false);
-            if (root == null)
+            if (RegistryHelper.Open(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM") != null)
             {
-                //doesn't exist
-                Registry.LocalMachine.CreateSubKey(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
+                RegistryHelper.WriteSubKeyTree(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
             }
 
             string baseDir = @"C:\Program Files\Exchange DkimSigner";
 
             //TODO net stop MSExchangeTransport 
             //TODO copy .dll and .config
-
-
 
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
             {
@@ -249,11 +244,10 @@ namespace Configuration.DkimSigner
                         }
 
                         powershell.Commands.Clear();
+                        
                         // Enable-TransportAgent -Identity "Exchange DkimSigner"
                         powershell.AddCommand("Enable-TransportAgent");
                         powershell.AddParameter("Identity", AGENT_NAME);
-
-
 
                         results = powershell.Invoke();
                         if (powershell.Streams.Error.Count > 0)
@@ -266,9 +260,8 @@ namespace Configuration.DkimSigner
                         }
                     }
 
-
-
                     powershell.Commands.Clear();
+                    
                     // Determine current maximum priority
                     powershell.AddCommand("Get-TransportAgent");
 
@@ -279,8 +272,10 @@ namespace Configuration.DkimSigner
                         {
                             MessageBox.Show("Error getting list of Transport Agents\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
+                        
                         return false;
                     }
+                    
                     int maxPrio = 0;
                     foreach (PSObject result in results)
                     {
@@ -294,12 +289,12 @@ namespace Configuration.DkimSigner
 
                     if (currPriority != maxPrio + 1)
                     {
-
                         //Set-TransportAgent -Identity "Exchange DkimSigner" -Priority 3
                         powershell.AddCommand("Set-TransportAgent");
                         powershell.AddParameter("Identity", AGENT_NAME);
                         powershell.AddParameter("Priority", maxPrio + 1);
                         results = powershell.Invoke();
+                        
                         if (powershell.Streams.Error.Count > 0)
                         {
                             foreach (ErrorRecord error in powershell.Streams.Error)
@@ -312,9 +307,7 @@ namespace Configuration.DkimSigner
                 }
             }
 
-
             return restartTransportService();
         }
     }
-
 }

@@ -67,7 +67,7 @@ namespace Configuration.DkimSigner
 
             // Get Exchange version installed + load the current configuration
             txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
-            loadDkimSignerConfig();
+            LoadDkimSignerConfig();
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace Configuration.DkimSigner
             
             if (result == DialogResult.Yes)
             {
-                this.saveDkimSignerConfig();
+                this.SaveDkimSignerConfig();
             }
             else if (result == DialogResult.Cancel)
             {
@@ -239,9 +239,7 @@ namespace Configuration.DkimSigner
 
             // If (the domain or the selector is empty string) and the domain and selector are both empty
             if ((domain == string.Empty || selector == string.Empty) && domain != selector)
-            {
                 e.Cancel = true;
-            }
         }
 
         /**********************************************************/
@@ -323,10 +321,10 @@ namespace Configuration.DkimSigner
                     dkimSignerAvailable = "Unknown";
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 dkimSignerAvailable = "Unknown";
-                MessageBox.Show(this, "Couldn't get current version:\n" + e.Message, "Version detect error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                changelog = "Couldn't get current version.\r\nCheck your Internet connexion and restart the application.";
             }
 
             if (this.txtDkimSignerInstalled.InvokeRequired)
@@ -353,18 +351,18 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// Load the current configuration for Exchange DkimSigner from the registry
         /// </summary>
-        private void loadDkimSignerConfig()
+        private void LoadDkimSignerConfig()
         {
-            if (RegistryHelper.Open(@"Exchange DkimSigner") != null)
+            if (RegistryHelper.Open(@"Software\Exchange DkimSigner") != null)
             {
                 // Load the log level.
                 int logLevel = 0;
                 try
                 {
-                    string temp = RegistryHelper.Read("LogLevel", @"Exchange DkimSigner");
+                    string temp = RegistryHelper.Read("LogLevel", @"Software\Exchange DkimSigner");
 
                     if (temp != null)
-                        logLevel = Convert.ToInt32(RegistryHelper.Read("LogLevel", @"Exchange DkimSigner"));
+                        logLevel = Convert.ToInt32(RegistryHelper.Read("LogLevel", @"Software\Exchange DkimSigner"));
                 }
                 catch (FormatException){}
                 catch (OverflowException){}
@@ -390,7 +388,7 @@ namespace Configuration.DkimSigner
                 // Load the signing algorithm.
                 try
                 {
-                    DkimAlgorithmKind signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Exchange DkimSigner\DKIM"), true);
+                    DkimAlgorithmKind signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Software\Exchange DkimSigner\DKIM"), true);
 
                     if (signingAlgorithm == DkimAlgorithmKind.RsaSha1)
                         this.rbRsaSha1.Checked = true;
@@ -405,7 +403,7 @@ namespace Configuration.DkimSigner
                 // Load the header canonicalization algorithm.
                 try
                 {
-                    DkimCanonicalizationKind headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Exchange DkimSigner\DKIM"), true);
+                    DkimCanonicalizationKind headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Software\Exchange DkimSigner\DKIM"), true);
 
                     if (headerCanonicalization == DkimCanonicalizationKind.Simple)
                         this.rbSimpleHeaderCanonicalization.Checked = true;
@@ -420,7 +418,7 @@ namespace Configuration.DkimSigner
                 // Load the body canonicalization algorithm.
                 try
                 {
-                    DkimCanonicalizationKind bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Exchange DkimSigner\DKIM"), true);
+                    DkimCanonicalizationKind bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Software\Exchange DkimSigner\DKIM"), true);
 
                     if (bodyCanonicalization == DkimCanonicalizationKind.Simple)
                         this.rbSimpleBodyCanonicalization.Checked = true;
@@ -433,23 +431,23 @@ namespace Configuration.DkimSigner
                 }
 
                 // Load the list of headers to sign in each message.
-                string unparsedHeaders = RegistryHelper.Read("HeadersToSign", @"Exchange DkimSigner\DKIM");
+                string unparsedHeaders = RegistryHelper.Read("HeadersToSign", @"Software\Exchange DkimSigner\DKIM");
                 if (unparsedHeaders != null)
                 {
                     this.txtHeaderToSign.Text = unparsedHeaders;
                 }
 
                 // Load the list of domains
-                string[] domainNames = RegistryHelper.GetSubKeyName(@"Exchange DkimSigner\Domain");
+                string[] domainNames = RegistryHelper.GetSubKeyName(@"Software\Exchange DkimSigner\Domain");
                 if (domainNames != null)
                 {
                     int i = 0;
                     foreach (string domainName in domainNames)
                     {
-                        string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
-                        string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Exchange DkimSigner\Domain\" + domainName);
-                        string recipientRule = RegistryHelper.Read("RecipientRule", @"Exchange DkimSigner\Domain\" + domainName);
-                        string senderRule = RegistryHelper.Read("SenderRule", @"Exchange DkimSigner\Domain\" + domainName);
+                        string selector = RegistryHelper.Read("Selector", @"Software\Exchange DkimSigner\Domain\" + domainName);
+                        string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Software\Exchange DkimSigner\Domain\" + domainName);
+                        string recipientRule = RegistryHelper.Read("RecipientRule", @"Software\Exchange DkimSigner\Domain\" + domainName);
+                        string senderRule = RegistryHelper.Read("SenderRule", @"Software\Exchange DkimSigner\Domain\" + domainName);
 
                         this.dgvDomainConfiguration.Rows.Add(   domainName,
                                                                 selector,
@@ -468,31 +466,31 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// Save the new configuration into registry for Exchange DkimSigner
         /// </summary>
-        private void saveDkimSignerConfig()
+        private void SaveDkimSignerConfig()
         {
             bool status = true;
 
-            status = status && RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Exchange DkimSigner");
+            status = status && RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Software\Exchange DkimSigner");
             if (!status)
                 MessageBox.Show("Error! Impossible to change the log level.");
 
-            status = status && RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Exchange DkimSigner\DKIM");
+            status = status && RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Software\Exchange DkimSigner\DKIM");
             if (!status)
                 MessageBox.Show("Error! Impossible to change the algorithm.");
 
-            status = status && RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Exchange DkimSigner\DKIM");
+            status = status && RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM");
             if (!status)
                 MessageBox.Show("Error! Impossible to change the header canonicalization.");
 
-            status = status && RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Exchange DkimSigner\DKIM");
+            status = status && RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM");
             if (!status)
                 MessageBox.Show("Error! Impossible to change the body canonicalization.");
 
-            status = status && RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Exchange DkimSigner\DKIM");
+            status = status && RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Software\Exchange DkimSigner\DKIM");
             if (!status)
                 MessageBox.Show("Error! Impossible to change the headers to sign.");
 
-            RegistryHelper.DeleteSubKeyTree("Domain", @"Exchange DkimSigner\");
+            RegistryHelper.DeleteSubKeyTree("Domain", @"Software\Exchange DkimSigner\");
             Array.ForEach(Directory.GetFiles(DKIM_SIGNER_PATH + @"\keys\"), File.Delete);
             dgvDomainConfiguration.AllowUserToAddRows = false;
             if (dgvDomainConfiguration.Rows.Count > 0)
@@ -512,14 +510,14 @@ namespace Configuration.DkimSigner
                         string recipientRule = row.Cells[3].Value != null ? row.Cells[3].Value.ToString() : string.Empty;
                         string senderRule = row.Cells[4].Value != null ? row.Cells[4].Value.ToString() : string.Empty;
 
-                        status = status && RegistryHelper.Write("Selector", selector, @"Exchange DkimSigner\Domain\" + domainName);
-                        status = status && RegistryHelper.Write("PrivateKeyFile", privateKeyFile, @"Exchange DkimSigner\Domain\" + domainName);
+                        status = status && RegistryHelper.Write("Selector", selector, @"Software\Exchange DkimSigner\Domain\" + domainName);
+                        status = status && RegistryHelper.Write("PrivateKeyFile", privateKeyFile, @"Software\Exchange DkimSigner\Domain\" + domainName);
 
                         if (recipientRule != string.Empty)
-                            status = status && RegistryHelper.Write("RecipientRule", recipientRule, @"Exchange DkimSigner\Domain\" + domainName);
+                            status = status && RegistryHelper.Write("RecipientRule", recipientRule, @"Software\Exchange DkimSigner\Domain\" + domainName);
 
                         if (senderRule != string.Empty)
-                            status = status && RegistryHelper.Write("SenderRule", senderRule, @"Exchange DkimSigner\Domain\" + domainName);
+                            status = status && RegistryHelper.Write("SenderRule", senderRule, @"Software\Exchange DkimSigner\Domain\" + domainName);
 
                         byte[] byteData = null;
                         byteData = attachments[row.Index];
@@ -550,7 +548,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btSave_Click(object sender, EventArgs e)
         {
-            this.saveDkimSignerConfig();
+            this.SaveDkimSignerConfig();
         }
 
         /// <summary>
@@ -672,10 +670,9 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btUpateInstall_Click(object sender, EventArgs e)
         {
-
             //testing:
             MessageBox.Show("Uninstall retval: " + ExchangeHelper.uninstallTransportAgent().ToString());
-            MessageBox.Show("Install retval: " + ExchangeHelper.installTransoportAgent().ToString());
+            MessageBox.Show("Install retval: " + ExchangeHelper.installTransportAgent().ToString());
         }
     }
 }

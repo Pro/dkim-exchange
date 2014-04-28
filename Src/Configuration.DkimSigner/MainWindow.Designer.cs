@@ -163,6 +163,7 @@
             this.txtDkimSignerAvailable.ReadOnly = true;
             this.txtDkimSignerAvailable.Size = new System.Drawing.Size(138, 20);
             this.txtDkimSignerAvailable.TabIndex = 8;
+            this.txtDkimSignerAvailable.Text = "Loading...";
             // 
             // lbDkimSignerAvailable
             // 
@@ -204,6 +205,7 @@
             this.txtDkimSignerInstalled.ReadOnly = true;
             this.txtDkimSignerInstalled.Size = new System.Drawing.Size(138, 20);
             this.txtDkimSignerInstalled.TabIndex = 3;
+            this.txtDkimSignerInstalled.Text = "Loading...";
             // 
             // txtExchangeInstalled
             // 
@@ -212,6 +214,7 @@
             this.txtExchangeInstalled.ReadOnly = true;
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
             this.txtExchangeInstalled.TabIndex = 5;
+            this.txtExchangeInstalled.Text = "Loading...";
             // 
             // lbDkimSignerInstalled
             // 

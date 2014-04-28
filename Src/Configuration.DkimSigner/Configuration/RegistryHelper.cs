@@ -8,8 +8,6 @@ namespace ConfigurationSettings
 {
     class RegistryHelper
     {
-        private const string BASE_REGISTRY_KEY = @"Software\";
-
         /// <summary>
         /// Open a subkey and return it for manipulation
         /// </summary>
@@ -21,7 +19,7 @@ namespace ConfigurationSettings
                                                         Environment.Is64BitOperatingSystem
                                                         ? RegistryView.Registry64
                                                         : RegistryView.Registry32);
-            RegistryKey sk1 = rk.OpenSubKey(BASE_REGISTRY_KEY + subKey);
+            RegistryKey sk1 = rk.OpenSubKey(subKey);
 
             return (sk1 != null ? sk1 : null);
         }
@@ -86,8 +84,31 @@ namespace ConfigurationSettings
                                                             Environment.Is64BitOperatingSystem
                                                             ? RegistryView.Registry64
                                                             : RegistryView.Registry32);
-                RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
+                RegistryKey sk1 = rk.CreateSubKey(subKey);
                 sk1.SetValue(keyName, Value, RegistryValueKind.String);
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Create a sub key
+        /// </summary>
+        /// <param name="subKey">Subkey to create</param>
+        /// <returns></returns>
+        public static bool WriteSubKeyTree(string subKey = "")
+        {
+            try
+            {
+                RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
+                                                            Environment.Is64BitOperatingSystem
+                                                            ? RegistryView.Registry64
+                                                            : RegistryView.Registry32);
+                RegistryKey sk1 = rk.CreateSubKey(subKey);
 
                 return true;
             }
@@ -111,7 +132,7 @@ namespace ConfigurationSettings
                                                             Environment.Is64BitOperatingSystem
                                                             ? RegistryView.Registry64
                                                             : RegistryView.Registry32);
-                RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
+                RegistryKey sk1 = rk.CreateSubKey(subKey);
 
                 if(sk1 != null)
                     sk1.DeleteValue(keyName);
@@ -137,7 +158,7 @@ namespace ConfigurationSettings
                                                             Environment.Is64BitOperatingSystem
                                                             ? RegistryView.Registry64
                                                             : RegistryView.Registry32);
-                RegistryKey sk1 = rk.CreateSubKey(BASE_REGISTRY_KEY + subKey);
+                RegistryKey sk1 = rk.CreateSubKey(subKey);
 
                 if (sk1 != null)
                     sk1.DeleteSubKeyTree(keyName);
