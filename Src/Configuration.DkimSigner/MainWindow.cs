@@ -28,6 +28,7 @@ namespace Configuration.DkimSigner
 
         private Dictionary<int, byte[]> attachments;
         private Release currentRelease;
+        private bool dataUpdated;
 
         delegate void SetDkimSignerInstalledCallback(string dkimSignerInstalled);
         delegate void SetDkimSignerAvailableCallback(string dkimSignerAvailable);
@@ -40,8 +41,10 @@ namespace Configuration.DkimSigner
         public MainWindow()
         {
             InitializeComponent();
+            this.cbLogLevel.SelectedItem = "Information";
 
             attachments = new Dictionary<int, byte[]>();
+            dataUpdated = false;
         }
 
         /**********************************************************/
@@ -55,8 +58,6 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            this.cbLogLevel.SelectedItem = "Information";
-
             // Get Exchange.DkimSigner version installed
             Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
             thDkimSignerInstalled.Start();
@@ -77,15 +78,18 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
-            DialogResult result = MessageBox.Show("Want to save your changes?", "Confirmation", MessageBoxButtons.YesNoCancel);
+            if(this.dataUpdated)
+            {
+                DialogResult result = MessageBox.Show("Want to save your changes?", "Confirmation", MessageBoxButtons.YesNoCancel);
             
-            if (result == DialogResult.Yes)
-            {
-                this.SaveDkimSignerConfig();
-            }
-            else if (result == DialogResult.Cancel)
-            {
-                e.Cancel = true;
+                if (result == DialogResult.Yes)
+                {
+                    this.SaveDkimSignerConfig();
+                }
+                else if (result == DialogResult.Cancel)
+                {
+                    e.Cancel = true;
+                }
             }
         }
 
@@ -116,14 +120,20 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
-            string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
+                        string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
             string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
 
             RuleWindow form = new RuleWindow(recipientRule, senderRule);
             form.ShowDialog();
 
-            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
-            this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
+            if (this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() != form.txtRecipientRule.Text ||
+                this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() != form.txtSenderRule.Text)
+            {
+                this.dataUpdated = true;
+
+                this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
+                this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
+            }
         }
 
         /// <summary>
@@ -153,7 +163,12 @@ namespace Configuration.DkimSigner
                 PrivateKeyWindows form = new PrivateKeyWindows(domain, selector, filename);
                 form.ShowDialog();
 
-                dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
+                if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value.ToString() != form.txtFilename.Text)
+                {
+                    this.dataUpdated = true;
+
+                    dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
+                }
             }
         }
 
@@ -183,6 +198,8 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void dgvDomainConfiguration_CellBeginEdit(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
         {
+            this.dataUpdated = true;
+
             this.btGenerate.Enabled = false;
             this.btUpload.Enabled = false;
             this.btDownload.Enabled = false;
@@ -240,6 +257,46 @@ namespace Configuration.DkimSigner
             // If (the domain or the selector is empty string) and the domain and selector are both empty
             if ((domain == string.Empty || selector == string.Empty) && domain != selector)
                 e.Cancel = true;
+        }
+
+        private void rbRsaSha1_CheckedChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void rbRsaSha256_CheckedChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void rbSimpleHeaderCanonicalization_CheckedChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void rbRelaxedHeaderCanonicalization_CheckedChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void rbSimpleBodyCanonicalization_CheckedChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void rbRelaxedBodyCanonicalization_CheckedChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void cbLogLevel_TextChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
+        }
+
+        private void txtHeaderToSign_TextChanged(object sender, System.EventArgs e)
+        {
+            this.dataUpdated = true;
         }
 
         /**********************************************************/
@@ -530,6 +587,8 @@ namespace Configuration.DkimSigner
                 }
             }
             dgvDomainConfiguration.AllowUserToAddRows = true;
+
+            this.dataUpdated = false;
 
             if (status)
                 MessageBox.Show("The configuration has been updated.");

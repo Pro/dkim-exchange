@@ -268,6 +268,7 @@
             this.txtHeaderToSign.Size = new System.Drawing.Size(414, 20);
             this.txtHeaderToSign.TabIndex = 2;
             this.txtHeaderToSign.Text = "From; Subject; To; Date; Message-ID;";
+            this.txtHeaderToSign.TextChanged += new System.EventHandler(this.txtHeaderToSign_TextChanged);
             // 
             // gbLogLevel
             // 
@@ -291,6 +292,7 @@
             this.cbLogLevel.Name = "cbLogLevel";
             this.cbLogLevel.Size = new System.Drawing.Size(191, 21);
             this.cbLogLevel.TabIndex = 7;
+            this.cbLogLevel.TextChanged += new System.EventHandler(this.cbLogLevel_TextChanged);
             // 
             // gbBodyCanonicalization
             // 
@@ -312,6 +314,7 @@
             this.rbRelaxedBodyCanonicalization.TabIndex = 13;
             this.rbRelaxedBodyCanonicalization.Text = "Relaxed";
             this.rbRelaxedBodyCanonicalization.UseVisualStyleBackColor = true;
+            this.rbRelaxedBodyCanonicalization.CheckedChanged += new System.EventHandler(this.rbRelaxedBodyCanonicalization_CheckedChanged);
             // 
             // rbSimpleBodyCanonicalization
             // 
@@ -324,6 +327,7 @@
             this.rbSimpleBodyCanonicalization.TabStop = true;
             this.rbSimpleBodyCanonicalization.Text = "Simple";
             this.rbSimpleBodyCanonicalization.UseVisualStyleBackColor = true;
+            this.rbSimpleBodyCanonicalization.CheckedChanged += new System.EventHandler(this.rbSimpleBodyCanonicalization_CheckedChanged);
             // 
             // gbHeaderCanonicalization
             // 
@@ -345,6 +349,7 @@
             this.rbRelaxedHeaderCanonicalization.TabIndex = 10;
             this.rbRelaxedHeaderCanonicalization.Text = "Relaxed";
             this.rbRelaxedHeaderCanonicalization.UseVisualStyleBackColor = true;
+            this.rbRelaxedHeaderCanonicalization.CheckedChanged += new System.EventHandler(this.rbRelaxedHeaderCanonicalization_CheckedChanged);
             // 
             // rbSimpleHeaderCanonicalization
             // 
@@ -357,6 +362,7 @@
             this.rbSimpleHeaderCanonicalization.TabStop = true;
             this.rbSimpleHeaderCanonicalization.Text = "Simple";
             this.rbSimpleHeaderCanonicalization.UseVisualStyleBackColor = true;
+            this.rbSimpleHeaderCanonicalization.CheckedChanged += new System.EventHandler(this.rbSimpleHeaderCanonicalization_CheckedChanged);
             // 
             // gbAlgorithm
             // 
@@ -378,6 +384,7 @@
             this.rbRsaSha256.TabIndex = 5;
             this.rbRsaSha256.Text = "RsaSha256";
             this.rbRsaSha256.UseVisualStyleBackColor = true;
+            this.rbRsaSha256.CheckedChanged += new System.EventHandler(this.rbRsaSha256_CheckedChanged);
             // 
             // rbRsaSha1
             // 
@@ -390,6 +397,7 @@
             this.rbRsaSha1.TabStop = true;
             this.rbRsaSha1.Text = "RsaSha1";
             this.rbRsaSha1.UseVisualStyleBackColor = true;
+            this.rbRsaSha1.CheckedChanged += new System.EventHandler(this.rbRsaSha1_CheckedChanged);
             // 
             // tpDomain
             // 
