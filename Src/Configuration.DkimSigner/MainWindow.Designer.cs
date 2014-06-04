@@ -38,6 +38,7 @@
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
             this.gbInstalled = new System.Windows.Forms.GroupBox();
+            this.btUninstall = new System.Windows.Forms.Button();
             this.lbExchangeInstalled = new System.Windows.Forms.Label();
             this.txtDkimSignerInstalled = new System.Windows.Forms.TextBox();
             this.txtExchangeInstalled = new System.Windows.Forms.TextBox();
@@ -67,6 +68,7 @@
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cbxPrereleases = new System.Windows.Forms.CheckBox();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -112,6 +114,7 @@
             this.gbAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbAvailable.Controls.Add(this.cbxPrereleases);
             this.gbAvailable.Controls.Add(this.btUpateInstall);
             this.gbAvailable.Controls.Add(this.lblChangelog);
             this.gbAvailable.Controls.Add(this.txtChangelog);
@@ -126,9 +129,10 @@
             // 
             // btUpateInstall
             // 
-            this.btUpateInstall.Location = new System.Drawing.Point(302, 19);
+            this.btUpateInstall.Enabled = false;
+            this.btUpateInstall.Location = new System.Drawing.Point(446, 19);
             this.btUpateInstall.Name = "btUpateInstall";
-            this.btUpateInstall.Size = new System.Drawing.Size(138, 23);
+            this.btUpateInstall.Size = new System.Drawing.Size(94, 23);
             this.btUpateInstall.TabIndex = 9;
             this.btUpateInstall.Text = "Update";
             this.btUpateInstall.UseVisualStyleBackColor = true;
@@ -178,6 +182,7 @@
             // 
             this.gbInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbInstalled.Controls.Add(this.btUninstall);
             this.gbInstalled.Controls.Add(this.lbExchangeInstalled);
             this.gbInstalled.Controls.Add(this.txtDkimSignerInstalled);
             this.gbInstalled.Controls.Add(this.txtExchangeInstalled);
@@ -188,6 +193,17 @@
             this.gbInstalled.TabIndex = 1;
             this.gbInstalled.TabStop = false;
             this.gbInstalled.Text = "Installed";
+            // 
+            // btUninstall
+            // 
+            this.btUninstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btUninstall.Location = new System.Drawing.Point(446, 24);
+            this.btUninstall.Name = "btUninstall";
+            this.btUninstall.Size = new System.Drawing.Size(94, 23);
+            this.btUninstall.TabIndex = 10;
+            this.btUninstall.Text = "Uninstall";
+            this.btUninstall.UseVisualStyleBackColor = true;
+            this.btUninstall.Click += new System.EventHandler(this.btUninstall_Click);
             // 
             // lbExchangeInstalled
             // 
@@ -498,6 +514,17 @@
             this.dgvcSenderRule.Name = "dgvcSenderRule";
             this.dgvcSenderRule.Visible = false;
             // 
+            // cbxPrereleases
+            // 
+            this.cbxPrereleases.AutoSize = true;
+            this.cbxPrereleases.Location = new System.Drawing.Point(238, 25);
+            this.cbxPrereleases.Name = "cbxPrereleases";
+            this.cbxPrereleases.Size = new System.Drawing.Size(127, 17);
+            this.cbxPrereleases.TabIndex = 12;
+            this.cbxPrereleases.Text = "Include beta versions";
+            this.cbxPrereleases.UseVisualStyleBackColor = true;
+            this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -506,6 +533,7 @@
             this.Controls.Add(this.tcConfiguration);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Exchange DkimSigner";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
@@ -571,6 +599,8 @@
         private System.Windows.Forms.TextBox txtChangelog;
         private System.Windows.Forms.Button btUpateInstall;
         private System.Windows.Forms.Button btGenerate;
+        private System.Windows.Forms.Button btUninstall;
+        private System.Windows.Forms.CheckBox cbxPrereleases;
     }
 }
 

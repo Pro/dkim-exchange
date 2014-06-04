@@ -18,21 +18,34 @@ using ConfigurationSettings;
 using DkimSigner.RSA;
 using DkimSigner.Properties;
 using Configuration.DkimSigner.GitHub;
+using Ionic.Zip;
 
 namespace Configuration.DkimSigner
 {
+    public enum UpdateButtonType
+    {
+        Install,
+        Downgrade,
+        Upgrade,
+        Disabled
+    };
+
     public partial class MainWindow : Form
     {
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
 
-        private Dictionary<int, byte[]> attachments;
-        private Release currentRelease;
-        private bool dataUpdated;
+        private Dictionary<int, byte[]> attachments = new Dictionary<int, byte[]>();
+        private Release dkimSignerAvailable = null;
+        private System.Version dkimSignerInstalled = null;
+        private bool dataUpdated = false;
+        private UpdateButtonType updateButtonType = UpdateButtonType.Disabled;
+        private bool isUpgrade = false;
+        private string installPath = "";
+        private bool isInstall = false;
 
-        delegate void SetDkimSignerInstalledCallback(string dkimSignerInstalled);
-        delegate void SetDkimSignerAvailableCallback(string dkimSignerAvailable);
-        delegate void SetChangelogCallback(string changelog);
+        delegate void SetDkimSignerInstalledCallback();
+        delegate void SetDkimSignerAvailableCallback();
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -40,11 +53,33 @@ namespace Configuration.DkimSigner
 
         public MainWindow()
         {
+            string[] args = Environment.GetCommandLineArgs();
+
+            isUpgrade = (Array.IndexOf(args, "--upgrade") >= 0);
+            if (isUpgrade)
+            {
+                int idx = Array.IndexOf(args, "--upgrade") + 1;
+                if (args.Length <= idx)
+                {
+                    MessageBox.Show("Missing install path for update parameter.", "Invalid argument count", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.Close();
+                    return;
+                }
+                installPath = args[idx];
+            }
+            isInstall = (Array.IndexOf(args, "--install") >= 0);
+            if (isInstall)
+            {
+                installPath = @"C:\Program Files\Exchange DkimSigner";
+            }
+
+            if (!isInstall && !isUpgrade)
+                installPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+            ExchangeHelper.AGENT_DIR = installPath;
+
             InitializeComponent();
             this.cbLogLevel.SelectedItem = "Information";
-
-            attachments = new Dictionary<int, byte[]>();
-            dataUpdated = false;
         }
 
         /**********************************************************/
@@ -58,17 +93,44 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            if (isInstall || isUpgrade)
+            {
+                this.Hide();
+                UpgradeWindow upw = new UpgradeWindow(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), installPath);
+                upw.ShowDialog();
+                string newExec = System.IO.Path.Combine(installPath,"Configuration.DkimSigner.exe");
+                if (!System.IO.File.Exists(newExec))
+                {
+                    MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + installPath, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                } else
+                    Process.Start(newExec);
+                this.dataUpdated = false;
+                this.Close();
+            }
+            else
+            {
+                updateVersions();
+                LoadDkimSignerConfig();
+            }
+        }
+
+        /// <summary>
+        /// Update the current available and installed version info
+        /// </summary>
+        private void updateVersions()
+        {
             // Get Exchange.DkimSigner version installed
+            txtDkimSignerInstalled.Text = "Loading ...";
             Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
             thDkimSignerInstalled.Start();
 
             // Get Exchange.DkimSigner version available
+            txtDkimSignerAvailable.Text = "Loading ...";
             Thread thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
             thDkimSignerAvailable.Start();
 
             // Get Exchange version installed + load the current configuration
             txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
-            LoadDkimSignerConfig();
         }
 
         /// <summary>
@@ -78,19 +140,31 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
-            if(this.dataUpdated)
+            if (!checkSaveConfig())
+                e.Cancel = true;
+
+        }
+
+        /// <summary>
+        /// Asks the user if he wants to save the current config and saves it.
+        /// </summary>
+        /// <returns>false if the user pressed cancel. true otherwise</returns>
+        private bool checkSaveConfig()
+        {
+            if (this.dataUpdated)
             {
-                DialogResult result = MessageBox.Show("Want to save your changes?", "Confirmation", MessageBoxButtons.YesNoCancel);
-            
+                DialogResult result = MessageBox.Show("Do you want to save your changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+
                 if (result == DialogResult.Yes)
                 {
                     this.SaveDkimSignerConfig();
                 }
                 else if (result == DialogResult.Cancel)
                 {
-                    e.Cancel = true;
+                    return false;
                 }
             }
+            return true;
         }
 
         /// <summary>
@@ -307,27 +381,92 @@ namespace Configuration.DkimSigner
         /// Set the value of txtDkimSignerInstalled from CheckDkimSignerInstalledSafe (use by thread DkimSignerInstalled)
         /// </summary>
         /// <param name="dkimSignerInstalled"></param>
-        private void SetDkimSignerInstalled(string dkimSignerInstalled)
+        private void SetDkimSignerInstalled()
         {
-            this.txtDkimSignerInstalled.Text = dkimSignerInstalled;
+            if (dkimSignerInstalled != null)
+            {
+                this.txtDkimSignerInstalled.Text = dkimSignerInstalled.ToString();
+            }
+            else
+            {
+                this.txtDkimSignerInstalled.Text = "Not installed";
+            }
+            this.initUpdateButton();
         }
 
         /// <summary>
         ///  Set the value of txtDkimSignerAvailable from CheckDkimSignerAvailableSafe (use by thread DkimSignerAvailable)
         /// </summary>
         /// <param name="dkimSignerAvailable"></param>
-        private void SetDkimSignerAvailable(string dkimSignerAvailable)
+        private void SetDkimSignerAvailable()
         {
-            this.txtDkimSignerAvailable.Text = dkimSignerAvailable;
+            if (dkimSignerAvailable != null)
+            {
+                string version = dkimSignerAvailable.Version.ToString();
+                if (dkimSignerAvailable.Prerelease)
+                {
+                    version += " (beta)";
+                }
+                this.txtDkimSignerAvailable.Text = version;
+                this.txtChangelog.Text = dkimSignerAvailable.Body;
+            }
+            else
+            {
+                this.txtDkimSignerAvailable.Text = "Unknown";
+                this.txtChangelog.Text = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
+                btUpateInstall.Enabled = false;
+            }
+
+            this.initUpdateButton();
         }
 
         /// <summary>
-        ///  Set the value of txtChangelog from CheckDkimSignerAvailableSafe (use by thread DkimSignerAvailable)
+        /// Updates the init button description and functionality.
         /// </summary>
-        /// <param name="changelog"></param>
-        private void SetChangelog(string changelog)
+        private void initUpdateButton()
         {
-            this.txtChangelog.Text = changelog;
+            if (this.dkimSignerInstalled!=null && this.dkimSignerAvailable!=null)
+            {
+                if (dkimSignerInstalled.CompareTo(dkimSignerAvailable.Version) > 0)
+                {
+                    updateButtonType = UpdateButtonType.Downgrade;
+                    btUpateInstall.Text = "Downgrade";
+                    btUpateInstall.Enabled = true;
+                }
+                else if (dkimSignerInstalled.CompareTo(dkimSignerAvailable.Version) == 0)
+                {
+                    updateButtonType = UpdateButtonType.Install;
+                    btUpateInstall.Text = "Reinstall";
+                    btUpateInstall.Enabled = true;
+                } else {
+                    updateButtonType = UpdateButtonType.Upgrade;
+                    btUpateInstall.Text = "Upgrade";
+                    btUpateInstall.Enabled = true;
+                }
+            }
+            else if (this.dkimSignerInstalled == null && this.dkimSignerAvailable != null)
+            {
+                updateButtonType = UpdateButtonType.Install;
+                btUpateInstall.Text = "Install";
+                btUpateInstall.Enabled = true;
+            }
+            else
+            {
+                updateButtonType = UpdateButtonType.Disabled;
+                btUpateInstall.Text = "Update";
+                btUpateInstall.Enabled = false;
+            }
+
+            if (this.dkimSignerInstalled != null)
+            {
+                btUninstall.Enabled = true;
+                btUninstall.Text = "Uninstall";
+            }
+            else
+            {
+                btUninstall.Enabled = false;
+                btUninstall.Text = "Uninstall";
+            }
         }
 
         /// <summary>
@@ -335,25 +474,23 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void CheckDkimSignerInstalledSafe()
         {
-            string dkimSignerInstalled = string.Empty;
-
             try
             {
-                dkimSignerInstalled = FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion;
+                dkimSignerInstalled = System.Version.Parse(FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion);
             }
             catch (Exception)
             {
-               dkimSignerInstalled = "Not installed";
+               dkimSignerInstalled = null;
             }
             
             if (this.txtDkimSignerInstalled.InvokeRequired)
             {
                 SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
-                this.Invoke(d, new object[] { dkimSignerInstalled});
+                this.Invoke(d);
             }
             else
             {
-                this.txtDkimSignerInstalled.Text = dkimSignerInstalled;
+                SetDkimSignerInstalled();
             }
         }
 
@@ -362,46 +499,23 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void CheckDkimSignerAvailableSafe()
         {
-            string dkimSignerAvailable = string.Empty;
-            string changelog = string.Empty;
-
             try
             {
-                currentRelease = ApiWrapper.getNewestRelease();
-                if (currentRelease != null)
-                {
-                    dkimSignerAvailable = currentRelease.Version.ToString();
-                    changelog = currentRelease.Body;
-                }
-                else
-                {
-                    dkimSignerAvailable = "Unknown";
-                }
+                dkimSignerAvailable = ApiWrapper.getNewestRelease();
             }
             catch (Exception)
             {
-                dkimSignerAvailable = "Unknown";
-                changelog = "Couldn't get current version.\r\nCheck your Internet connexion and restart the application.";
+                dkimSignerAvailable = null;
             }
 
             if (this.txtDkimSignerInstalled.InvokeRequired)
             {
                 SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
-                this.Invoke(d, new object[] { dkimSignerAvailable});
+                this.Invoke(d);
             }
             else
             {
-                this.txtDkimSignerInstalled.Text = dkimSignerAvailable;
-            }
-
-            if (this.txtChangelog.InvokeRequired)
-            {
-                SetChangelogCallback d = new SetChangelogCallback(SetChangelog);
-                this.Invoke(d, new object[] { changelog });
-            }
-            else
-            {
-                this.txtChangelog.Text = changelog;
+                SetDkimSignerAvailable();
             }
         }
 
@@ -729,9 +843,147 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btUpateInstall_Click(object sender, EventArgs e)
         {
+            switch (updateButtonType)
+            {
+                case UpdateButtonType.Disabled:
+                    return;
+                case UpdateButtonType.Downgrade:
+                    if (MessageBox.Show("Do you really want to DOWNGRADE the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Downgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        performUpgrade();
+                    }
+                    return;
+                case UpdateButtonType.Upgrade:
+                    if (MessageBox.Show("Do you really want to upgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Upgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        performUpgrade();
+                    }
+                    return;
+                case UpdateButtonType.Install:
+                    if (MessageBox.Show("Do you really want to install the DKIM Exchange Agent version " + dkimSignerAvailable.Version.ToString() + "?", "Install?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                    {
+                        performUpgrade();
+                    }
+                    return;
+            }
+        }
+
+
+        private void btUninstall_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Do you really want to UNINSTALL the DKIM Exchange Agent?\nPlease remove the following folder manually:\n" + ExchangeHelper.AGENT_DIR, "Uninstall?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                performUninstall();
+            }
+        }
+
+        private void performUninstall()
+        {
+            try
+            {
+                ExchangeHelper.uninstallTransportAgent();
+            } catch (ExchangeHelperException e) {
+                MessageBox.Show(e.Message, "Uninstall error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            this.updateVersions();
+        }
+
+        private void performUpgrade()
+        {
+            if (dkimSignerAvailable == null)
+                return;
+
+            if (!checkSaveConfig())
+            {
+                return;
+            }
+
+            btUpateInstall.Enabled = false;
+
+            string tempDir = System.IO.Path.GetTempPath() + Guid.NewGuid().ToString();
+            string tempPath = tempDir + ".zip";
+            DownloadProgressWindow dpw = new DownloadProgressWindow(dkimSignerAvailable.ZipballUrl, tempPath);
+
+            if (dpw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                //TODO: Show extract progress
+                try
+                {
+                    System.IO.Directory.CreateDirectory(tempDir);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Couldn't create directory:\n" + tempDir + "\n" + e.Message, "Directory error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btUpateInstall.Enabled = true;
+                    return;
+                }
+                using (ZipFile zip1 = ZipFile.Read(tempPath))
+                {
+                    // here, we extract every entry, but we could extract conditionally
+                    // based on entry name, size, date, checkbox status, etc.  
+                    foreach (ZipEntry e in zip1)
+                    {
+                        e.Extract(tempDir, ExtractExistingFileAction.OverwriteSilently);
+                    }
+                }
+
+                string[] contents = Directory.GetDirectories(tempDir);
+                if (contents.Length == 0) {
+                    MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btUpateInstall.Enabled = true;
+                    return;
+                }
+                string rootDir = contents[0];
+
+                string exePath = System.IO.Path.Combine(rootDir, @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
+                if (System.Diagnostics.Debugger.IsAttached)
+                    // during development execute current exe
+                    exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                if (!System.IO.File.Exists(exePath))
+                {
+                    MessageBox.Show("Executable not found within downloaded .zip is empty. Please try again.", "Missing .exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btUpateInstall.Enabled = true;
+                    return;
+                }
+                string args = "";
+                if (updateButtonType == UpdateButtonType.Install)
+                {
+                    args = "--install";
+                }
+                else
+                {
+                    args = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                    if (System.Diagnostics.Debugger.IsAttached)
+                        // during development install into updated subfolder
+                        args = System.IO.Path.Combine(args, "Updated");
+                    args = "--upgrade \"" + args + "\"";
+                }
+
+                try
+                {
+                    Process.Start(exePath, args );
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Couldn't start updater:\n" + e.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    btUpateInstall.Enabled = true;
+                    return;
+                }
+                this.Close();
+            }
+
+            /*
+             * 
             //testing:
             MessageBox.Show("Uninstall retval: " + ExchangeHelper.uninstallTransportAgent().ToString());
-            MessageBox.Show("Install retval: " + ExchangeHelper.installTransportAgent().ToString());
+            MessageBox.Show("Install retval: " + ExchangeHelper.installTransportAgent().ToString());*/
+
+
+        }
+
+        private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
+        {
+            updateVersions();
         }
     }
 }

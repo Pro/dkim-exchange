@@ -10,7 +10,7 @@ namespace Configuration.DkimSigner.GitHub
 {
     class ApiWrapper
     {
-        public static Release getNewestRelease()
+        public static Release getNewestRelease(bool includePrerelease = false)
         {
             string json = Api.MakeRequest(Api.CreateRequest("/repos/pro/dkim-exchange/releases"));
             if (json == null)
@@ -27,7 +27,7 @@ namespace Configuration.DkimSigner.GitHub
 
             foreach (Release r in releases)
             {
-                if (r.Draft || r.Prerelease)
+                if (r.Draft || (!includePrerelease && r.Prerelease))
                     continue;
                 // check for valid version string
                 Match match = Regex.Match(r.TagName, @"v?((?:\d+\.){0,3}\d+)",RegexOptions.IgnoreCase);

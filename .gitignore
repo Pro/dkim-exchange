@@ -110,3 +110,4 @@ UpgradeLog*.XML
 /Src/Exchange.DkimSigner/bin/*/Microsoft.Exchange.Data.Common.xml
 /Src/Exchange.DkimSigner/bin/*/Microsoft.Exchange.Data.Transport.dll
 /Src/Exchange.DkimSigner/bin/*/Microsoft.Exchange.Data.Transport.xml
+Thumbs.db

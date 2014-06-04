@@ -33,12 +33,15 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>WebSecurity.ico</ApplicationIcon>
+    <ApplicationIcon>Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\Lib\Ionic.Zip.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -74,7 +77,14 @@
       <Link>RSA\RSACryptoHelper.cs</Link>
     </Compile>
     <Compile Include="DNSHelper.cs" />
+    <Compile Include="DownloadProgressWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DownloadProgressWindow.Designer.cs">
+      <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExchangeHelper.cs" />
+    <Compile Include="FileHelper.cs" />
     <Compile Include="GitHub\Api.cs" />
     <Compile Include="GitHub\ApiWrapper.cs" />
     <Compile Include="GitHub\DataContract.cs" />
@@ -98,6 +108,15 @@
     <Compile Include="RuleWindow.Designer.cs">
       <DependentUpon>RuleWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UpgradeWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpgradeWindow.Designer.cs">
+      <DependentUpon>UpgradeWindow.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="DownloadProgressWindow.resx">
+      <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -106,6 +125,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="RuleWindow.resx">
       <DependentUpon>RuleWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpgradeWindow.resx">
+      <DependentUpon>UpgradeWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <Compile Include="..\Exchange.DkimSigner\Properties\Resources.Designer.cs">
@@ -125,6 +147,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Saki-NuoveXT-2-Mimetypes-document-seal.ico" />
     <Content Include="WebSecurity.ico" />
   </ItemGroup>
   <ItemGroup />

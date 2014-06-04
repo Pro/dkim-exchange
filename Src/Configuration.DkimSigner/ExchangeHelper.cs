@@ -10,15 +10,16 @@ using System.Threading.Tasks;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
-using System.Windows.Forms;
 
 using ConfigurationSettings;
+using System.Runtime.Serialization;
 
 namespace Configuration.DkimSigner
 {
     public class ExchangeHelper
     {
         public const string AGENT_NAME = "Exchange DkimSigner";
+        public static string AGENT_DIR = @"C:\Program Files\Exchange DkimSigner";
 
         /// <summary>
         /// Get the current Exchange version for the current server from Active Directy (ldap)
@@ -68,6 +69,43 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
+        /// Checks if the last powerShell command failed with errors.
+        /// If yes, this method will throw an ExchangeHelperException to notify the callee.
+        /// </summary>
+        /// <param name="powerShell">PowerShell to check for errors</param>
+        /// <param name="errorPrependMessage">String prepended to the exception message</param>
+        private static Collection<PSObject> invokePS(PowerShell powerShell, string errorPrependMessage)
+        {
+            Collection<PSObject> results = null;
+            try
+            {
+                results = powerShell.Invoke();
+            }
+            catch (System.Management.Automation.RemoteException e)
+            {
+                if (errorPrependMessage.Length > 0)
+                    throw new ExchangeHelperException("Error getting list of Transport Agents:\n" + e.Message, e);
+                else
+                    throw e;
+            }
+            if (powerShell.Streams.Error.Count > 0)
+            {
+                string errors = errorPrependMessage;
+                if (errorPrependMessage.Length > 0 && !errorPrependMessage.EndsWith(":"))
+                    errors += ":";
+
+                foreach (ErrorRecord error in powerShell.Streams.Error)
+                {
+                    if (errors.Length > 0)
+                        errors += "\n";
+                    errors += error.ToString();
+                }
+                throw new ExchangeHelperException(errors);
+            }
+            return results;
+        }
+
+        /// <summary>
         /// Checks if the Exchange DKIM TransportAgent is already installed or not. It doesn't check if the agent is enabled.
         /// </summary>
         /// <returns>true if it is installed.</returns>
@@ -84,16 +122,7 @@ namespace Configuration.DkimSigner
                     // First check if Transport Agent exists already
                     powershell.AddCommand("Get-TransportAgent");
 
-                    Collection<PSObject> results = powershell.Invoke();
-                    if (powershell.Streams.Error.Count > 0)
-                    {
-                        foreach (ErrorRecord error in powershell.Streams.Error)
-                        {
-                            MessageBox.Show("Error getting list of Transport Agents\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-
-                        return false;
-                    }
+                    Collection<PSObject> results = invokePS(powershell, "Error getting list of Transport Agents");
                     foreach (PSObject result in results)
                     {
                         if (result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME))
@@ -109,46 +138,81 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// Restart the MSExchangeTransport service. Needs to be called after changes on transport agent
+        /// Restart the MSExchangeTransport service. Needs to be called after changes on transport agent.
+        /// 
+        /// Throws ExchangeHelperException on error.
         /// </summary>
-        /// <returns>true if successfully restarted</returns>
-        public static bool restartTransportService()
+        public static void restartTransportService()
+        {
+            stopTransportService();
+            startTransportService();
+        }
+
+        /// <summary>
+        /// Stop the MSExchangeTransport service.
+        /// 
+        /// Throws ExchangeHelperException on error.
+        /// </summary>
+        public static void stopTransportService()
         {
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
             try
             {
-                int millisec1 = Environment.TickCount;
                 TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMS);
 
                 service.Stop();
                 service.WaitForStatus(ServiceControllerStatus.Stopped, timeout);
+            }
+            catch (Exception e)
+            {
+                throw new ExchangeHelperException("Couldn't stop 'MSExchangeTransport' service\n" + e.Message, e);
+            }
+        }
 
-                // count the rest of the timeout
-                int millisec2 = Environment.TickCount;
-                timeout = TimeSpan.FromMilliseconds(timeoutMS - (millisec2 - millisec1));
+        /// <summary>
+        /// Check if the MSExchangeTransport service is running.
+        /// 
+        /// Throws ExchangeHelperException on error.
+        /// </summary>
+        public static bool isTransportServiceRunning()
+        {
+            ServiceController service = new ServiceController("MSExchangeTransport");
+            return service.Status == ServiceControllerStatus.Running;
+        }
+
+        /// <summary>
+        /// Start the MSExchangeTransport service.
+        /// 
+        /// Throws ExchangeHelperException on error.
+        /// </summary>
+        public static void startTransportService()
+        {
+            int timeoutMS = 60 * 1000; //ms
+            ServiceController service = new ServiceController("MSExchangeTransport");
+            try
+            {
+                TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMS);
 
                 service.Start();
                 service.WaitForStatus(ServiceControllerStatus.Running, timeout);
             }
             catch (Exception e)
             {
-                MessageBox.Show("Couldn't restart 'MSExchangeTransport' service\n" + e.Message, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                throw new ExchangeHelperException("Couldn't start 'MSExchangeTransport' service\n" + e.Message, e);
             }
-
-            return true;
         }
 
         /// <summary>
         /// Uninstalls the transport agent by calling the corresponding PowerShell commands (Disable-TransportAgent and Uninstall-TransportAgent).
-        /// After uninstalling the agent, the MSExchangeTransport service will be restarted.
+        /// You need to restart the MSExchangeTransport service after uninstall.
+        /// 
+        /// Throws ExchangeHelperException on error.
         /// </summary>
-        /// <returns>true if successfully uninstalled</returns>
-        public static bool uninstallTransportAgent()
+        public static void uninstallTransportAgent()
         {
             if (!isAgentInstalled())
-                return true;
+                return;
 
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
             {
@@ -164,38 +228,20 @@ namespace Configuration.DkimSigner
                     // Uninstall-TransportAgent -Identity "Exchange DkimSigner"  
                     powershell.AddScript("Uninstall-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
 
-                    Collection<PSObject> results = null;
-                    try
-                    {
-                        results = powershell.Invoke();
-                    }
-                    catch (System.Management.Automation.RemoteException e)
-                    {
-                        MessageBox.Show("Error uninstalling Transport Agent\n" + e.Message, "PowerShell exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return false;
-                    }
-
-                    if (powershell.Streams.Error.Count > 0)
-                    {
-                        foreach (ErrorRecord error in powershell.Streams.Error)
-                        {
-                            MessageBox.Show("Error uninstalling Transport Agent\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        return false;
-                    }
+                    Collection<PSObject> results = invokePS(powershell, "Error uninstalling Transport Agent");
                 }
             }
 
-            return restartTransportService();
         }
 
         /// <summary>
         /// Installs the transport agent by calling the corresponding PowerShell commands (Install-TransportAgent and Enable-TransportAgent).
         /// The priority of the agent is set to the highest one.
-        /// After installing the agent, the MSExchangeTransport service will be restarted.
+        /// You need to restart the MSExchangeTransport service after install.
+        /// 
+        /// Throws ExchangeHelperException on error.
         /// </summary>
-        /// <returns>true if successfully installed</returns>
-        public static bool installTransportAgent()
+        public static void installTransportAgent()
         {
             // First make sure the following Registry key exists
             // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
@@ -204,7 +250,6 @@ namespace Configuration.DkimSigner
                 RegistryHelper.WriteSubKeyTree(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
             }
 
-            string baseDir = @"C:\Program Files\Exchange DkimSigner";
 
             //TODO net stop MSExchangeTransport 
             //TODO copy .dll and .config
@@ -226,17 +271,9 @@ namespace Configuration.DkimSigner
                         powershell.AddCommand("Install-TransportAgent");
                         powershell.AddParameter("Name", AGENT_NAME);
                         powershell.AddParameter("TransportAgentFactory", "Exchange.DkimSigner.DkimSigningRoutingAgentFactory");
-                        powershell.AddParameter("AssemblyPath", System.IO.Path.Combine(baseDir, "ExchangeDkimSigner.dll"));
+                        powershell.AddParameter("AssemblyPath", System.IO.Path.Combine(AGENT_DIR, "ExchangeDkimSigner.dll"));
 
-                        results = powershell.Invoke();
-                        if (powershell.Streams.Error.Count > 0)
-                        {
-                            foreach (ErrorRecord error in powershell.Streams.Error)
-                            {
-                                MessageBox.Show("Error installing Transport Agent\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            return false;
-                        }
+                        results = invokePS(powershell, "Error installing Transport Agent");
 
                         if (results.Count == 1)
                         {
@@ -249,15 +286,7 @@ namespace Configuration.DkimSigner
                         powershell.AddCommand("Enable-TransportAgent");
                         powershell.AddParameter("Identity", AGENT_NAME);
 
-                        results = powershell.Invoke();
-                        if (powershell.Streams.Error.Count > 0)
-                        {
-                            foreach (ErrorRecord error in powershell.Streams.Error)
-                            {
-                                MessageBox.Show("Error enabling Transport Agent\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            return false;
-                        }
+                        invokePS(powershell, "Error enabling Transport Agent");
                     }
 
                     powershell.Commands.Clear();
@@ -265,16 +294,7 @@ namespace Configuration.DkimSigner
                     // Determine current maximum priority
                     powershell.AddCommand("Get-TransportAgent");
 
-                    results = powershell.Invoke();
-                    if (powershell.Streams.Error.Count > 0)
-                    {
-                        foreach (ErrorRecord error in powershell.Streams.Error)
-                        {
-                            MessageBox.Show("Error getting list of Transport Agents\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-                        
-                        return false;
-                    }
+                    results = invokePS(powershell, "Error getting list of Transport Agents");
                     
                     int maxPrio = 0;
                     foreach (PSObject result in results)
@@ -293,21 +313,31 @@ namespace Configuration.DkimSigner
                         powershell.AddCommand("Set-TransportAgent");
                         powershell.AddParameter("Identity", AGENT_NAME);
                         powershell.AddParameter("Priority", maxPrio + 1);
-                        results = powershell.Invoke();
-                        
-                        if (powershell.Streams.Error.Count > 0)
-                        {
-                            foreach (ErrorRecord error in powershell.Streams.Error)
-                            {
-                                MessageBox.Show("Error setting priority of Transport Agent\n" + error.ToString(), "PowerShell error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            return false;
-                        }
+                        results = invokePS(powershell, "Error setting priority of Transport Agent");
                     }
                 }
             }
 
-            return restartTransportService();
         }
+    }
+
+    [Serializable]
+    public class ExchangeHelperException : Exception
+    {
+
+        public ExchangeHelperException(string message)
+            : base(message) { }
+
+        public ExchangeHelperException(string format, params object[] args)
+            : base(string.Format(format, args)) { }
+
+        public ExchangeHelperException(string message, Exception innerException)
+            : base(message, innerException) { }
+
+        public ExchangeHelperException(string format, Exception innerException, params object[] args)
+            : base(string.Format(format, args), innerException) { }
+
+        protected ExchangeHelperException(SerializationInfo info, StreamingContext context)
+            : base(info, context) { }
     }
 }
