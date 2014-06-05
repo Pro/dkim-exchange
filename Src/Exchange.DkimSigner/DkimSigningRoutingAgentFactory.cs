@@ -23,29 +23,14 @@ namespace Exchange.DkimSigner
         public static int logLevel;
 
         /// <summary>
-        /// The algorithm that should be used in signing.
-        /// </summary>
-        private DkimAlgorithmKind signingAlgorithm;
-
-        /// <summary>
-        /// The canonolization algorithm that should be used for the header.
-        /// </summary>
-        private DkimCanonicalizationKind headerCanonicalization;
-
-        /// <summary>
-        /// The canonolization algorithm that should be used for the body.
-        /// </summary>
-        private DkimCanonicalizationKind bodyCanonicalization;
-
-        /// <summary>
-        /// The headers to sign in each message.
-        /// </summary>
-        private IEnumerable<string> headersToSign;
-
-        /// <summary>
         /// The list of domains loaded from config file.
         /// </summary>
         private List<DomainElement> domainSettings;
+
+        /// <summary>
+        /// The object that knows how to sign messages.
+        /// </summary>
+        private ISigner dkimSigner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgentFactory"/> class.
@@ -64,14 +49,7 @@ namespace Exchange.DkimSigner
         /// <returns>The <see cref="DkimSigningRoutingAgent"/> instance.</returns>
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            var dkimSigner = new DkimSigner(
-                this.signingAlgorithm,
-                this.headerCanonicalization,
-                this.bodyCanonicalization,
-                this.headersToSign,
-                domainSettings);
-
-            return new DkimSigningRoutingAgent(dkimSigner);
+            return new DkimSigningRoutingAgent(domainSettings, dkimSigner);
         }
         
         /// <summary>
@@ -81,6 +59,11 @@ namespace Exchange.DkimSigner
         {
             if (RegistryHelper.Open(@"Exchange DkimSigner") != null)
             {
+                DkimAlgorithmKind signingAlgorithm = DkimAlgorithmKind.RsaSha1;
+                DkimCanonicalizationKind headerCanonicalization = DkimCanonicalizationKind.Simple;
+                DkimCanonicalizationKind bodyCanonicalization = DkimCanonicalizationKind.Simple;
+                IEnumerable<string> headersToSign = null;
+                
                 // Load the log level.
                 DkimSigningRoutingAgentFactory.logLevel = 0;
                 try
@@ -99,7 +82,7 @@ namespace Exchange.DkimSigner
                 // Load the signing algorithm.
                 try
                 {
-                    this.signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Exchange DkimSigner\DKIM"), true);
+                    signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Exchange DkimSigner\DKIM"), true);
                 }
                 catch (Exception ex)
                 {
@@ -109,7 +92,7 @@ namespace Exchange.DkimSigner
                 // Load the header canonicalization algorithm.
                 try
                 {
-                    this.headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Exchange DkimSigner\DKIM"), true);
+                    headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Exchange DkimSigner\DKIM"), true);
                 }
                 catch (Exception ex)
                 {
@@ -119,7 +102,7 @@ namespace Exchange.DkimSigner
                 // Load the body canonicalization algorithm.
                 try
                 {
-                    this.bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Exchange DkimSigner\DKIM"), true);
+                    bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Exchange DkimSigner\DKIM"), true);
                 }
                 catch (Exception ex)
                 {
@@ -130,7 +113,7 @@ namespace Exchange.DkimSigner
                 string unparsedHeaders = RegistryHelper.Read("HeadersToSign", @"Exchange DkimSigner\DKIM");
                 if (unparsedHeaders != null)
                 {
-                    this.headersToSign = unparsedHeaders.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+                    headersToSign = unparsedHeaders.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 }
 
                 // Load the list of domains
@@ -142,14 +125,10 @@ namespace Exchange.DkimSigner
                     {
                         string selector = RegistryHelper.Read("Selector", @"Exchange DkimSigner\Domain\" + domainName);
                         string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Exchange DkimSigner\Domain\" + domainName);
-                        string recipientRule = RegistryHelper.Read("RecipientRule", @"Exchange DkimSigner\Domain\" + domainName);
-                        string senderRule = RegistryHelper.Read("SenderRule", @"Exchange DkimSigner\Domain\" + domainName);
 
                         DomainElement domainElement = new DomainElement(domainName,
                                                                 selector,
-                                                                privateKeyFile,
-                                                                recipientRule != null ? recipientRule : ".*",
-                                                                senderRule != null ? senderRule : ".*");
+                                                                privateKeyFile);
 
                         if (domainElement.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
                         {
@@ -157,6 +136,11 @@ namespace Exchange.DkimSigner
                         }
                     }
                 }
+
+                this.dkimSigner = new DkimSigner(   signingAlgorithm,
+                                                    headerCanonicalization,
+                                                    bodyCanonicalization,
+                                                    headersToSign);
 
                 Logger.LogInformation("Exchange DKIM started. Signing Algorithm: " + signingAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + headerCanonicalization.ToString() + ", Canonicalization Header Algorithm: " + bodyCanonicalization.ToString() + ", Number of domains: " + domainSettings.Count);
             }

@@ -188,29 +188,6 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// Open RuleWindows when the row header have been clicked in the dgvDomainConfiguration DataGridView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void dgvDomainConfiguration_RowHeaderMouseClick(object sender, DataGridViewCellMouseEventArgs e)
-        {
-                        string recipientRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() : string.Empty;
-            string senderRule = this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value != null ? this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() : string.Empty;
-
-            RuleWindow form = new RuleWindow(recipientRule, senderRule);
-            form.ShowDialog();
-
-            if (this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value.ToString() != form.txtRecipientRule.Text ||
-                this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value.ToString() != form.txtSenderRule.Text)
-            {
-                this.dataUpdated = true;
-
-                this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[3].Value = form.txtRecipientRule.Text;
-                this.dgvDomainConfiguration.Rows[e.RowIndex].Cells[4].Value = form.txtSenderRule.Text;
-            }
-        }
-
-        /// <summary>
         /// Open private key information by clicking in private key file in the dgvDomainConfiguration DataGridView
         /// </summary>
         /// <param name="sender"></param>
@@ -617,14 +594,10 @@ namespace Configuration.DkimSigner
                     {
                         string selector = RegistryHelper.Read("Selector", @"Software\Exchange DkimSigner\Domain\" + domainName);
                         string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Software\Exchange DkimSigner\Domain\" + domainName);
-                        string recipientRule = RegistryHelper.Read("RecipientRule", @"Software\Exchange DkimSigner\Domain\" + domainName);
-                        string senderRule = RegistryHelper.Read("SenderRule", @"Software\Exchange DkimSigner\Domain\" + domainName);
 
                         this.dgvDomainConfiguration.Rows.Add(   domainName,
                                                                 selector,
-                                                                privateKeyFile,
-                                                                recipientRule != null ? recipientRule : string.Empty,
-                                                                senderRule != null ? senderRule : string.Empty);
+                                                                privateKeyFile);
 
                         attachments[i++] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
                     }
@@ -678,17 +651,9 @@ namespace Configuration.DkimSigner
                         string domainName = row.Cells[0].Value.ToString();
                         string selector = row.Cells[1].Value.ToString();
                         string privateKeyFile = row.Cells[2].Value.ToString();
-                        string recipientRule = row.Cells[3].Value != null ? row.Cells[3].Value.ToString() : string.Empty;
-                        string senderRule = row.Cells[4].Value != null ? row.Cells[4].Value.ToString() : string.Empty;
 
                         status = status && RegistryHelper.Write("Selector", selector, @"Software\Exchange DkimSigner\Domain\" + domainName);
                         status = status && RegistryHelper.Write("PrivateKeyFile", privateKeyFile, @"Software\Exchange DkimSigner\Domain\" + domainName);
-
-                        if (recipientRule != string.Empty)
-                            status = status && RegistryHelper.Write("RecipientRule", recipientRule, @"Software\Exchange DkimSigner\Domain\" + domainName);
-
-                        if (senderRule != string.Empty)
-                            status = status && RegistryHelper.Write("SenderRule", senderRule, @"Software\Exchange DkimSigner\Domain\" + domainName);
 
                         byte[] byteData = null;
                         byteData = attachments[row.Index];

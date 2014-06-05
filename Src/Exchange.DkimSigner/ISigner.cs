@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConfigurationSettings;
+using System;
 using System.IO;
 
 namespace Exchange.DkimSigner
@@ -14,9 +15,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         /// <param name="inputStream">The input stream.</param>
         /// <returns>The output stream.</returns>
-        string CanSign(Stream inputStream);
-
-        string SourceMessage(Stream inputStream);
+        string CanSign(DomainElement domain, Stream inputStream);
 
         /// <summary>
         /// Writes a signed version of the unsigned MIME message in the input stream

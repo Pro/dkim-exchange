@@ -32,6 +32,7 @@
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbAvailable = new System.Windows.Forms.GroupBox();
+            this.cbxPrereleases = new System.Windows.Forms.CheckBox();
             this.btUpateInstall = new System.Windows.Forms.Button();
             this.lblChangelog = new System.Windows.Forms.Label();
             this.txtChangelog = new System.Windows.Forms.TextBox();
@@ -66,9 +67,6 @@
             this.dgvcDomain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSelector = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvcRecipientRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dgvcSenderRule = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cbxPrereleases = new System.Windows.Forms.CheckBox();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -126,6 +124,17 @@
             this.gbAvailable.TabIndex = 6;
             this.gbAvailable.TabStop = false;
             this.gbAvailable.Text = "Available";
+            // 
+            // cbxPrereleases
+            // 
+            this.cbxPrereleases.AutoSize = true;
+            this.cbxPrereleases.Location = new System.Drawing.Point(238, 25);
+            this.cbxPrereleases.Name = "cbxPrereleases";
+            this.cbxPrereleases.Size = new System.Drawing.Size(127, 17);
+            this.cbxPrereleases.TabIndex = 12;
+            this.cbxPrereleases.Text = "Include beta versions";
+            this.cbxPrereleases.UseVisualStyleBackColor = true;
+            this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
             // 
             // btUpateInstall
             // 
@@ -468,9 +477,7 @@
             this.dgvDomainConfiguration.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvcDomain,
             this.dgvcSelector,
-            this.dgvcPrivateKeyFile,
-            this.dgvcRecipientRule,
-            this.dgvcSenderRule});
+            this.dgvcPrivateKeyFile});
             this.dgvDomainConfiguration.Location = new System.Drawing.Point(3, 3);
             this.dgvDomainConfiguration.Name = "dgvDomainConfiguration";
             this.dgvDomainConfiguration.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -479,7 +486,6 @@
             this.dgvDomainConfiguration.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvDomainConfiguration_CellBeginEdit);
             this.dgvDomainConfiguration.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvDomainConfiguration_CellClick);
             this.dgvDomainConfiguration.CurrentCellChanged += new System.EventHandler(this.dgvDomainConfiguration_CurrentCellChanged);
-            this.dgvDomainConfiguration.RowHeaderMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvDomainConfiguration_RowHeaderMouseClick);
             this.dgvDomainConfiguration.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvDomainConfiguration_RowPostPaint);
             this.dgvDomainConfiguration.RowValidating += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvDomainConfiguration_RowValidating);
             this.dgvDomainConfiguration.UserDeletingRow += new System.Windows.Forms.DataGridViewRowCancelEventHandler(this.dgvDomainConfiguration_UserDeletingRow);
@@ -501,29 +507,6 @@
             this.dgvcPrivateKeyFile.Name = "dgvcPrivateKeyFile";
             this.dgvcPrivateKeyFile.ReadOnly = true;
             this.dgvcPrivateKeyFile.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // dgvcRecipientRule
-            // 
-            this.dgvcRecipientRule.HeaderText = "RecipientRule";
-            this.dgvcRecipientRule.Name = "dgvcRecipientRule";
-            this.dgvcRecipientRule.Visible = false;
-            // 
-            // dgvcSenderRule
-            // 
-            this.dgvcSenderRule.HeaderText = "SenderRule";
-            this.dgvcSenderRule.Name = "dgvcSenderRule";
-            this.dgvcSenderRule.Visible = false;
-            // 
-            // cbxPrereleases
-            // 
-            this.cbxPrereleases.AutoSize = true;
-            this.cbxPrereleases.Location = new System.Drawing.Point(238, 25);
-            this.cbxPrereleases.Name = "cbxPrereleases";
-            this.cbxPrereleases.Size = new System.Drawing.Size(127, 17);
-            this.cbxPrereleases.TabIndex = 12;
-            this.cbxPrereleases.Text = "Include beta versions";
-            this.cbxPrereleases.UseVisualStyleBackColor = true;
-            this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
             // 
             // MainWindow
             // 
@@ -590,17 +573,15 @@
         private System.Windows.Forms.Button btDownload;
         private System.Windows.Forms.Button btUpload;
         private System.Windows.Forms.Button btSave;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcDomain;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSelector;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPrivateKeyFile;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcRecipientRule;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSenderRule;
         private System.Windows.Forms.Label lblChangelog;
         private System.Windows.Forms.TextBox txtChangelog;
         private System.Windows.Forms.Button btUpateInstall;
         private System.Windows.Forms.Button btGenerate;
         private System.Windows.Forms.Button btUninstall;
         private System.Windows.Forms.CheckBox cbxPrereleases;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcDomain;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSelector;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPrivateKeyFile;
     }
 }
 
