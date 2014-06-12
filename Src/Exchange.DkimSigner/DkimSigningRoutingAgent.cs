@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ConfigurationSettings;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.IO;
@@ -14,6 +16,10 @@ namespace Exchange.DkimSigner
     /// </summary>
     public sealed class DkimSigningRoutingAgent : RoutingAgent
     {
+        /// <summary>
+        /// The list of domains loaded from config file.
+        /// </summary>
+        private List<DomainElement> domainSettings;
 
         /// <summary>
         /// The object that knows how to sign messages.
@@ -24,13 +30,9 @@ namespace Exchange.DkimSigner
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
-        public DkimSigningRoutingAgent(ISigner dkimSigner)
+        public DkimSigningRoutingAgent(List<DomainElement> domainSettings, ISigner dkimSigner)
         {
-            if (dkimSigner == null)
-            {
-                throw new ArgumentNullException("dkimSigner");
-            }
-
+            this.domainSettings = domainSettings;
             this.dkimSigner = dkimSigner;
             
             this.OnCategorizedMessage += this.WhenMessageCategorized;
@@ -76,36 +78,47 @@ namespace Exchange.DkimSigner
             // and we can't sign it. Additionally, if the message has a "TnefPart",
             // then it is in a proprietary format used by Outlook and Exchange Server,
             // which means we shouldn't bother signing it.
-
-            if (!mailItem.Message.IsSystemMessage &&
-                mailItem.Message.TnefPart == null)
+            if (!mailItem.Message.IsSystemMessage && mailItem.Message.TnefPart == null)
             {
-                using (var inputStream = mailItem.GetMimeReadStream())
+                 /* Check if DKIM is defined for the current domain */
+                DomainElement domain = null;
+                foreach (DomainElement e in domainSettings)
                 {
-                    string dkim = this.dkimSigner.CanSign(inputStream);
+                    if (mailItem.FromAddress.DomainPart
+                                            .ToUpperInvariant()
+                                            .Contains(e.getDomain().ToUpperInvariant()))
+                        domain = e;
+                }
 
-                    if (dkim.Length != 0)
+                /* If domain was found in define domain configuration, we just do nothing */
+                if (domain != null)
+                {
+                    using (var inputStream = mailItem.GetMimeReadStream())
                     {
-                        Logger.LogInformation("Signing mail with header: " + dkim);
+                        string dkim = this.dkimSigner.CanSign(domain, inputStream);
 
-                        inputStream.Seek(0, SeekOrigin.Begin);
-                        byte[] inputBuffer = ReadFully(inputStream);
-                        inputStream.Close();
-
-                        using (var outputStream = mailItem.GetMimeWriteStream())
+                        if (dkim.Length != 0)
                         {
-                            try
-                            {
-                                this.dkimSigner.Sign(inputBuffer, outputStream, dkim);
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.LogError("Signing went terribly wrong: " + ex.ToString());
-                            }
+                            Logger.LogInformation("Signing mail with header: " + dkim);
 
-                            outputStream.Close();
+                            inputStream.Seek(0, SeekOrigin.Begin);
+                            byte[] inputBuffer = ReadFully(inputStream);
+                            inputStream.Close();
+
+                            using (var outputStream = mailItem.GetMimeWriteStream())
+                            {
+                                try
+                                {
+                                    this.dkimSigner.Sign(inputBuffer, outputStream, dkim);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError("Signing went terribly wrong: " + ex.ToString());
+                                }
+
+                                outputStream.Close();
+                            }
                         }
-
                     }
                 }
             }
@@ -117,7 +130,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         /// <param name="input">The stream to read</param>
         /// <returns>All the data from the stream as byte array</returns>
-        public static byte[] ReadFully(Stream input)
+        private static byte[] ReadFully(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];
             using (MemoryStream ms = new MemoryStream())

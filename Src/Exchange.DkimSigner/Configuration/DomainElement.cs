@@ -17,8 +17,6 @@ namespace ConfigurationSettings
         private string domain;
         private string selector;
         private string privateKeyFile;
-        private string recipientRule;
-        private string senderRule;
 
         /// <summary>
         /// Domain element constructor
@@ -28,8 +26,6 @@ namespace ConfigurationSettings
             this.domain = domain;
             this.selector = selector;
             this.privateKeyFile = privateKeyFile;
-            this.recipientRule = recipientRule;
-            this.senderRule = senderRule;
         }
 
         /// <summary>
@@ -57,22 +53,6 @@ namespace ConfigurationSettings
         }
 
         /// <summary>
-        /// Get recipient rule regex
-        /// </summary>
-        public string getRecipientRule()
-        {
-            return this.recipientRule;
-        }
-
-        /// <summary>
-        /// Get sender rule regex
-        /// </summary>
-        public string getSenderRule()
-        {
-            return this.senderRule;
-        }
-
-        /// <summary>
         /// RSACryptoServiceProvider to manipulate to encrypt the information
         /// </summary>
         public RSACryptoServiceProvider CryptoProvider
@@ -92,9 +72,7 @@ namespace ConfigurationSettings
             if (Path.IsPathRooted(privateKeyFile))
                 path =  @"keys\" + privateKeyFile;
             else
-            {
                 path = Path.Combine(basePath,  @"keys\" + privateKeyFile);
-            }
 
             if (!File.Exists(path))
             {
