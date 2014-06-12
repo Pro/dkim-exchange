@@ -114,9 +114,42 @@ namespace Configuration.DkimSigner
                 done(false);
             }
         }
-        
 
-        private string copyFiles()
+        private string directoryFromExchangeVersion()
+        {
+            Version fullVersion = ExchangeHelper.getExchangeVersion();
+            if (fullVersion == null)
+                return null;
+
+            string versionStr = fullVersion.ToString();
+
+            if (versionStr.StartsWith("8.3.*"))
+                return "Exchange 2007 SP3";
+            else if (versionStr.StartsWith("14.0."))
+                return "Exchange 2010";
+            else if (versionStr.StartsWith("14.1."))
+                return "Exchange 2010 SP1";
+            else if (versionStr.StartsWith("14.2."))
+                return "Exchange 2010 SP2";
+            else if (versionStr.StartsWith("14.3."))
+                return "Exchange 2010 SP3";
+            else if (versionStr.StartsWith("15.0.516.32"))
+                return "Exchange 2013";
+            else if (versionStr.StartsWith("15.0.620.29"))
+                return "Exchange 2013 CU1";
+            else if (versionStr.StartsWith("15.0.712.24"))
+                return "Exchange 2013 CU2";
+            else if (versionStr.StartsWith("15.0.775.38"))
+                return "Exchange 2013 CU3";
+            else if (versionStr.StartsWith("15.0.847.32"))
+                return "Exchange 2013 SP1 CU4";
+            else if (versionStr.StartsWith("15.0.913.22"))
+                return "Exchange 2013 SP1 CU5";
+            else
+                return null;
+        }
+
+        private string copyAllFiles(string sourceDir, string destDir)
         {
             string errorMsg = null;
 
@@ -128,9 +161,9 @@ namespace Configuration.DkimSigner
                 }
             };
 
-            foreach (string filename in Directory.EnumerateFiles(tempPath,"*", SearchOption.AllDirectories))
+            foreach (string filename in Directory.EnumerateFiles(sourceDir, "*", SearchOption.AllDirectories))
             {
-                string dest = System.IO.Path.Combine(installPath, filename.Substring(tempPath.Length + 1));
+                string dest = System.IO.Path.Combine(destDir, filename.Substring(sourceDir.Length + 1));
                 string dir = System.IO.Path.GetDirectoryName(dest);
                 try
                 {
@@ -138,13 +171,32 @@ namespace Configuration.DkimSigner
                 }
                 catch (IOException ex)
                 {
-                    return "Couldn't create directory\n" + dir + "\n"+ex.Message;
+                    return "Couldn't create directory\n" + dir + "\n" + ex.Message;
                 }
                 FileHelper.CopyFile(filename, dest, copyComplete);
-                if (errorMsg!=null)
+                if (errorMsg != null)
                     return errorMsg;
             }
+
             return null;
+        }
+
+        private string copyFiles()
+        {
+
+
+            // First copy the configuration executable from Src\Configuration.DkimSigner\bin\Release to the destination:
+            string sourcePath = System.IO.Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
+            string destPath = System.IO.Path.Combine(installPath, "Configuration");
+            string ret = copyAllFiles(sourcePath, destPath);
+            if (ret != null)
+                return ret;
+
+            //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
+            //Get source directory for installed Exchange version:
+            string libDir = directoryFromExchangeVersion();
+            sourcePath = System.IO.Path.Combine(tempPath, System.IO.Path.Combine(@"Src\Exchange.DkimSigner\bin\",libDir));
+            return copyAllFiles(sourcePath, installPath);
         }
 
         private void installAgentTask()

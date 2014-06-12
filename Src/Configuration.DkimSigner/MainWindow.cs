@@ -74,7 +74,7 @@ namespace Configuration.DkimSigner
             }
 
             if (!isInstall && !isUpgrade)
-                installPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                installPath = System.IO.Path.GetDirectoryName(System.IO.Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location,".."));
 
             ExchangeHelper.AGENT_DIR = installPath;
 
@@ -96,9 +96,9 @@ namespace Configuration.DkimSigner
             if (isInstall || isUpgrade)
             {
                 this.Hide();
-                UpgradeWindow upw = new UpgradeWindow(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), installPath);
+                UpgradeWindow upw = new UpgradeWindow(Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"..\..\..\..")), installPath);
                 upw.ShowDialog();
-                string newExec = System.IO.Path.Combine(installPath,"Configuration.DkimSigner.exe");
+                string newExec = System.IO.Path.Combine(installPath,@"Configuration\Configuration.DkimSigner.exe");
                 if (!System.IO.File.Exists(newExec))
                 {
                     MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + installPath, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -631,7 +631,9 @@ namespace Configuration.DkimSigner
 
                     this.dgvDomainConfiguration.Rows[0].Selected = true;
                 }
+
             }
+            this.dataUpdated = false;
         }
 
         /// <summary>

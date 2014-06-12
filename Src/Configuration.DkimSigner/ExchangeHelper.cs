@@ -13,6 +13,7 @@ using System.Management.Automation.Runspaces;
 
 using ConfigurationSettings;
 using System.Runtime.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner
 {
@@ -22,7 +23,9 @@ namespace Configuration.DkimSigner
         public static string AGENT_DIR = @"C:\Program Files\Exchange DkimSigner";
 
         /// <summary>
-        /// Get the current Exchange version for the current server from Active Directy (ldap)
+        /// Get the current Exchange version for the current server from Active Directy (ldap).
+        /// 
+        /// The format of the string is 'Version 14.1 (Build 30218.15)'
         /// </summary>
         /// <returns></returns>
         public static string checkExchangeVersionInstalled()
@@ -51,6 +54,22 @@ namespace Configuration.DkimSigner
             {
                 return "Not installed";
             }
+        }
+
+        public static Version getExchangeVersion()
+        {
+            string verStr = checkExchangeVersionInstalled();
+
+            Match match = Regex.Match(verStr, @"Version (\d+)\.(\d+)\s\(Build\s(\d+)\.(\d+)\)", RegexOptions.IgnoreCase);
+
+
+            if (!match.Success)
+                return null;
+
+            // compose full version number, cut off first two numbers from build part
+            string fullVersion = match.Groups[1].ToString() + "." + match.Groups[2].ToString() + "." + match.Groups[3].ToString().Substring(2) + "." + match.Groups[4].ToString();
+
+            return new Version(fullVersion);
         }
 
         /// <summary>
