@@ -21,6 +21,7 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 * Exchange 2013 CU2 (15.0.712.24)
 * Exchange 2013 CU3 (15.0.775.38)
 * Exchange 2013 SP1 (15.0.847.32)
+* Exchange 2013 CU5 (15.0.913.22)
 
 ## Installing the Transport Agent
 
