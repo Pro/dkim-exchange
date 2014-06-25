@@ -125,11 +125,12 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// Checks if the Exchange DKIM TransportAgent is already installed or not. It doesn't check if the agent is enabled.
+        /// Checks if the Exchange DKIM TransportAgent is already installed or not.
         /// </summary>
         /// <returns>true if it is installed.</returns>
-        public static bool isAgentInstalled()
+        public static bool isAgentInstalled(out bool enabled)
         {
+            enabled = false;
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
             {
                 runspace.Open();
@@ -146,6 +147,7 @@ namespace Configuration.DkimSigner
                     {
                         if (result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME))
                         {
+                            enabled = Boolean.Parse(result.Properties["Enabled"].Value.ToString());
                             return true;
                         }
                     }
@@ -155,6 +157,7 @@ namespace Configuration.DkimSigner
 
             return false;
         }
+
 
         /// <summary>
         /// Restart the MSExchangeTransport service. Needs to be called after changes on transport agent.
@@ -223,14 +226,14 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// Uninstalls the transport agent by calling the corresponding PowerShell commands (Disable-TransportAgent and Uninstall-TransportAgent).
-        /// You need to restart the MSExchangeTransport service after uninstall.
+        /// Disables the Transport Agent but doesn't uninstall it.
         /// 
         /// Throws ExchangeHelperException on error.
         /// </summary>
-        public static void uninstallTransportAgent()
+        public static void disalbeTransportAgent()
         {
-            if (!isAgentInstalled())
+            bool enabled;
+            if (!isAgentInstalled(out enabled) || !enabled)
                 return;
 
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
@@ -243,6 +246,64 @@ namespace Configuration.DkimSigner
 
                     // Disable-TransportAgent -Identity "Exchange DkimSigner" 
                     powershell.AddScript("Disable-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
+
+                    Collection<PSObject> results = invokePS(powershell, "Error disabling Transport Agent");
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Enables the already installed Transport Agent
+        /// 
+        /// Throws ExchangeHelperException on error.
+        /// </summary>
+        public static void enalbeTransportAgent()
+        {
+            bool enabled;
+            if (!isAgentInstalled(out enabled) || enabled)
+                return;
+
+            using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
+            {
+                runspace.Open();
+
+                using (PowerShell powershell = PowerShell.Create())
+                {
+                    powershell.Runspace = runspace;
+
+                    // Disable-TransportAgent -Identity "Exchange DkimSigner" 
+                    powershell.AddScript("Enable-TransportAgent -Identity \"" + AGENT_NAME + "\"");
+
+                    Collection<PSObject> results = invokePS(powershell, "Error enabling Transport Agent");
+                }
+            }
+
+        }
+        /// <summary>
+        /// Uninstalls the transport agent by calling the corresponding PowerShell commands (Disable-TransportAgent and Uninstall-TransportAgent).
+        /// You need to restart the MSExchangeTransport service after uninstall.
+        /// 
+        /// Throws ExchangeHelperException on error.
+        /// </summary>
+        public static void uninstallTransportAgent()
+        {
+            bool enabled;
+            if (!isAgentInstalled(out enabled))
+                return;
+
+            if (enabled)
+            {
+                disalbeTransportAgent();
+            }
+
+            using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
+            {
+                runspace.Open();
+
+                using (PowerShell powershell = PowerShell.Create())
+                {
+                    powershell.Runspace = runspace;
 
                     // Uninstall-TransportAgent -Identity "Exchange DkimSigner"  
                     powershell.AddScript("Uninstall-TransportAgent -Confirm:$false -Identity \"" + AGENT_NAME + "\"");
@@ -284,7 +345,8 @@ namespace Configuration.DkimSigner
                     int currPriority = 0;
                     Collection<PSObject> results;
 
-                    if (!isAgentInstalled())
+                    bool enabled;
+                    if (!isAgentInstalled(out enabled))
                     {
                         // Install-TransportAgent -Name "Exchange DkimSigner" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "$EXDIR\ExchangeDkimSigner.dll"
                         powershell.AddCommand("Install-TransportAgent");
@@ -298,15 +360,9 @@ namespace Configuration.DkimSigner
                         {
                             currPriority = Int32.Parse(results[0].Properties["Priority"].Value.ToString());
                         }
-
-                        powershell.Commands.Clear();
-                        
-                        // Enable-TransportAgent -Identity "Exchange DkimSigner"
-                        powershell.AddCommand("Enable-TransportAgent");
-                        powershell.AddParameter("Identity", AGENT_NAME);
-
-                        invokePS(powershell, "Error enabling Transport Agent");
                     }
+                    if (!enabled)
+                        enalbeTransportAgent();
 
                     powershell.Commands.Clear();
                     

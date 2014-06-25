@@ -111,3 +111,6 @@ UpgradeLog*.XML
 /Src/Exchange.DkimSigner/bin/*/Microsoft.Exchange.Data.Transport.dll
 /Src/Exchange.DkimSigner/bin/*/Microsoft.Exchange.Data.Transport.xml
 Thumbs.db
+/Src/Exchange.DkimSigner/bin/Debug Exchange 2013 SP1 CU5/ExchangeDkimSigner.dll
+/Src/Exchange.DkimSigner/bin/Debug Exchange 2013 SP1 CU5/ExchangeDkimSigner.dll.config
+/Src/Exchange.DkimSigner/bin/Debug Exchange 2013 SP1 CU5/ExchangeDkimSigner.pdb

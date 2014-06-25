@@ -226,11 +226,15 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                if (ExchangeHelper.isAgentInstalled())
+                bool enabled;
+                bool installed = ExchangeHelper.isAgentInstalled(out enabled);
+                if (installed && enabled)
                 {
                     return null;
                 }
-                ExchangeHelper.installTransportAgent();
+                if (!installed)
+                    ExchangeHelper.installTransportAgent();
+                ExchangeHelper.enalbeTransportAgent();
                 return null;
             }
             catch (ExchangeHelperException ex)

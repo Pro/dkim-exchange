@@ -38,6 +38,7 @@ namespace Configuration.DkimSigner
         private Dictionary<int, byte[]> attachments = new Dictionary<int, byte[]>();
         private Release dkimSignerAvailable = null;
         private System.Version dkimSignerInstalled = null;
+        private bool dkimSignerEnabled = false;
         private bool dataUpdated = false;
         private UpdateButtonType updateButtonType = UpdateButtonType.Disabled;
         private bool isUpgrade = false;
@@ -122,6 +123,7 @@ namespace Configuration.DkimSigner
             // Get Exchange.DkimSigner version installed
             txtDkimSignerInstalled.Text = "Loading ...";
             Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
+            btnDisable.Enabled = false;
             thDkimSignerInstalled.Start();
 
             // Get Exchange.DkimSigner version available
@@ -363,10 +365,20 @@ namespace Configuration.DkimSigner
             if (dkimSignerInstalled != null)
             {
                 this.txtDkimSignerInstalled.Text = dkimSignerInstalled.ToString();
+                if (this.dkimSignerEnabled)
+                {
+                    btnDisable.Text = "Disable";
+                }
+                else
+                {
+                    btnDisable.Text = "Enable";
+                }
+                btnDisable.Enabled = true;
             }
             else
             {
                 this.txtDkimSignerInstalled.Text = "Not installed";
+                btnDisable.Enabled = false;
             }
             this.initUpdateButton();
         }
@@ -458,6 +470,15 @@ namespace Configuration.DkimSigner
             catch (Exception)
             {
                dkimSignerInstalled = null;
+            }
+
+            try
+            {
+                ExchangeHelper.isAgentInstalled(out dkimSignerEnabled);
+            }
+            catch (Exception)
+            {
+                dkimSignerEnabled = false;
             }
             
             if (this.txtDkimSignerInstalled.InvokeRequired)
@@ -849,6 +870,16 @@ namespace Configuration.DkimSigner
             try
             {
                 ExchangeHelper.uninstallTransportAgent();
+
+                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==System.Windows.Forms.DialogResult.Yes){
+                    RegistryHelper.DeleteSubKeyTree("Exchange DkimSigner", @"Software");
+                }
+
+                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + ExchangeHelper.AGENT_DIR + "' and all it's content?", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    var dir = new DirectoryInfo(ExchangeHelper.AGENT_DIR);
+                    dir.Delete(true);
+                }
             } catch (ExchangeHelperException e) {
                 MessageBox.Show(e.Message, "Uninstall error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -873,70 +904,7 @@ namespace Configuration.DkimSigner
 
             if (dpw.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                //TODO: Show extract progress
-                try
-                {
-                    System.IO.Directory.CreateDirectory(tempDir);
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Couldn't create directory:\n" + tempDir + "\n" + e.Message, "Directory error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    btUpateInstall.Enabled = true;
-                    return;
-                }
-                using (ZipFile zip1 = ZipFile.Read(tempPath))
-                {
-                    // here, we extract every entry, but we could extract conditionally
-                    // based on entry name, size, date, checkbox status, etc.  
-                    foreach (ZipEntry e in zip1)
-                    {
-                        e.Extract(tempDir, ExtractExistingFileAction.OverwriteSilently);
-                    }
-                }
-
-                string[] contents = Directory.GetDirectories(tempDir);
-                if (contents.Length == 0) {
-                    MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    btUpateInstall.Enabled = true;
-                    return;
-                }
-                string rootDir = contents[0];
-
-                string exePath = System.IO.Path.Combine(rootDir, @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
-                if (System.Diagnostics.Debugger.IsAttached)
-                    // during development execute current exe
-                    exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                if (!System.IO.File.Exists(exePath))
-                {
-                    MessageBox.Show("Executable not found within downloaded .zip is empty. Please try again.", "Missing .exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    btUpateInstall.Enabled = true;
-                    return;
-                }
-                string args = "";
-                if (updateButtonType == UpdateButtonType.Install)
-                {
-                    args = "--install";
-                }
-                else
-                {
-                    args = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                    if (System.Diagnostics.Debugger.IsAttached)
-                        // during development install into updated subfolder
-                        args = System.IO.Path.Combine(args, "Updated");
-                    args = "--upgrade \"" + args + "\"";
-                }
-
-                try
-                {
-                    Process.Start(exePath, args );
-                }
-                catch (Exception e)
-                {
-                    MessageBox.Show("Couldn't start updater:\n" + e.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    btUpateInstall.Enabled = true;
-                    return;
-                }
-                this.Close();
+                extractAndInstall(tempPath);
             }
 
             /*
@@ -948,9 +916,107 @@ namespace Configuration.DkimSigner
 
         }
 
+        private void extractAndInstall(string zipPath)
+        {
+            //TODO: Show extract progress
+            string dir = zipPath.Substring(0,zipPath.LastIndexOf('.'));
+            try
+            {
+                System.IO.Directory.CreateDirectory(dir);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Couldn't create directory:\n" + dir + "\n" + e.Message, "Directory error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btUpateInstall.Enabled = true;
+                return;
+            }
+            using (ZipFile zip1 = ZipFile.Read(zipPath))
+            {
+                // here, we extract every entry, but we could extract conditionally
+                // based on entry name, size, date, checkbox status, etc.  
+                foreach (ZipEntry e in zip1)
+                {
+                    e.Extract(dir, ExtractExistingFileAction.OverwriteSilently);
+                }
+            }
+
+            string[] contents = Directory.GetDirectories(dir);
+            if (contents.Length == 0)
+            {
+                MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btUpateInstall.Enabled = true;
+                return;
+            }
+            string rootDir = contents[0];
+
+            string exePath = System.IO.Path.Combine(rootDir, @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
+            if (System.Diagnostics.Debugger.IsAttached)
+                // during development execute current exe
+                exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            if (!System.IO.File.Exists(exePath))
+            {
+                MessageBox.Show("Executable not found within downloaded .zip is empty. Please try again.", "Missing .exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btUpateInstall.Enabled = true;
+                return;
+            }
+            string args = "";
+            if (updateButtonType == UpdateButtonType.Install)
+            {
+                args = "--install";
+            }
+            else
+            {
+                args = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                if (System.Diagnostics.Debugger.IsAttached)
+                    // during development install into updated subfolder
+                    args = System.IO.Path.Combine(args, "Updated");
+                args = "--upgrade \"" + args + "\"";
+            }
+
+            try
+            {
+                Process.Start(exePath, args);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Couldn't start updater:\n" + e.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btUpateInstall.Enabled = true;
+                return;
+            }
+            this.Close();
+        }
+
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
         {
             updateVersions();
+        }
+
+        private void btnInstallZip_Click(object sender, EventArgs e)
+        {
+            if (openZipFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                extractAndInstall(openZipFileDialog.FileName);
+            }
+        }
+
+        private void btnDisable_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (this.dkimSignerEnabled)
+                {
+                    ExchangeHelper.disalbeTransportAgent();
+                }
+                else
+                    ExchangeHelper.enalbeTransportAgent();
+                ExchangeHelper.restartTransportService();
+                updateVersions();
+            }
+            catch (ExchangeHelperException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

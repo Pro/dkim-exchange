@@ -32,6 +32,7 @@
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbAvailable = new System.Windows.Forms.GroupBox();
+            this.btnInstallZip = new System.Windows.Forms.Button();
             this.cbxPrereleases = new System.Windows.Forms.CheckBox();
             this.btUpateInstall = new System.Windows.Forms.Button();
             this.lblChangelog = new System.Windows.Forms.Label();
@@ -67,6 +68,8 @@
             this.dgvcDomain = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcSelector = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcPrivateKeyFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.openZipFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.btnDisable = new System.Windows.Forms.Button();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -112,18 +115,29 @@
             this.gbAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbAvailable.Controls.Add(this.btnInstallZip);
             this.gbAvailable.Controls.Add(this.cbxPrereleases);
             this.gbAvailable.Controls.Add(this.btUpateInstall);
             this.gbAvailable.Controls.Add(this.lblChangelog);
             this.gbAvailable.Controls.Add(this.txtChangelog);
             this.gbAvailable.Controls.Add(this.txtDkimSignerAvailable);
             this.gbAvailable.Controls.Add(this.lbDkimSignerAvailable);
-            this.gbAvailable.Location = new System.Drawing.Point(3, 67);
+            this.gbAvailable.Location = new System.Drawing.Point(3, 93);
             this.gbAvailable.Name = "gbAvailable";
-            this.gbAvailable.Size = new System.Drawing.Size(546, 254);
+            this.gbAvailable.Size = new System.Drawing.Size(546, 228);
             this.gbAvailable.TabIndex = 6;
             this.gbAvailable.TabStop = false;
             this.gbAvailable.Text = "Available";
+            // 
+            // btnInstallZip
+            // 
+            this.btnInstallZip.Location = new System.Drawing.Point(446, 48);
+            this.btnInstallZip.Name = "btnInstallZip";
+            this.btnInstallZip.Size = new System.Drawing.Size(94, 23);
+            this.btnInstallZip.TabIndex = 13;
+            this.btnInstallZip.Text = "Install from .zip";
+            this.btnInstallZip.UseVisualStyleBackColor = true;
+            this.btnInstallZip.Click += new System.EventHandler(this.btnInstallZip_Click);
             // 
             // cbxPrereleases
             // 
@@ -150,7 +164,7 @@
             // lblChangelog
             // 
             this.lblChangelog.AutoSize = true;
-            this.lblChangelog.Location = new System.Drawing.Point(6, 54);
+            this.lblChangelog.Location = new System.Drawing.Point(6, 58);
             this.lblChangelog.Name = "lblChangelog";
             this.lblChangelog.Size = new System.Drawing.Size(61, 13);
             this.lblChangelog.TabIndex = 10;
@@ -161,12 +175,12 @@
             this.txtChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtChangelog.Location = new System.Drawing.Point(9, 70);
+            this.txtChangelog.Location = new System.Drawing.Point(9, 77);
             this.txtChangelog.Multiline = true;
             this.txtChangelog.Name = "txtChangelog";
             this.txtChangelog.ReadOnly = true;
             this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtChangelog.Size = new System.Drawing.Size(531, 178);
+            this.txtChangelog.Size = new System.Drawing.Size(531, 145);
             this.txtChangelog.TabIndex = 11;
             // 
             // txtDkimSignerAvailable
@@ -191,6 +205,7 @@
             // 
             this.gbInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbInstalled.Controls.Add(this.btnDisable);
             this.gbInstalled.Controls.Add(this.btUninstall);
             this.gbInstalled.Controls.Add(this.lbExchangeInstalled);
             this.gbInstalled.Controls.Add(this.txtDkimSignerInstalled);
@@ -198,7 +213,7 @@
             this.gbInstalled.Controls.Add(this.lbDkimSignerInstalled);
             this.gbInstalled.Location = new System.Drawing.Point(3, 3);
             this.gbInstalled.Name = "gbInstalled";
-            this.gbInstalled.Size = new System.Drawing.Size(546, 58);
+            this.gbInstalled.Size = new System.Drawing.Size(546, 84);
             this.gbInstalled.TabIndex = 1;
             this.gbInstalled.TabStop = false;
             this.gbInstalled.Text = "Installed";
@@ -206,7 +221,7 @@
             // btUninstall
             // 
             this.btUninstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btUninstall.Location = new System.Drawing.Point(446, 24);
+            this.btUninstall.Location = new System.Drawing.Point(290, 26);
             this.btUninstall.Name = "btUninstall";
             this.btUninstall.Size = new System.Drawing.Size(94, 23);
             this.btUninstall.TabIndex = 10;
@@ -217,7 +232,7 @@
             // lbExchangeInstalled
             // 
             this.lbExchangeInstalled.AutoSize = true;
-            this.lbExchangeInstalled.Location = new System.Drawing.Point(235, 29);
+            this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 55);
             this.lbExchangeInstalled.Name = "lbExchangeInstalled";
             this.lbExchangeInstalled.Size = new System.Drawing.Size(61, 13);
             this.lbExchangeInstalled.TabIndex = 4;
@@ -234,7 +249,7 @@
             // 
             // txtExchangeInstalled
             // 
-            this.txtExchangeInstalled.Location = new System.Drawing.Point(302, 26);
+            this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 52);
             this.txtExchangeInstalled.Name = "txtExchangeInstalled";
             this.txtExchangeInstalled.ReadOnly = true;
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
@@ -508,6 +523,22 @@
             this.dgvcPrivateKeyFile.ReadOnly = true;
             this.dgvcPrivateKeyFile.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             // 
+            // openZipFileDialog
+            // 
+            this.openZipFileDialog.FileName = "dkim-exchange.zip";
+            this.openZipFileDialog.Filter = "ZIP files|*.zip";
+            this.openZipFileDialog.Title = "Select the .zip file downloaded from github.com";
+            // 
+            // btnDisable
+            // 
+            this.btnDisable.Location = new System.Drawing.Point(226, 26);
+            this.btnDisable.Name = "btnDisable";
+            this.btnDisable.Size = new System.Drawing.Size(58, 23);
+            this.btnDisable.TabIndex = 13;
+            this.btnDisable.Text = "Disable";
+            this.btnDisable.UseVisualStyleBackColor = true;
+            this.btnDisable.Click += new System.EventHandler(this.btnDisable_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -582,6 +613,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcDomain;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcSelector;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPrivateKeyFile;
+        private System.Windows.Forms.Button btnInstallZip;
+        private System.Windows.Forms.OpenFileDialog openZipFileDialog;
+        private System.Windows.Forms.Button btnDisable;
     }
 }
 
