@@ -179,6 +179,8 @@ namespace Configuration.DkimSigner
         {
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
+            if (service.Status == ServiceControllerStatus.Stopped)
+                return;
             try
             {
                 TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMS);
@@ -212,6 +214,8 @@ namespace Configuration.DkimSigner
         {
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
+            if (service.Status == ServiceControllerStatus.Running)
+                return;
             try
             {
                 TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMS);
