@@ -1004,7 +1004,7 @@ namespace Configuration.DkimSigner
             string keyDir = System.IO.Path.Combine(DKIM_SIGNER_PATH, "keys");
             if (path.StartsWith(keyDir))
             {
-                path = path.Substring(keyDir.Length - 4);
+                path = path.Substring(keyDir.Length +1);
             }
             else if (MessageBox.Show("It is strongly recommended to store all the keys in the directory\n" + keyDir + "\nDo you want me to move the key into this directory?", "Move key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question)==System.Windows.Forms.DialogResult.Yes)
             {
