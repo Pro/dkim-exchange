@@ -192,11 +192,18 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static RegistryKey Open(string subKey = "")
         {
-            bool is64BitProcess = (IntPtr.Size == 8);
-            bool is64BitOperatingSystem = is64BitProcess || InternalCheckIsWow64();
+            try
+            {
+                bool is64BitProcess = (IntPtr.Size == 8);
+                bool is64BitOperatingSystem = is64BitProcess || InternalCheckIsWow64();
 
-            return _openSubKey(Registry.LocalMachine, BASE_REGISTRY_KEY + subKey, false, is64BitOperatingSystem ? RegWow64Options.KEY_WOW64_64KEY : RegWow64Options.KEY_WOW64_32KEY);
-        }
+                return _openSubKey(Registry.LocalMachine, BASE_REGISTRY_KEY + subKey, false, is64BitOperatingSystem ? RegWow64Options.KEY_WOW64_64KEY : RegWow64Options.KEY_WOW64_32KEY);
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+         }
 
         /// <summary>
         /// Get all subkey names in the specific subkey
