@@ -8,7 +8,7 @@ namespace Configuration.DkimSigner
     class DNSHelper
     {
         private const Int16 DNS_TYPE_TEXT = 0x0010;
-        private const Int32 DNS_QUERY_STANDARD = 0x00000000;
+        private const Int32 DNS_QUERY_BYPASS_CACHE = 0x00000008;
         private const Int32 DNS_ERROR_RCODE_NAME_ERROR = 9003;
         private const Int32 DNS_INFO_NO_RECORDS = 9501;
 
@@ -16,7 +16,7 @@ namespace Configuration.DkimSigner
             var queryResultsSet = IntPtr.Zero;
 
             try {
-                var dnsStatus = DnsQuery(name, DNS_TYPE_TEXT, DNS_QUERY_STANDARD, IntPtr.Zero, ref queryResultsSet, IntPtr.Zero);
+                var dnsStatus = DnsQuery(name, DNS_TYPE_TEXT, DNS_QUERY_BYPASS_CACHE, IntPtr.Zero, ref queryResultsSet, IntPtr.Zero);
         
                 if (dnsStatus == DNS_ERROR_RCODE_NAME_ERROR || dnsStatus == DNS_INFO_NO_RECORDS)
                     return null;

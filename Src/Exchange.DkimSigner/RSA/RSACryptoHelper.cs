@@ -64,6 +64,11 @@ namespace DkimSigner.RSA
             return format;
         }
 
+        public static RSAParameters GenerateRsaParameters()
+        {
+            return new RSACryptoServiceProvider().ExportParameters(true);
+        }
+
         /// <summary>
         /// Generate a RSA Private Key in XML format
         /// </summary>

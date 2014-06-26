@@ -19,6 +19,9 @@ using DkimSigner.RSA;
 using DkimSigner.Properties;
 using Configuration.DkimSigner.GitHub;
 using Ionic.Zip;
+using System.Security.Cryptography;
+using System.Xml.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner
 {
@@ -35,7 +38,7 @@ namespace Configuration.DkimSigner
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
 
-        private Dictionary<int, byte[]> attachments = new Dictionary<int, byte[]>();
+        //private Dictionary<int, byte[]> attachments = new Dictionary<int, byte[]>();
         private Release dkimSignerAvailable = null;
         private System.Version dkimSignerInstalled = null;
         private bool dkimSignerEnabled = false;
@@ -44,6 +47,8 @@ namespace Configuration.DkimSigner
         private bool isUpgrade = false;
         private string installPath = "";
         private bool isInstall = false;
+        private Thread thDkimSignerInstalled = null;
+        private Thread thDkimSignerAvailable = null;
 
         delegate void SetDkimSignerInstalledCallback();
         delegate void SetDkimSignerAvailableCallback();
@@ -96,6 +101,13 @@ namespace Configuration.DkimSigner
         {
             if (isInstall || isUpgrade)
             {
+                // First make sure we have the basic configuration set up
+                if (RegistryHelper.Open(@"Software\Exchange DkimSigner") == null)
+                {
+                    this.SaveDkimSignerConfig();
+                    saveDomainData();
+                }
+
                 this.Hide();
                 UpgradeWindow upw = new UpgradeWindow(Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"..\..\..\..")), installPath);
                 upw.ShowDialog();
@@ -122,14 +134,20 @@ namespace Configuration.DkimSigner
         {
             // Get Exchange.DkimSigner version installed
             txtDkimSignerInstalled.Text = "Loading ...";
-            Thread thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
+            thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
             btnDisable.Enabled = false;
-            thDkimSignerInstalled.Start();
 
             // Get Exchange.DkimSigner version available
             txtDkimSignerAvailable.Text = "Loading ...";
-            Thread thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
-            thDkimSignerAvailable.Start();
+            thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
+
+
+            try
+            {
+                thDkimSignerInstalled.Start();
+                thDkimSignerAvailable.Start();
+            }
+            catch (ThreadAbortException) { }
 
             // Get Exchange version installed + load the current configuration
             txtExchangeInstalled.Text = ExchangeHelper.checkExchangeVersionInstalled();
@@ -142,6 +160,12 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
+            if (thDkimSignerAvailable != null && thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
+                thDkimSignerAvailable.Abort();
+
+            if (thDkimSignerInstalled != null && thDkimSignerInstalled.ThreadState == System.Threading.ThreadState.Running)
+                thDkimSignerInstalled.Abort();
+
             if (!checkSaveConfig())
                 e.Cancel = true;
 
@@ -159,7 +183,15 @@ namespace Configuration.DkimSigner
 
                 if (result == DialogResult.Yes)
                 {
-                    this.SaveDkimSignerConfig();
+                    if (!this.SaveDkimSignerConfig() || !saveDomainData())
+                    {
+                        if (MessageBox.Show("Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            return true;
+                        }
+                        else
+                            return false;
+                    }
                 }
                 else if (result == DialogResult.Cancel)
                 {
@@ -167,149 +199,6 @@ namespace Configuration.DkimSigner
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// Add row numbers in the dgvDomainConfiguration DataGridView in the row header
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvDomainConfiguration_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
-        {
-            var grid = sender as DataGridView;
-            var rowIdx = (e.RowIndex + 1).ToString();
-
-            var centerFormat = new StringFormat()
-            {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
-            };
-
-            var headerBounds = new Rectangle(e.RowBounds.Left, e.RowBounds.Top, grid.RowHeadersWidth, e.RowBounds.Height);
-            e.Graphics.DrawString(rowIdx, this.Font, SystemBrushes.ControlText, headerBounds, centerFormat);
-        }
-
-        /// <summary>
-        /// Open private key information by clicking in private key file in the dgvDomainConfiguration DataGridView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvDomainConfiguration_CellClick(object sender, System.Windows.Forms.DataGridViewCellEventArgs e)
-        {
-            string domain = string.Empty;
-            string selector = string.Empty;
-            string filename = string.Empty;
-
-            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value != null)
-                domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
-
-            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value != null)
-                selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
-
-            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value != null)
-                filename = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value.ToString();
-
-            if (e.ColumnIndex == 2 && domain != string.Empty && selector != string.Empty && filename != string.Empty)
-            {
-                byte[] binaryData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
-
-                PrivateKeyWindows form = new PrivateKeyWindows(domain, selector, filename);
-                form.ShowDialog();
-
-                if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value.ToString() != form.txtFilename.Text)
-                {
-                    this.dataUpdated = true;
-
-                    dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Reconfigure the private key internal structure when a row have been deleted in the dgvDomainConfiguration DataGridView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvDomainConfiguration_UserDeletingRow(object sender, System.Windows.Forms.DataGridViewRowCancelEventArgs e)
-        {
-            int total = attachments.Count;
-            int rowIndex = dgvDomainConfiguration.SelectedCells[0].RowIndex;
-
-            attachments.Remove(rowIndex);
-            for (int i = rowIndex+1; i < total; i++)
-            {
-                byte[] value = attachments[i];
-                attachments.Remove(i);
-                attachments[i-1] = value;
-            }
-        }
-
-        /// <summary>
-        /// Disable all domain configuration buttons when a cell begin to be editing
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvDomainConfiguration_CellBeginEdit(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
-        {
-            this.dataUpdated = true;
-
-            this.btGenerate.Enabled = false;
-            this.btUpload.Enabled = false;
-            this.btDownload.Enabled = false;
-        }
-
-        /// <summary>
-        /// Enable / Disable the buttons when the current cell changed
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvDomainConfiguration_CurrentCellChanged(object sender, System.EventArgs e)
-        {
-            string domain = string.Empty;
-            string selector = string.Empty;
-
-            if (dgvDomainConfiguration.SelectedRows[0].Cells[0].Value != null)
-                domain = dgvDomainConfiguration.SelectedRows[0].Cells[0].Value.ToString();
-
-            if (dgvDomainConfiguration.SelectedRows[0].Cells[1].Value != null)
-                selector = dgvDomainConfiguration.SelectedRows[0].Cells[1].Value.ToString();
-
-            if (domain != string.Empty && selector != string.Empty)
-            {
-                this.btGenerate.Enabled = true;
-                this.btUpload.Enabled = true;
-                this.btDownload.Enabled = true;
-            }
-            else
-            {
-                this.btGenerate.Enabled = false;
-                this.btUpload.Enabled = false;
-                this.btDownload.Enabled = false;
-            }
-        }
-
-        /// <summary>
-        /// Validate the current row
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dgvDomainConfiguration_RowValidating(object sender, System.Windows.Forms.DataGridViewCellCancelEventArgs e)
-        {
-            string domain = string.Empty;
-            string selector = string.Empty;
-            string filename = string.Empty;
-
-            // Get the domain
-            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value != null)
-                domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
-
-            // Get the domain
-            if (dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value != null)
-                selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
-
-            // If (the domain or the selector is empty string) and the domain and selector are both empty
-            if ((domain == string.Empty || selector == string.Empty) && domain != selector)
-                e.Cancel = true;
         }
 
         private void rbRsaSha1_CheckedChanged(object sender, System.EventArgs e)
@@ -465,20 +354,23 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                dkimSignerInstalled = System.Version.Parse(FileVersionInfo.GetVersionInfo(DKIM_SIGNER_PATH + DKIM_SIGNER_DLL).ProductVersion);
+                dkimSignerInstalled = System.Version.Parse(FileVersionInfo.GetVersionInfo(System.IO.Path.Combine(DKIM_SIGNER_PATH, DKIM_SIGNER_DLL)).ProductVersion);
             }
             catch (Exception)
             {
                dkimSignerInstalled = null;
             }
 
-            try
+            if (dkimSignerInstalled != null)
             {
-                ExchangeHelper.isAgentInstalled(out dkimSignerEnabled);
-            }
-            catch (Exception)
-            {
-                dkimSignerEnabled = false;
+                try
+                {
+                    ExchangeHelper.isAgentInstalled(out dkimSignerEnabled);
+                }
+                catch (Exception)
+                {
+                    dkimSignerEnabled = false;
+                }
             }
             
             if (this.txtDkimSignerInstalled.InvokeRequired)
@@ -606,96 +498,71 @@ namespace Configuration.DkimSigner
                     this.txtHeaderToSign.Text = unparsedHeaders;
                 }
 
-                // Load the list of domains
-                string[] domainNames = RegistryHelper.GetSubKeyName(@"Software\Exchange DkimSigner\Domain");
-                if (domainNames != null)
-                {
-                    int i = 0;
-                    foreach (string domainName in domainNames)
-                    {
-                        string selector = RegistryHelper.Read("Selector", @"Software\Exchange DkimSigner\Domain\" + domainName);
-                        string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Software\Exchange DkimSigner\Domain\" + domainName);
-
-                        this.dgvDomainConfiguration.Rows.Add(   domainName,
-                                                                selector,
-                                                                privateKeyFile);
-
-                        attachments[i++] = File.ReadAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile);
-                    }
-
-                    this.dgvDomainConfiguration.Rows[0].Selected = true;
-                }
+                reloadDomainsList();
 
             }
             this.dataUpdated = false;
         }
 
+        private void reloadDomainsList(string selectedDomain = null)
+        {
+            // Load the list of domains
+            string[] domainNames = RegistryHelper.GetSubKeyName(@"Software\Exchange DkimSigner\Domain");
+            string currSel = (string)lbxDomains.SelectedItem;
+            if (selectedDomain != null)
+                currSel = selectedDomain;
+            lbxDomains.Items.Clear();
+            if (domainNames != null)
+            {
+                foreach (string domainName in domainNames)
+                {
+                    lbxDomains.Items.Add(domainName);
+                }
+                if (lbxDomains.Items.Count > 0)
+                    lbxDomains.SelectedIndex = 0;
+            }
+            if (currSel != null)
+                lbxDomains.SelectedItem = currSel;
+        }
+
         /// <summary>
         /// Save the new configuration into registry for Exchange DkimSigner
         /// </summary>
-        private void SaveDkimSignerConfig()
+        private bool SaveDkimSignerConfig()
         {
-            bool status = true;
 
-            status = status && RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Software\Exchange DkimSigner");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the log level.");
-
-            status = status && RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Software\Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the algorithm.");
-
-            status = status && RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the header canonicalization.");
-
-            status = status && RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the body canonicalization.");
-
-            status = status && RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Software\Exchange DkimSigner\DKIM");
-            if (!status)
-                MessageBox.Show("Error! Impossible to change the headers to sign.");
-
-            RegistryHelper.DeleteSubKeyTree("Domain", @"Software\Exchange DkimSigner\");
-            Array.ForEach(Directory.GetFiles(DKIM_SIGNER_PATH + @"\keys\"), File.Delete);
-            dgvDomainConfiguration.AllowUserToAddRows = false;
-            if (dgvDomainConfiguration.Rows.Count > 0)
+            if (!RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Software\Exchange DkimSigner"))
             {
-                foreach (DataGridViewRow row in this.dgvDomainConfiguration.Rows)
-                {
-                    if (row.Cells[0].Value != null &&
-                        row.Cells[0].Value.ToString() != string.Empty &&
-                        row.Cells[1].Value != null &&
-                        row.Cells[1].Value.ToString() != string.Empty &&
-                        row.Cells[2].Value != null &&
-                        row.Cells[2].Value.ToString() != string.Empty)
-                    {
-                        string domainName = row.Cells[0].Value.ToString();
-                        string selector = row.Cells[1].Value.ToString();
-                        string privateKeyFile = row.Cells[2].Value.ToString();
-
-                        status = status && RegistryHelper.Write("Selector", selector, @"Software\Exchange DkimSigner\Domain\" + domainName);
-                        status = status && RegistryHelper.Write("PrivateKeyFile", privateKeyFile, @"Software\Exchange DkimSigner\Domain\" + domainName);
-
-                        byte[] byteData = null;
-                        byteData = attachments[row.Index];
-                        File.WriteAllBytes(DKIM_SIGNER_PATH + @"\keys\" + privateKeyFile, byteData);
-                    }
-                    else
-                    {
-                        MessageBox.Show("Impossible to save the configuration for all the domain configurations. The line number " + (row.Index+1) + " is incomplet.");
-                    }
-                }
+                MessageBox.Show("Error! Couldn't save the log level.\n" + RegistryHelper.lastException.Message);
+                return false;
             }
-            dgvDomainConfiguration.AllowUserToAddRows = true;
+
+            if (!RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Software\Exchange DkimSigner\DKIM"))
+            {
+                MessageBox.Show("Error! Couldn't save the algorithm.\n" + RegistryHelper.lastException.Message);
+                return false;
+            }
+
+            if (!RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM"))
+            {
+                MessageBox.Show("Error! Couldn't save header canonicalization.\n" + RegistryHelper.lastException.Message);
+                return false;
+            }
+
+            if (!RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM"))
+            {
+                MessageBox.Show("Error! Impossible to change the body canonicalization.\n" + RegistryHelper.lastException.Message);
+                return false;
+            }
+
+            if (!RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Software\Exchange DkimSigner\DKIM"))
+            {
+                MessageBox.Show("Error! Impossible to change the headers to sign.\n" + RegistryHelper.lastException.Message);
+                return false;
+            }
 
             this.dataUpdated = false;
-
-            if (status)
-                MessageBox.Show("The configuration has been updated.");
-            else
-                MessageBox.Show("One or many errors happened! All specified configurations haven't been updated.");
+            return true;
         }
 
         /**********************************************************/
@@ -712,31 +579,6 @@ namespace Configuration.DkimSigner
             this.SaveDkimSignerConfig();
         }
 
-        /// <summary>
-        /// Button "Generate" in domain configuration action - Generate a new private key file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btGenerate_Click(object sender, EventArgs e)
-        {
-            byte[] binaryData = RSACryptoHelper.GenerateXMLEncodedRsaPrivateKey();
-            string domain = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[0].Value.ToString();
-            string selector = dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[1].Value.ToString();
-
-            PrivateKeyWindows form = new PrivateKeyWindows(domain, selector);
-            form.ShowDialog();
-
-            dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = form.txtFilename.Text;
-
-            if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
-            {
-                attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
-            }
-            else
-            {
-                attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
-            }
-        }
 
         /// <summary>
         /// Button "Upload" in domain configuration action - Upload the selected private key file
@@ -745,7 +587,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btUpload_Click(object sender, EventArgs e)
         {
-            if (dgvDomainConfiguration.SelectedCells.Count > 0)
+            /*if (dgvDomainConfiguration.SelectedCells.Count > 0)
             {
                 using (OpenFileDialog fileDialog = new OpenFileDialog())
                 {
@@ -782,7 +624,7 @@ namespace Configuration.DkimSigner
             else
             {
                 MessageBox.Show("Select a row for upload the private key.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }*/
         }
 
         /// <summary>
@@ -792,7 +634,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btDownload_Click(object sender, EventArgs e)
         {
-            if (dgvDomainConfiguration.SelectedCells.Count > 0)
+           /* if (dgvDomainConfiguration.SelectedCells.Count > 0)
             {
                 string fileName = Convert.ToString(dgvDomainConfiguration.SelectedCells[2].Value);
 
@@ -821,7 +663,7 @@ namespace Configuration.DkimSigner
             else
             {
                 MessageBox.Show("Select a row for download the private key.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            }*/
         }
 
         /// <summary>
@@ -1018,5 +860,302 @@ namespace Configuration.DkimSigner
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        private void lbxDomains_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lbxDomains.SelectedItems.Count == 0)
+            {
+
+                tbxDomainName.Text = "";
+                tbxDomainSelector.Text = "";
+                tbxDomainPrivateKeyFilename.Text = "";
+                tbxDomainDNS.Text = "";
+                gbxDomainDetails.Enabled = false;
+                return;
+            }
+            string domainName = (string)lbxDomains.SelectedItem;
+            string selector = RegistryHelper.Read("Selector", @"Software\Exchange DkimSigner\Domain\" + domainName);
+            string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Software\Exchange DkimSigner\Domain\" + domainName);
+
+            tbxDomainName.Text = domainName;
+            tbxDomainSelector.Text = selector;
+            tbxDomainPrivateKeyFilename.Text = privateKeyFile;
+            this.dataUpdated = false;
+
+            updateDNSRecordInfo();
+            updateSuggestedDNS();
+            gbxDomainDetails.Enabled = true;
+            btnDomainDelete.Enabled = true;
+            btnDomainSave.Enabled = false;
+
+        }
+
+        private void updateDNSRecordInfo()
+        {
+            string fullDomain = tbxDomainSelector.Text + "._domainkey." + tbxDomainName.Text;
+            string record = null;
+            try
+            {
+                record = DNSHelper.GetTxtRecord(fullDomain);
+                if (record == null)
+                    tbxDomainDNS.Text = "No record found for " + fullDomain;
+                else
+                    tbxDomainDNS.Text = record;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Coldn't get DNS record:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                tbxDomainDNS.Text = "Error getting record.";
+            }
+        }
+
+        private void btnDomainSave_Click(object sender, EventArgs e)
+        {
+            saveDomainData();      
+        }
+
+        private bool saveDomainData()
+        {
+            if (errorProvider.GetError(tbxDomainName) != "" || errorProvider.GetError(tbxDomainSelector) != "")
+            {
+                MessageBox.Show("You first need to fix the errors in your domain configuration before saving.", "Config error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+                
+            string domainName = tbxDomainName.Text;
+            if (lbxDomains.SelectedItem != null && (string)lbxDomains.SelectedItem != domainName)
+            {
+                if (!RegistryHelper.DeleteSubKeyTree((string)lbxDomains.SelectedItem, @"Software\Exchange DkimSigner\Domain\"))
+                {
+                    MessageBox.Show("Couldn't delete old domain data:\n" + RegistryHelper.lastException.Message, "Error deleting domain", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return false;
+                }
+            }
+
+
+            if (!RegistryHelper.Write("Selector", tbxDomainSelector.Text, @"Software\Exchange DkimSigner\Domain\" + domainName) ||
+                !RegistryHelper.Write("PrivateKeyFile", tbxDomainPrivateKeyFilename.Text, @"Software\Exchange DkimSigner\Domain\" + domainName)
+                )
+            {
+                MessageBox.Show("Couldn't save domain settings.\n" + RegistryHelper.lastException.Message, "Error saving configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            
+            reloadDomainsList(domainName);
+
+            this.dataUpdated = false;
+            btnDomainSave.Enabled = false;
+            btnDomainDelete.Enabled = true;
+            return true;
+        }
+
+        private void btnDomainCheckDNS_Click(object sender, EventArgs e)
+        {
+            updateDNSRecordInfo();
+        }
+
+        private void btnDomainDelete_Click(object sender, EventArgs e)
+        {
+            if (!RegistryHelper.DeleteSubKeyTree(tbxDomainName.Text, @"Software\Exchange DkimSigner\Domain\"))
+            {
+                MessageBox.Show("Couldn't delete domain:\n" + RegistryHelper.lastException.Message, "Error deleting domain", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+
+            string keyFile = System.IO.Path.Combine(DKIM_SIGNER_PATH, "keys",tbxDomainPrivateKeyFilename.Text);
+
+            List<string> files = new List<string>();
+            files.Add(keyFile);
+            files.Add(keyFile + ".pub");
+            files.Add(keyFile + ".pem");
+
+            foreach (string file in files)
+            {
+                if (System.IO.File.Exists(file) && MessageBox.Show("Do you want me to delete the key file?\n" + file, "Delete key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        System.IO.File.Delete(file);
+                    }
+                    catch (IOException ex)
+                    {
+                        MessageBox.Show("Couldn't delete file:\n" + file + "\n" + ex.Message, "Error deleting file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+            }
+            reloadDomainsList();
+        }
+
+        private void btnAddDomain_Click(object sender, EventArgs e)
+        {
+            if (this.dataUpdated)
+            {
+                DialogResult result = MessageBox.Show("Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                if (result == System.Windows.Forms.DialogResult.Yes)
+                {
+                    if (!saveDomainData())
+                        return;
+                } if (result == System.Windows.Forms.DialogResult.Cancel)
+                    return;
+            }
+            this.dataUpdated = false;
+            lbxDomains.ClearSelected();
+            gbxDomainDetails.Enabled = true;
+            btnDomainDelete.Enabled = false;
+        }
+
+        private void tbxDomainName_TextChanged(object sender, EventArgs e)
+        {
+            this.dataUpdated = true;
+            btnDomainSave.Enabled = true;
+            tbxDNSName.Text = tbxDomainSelector.Text + "._domainkey." + tbxDomainName.Text + ".";
+            if (Uri.CheckHostName(tbxDomainName.Text) != UriHostNameType.Dns)
+            {
+                errorProvider.SetError(tbxDomainName, "Invalid DNS name. Format: 'example.com'");
+            }
+            else
+            {
+                errorProvider.SetError(tbxDomainName, null);
+            }
+        }
+
+        private void tbxDomainSelector_TextChanged(object sender, EventArgs e)
+        {
+            this.dataUpdated = true;
+            btnDomainSave.Enabled = true;
+            tbxDNSName.Text = tbxDomainSelector.Text + "._domainkey." + tbxDomainName.Text + ".";
+            if (!Regex.IsMatch(tbxDomainSelector.Text, @"^[a-zA-Z0-9_]+$", RegexOptions.None))
+            {
+                errorProvider.SetError(tbxDomainSelector, "The selector should only contain characters, numbers and underscores.");
+            }
+            else
+            {
+                errorProvider.SetError(tbxDomainSelector, null);
+            }
+        }
+
+        private void setDomainKeyPath(string path)
+        {
+            string keyDir = System.IO.Path.Combine(DKIM_SIGNER_PATH, "keys");
+            if (path.StartsWith(keyDir))
+            {
+                path = path.Substring(keyDir.Length - 4);
+            }
+            else if (MessageBox.Show("It is strongly recommended to store all the keys in the directory\n" + keyDir + "\nDo you want me to move the key into this directory?", "Move key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question)==System.Windows.Forms.DialogResult.Yes)
+            {
+                List<string> files = new List<string>();
+                files.Add(path);
+                files.Add(path + ".pub");
+                files.Add(path + ".pem");
+
+                foreach (string file in files)
+                {
+                    if (System.IO.File.Exists(file))
+                    {
+                        string name = System.IO.Path.GetFileName(file);
+                        string newPath = Path.Combine(keyDir, name);
+                        try
+                        {
+                            System.IO.File.Move(file,newPath);
+                            path = newPath.Substring(keyDir.Length - 4);
+                        }
+                        catch (IOException ex)
+                        {
+                            MessageBox.Show("Couldn't move file:\n" + file + "\nto\n" +  newPath + "\n"+ ex.Message, "Error moving file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+
+                }
+            }
+            tbxDomainPrivateKeyFilename.Text = path;
+            this.dataUpdated = true;
+            btnDomainSave.Enabled = true;
+        }
+
+        public static bool IsBase64String(string s)
+        {
+            s = s.Trim();
+            return (s.Length % 4 == 0) && Regex.IsMatch(s, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+
+        }
+
+        private void updateSuggestedDNS(string rsaPublicKeyBase64 = null)
+        {
+            if (rsaPublicKeyBase64 == null)
+            {
+                
+                string pubKeyPath = tbxDomainPrivateKeyFilename.Text;
+                if (!Path.IsPathRooted(pubKeyPath))
+                    pubKeyPath = System.IO.Path.Combine(DKIM_SIGNER_PATH, pubKeyPath);
+                pubKeyPath += ".pub";
+                if (File.Exists(pubKeyPath))
+                {
+                    string[] contents = File.ReadAllLines(pubKeyPath);
+                    if (contents.Length > 2 && contents[0].Equals("-----BEGIN PUBLIC KEY-----") && IsBase64String(contents[1]))
+                    {
+                        rsaPublicKeyBase64 = contents[1];
+                    }
+                    else
+                    {
+                        tbxDNSRecord.Text = "No valid RSA pub key:\n" + pubKeyPath;
+                        return;
+                    }
+                }
+                else
+                {
+                    tbxDNSRecord.Text = "No RSA pub key found:\n" + pubKeyPath;
+                    return;
+                }
+            }
+
+            tbxDNSRecord.Text = "v=DKIM1; k=rsa; p=" + rsaPublicKeyBase64;
+        }
+
+        private void btDomainKeyGenerate_Click(object sender, EventArgs e)
+        {
+            saveKeyFileDialog.InitialDirectory = System.IO.Path.Combine(DKIM_SIGNER_PATH, "keys");
+
+            if (!System.IO.Directory.Exists(saveKeyFileDialog.InitialDirectory))
+            {
+                System.IO.Directory.CreateDirectory(saveKeyFileDialog.InitialDirectory);
+            }
+
+            if (tbxDomainName.Text.Length > 0)
+                saveKeyFileDialog.FileName = tbxDomainName.Text + ".xml";
+
+            if (saveKeyFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                RSACryptoServiceProvider provider = new RSACryptoServiceProvider();
+
+
+                File.WriteAllBytes(saveKeyFileDialog.FileName, Encoding.ASCII.GetBytes(provider.ToXmlString(true)));
+
+                
+
+                CSInteropKeys.AsnKeyBuilder.AsnMessage publicEncoded = CSInteropKeys.AsnKeyBuilder.PublicKeyToX509(provider.ExportParameters(true));
+                updateSuggestedDNS(Convert.ToBase64String(publicEncoded.GetBytes()));
+                File.WriteAllText(saveKeyFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(publicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
+                CSInteropKeys.AsnKeyBuilder.AsnMessage privateEncoded = CSInteropKeys.AsnKeyBuilder.PrivateKeyToPKCS8(provider.ExportParameters(true));
+                File.WriteAllText(saveKeyFileDialog.FileName + ".pem", "-----BEGIN RSA PRIVATE KEY-----\r\n" + Convert.ToBase64String(privateEncoded.GetBytes()) + "\r\n-----END RSA PRIVATE KEY-----");
+                
+                
+                setDomainKeyPath(saveKeyFileDialog.FileName);
+            }
+        }
+
+        private void btnDomainKeySelect_Click(object sender, EventArgs e)
+        {
+            openKeyFileDialog.InitialDirectory = System.IO.Path.Combine(DKIM_SIGNER_PATH, "keys");
+
+            if (openKeyFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                setDomainKeyPath(openKeyFileDialog.FileName);
+            }
+
+        }
+
+
     }
 }

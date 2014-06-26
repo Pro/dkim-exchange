@@ -69,6 +69,18 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
       <Link>Configuration\DkimCanonicalizationKind.cs</Link>
     </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\AsnKeyBuilder.cs">
+      <Link>RSA\AsnKeyBuilder.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\AsnKeyParser.cs">
+      <Link>RSA\AsnKeyParser.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\BerDecodeError.cs">
+      <Link>RSA\BerDecodeError.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\BigInteger.cs">
+      <Link>RSA\BigInteger.cs</Link>
+    </Compile>
     <Compile Include="Configuration\RegistryHelper.cs" />
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
       <Link>RSA\RSACryptoFormat.cs</Link>
@@ -94,12 +106,6 @@
     <Compile Include="MainWindow.Designer.cs">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="PrivateKeyWindows.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PrivateKeyWindows.Designer.cs">
-      <DependentUpon>PrivateKeyWindows.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UpgradeWindow.cs">
@@ -113,9 +119,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PrivateKeyWindows.resx">
-      <DependentUpon>PrivateKeyWindows.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpgradeWindow.resx">
       <DependentUpon>UpgradeWindow.cs</DependentUpon>

@@ -8,6 +8,8 @@ namespace ConfigurationSettings
 {
     class RegistryHelper
     {
+        public static Exception lastException = null;
+
         /// <summary>
         /// Open a subkey and return it for manipulation
         /// </summary>
@@ -33,6 +35,7 @@ namespace ConfigurationSettings
         {
             string[] value = null;
             RegistryKey sk1 = Open(subKey);
+            lastException = null;
 
             if (sk1 != null)
             {
@@ -40,7 +43,9 @@ namespace ConfigurationSettings
                 {
                     value = sk1.GetSubKeyNames();
                 }
-                catch (Exception) { }
+                catch (Exception e) {
+                    lastException = e;
+                }
             }
 
             return value;
@@ -56,6 +61,7 @@ namespace ConfigurationSettings
         {
             string value = null;
             RegistryKey sk1 = Open(subKey);
+            lastException = null;
 
             if (sk1 != null)
             {
@@ -63,7 +69,10 @@ namespace ConfigurationSettings
                 {
                     value = (string)sk1.GetValue(keyName);
                 }
-                catch (Exception) { }
+                catch (Exception e) {
+                    lastException = e;
+                
+                }
             }
 
             return value;
@@ -78,6 +87,7 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static bool Write(string keyName, object Value, string subKey = "")
         {
+            lastException = null;
             try
             {
                 RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -89,8 +99,10 @@ namespace ConfigurationSettings
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+
+                lastException = e;
                 return false;
             }
         }
@@ -102,6 +114,7 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static bool WriteSubKeyTree(string subKey = "")
         {
+            lastException = null;
             try
             {
                 RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -112,8 +125,9 @@ namespace ConfigurationSettings
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                lastException = e;
                 return false;
             }
         }
@@ -126,6 +140,7 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static bool DeleteKey(string keyName, string subKey = "")
         {
+            lastException = null;
             try
             {
                 RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -139,8 +154,9 @@ namespace ConfigurationSettings
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                lastException = e;
                 return false;
             }
         }
@@ -152,6 +168,7 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static bool DeleteSubKeyTree(string keyName, string subKey = "")
         {
+            lastException = null;
             try
             {
                 RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine,
@@ -165,8 +182,9 @@ namespace ConfigurationSettings
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                lastException = e;
                 return false;
             }
         }
