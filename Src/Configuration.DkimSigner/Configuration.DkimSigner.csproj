@@ -35,6 +35,7 @@
   <PropertyGroup>
     <ApplicationIcon>Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>

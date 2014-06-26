@@ -281,10 +281,22 @@ namespace Configuration.DkimSigner
             if (dkimSignerAvailable != null)
             {
                 string version = dkimSignerAvailable.Version.ToString();
-                if (dkimSignerAvailable.Prerelease)
+
+                Match match = Regex.Match(dkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
+
+                if (match.Success)
                 {
-                    version += " (beta)";
+                    if (match.Groups.Count > 2 && match.Groups[2].Value.Length > 0)
+                    {
+                        version += " (" + match.Groups[2].Value;
+                        if (match.Groups.Count > 3 && match.Groups[3].Value.Length > 0)
+                        {
+                            version += "." + match.Groups[3].Value; 
+                        }
+                        version += ")";
+                    }
                 }
+
                 this.txtDkimSignerAvailable.Text = version;
                 this.txtChangelog.Text = dkimSignerAvailable.Body;
             }
@@ -391,7 +403,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                dkimSignerAvailable = ApiWrapper.getNewestRelease();
+                dkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
             }
             catch (Exception)
             {

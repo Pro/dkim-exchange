@@ -162,9 +162,9 @@
             this.cbxPrereleases.AutoSize = true;
             this.cbxPrereleases.Location = new System.Drawing.Point(238, 25);
             this.cbxPrereleases.Name = "cbxPrereleases";
-            this.cbxPrereleases.Size = new System.Drawing.Size(127, 17);
+            this.cbxPrereleases.Size = new System.Drawing.Size(155, 17);
             this.cbxPrereleases.TabIndex = 12;
-            this.cbxPrereleases.Text = "Include beta versions";
+            this.cbxPrereleases.Text = "Include prerelease versions";
             this.cbxPrereleases.UseVisualStyleBackColor = true;
             this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
             // 
