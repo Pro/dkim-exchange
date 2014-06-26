@@ -1051,7 +1051,7 @@ namespace Configuration.DkimSigner
                 
                 string pubKeyPath = tbxDomainPrivateKeyFilename.Text;
                 if (!Path.IsPathRooted(pubKeyPath))
-                    pubKeyPath = System.IO.Path.Combine(DKIM_SIGNER_PATH, pubKeyPath);
+                    pubKeyPath = System.IO.Path.Combine(DKIM_SIGNER_PATH,"keys", pubKeyPath);
                 pubKeyPath += ".pub";
                 if (File.Exists(pubKeyPath))
                 {
