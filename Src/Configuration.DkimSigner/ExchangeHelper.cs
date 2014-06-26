@@ -170,6 +170,13 @@ namespace Configuration.DkimSigner
             startTransportService();
         }
 
+        private static bool isTransportServiceAvailable()
+        {
+            ServiceController[] services = ServiceController.GetServices();
+            var service = services.FirstOrDefault(s => s.ServiceName == "MSExchangeTransport");
+            return service != null;
+        }
+
         /// <summary>
         /// Stop the MSExchangeTransport service.
         /// 
@@ -177,6 +184,10 @@ namespace Configuration.DkimSigner
         /// </summary>
         public static void stopTransportService()
         {
+            if (!isTransportServiceAvailable())
+            {
+                throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
+            }
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
             if (service.Status == ServiceControllerStatus.Stopped)
@@ -201,8 +212,27 @@ namespace Configuration.DkimSigner
         /// </summary>
         public static bool isTransportServiceRunning()
         {
+            if (!isTransportServiceAvailable())
+            {
+                throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
+            }
             ServiceController service = new ServiceController("MSExchangeTransport");
             return service.Status == ServiceControllerStatus.Running;
+        }
+
+        /// <summary>
+        /// Gets the MSExchangeTransport service status.
+        /// 
+        /// Throws ExchangeHelperException on error.
+        /// </summary>
+        public static ServiceControllerStatus getTransportServiceStatus()
+        {
+            if (!isTransportServiceAvailable())
+            {
+                throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
+            }
+            ServiceController service = new ServiceController("MSExchangeTransport");
+            return service.Status;
         }
 
         /// <summary>
@@ -212,6 +242,10 @@ namespace Configuration.DkimSigner
         /// </summary>
         public static void startTransportService()
         {
+            if (!isTransportServiceAvailable())
+            {
+                throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
+            }
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
             if (service.Status == ServiceControllerStatus.Running)

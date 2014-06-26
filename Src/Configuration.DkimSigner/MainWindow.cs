@@ -22,6 +22,8 @@ using Ionic.Zip;
 using System.Security.Cryptography;
 using System.Xml.Serialization;
 using System.Text.RegularExpressions;
+using System.ServiceProcess;
+using Heijden.DNS;
 
 namespace Configuration.DkimSigner
 {
@@ -49,6 +51,7 @@ namespace Configuration.DkimSigner
         private bool isInstall = false;
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
+        private bool settingsChangedButNotRestarted = false;
 
         delegate void SetDkimSignerInstalledCallback();
         delegate void SetDkimSignerAvailableCallback();
@@ -106,6 +109,7 @@ namespace Configuration.DkimSigner
                 {
                     this.SaveDkimSignerConfig();
                     saveDomainData();
+                    settingsChangedButNotRestarted = false;
                 }
 
                 this.Hide();
@@ -168,6 +172,12 @@ namespace Configuration.DkimSigner
 
             if (!checkSaveConfig())
                 e.Cancel = true;
+
+            if (settingsChangedButNotRestarted && MessageBox.Show("To apply your settings you need to restart MSExchangeTransport service. Should I do it for you?", "Restart service?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+            {
+                if (!restartTransportService())
+                    e.Cancel = true;
+            }
 
         }
 
@@ -377,7 +387,10 @@ namespace Configuration.DkimSigner
             {
                 try
                 {
-                    ExchangeHelper.isAgentInstalled(out dkimSignerEnabled);
+                    if (!ExchangeHelper.isAgentInstalled(out dkimSignerEnabled))
+                    {
+                        dkimSignerInstalled = null;
+                    }
                 }
                 catch (Exception)
                 {
@@ -574,6 +587,7 @@ namespace Configuration.DkimSigner
             }
 
             this.dataUpdated = false;
+            settingsChangedButNotRestarted = true;
             return true;
         }
 
@@ -589,93 +603,6 @@ namespace Configuration.DkimSigner
         private void btSave_Click(object sender, EventArgs e)
         {
             this.SaveDkimSignerConfig();
-        }
-
-
-        /// <summary>
-        /// Button "Upload" in domain configuration action - Upload the selected private key file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btUpload_Click(object sender, EventArgs e)
-        {
-            /*if (dgvDomainConfiguration.SelectedCells.Count > 0)
-            {
-                using (OpenFileDialog fileDialog = new OpenFileDialog())
-                {
-                    fileDialog.CheckFileExists = true;
-                    fileDialog.CheckPathExists = true;
-                    fileDialog.Filter = "All Files|*.*";
-                    fileDialog.Title = "Select a file";
-                    fileDialog.Multiselect = false;
-
-                    if (fileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        FileInfo fileInfo = new FileInfo(fileDialog.FileName);
-                        byte[] binaryData = File.ReadAllBytes(fileDialog.FileName);
-                        if (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(binaryData) != RSACryptoFormat.UNKNOWN)
-                        {
-                            dgvDomainConfiguration.Rows[dgvDomainConfiguration.SelectedCells[0].RowIndex].Cells[2].Value = fileInfo.Name;
-
-                            if (attachments.ContainsKey(dgvDomainConfiguration.SelectedCells[0].RowIndex))
-                            {
-                                attachments[dgvDomainConfiguration.SelectedCells[0].RowIndex] = binaryData;
-                            }
-                            else
-                            {
-                                attachments.Add(dgvDomainConfiguration.SelectedCells[0].RowIndex, binaryData);
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("The format of the private key file you try to import is invalid.");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Select a row for upload the private key.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }*/
-        }
-
-        /// <summary>
-        /// Button "Download" in domain configuration action - Download the selected private key file
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btDownload_Click(object sender, EventArgs e)
-        {
-           /* if (dgvDomainConfiguration.SelectedCells.Count > 0)
-            {
-                string fileName = Convert.ToString(dgvDomainConfiguration.SelectedCells[2].Value);
-
-                if (fileName == string.Empty)
-                    return;
-
-                FileInfo fileInfo = new FileInfo(fileName);
-                string fileExtension = fileInfo.Extension;
-
-                byte[] byteData = null;
-
-                using (SaveFileDialog saveFileDialog = new SaveFileDialog())
-                {
-                    saveFileDialog.Filter = "Files (*" + fileExtension + ")|*" + fileExtension;
-                    saveFileDialog.Title = "Save File as";
-                    saveFileDialog.CheckPathExists = true;
-                    saveFileDialog.FileName = fileName;
-
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
-                    {
-                        byteData = attachments[dgvDomainConfiguration.SelectedCells[2].RowIndex];
-                        File.WriteAllBytes(saveFileDialog.FileName, byteData);
-                    }
-                }
-            }
-            else
-            {
-                MessageBox.Show("Select a row for download the private key.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }*/
         }
 
         /// <summary>
@@ -905,14 +832,37 @@ namespace Configuration.DkimSigner
         private void updateDNSRecordInfo()
         {
             string fullDomain = tbxDomainSelector.Text + "._domainkey." + tbxDomainName.Text;
-            string record = null;
             try
             {
-                record = DNSHelper.GetTxtRecord(fullDomain);
-                if (record == null)
+                Resolver resolver = new Resolver();
+                resolver.Recursion = true;
+                resolver.UseCache = false;
+
+                //first get the name server for the domain to avoid DNS caching
+                Response response = resolver.Query(fullDomain, QType.NS, QClass.IN);
+                if (response.RecordsRR.GetLength(0) > 0) {
+                    //take first NS server
+                    RR nsRecord = response.RecordsRR[0];
+                    if (nsRecord.RECORD.RR.RECORD.GetType() == typeof(RecordSOA))
+                    {
+                        RecordSOA soa = (RecordSOA)nsRecord.RECORD.RR.RECORD;
+                        resolver.DnsServer = soa.MNAME;
+                    }
+                }
+
+                response = resolver.Query(fullDomain, QType.TXT, QClass.IN);
+
+                if (response.RecordsTXT.GetLength(0) > 0) {
+                    RecordTXT record = response.RecordsTXT[0];
+                    if (record.TXT.Count > 0) {
+                        tbxDomainDNS.Text = record.TXT[0];
+                    } else {
+                        tbxDomainDNS.Text = "No record found for " + fullDomain;
+                    }
+                } else {
                     tbxDomainDNS.Text = "No record found for " + fullDomain;
-                else
-                    tbxDomainDNS.Text = record;
+                }
+                                  
             }
             catch (Exception ex)
             {
@@ -958,6 +908,7 @@ namespace Configuration.DkimSigner
             this.dataUpdated = false;
             btnDomainSave.Enabled = false;
             btnDomainDelete.Enabled = true;
+            settingsChangedButNotRestarted = true;
             return true;
         }
 
@@ -1166,6 +1117,60 @@ namespace Configuration.DkimSigner
                 setDomainKeyPath(openKeyFileDialog.FileName);
             }
 
+        }
+
+        private void btnRestartTransportService_Click(object sender, EventArgs e)
+        {
+            lblExchangeStatus.Text = "Restarting ...";
+            Application.DoEvents();
+            restartTransportService();
+        }
+
+        private bool restartTransportService()
+        {
+            try
+            {
+                ExchangeHelper.restartTransportService();
+            }
+            catch (ExchangeHelperException ex)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status:\n" + ex.Message, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            settingsChangedButNotRestarted = false;
+            return true;
+        }
+
+        private void timExchangeStatus_Tick(object sender, EventArgs e)
+        {
+            ServiceControllerStatus status;
+            try
+            {
+                status = ExchangeHelper.getTransportServiceStatus();
+            }
+            catch (ExchangeHelperException ex)
+            {
+                timExchangeStatus.Enabled = false;
+                lblExchangeStatus.Text = "";
+                MessageBox.Show("Couldn't get MSExchangeTransport service status:\n" + ex.Message, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            
+            lblExchangeStatus.Text = status.ToString();
+            if (status == ServiceControllerStatus.Running)
+            {
+                btnRestartTransportService.Text = "Restart MSExchangeTransport";
+                btnRestartTransportService.Enabled = true;
+            }
+            else if (status == ServiceControllerStatus.Stopped)
+            {
+                btnRestartTransportService.Text = "Start MSExchangeTransport";
+                btnRestartTransportService.Enabled = true;
+            }
+            else
+            {
+                btnRestartTransportService.Enabled = false;
+            }
         }
 
 

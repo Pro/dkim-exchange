@@ -64,6 +64,11 @@
             this.rbRsaSha1 = new System.Windows.Forms.RadioButton();
             this.tpDomain = new System.Windows.Forms.TabPage();
             this.gbxDomainDetails = new System.Windows.Forms.GroupBox();
+            this.tbxDNSName = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbxDNSRecord = new System.Windows.Forms.TextBox();
             this.btnDomainCheckDNS = new System.Windows.Forms.Button();
             this.tbxDomainDNS = new System.Windows.Forms.TextBox();
             this.btnDomainDelete = new System.Windows.Forms.Button();
@@ -81,12 +86,10 @@
             this.openZipFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveKeyFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openKeyFileDialog = new System.Windows.Forms.OpenFileDialog();
-            this.tbxDNSRecord = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.tbxDNSName = new System.Windows.Forms.TextBox();
-            this.label6 = new System.Windows.Forms.Label();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.btnRestartTransportService = new System.Windows.Forms.Button();
+            this.timExchangeStatus = new System.Windows.Forms.Timer(this.components);
+            this.lblExchangeStatus = new System.Windows.Forms.Label();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -223,6 +226,8 @@
             // 
             this.gbInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbInstalled.Controls.Add(this.lblExchangeStatus);
+            this.gbInstalled.Controls.Add(this.btnRestartTransportService);
             this.gbInstalled.Controls.Add(this.btnDisable);
             this.gbInstalled.Controls.Add(this.btUninstall);
             this.gbInstalled.Controls.Add(this.lbExchangeInstalled);
@@ -238,9 +243,9 @@
             // 
             // btnDisable
             // 
-            this.btnDisable.Location = new System.Drawing.Point(226, 26);
+            this.btnDisable.Location = new System.Drawing.Point(346, 19);
             this.btnDisable.Name = "btnDisable";
-            this.btnDisable.Size = new System.Drawing.Size(58, 23);
+            this.btnDisable.Size = new System.Drawing.Size(94, 23);
             this.btnDisable.TabIndex = 13;
             this.btnDisable.Text = "Disable";
             this.btnDisable.UseVisualStyleBackColor = true;
@@ -248,7 +253,7 @@
             // 
             // btUninstall
             // 
-            this.btUninstall.Location = new System.Drawing.Point(446, 26);
+            this.btUninstall.Location = new System.Drawing.Point(446, 19);
             this.btUninstall.Name = "btUninstall";
             this.btUninstall.Size = new System.Drawing.Size(94, 23);
             this.btUninstall.TabIndex = 10;
@@ -259,7 +264,7 @@
             // lbExchangeInstalled
             // 
             this.lbExchangeInstalled.AutoSize = true;
-            this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 55);
+            this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 53);
             this.lbExchangeInstalled.Name = "lbExchangeInstalled";
             this.lbExchangeInstalled.Size = new System.Drawing.Size(61, 13);
             this.lbExchangeInstalled.TabIndex = 4;
@@ -267,7 +272,7 @@
             // 
             // txtDkimSignerInstalled
             // 
-            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 26);
+            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 21);
             this.txtDkimSignerInstalled.Name = "txtDkimSignerInstalled";
             this.txtDkimSignerInstalled.ReadOnly = true;
             this.txtDkimSignerInstalled.Size = new System.Drawing.Size(138, 20);
@@ -276,7 +281,7 @@
             // 
             // txtExchangeInstalled
             // 
-            this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 52);
+            this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 50);
             this.txtExchangeInstalled.Name = "txtExchangeInstalled";
             this.txtExchangeInstalled.ReadOnly = true;
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
@@ -286,7 +291,7 @@
             // lbDkimSignerInstalled
             // 
             this.lbDkimSignerInstalled.AutoSize = true;
-            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 29);
+            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 24);
             this.lbDkimSignerInstalled.Name = "lbDkimSignerInstalled";
             this.lbDkimSignerInstalled.Size = new System.Drawing.Size(70, 13);
             this.lbDkimSignerInstalled.TabIndex = 2;
@@ -509,6 +514,54 @@
             this.gbxDomainDetails.TabStop = false;
             this.gbxDomainDetails.Text = "Domain details";
             // 
+            // tbxDNSName
+            // 
+            this.tbxDNSName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxDNSName.Location = new System.Drawing.Point(137, 97);
+            this.tbxDNSName.Name = "tbxDNSName";
+            this.tbxDNSName.ReadOnly = true;
+            this.tbxDNSName.Size = new System.Drawing.Size(372, 20);
+            this.tbxDNSName.TabIndex = 19;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(6, 100);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(118, 13);
+            this.label6.TabIndex = 18;
+            this.label6.Text = "Suggested DNS Name:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(6, 184);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 13);
+            this.label5.TabIndex = 17;
+            this.label5.Text = "Existing DNS:";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(6, 126);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(125, 13);
+            this.label4.TabIndex = 16;
+            this.label4.Text = "Suggested DNS Record:";
+            // 
+            // tbxDNSRecord
+            // 
+            this.tbxDNSRecord.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbxDNSRecord.Location = new System.Drawing.Point(137, 123);
+            this.tbxDNSRecord.Multiline = true;
+            this.tbxDNSRecord.Name = "tbxDNSRecord";
+            this.tbxDNSRecord.ReadOnly = true;
+            this.tbxDNSRecord.Size = new System.Drawing.Size(372, 52);
+            this.tbxDNSRecord.TabIndex = 15;
+            // 
             // btnDomainCheckDNS
             // 
             this.btnDomainCheckDNS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -667,57 +720,35 @@
             this.openKeyFileDialog.Filter = "Key files|*.xml;*.pem|All files|*.*";
             this.openKeyFileDialog.Title = "Select a private key for signing";
             // 
-            // tbxDNSRecord
-            // 
-            this.tbxDNSRecord.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbxDNSRecord.Location = new System.Drawing.Point(137, 123);
-            this.tbxDNSRecord.Multiline = true;
-            this.tbxDNSRecord.Name = "tbxDNSRecord";
-            this.tbxDNSRecord.ReadOnly = true;
-            this.tbxDNSRecord.Size = new System.Drawing.Size(372, 52);
-            this.tbxDNSRecord.TabIndex = 15;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(6, 126);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(125, 13);
-            this.label4.TabIndex = 16;
-            this.label4.Text = "Suggested DNS Record:";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(6, 184);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(72, 13);
-            this.label5.TabIndex = 17;
-            this.label5.Text = "Existing DNS:";
-            // 
-            // tbxDNSName
-            // 
-            this.tbxDNSName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbxDNSName.Location = new System.Drawing.Point(137, 97);
-            this.tbxDNSName.Name = "tbxDNSName";
-            this.tbxDNSName.ReadOnly = true;
-            this.tbxDNSName.Size = new System.Drawing.Size(372, 20);
-            this.tbxDNSName.TabIndex = 19;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(6, 100);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(118, 13);
-            this.label6.TabIndex = 18;
-            this.label6.Text = "Suggested DNS Name:";
-            // 
             // errorProvider
             // 
             this.errorProvider.ContainerControl = this;
+            // 
+            // btnRestartTransportService
+            // 
+            this.btnRestartTransportService.Enabled = false;
+            this.btnRestartTransportService.Location = new System.Drawing.Point(346, 48);
+            this.btnRestartTransportService.Name = "btnRestartTransportService";
+            this.btnRestartTransportService.Size = new System.Drawing.Size(194, 23);
+            this.btnRestartTransportService.TabIndex = 14;
+            this.btnRestartTransportService.Text = "Restart MSExchangeTransport";
+            this.btnRestartTransportService.UseVisualStyleBackColor = true;
+            this.btnRestartTransportService.Click += new System.EventHandler(this.btnRestartTransportService_Click);
+            // 
+            // timExchangeStatus
+            // 
+            this.timExchangeStatus.Enabled = true;
+            this.timExchangeStatus.Interval = 200;
+            this.timExchangeStatus.Tick += new System.EventHandler(this.timExchangeStatus_Tick);
+            // 
+            // lblExchangeStatus
+            // 
+            this.lblExchangeStatus.AutoSize = true;
+            this.lblExchangeStatus.Location = new System.Drawing.Point(226, 53);
+            this.lblExchangeStatus.Name = "lblExchangeStatus";
+            this.lblExchangeStatus.Size = new System.Drawing.Size(37, 13);
+            this.lblExchangeStatus.TabIndex = 15;
+            this.lblExchangeStatus.Text = "Status";
             // 
             // MainWindow
             // 
@@ -815,6 +846,9 @@
         private System.Windows.Forms.TextBox tbxDNSName;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ErrorProvider errorProvider;
+        private System.Windows.Forms.Button btnRestartTransportService;
+        private System.Windows.Forms.Timer timExchangeStatus;
+        private System.Windows.Forms.Label lblExchangeStatus;
     }
 }
 

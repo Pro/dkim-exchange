@@ -12,6 +12,21 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -89,7 +104,75 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
       <Link>RSA\RSACryptoHelper.cs</Link>
     </Compile>
-    <Compile Include="DNSHelper.cs" />
+    <Compile Include="Dns\Header.cs" />
+    <Compile Include="Dns\Question.cs" />
+    <Compile Include="Dns\RecordReader.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordA6.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordAPL.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordATMA.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordCERT.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordDHCID.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordDNSKEY.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordEID.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordGID.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordHIP.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordIPSECKEY.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordNIMLOC.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordNSEC.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordNSEC3.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordNSEC3PARAM.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordOPT.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordRRSIG.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordSINK.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordSPF.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordSSHFP.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordUID.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordUINFO.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordUnknown.cs" />
+    <Compile Include="Dns\Records\NotUsed\RecordUNSPEC.cs" />
+    <Compile Include="Dns\Records\Obsolete\RecordGPOS.cs" />
+    <Compile Include="Dns\Records\Obsolete\RecordMD.cs" />
+    <Compile Include="Dns\Records\Obsolete\RecordMF.cs" />
+    <Compile Include="Dns\Records\Obsolete\RecordNSAPPTR.cs" />
+    <Compile Include="Dns\Records\Obsolete\RecordNXT.cs" />
+    <Compile Include="Dns\Records\Record.cs" />
+    <Compile Include="Dns\Records\RecordA.cs" />
+    <Compile Include="Dns\Records\RecordAAAA.cs" />
+    <Compile Include="Dns\Records\RecordAFSDB.cs" />
+    <Compile Include="Dns\Records\RecordCNAME.cs" />
+    <Compile Include="Dns\Records\RecordDNAME.cs" />
+    <Compile Include="Dns\Records\RecordDS.cs" />
+    <Compile Include="Dns\Records\RecordHINFO.cs" />
+    <Compile Include="Dns\Records\RecordISDN.cs" />
+    <Compile Include="Dns\Records\RecordKEY.cs" />
+    <Compile Include="Dns\Records\RecordKX.cs" />
+    <Compile Include="Dns\Records\RecordLOC.cs" />
+    <Compile Include="Dns\Records\RecordMB.cs" />
+    <Compile Include="Dns\Records\RecordMG.cs" />
+    <Compile Include="Dns\Records\RecordMINFO.cs" />
+    <Compile Include="Dns\Records\RecordMR.cs" />
+    <Compile Include="Dns\Records\RecordMX.cs" />
+    <Compile Include="Dns\Records\RecordNAPTR.cs" />
+    <Compile Include="Dns\Records\RecordNS.cs" />
+    <Compile Include="Dns\Records\RecordNSAP.cs" />
+    <Compile Include="Dns\Records\RecordNULL.cs" />
+    <Compile Include="Dns\Records\RecordPTR.cs" />
+    <Compile Include="Dns\Records\RecordPX.cs" />
+    <Compile Include="Dns\Records\RecordRP.cs" />
+    <Compile Include="Dns\Records\RecordRT.cs" />
+    <Compile Include="Dns\Records\RecordSIG.cs" />
+    <Compile Include="Dns\Records\RecordSOA.cs" />
+    <Compile Include="Dns\Records\RecordSRV.cs" />
+    <Compile Include="Dns\Records\RecordTKEY.cs" />
+    <Compile Include="Dns\Records\RecordTSIG.cs" />
+    <Compile Include="Dns\Records\RecordTXT.cs" />
+    <Compile Include="Dns\Records\RecordWKS.cs" />
+    <Compile Include="Dns\Records\RecordX25.cs" />
+    <Compile Include="Dns\Request.cs" />
+    <Compile Include="Dns\Resolver.cs" />
+    <Compile Include="Dns\Response.cs" />
+    <Compile Include="Dns\RR.cs" />
+    <Compile Include="Dns\Structs.cs" />
     <Compile Include="DownloadProgressWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,7 +214,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <Link>Properties\Resources.Designer.cs</Link>
     </Compile>
-    <None Include="app.manifest" />
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\Exchange.DkimSigner\Properties\Resources.resx">
@@ -142,10 +227,33 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Dns\Records\totla.txt" />
+    <Content Include="Dns\Root\named_root.txt" />
     <Content Include="Saki-NuoveXT-2-Mimetypes-document-seal.ico" />
     <Content Include="WebSecurity.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 4.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
