@@ -19,6 +19,7 @@ namespace ConfigurationSettings
         /******************************************************************/
 
         private const string BASE_REGISTRY_KEY = @"Software\";
+        public static Exception lastException = null;
 
         /******************************************************************/
         /****************************** Enum ******************************/
@@ -192,6 +193,7 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static RegistryKey Open(string subKey = "")
         {
+            lastException = null;
             try
             {
                 bool is64BitProcess = (IntPtr.Size == 8);
@@ -199,8 +201,9 @@ namespace ConfigurationSettings
 
                 return _openSubKey(Registry.LocalMachine, BASE_REGISTRY_KEY + subKey, false, is64BitOperatingSystem ? RegWow64Options.KEY_WOW64_64KEY : RegWow64Options.KEY_WOW64_32KEY);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                lastException = e;
                 return null;
             }
          }
@@ -212,19 +215,23 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static string[] GetSubKeyName(string subKey = "")
         {
-            string[] value = null;
-            RegistryKey sk1 = Open(subKey);
+            lastException = null;
+            try
+            {            
+                string[] value = null;
+                RegistryKey sk1 = Open(subKey);
 
-            if (sk1 != null)
-            {
-                try
+                if (sk1 != null)
                 {
                     value = sk1.GetSubKeyNames();
                 }
-                catch (Exception) { }
+                return value;
+            }
+            catch (Exception e) {
+                lastException = e;
+                return null;
             }
 
-            return value;
         }
 
         /// <summary>
@@ -235,19 +242,25 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public static string Read(string KeyName, string subKey = "")
         {
-            string value = null;
-            RegistryKey sk1 = Open(subKey);
-
-            if (sk1 != null)
+            lastException = null;
+            try
             {
-                try
+                string value = null;
+                RegistryKey sk1 = Open(subKey);
+
+                if (sk1 != null)
                 {
                     value = (string)sk1.GetValue(KeyName);
                 }
-                catch (Exception) { }
-            }
 
-            return value;
+                return value;
+            }
+            catch (Exception e)
+            {
+                lastException = e;
+                return null;
+            }
+            
         }
     }
 }
