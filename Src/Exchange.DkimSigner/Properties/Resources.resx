@@ -126,9 +126,6 @@
   <data name="DkimSigningRoutingAgent_MimeBodyNotFound" xml:space="preserve">
     <value>The MIME body could not be located, so DKIM signing was skipped.</value>
   </data>
-  <data name="DkimSigningRoutingAgentFactory_BadDkimAlgorithmConfig" xml:space="preserve">
-    <value>The algorithm specified in the configuration file could not be parsed. Check the value of the 'DefaultDkimSigner_Algorithm' key under &lt;appSettings&gt;. Currently accepted values are 'RsaSha1' (recommended) and 'RsaSha256'.</value>
-  </data>
   <data name="DkimSigningRoutingAgentFactory_BadDkimSelectorConfig" xml:space="preserve">
     <value>The selector was not found in the configuration file or is blank. Check the value of the 'DefaultDkimSigner_Selector' key under &lt;appSettings&gt;.</value>
   </data>
@@ -137,12 +134,6 @@
   </data>
   <data name="DkimSigningRoutingAgentFactory_BadDkimPrivateKeyConfig" xml:space="preserve">
     <value>The PEM-encoded private RSA key was not found in the configuration file or is blank. Check the value of the 'DefaultDkimSigner_PrivateKey' key in the &lt;appSettings&gt; section.</value>
-  </data>
-  <data name="DkimSigningRoutingAgentFactory_BadDkimCanonicalizationBodyConfig" xml:space="preserve">
-    <value>The  body canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the 'DefaultDkimSigner_Algorithm' key under &amp;lt;appSettings&amp;gt;. Currently accepted values are 'Simple' (recommended) and 'Relaxed'.</value>
-  </data>
-  <data name="DkimSigningRoutingAgentFactory_BadDkimCanonicalizationHeaderConfig" xml:space="preserve">
-    <value>The  header canonicalization algorithm specified in the configuration file could not be parsed. Check the value of the 'DefaultDkimSigner_Algorithm' key under &amp;lt;appSettings&amp;gt;. Currently accepted values are 'Simple' (recommended) and 'Relaxed'.</value>
   </data>
   <data name="RSACryptHelper_BadDerFormat" xml:space="preserve">
     <value>The encoded key is not in the proper DER format.</value>

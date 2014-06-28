@@ -12,6 +12,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +25,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -85,6 +85,12 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
       <Link>Configuration\DkimCanonicalizationKind.cs</Link>
     </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DomainElement.cs">
+      <Link>Configuration\DomainElement.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
+      <Link>Configuration\Settings.cs</Link>
+    </Compile>
     <Compile Include="..\Exchange.DkimSigner\RSA\AsnKeyBuilder.cs">
       <Link>RSA\AsnKeyBuilder.cs</Link>
     </Compile>
@@ -97,13 +103,13 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\BigInteger.cs">
       <Link>RSA\BigInteger.cs</Link>
     </Compile>
-    <Compile Include="Configuration\RegistryHelper.cs" />
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
       <Link>RSA\RSACryptoFormat.cs</Link>
     </Compile>
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
       <Link>RSA\RSACryptoHelper.cs</Link>
     </Compile>
+    <Compile Include="Configuration\RegistryHelper.cs" />
     <Compile Include="Dns\Header.cs" />
     <Compile Include="Dns\Question.cs" />
     <Compile Include="Dns\RecordReader.cs" />
@@ -184,6 +190,12 @@
     <Compile Include="GitHub\Api.cs" />
     <Compile Include="GitHub\ApiWrapper.cs" />
     <Compile Include="GitHub\DataContract.cs" />
+    <Compile Include="HeaderInputForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HeaderInputForm.Designer.cs">
+      <DependentUpon>HeaderInputForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,6 +212,9 @@
     </Compile>
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HeaderInputForm.resx">
+      <DependentUpon>HeaderInputForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>

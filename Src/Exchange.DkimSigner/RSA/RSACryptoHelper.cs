@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Configuration.DkimSigner.Properties;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-
-using DkimSigner.Properties;
 
 namespace DkimSigner.RSA
 {

@@ -1,5 +1,6 @@
 ﻿using ConfigurationSettings;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Exchange.DkimSigner
@@ -24,5 +25,7 @@ namespace Exchange.DkimSigner
         /// <param name="inputStream">The input stream byte data.</param>
         /// <param name="outputStream">The output stream.</param>
         void Sign(byte[] inputBytes, Stream outputStream, string signeddkim);
+
+        List<DomainElement> getValidDomains();
     }
 }

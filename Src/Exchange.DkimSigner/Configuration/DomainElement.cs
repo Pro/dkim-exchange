@@ -6,50 +6,35 @@ using System.Configuration;
 using System.Security.Cryptography;
 using System.IO;
 
-using Exchange.DkimSigner;
-using DkimSigner.Properties;
 using DkimSigner.RSA;
+using Configuration.DkimSigner.Properties;
 
 namespace ConfigurationSettings
 {
     public class DomainElement
     {
-        private string domain;
-        private string selector;
-        private string privateKeyFile;
+        public string Domain { get; set; }
+        public string Selector { get; set; }
+        public string PrivateKeyFile { get; set; }
+
+        public DomainElement()
+        {
+            
+        }
 
         /// <summary>
         /// Domain element constructor
         /// </summary>
         public DomainElement(string domain, string selector, string privateKeyFile, string recipientRule = null, string senderRule = null)
         {
-            this.domain = domain;
-            this.selector = selector;
-            this.privateKeyFile = privateKeyFile;
+            Domain = domain;
+            Selector = selector;
+            PrivateKeyFile = privateKeyFile;
         }
 
-        /// <summary>
-        /// Get domain name
-        /// </summary>
-        public string getDomain()
+        public override string ToString()
         {
-            return this.domain;
-        }
-
-        /// <summary>
-        /// Get domain selector
-        /// </summary>
-        public string getSelector()
-        {
-            return this.selector;
-        }
-
-        /// <summary>
-        /// Get private keys file name
-        /// </summary>
-        public string getPrivateKeyFile()
-        {
-            return this.privateKeyFile;
+            return Domain;
         }
 
         /// <summary>
@@ -69,15 +54,14 @@ namespace ConfigurationSettings
         public bool initElement(string basePath)
         {
             string path;
-            if (Path.IsPathRooted(privateKeyFile))
-                path =  @"keys\" + privateKeyFile;
+            if (Path.IsPathRooted(PrivateKeyFile))
+                path = @"keys\" + PrivateKeyFile;
             else
-                path = Path.Combine(basePath,  @"keys\" + privateKeyFile);
+                path = Path.Combine(basePath, @"keys\" + PrivateKeyFile);
 
             if (!File.Exists(path))
             {
-                Logger.LogError("PrivateKey for domain " + domain + " not found: " + path);
-                return false;
+                throw new FileNotFoundException("PrivateKey for domain " + Domain + " not found: " + path);
             }
 
             byte[] key = File.ReadAllBytes(path);
@@ -105,7 +89,7 @@ namespace ConfigurationSettings
 
         internal string Key
         {
-            get { return string.Format("{0}|{1}", selector, domain); }
+            get { return string.Format("{0}|{1}", Selector, Domain); }
         }
 
         /// <summary>

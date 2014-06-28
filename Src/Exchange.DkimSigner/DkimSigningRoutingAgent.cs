@@ -6,8 +6,7 @@ using System.Reflection;
 using System.IO;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
-
-using DkimSigner.Properties;
+using Configuration.DkimSigner.Properties;
 
 namespace Exchange.DkimSigner
 {
@@ -16,10 +15,6 @@ namespace Exchange.DkimSigner
     /// </summary>
     public sealed class DkimSigningRoutingAgent : RoutingAgent
     {
-        /// <summary>
-        /// The list of domains loaded from config file.
-        /// </summary>
-        private List<DomainElement> domainSettings;
 
         /// <summary>
         /// The object that knows how to sign messages.
@@ -30,9 +25,8 @@ namespace Exchange.DkimSigner
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
-        public DkimSigningRoutingAgent(List<DomainElement> domainSettings, ISigner dkimSigner)
+        public DkimSigningRoutingAgent(ISigner dkimSigner)
         {
-            this.domainSettings = domainSettings;
             this.dkimSigner = dkimSigner;
             
             this.OnCategorizedMessage += this.WhenMessageCategorized;
@@ -82,11 +76,11 @@ namespace Exchange.DkimSigner
             {
                  /* Check if DKIM is defined for the current domain */
                 DomainElement domain = null;
-                foreach (DomainElement e in domainSettings)
+                foreach (DomainElement e in dkimSigner.getValidDomains())
                 {
                     if (mailItem.FromAddress.DomainPart
                                             .ToUpperInvariant()
-                                            .Contains(e.getDomain().ToUpperInvariant()))
+                                            .Contains(e.Domain.ToUpperInvariant()))
                         domain = e;
                 }
 

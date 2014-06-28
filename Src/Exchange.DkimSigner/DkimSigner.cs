@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -56,51 +57,19 @@ namespace Exchange.DkimSigner
         /// </summary>
         private DkimCanonicalizationKind bodyCanonicalization;
 
+        private List<DomainElement> validDomains;
+
+        private string settingsPath;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigner"/> class.
         /// </summary>
-        /// <param name="signatureKind">The signature kind to use.</param>
-        /// <param name="headersToSign">The headers to be signed. If null, only the From header will be signed.</param>
-        /// <param name="selector">The domain containing the public key TXT record.</param>
-        /// <param name="domain">The DNS selector.</param>
-        /// <param name="encodedKey">The PEM-encoded key.</param>
-        public DkimSigner(
-            DkimAlgorithmKind signatureKind,
-            DkimCanonicalizationKind headerCanonicalizationKind,
-            DkimCanonicalizationKind bodyCanonicalizationKind,
-            IEnumerable<string> headersToSign)
-        {       
-            switch (signatureKind)
-            {
-                case DkimAlgorithmKind.RsaSha1:
-                    this.hashAlgorithm = new SHA1CryptoServiceProvider();
-                    this.hashAlgorithmCryptoCode = "SHA1";
-                    this.hashAlgorithmDkimCode = "rsa-sha1";
-                    break;
-                case DkimAlgorithmKind.RsaSha256:
-                    this.hashAlgorithm = new SHA256CryptoServiceProvider();
-                    this.hashAlgorithmCryptoCode = "SHA256";
-                    this.hashAlgorithmDkimCode = "rsa-sha256";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("signatureKind");
-            }
+        public DkimSigner()
+        {
+            settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
 
-            this.headerCanonicalization = headerCanonicalizationKind;
-            this.bodyCanonicalization = bodyCanonicalizationKind;
-
-            this.eligibleHeaders = new HashSet<string>();
-            if (headersToSign != null)
-            {
-                foreach (var headerToSign in headersToSign)
-                {
-                    this.eligibleHeaders.Add(headerToSign.Trim());
-                }
-            }
-
-            // The From header must always be signed according to the 
-            // DKIM specification.
-            this.eligibleHeaders.Add("From");
+            loadSettings();
+            watchSettings();
         }
 
         /// <summary>
@@ -119,6 +88,101 @@ namespace Exchange.DkimSigner
         {
             this.Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        private void loadSettings()
+        {
+            Settings config = null;
+            try
+            {
+                config = Settings.LoadOrCreate(settingsPath);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Couldn't load the settings file:\n" + e.Message);
+                return;
+            }
+            Logger.logLevel = config.Loglevel;
+
+            // Load the list of domains
+            validDomains = new List<DomainElement>();
+            foreach (DomainElement domainElement in config.Domains)
+            {
+                try
+                {
+                    if (domainElement.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                    {
+                        validDomains.Add(domainElement);
+                    }
+                }
+                catch (FileNotFoundException e)
+                {
+                    Logger.LogError(e.Message);
+                }
+            }
+
+            switch (config.SigningAlgorithm)
+            {
+                case DkimAlgorithmKind.RsaSha1:
+                    this.hashAlgorithm = new SHA1CryptoServiceProvider();
+                    this.hashAlgorithmCryptoCode = "SHA1";
+                    this.hashAlgorithmDkimCode = "rsa-sha1";
+                    break;
+                case DkimAlgorithmKind.RsaSha256:
+                    this.hashAlgorithm = new SHA256CryptoServiceProvider();
+                    this.hashAlgorithmCryptoCode = "SHA256";
+                    this.hashAlgorithmDkimCode = "rsa-sha256";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("signatureKind");
+            }
+
+            this.headerCanonicalization = config.HeaderCanonicalization;
+            this.bodyCanonicalization = config.BodyCanonicalization;
+
+            this.eligibleHeaders = new HashSet<string>();
+            foreach (var headerToSign in config.HeadersToSign)
+            {
+                this.eligibleHeaders.Add(headerToSign.Trim());
+            }
+            // The From header must always be signed according to the 
+            // DKIM specification.
+            if (!this.eligibleHeaders.Contains("From"))
+                this.eligibleHeaders.Add("From");
+
+            Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + validDomains.Count);
+ 
+        }
+
+        public void watchSettings()
+        {
+            // Create a new FileSystemWatcher and set its properties.
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = Path.GetDirectoryName(settingsPath);
+            /* Watch for changes in LastAccess and LastWrite times, and 
+               the renaming of files or directories. */
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+            // Only watch text files.
+            watcher.Filter = Path.GetFileName(settingsPath);
+
+            // Add event handlers.
+            watcher.Changed += new FileSystemEventHandler(this.OnChanged);
+            watcher.Created += new FileSystemEventHandler(this.OnChanged);
+
+            // Begin watching.
+            watcher.EnableRaisingEvents = true;
+        }
+
+        // Define the event handlers.
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            Logger.LogInformation("Detected settings file change. Reloading...");
+            loadSettings();
+        }
+
+        public List<DomainElement> getValidDomains()
+        {
+            return this.validDomains;
         }
 
         /// <summary>
@@ -374,7 +438,7 @@ namespace Exchange.DkimSigner
             StringBuilder signedDkimHeader;
 
             if (domain.CryptoProvider == null)
-                throw new Exception("CryptoProvider for domain " + domain.getDomain() + " is null.");
+                throw new Exception("CryptoProvider for domain " + domain.Domain + " is null.");
 
             using (var stream = new MemoryStream())
             {
@@ -425,8 +489,8 @@ namespace Exchange.DkimSigner
                     CultureInfo.InvariantCulture,
                     "DKIM-Signature: v=1; a={0}; s={1}; d={2}; c={3}/{4}; q=dns/txt; h={5}; bh={6}; b=;",
                     this.hashAlgorithmDkimCode,
-                    domain.getSelector(),
-                    domain.getDomain(),
+                    domain.Selector,
+                    domain.Domain,
                     this.headerCanonicalization.ToString().ToLower(),
                     this.bodyCanonicalization.ToString().ToLower(),
                     string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),

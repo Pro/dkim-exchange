@@ -16,7 +16,6 @@ using System.Windows.Forms;
 
 using ConfigurationSettings;
 using DkimSigner.RSA;
-using DkimSigner.Properties;
 using Configuration.DkimSigner.GitHub;
 using Ionic.Zip;
 using System.Security.Cryptography;
@@ -24,6 +23,7 @@ using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 using System.ServiceProcess;
 using Heijden.DNS;
+using Configuration.DkimSigner.Properties;
 
 namespace Configuration.DkimSigner
 {
@@ -51,7 +51,7 @@ namespace Configuration.DkimSigner
         private bool isInstall = false;
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
-        private bool settingsChangedButNotRestarted = false;
+        Settings config = null;
 
         delegate void SetDkimSignerInstalledCallback();
         delegate void SetDkimSignerAvailableCallback();
@@ -104,13 +104,6 @@ namespace Configuration.DkimSigner
         {
             if (isInstall || isUpgrade)
             {
-                // First make sure we have the basic configuration set up
-                if (RegistryHelper.Open(@"Software\Exchange DkimSigner") == null)
-                {
-                    this.SaveDkimSignerConfig();
-                    saveDomainData();
-                    settingsChangedButNotRestarted = false;
-                }
 
                 this.Hide();
                 UpgradeWindow upw = new UpgradeWindow(Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"..\..\..\..")), installPath);
@@ -173,12 +166,6 @@ namespace Configuration.DkimSigner
             if (!checkSaveConfig())
                 e.Cancel = true;
 
-            if (settingsChangedButNotRestarted && MessageBox.Show("To apply your settings you need to restart MSExchangeTransport service. Should I do it for you?", "Restart service?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-            {
-                if (!restartTransportService())
-                    e.Cancel = true;
-            }
-
         }
 
         /// <summary>
@@ -193,7 +180,7 @@ namespace Configuration.DkimSigner
 
                 if (result == DialogResult.Yes)
                 {
-                    if (!this.SaveDkimSignerConfig() || !saveDomainData())
+                    if (!this.SaveDkimSignerConfig())
                     {
                         if (MessageBox.Show("Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                         {
@@ -439,112 +426,59 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void LoadDkimSignerConfig()
         {
-            if (RegistryHelper.Open(@"Software\Exchange DkimSigner") != null)
+            try
             {
-                // Load the log level.
-                int logLevel = 0;
-                try
-                {
-                    string temp = RegistryHelper.Read("LogLevel", @"Software\Exchange DkimSigner");
+                config = Settings.LoadOrCreate(Path.Combine(DKIM_SIGNER_PATH, "settings.xml"));
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Couldn't load the settings file:\n" + e.Message + "\nSetting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+             
 
-                    if (temp != null)
-                        logLevel = Convert.ToInt32(RegistryHelper.Read("LogLevel", @"Software\Exchange DkimSigner"));
-                }
-                catch (FormatException){}
-                catch (OverflowException){}
-
-                if(logLevel == 1)
-                {
+            switch (config.Loglevel)
+            {
+                case 1:
                     this.cbLogLevel.Text = "Error";
-                }
-                else if(logLevel == 2)
-                {
+                    break;
+                case 2:
                     this.cbLogLevel.Text = "Warning";
-                }
-                else if(logLevel == 3)
-                {
+                    break;
+                case 3:
                     this.cbLogLevel.Text = "Information";
-                }
-                else
-                {
+                    break;
+                default:
                     this.cbLogLevel.Text = "Information";
                     MessageBox.Show(Resources.MainWindows_BadLogLevel);
-                }
-
-                // Load the signing algorithm.
-                try
-                {
-                    DkimAlgorithmKind signingAlgorithm = (DkimAlgorithmKind)Enum.Parse(typeof(DkimAlgorithmKind), RegistryHelper.Read("Algorithm", @"Software\Exchange DkimSigner\DKIM"), true);
-
-                    if (signingAlgorithm == DkimAlgorithmKind.RsaSha1)
-                        this.rbRsaSha1.Checked = true;
-                    else
-                        this.rbRsaSha256.Checked = true;
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show(Resources.MainWindows_BadDkimAlgorithmConfig);
-                }
-
-                // Load the header canonicalization algorithm.
-                try
-                {
-                    DkimCanonicalizationKind headerCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("HeaderCanonicalization", @"Software\Exchange DkimSigner\DKIM"), true);
-
-                    if (headerCanonicalization == DkimCanonicalizationKind.Simple)
-                        this.rbSimpleHeaderCanonicalization.Checked = true;
-                    else
-                        this.rbRelaxedHeaderCanonicalization.Checked = true;
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show(Resources.MainWindows_BadDkimCanonicalizationHeaderConfig);
-                }
-
-                // Load the body canonicalization algorithm.
-                try
-                {
-                    DkimCanonicalizationKind bodyCanonicalization = (DkimCanonicalizationKind)Enum.Parse(typeof(DkimCanonicalizationKind), RegistryHelper.Read("BodyCanonicalization", @"Software\Exchange DkimSigner\DKIM"), true);
-
-                    if (bodyCanonicalization == DkimCanonicalizationKind.Simple)
-                        this.rbSimpleBodyCanonicalization.Checked = true;
-                    else
-                        this.rbRelaxedBodyCanonicalization.Checked = true;
-                }
-                catch (Exception)
-                {
-                    MessageBox.Show(Resources.MainWindows_BadDkimCanonicalizationBodyConfig);
-                }
-
-                // Load the list of headers to sign in each message.
-                string unparsedHeaders = RegistryHelper.Read("HeadersToSign", @"Software\Exchange DkimSigner\DKIM");
-                if (unparsedHeaders != null)
-                {
-                    this.txtHeaderToSign.Text = unparsedHeaders;
-                }
-
-                reloadDomainsList();
-
+                    break;
             }
+            this.rbRsaSha1.Checked = (config.SigningAlgorithm == DkimAlgorithmKind.RsaSha1);
+
+            this.rbSimpleHeaderCanonicalization.Checked = (config.HeaderCanonicalization == DkimCanonicalizationKind.Simple);
+            this.rbRelaxedHeaderCanonicalization.Checked = (config.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed);
+            this.rbSimpleBodyCanonicalization.Checked = (config.BodyCanonicalization == DkimCanonicalizationKind.Simple);
+            this.rbRelaxedBodyCanonicalization.Checked = (config.BodyCanonicalization == DkimCanonicalizationKind.Relaxed);
+
+            this.lbxHeadersToSign.Items.Clear();
+            foreach (string str in config.HeadersToSign)
+                this.lbxHeadersToSign.Items.Add(str);
+            this.lbxHeadersToSign.SelectedItem = null;
+
+            reloadDomainsList();
             this.dataUpdated = false;
         }
 
         private void reloadDomainsList(string selectedDomain = null)
         {
             // Load the list of domains
-            string[] domainNames = RegistryHelper.GetSubKeyName(@"Software\Exchange DkimSigner\Domain");
-            string currSel = (string)lbxDomains.SelectedItem;
-            if (selectedDomain != null)
-                currSel = selectedDomain;
+            DomainElement currSel = null;
+            if (lbxDomains.SelectedItem != null)
+                currSel = (DomainElement)lbxDomains.SelectedItem;
             lbxDomains.Items.Clear();
-            if (domainNames != null)
+            foreach (DomainElement domain in config.Domains)
             {
-                foreach (string domainName in domainNames)
-                {
-                    lbxDomains.Items.Add(domainName);
-                }
-                if (lbxDomains.Items.Count > 0)
-                    lbxDomains.SelectedIndex = 0;
+                lbxDomains.Items.Add(domain);
             }
             if (currSel != null)
                 lbxDomains.SelectedItem = currSel;
@@ -555,39 +489,19 @@ namespace Configuration.DkimSigner
         /// </summary>
         private bool SaveDkimSignerConfig()
         {
+            config.Loglevel = this.cbLogLevel.SelectedIndex + 1;
 
-            if (!RegistryHelper.Write("LogLevel", this.cbLogLevel.SelectedIndex + 1, @"Software\Exchange DkimSigner"))
-            {
-                MessageBox.Show("Error! Couldn't save the log level.\n" + RegistryHelper.lastException.Message);
-                return false;
-            }
+            config.SigningAlgorithm = (this.rbRsaSha1.Checked ? DkimAlgorithmKind.RsaSha1 : DkimAlgorithmKind.RsaSha256);
+            config.BodyCanonicalization = (this.rbSimpleBodyCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
+            config.HeaderCanonicalization = (this.rbSimpleHeaderCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
 
-            if (!RegistryHelper.Write("Algorithm", this.rbRsaSha1.Checked ? this.rbRsaSha1.Text : this.rbRsaSha256.Text, @"Software\Exchange DkimSigner\DKIM"))
-            {
-                MessageBox.Show("Error! Couldn't save the algorithm.\n" + RegistryHelper.lastException.Message);
-                return false;
-            }
+            config.HeadersToSign.Clear();
+            foreach (string str in lbxHeadersToSign.Items)
+                config.HeadersToSign.Add(str);
 
-            if (!RegistryHelper.Write("HeaderCanonicalization", this.rbSimpleHeaderCanonicalization.Checked ? this.rbSimpleHeaderCanonicalization.Text : this.rbRelaxedHeaderCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM"))
-            {
-                MessageBox.Show("Error! Couldn't save header canonicalization.\n" + RegistryHelper.lastException.Message);
-                return false;
-            }
-
-            if (!RegistryHelper.Write("BodyCanonicalization", this.rbSimpleBodyCanonicalization.Checked ? this.rbSimpleBodyCanonicalization.Text : this.rbRelaxedBodyCanonicalization.Text, @"Software\Exchange DkimSigner\DKIM"))
-            {
-                MessageBox.Show("Error! Impossible to change the body canonicalization.\n" + RegistryHelper.lastException.Message);
-                return false;
-            }
-
-            if (!RegistryHelper.Write("HeadersToSign", this.txtHeaderToSign.Text, @"Software\Exchange DkimSigner\DKIM"))
-            {
-                MessageBox.Show("Error! Impossible to change the headers to sign.\n" + RegistryHelper.lastException.Message);
-                return false;
-            }
+            config.Save(Path.Combine(DKIM_SIGNER_PATH, "settings.xml"));
 
             this.dataUpdated = false;
-            settingsChangedButNotRestarted = true;
             return true;
         }
 
@@ -653,7 +567,8 @@ namespace Configuration.DkimSigner
                 ExchangeHelper.uninstallTransportAgent();
 
                 if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==System.Windows.Forms.DialogResult.Yes){
-                    RegistryHelper.DeleteSubKeyTree("Exchange DkimSigner", @"Software");
+                    if (File.Exists(Path.Combine(DKIM_SIGNER_PATH, "settings.xml")))
+                        File.Delete(Path.Combine(DKIM_SIGNER_PATH, "settings.xml"));
                 }
 
                 if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + ExchangeHelper.AGENT_DIR + "' and all it's content?", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
@@ -812,16 +727,12 @@ namespace Configuration.DkimSigner
                 gbxDomainDetails.Enabled = false;
                 return;
             }
-            string domainName = (string)lbxDomains.SelectedItem;
-            string selector = RegistryHelper.Read("Selector", @"Software\Exchange DkimSigner\Domain\" + domainName);
-            string privateKeyFile = RegistryHelper.Read("PrivateKeyFile", @"Software\Exchange DkimSigner\Domain\" + domainName);
-
-            tbxDomainName.Text = domainName;
-            tbxDomainSelector.Text = selector;
-            tbxDomainPrivateKeyFilename.Text = privateKeyFile;
+            DomainElement selected = (DomainElement)lbxDomains.SelectedItem;
+            tbxDomainName.Text = selected.Domain;
+            tbxDomainSelector.Text = selected.Selector;
+            tbxDomainPrivateKeyFilename.Text = selected.PrivateKeyFile;
             this.dataUpdated = false;
 
-            updateDNSRecordInfo();
             updateSuggestedDNS();
             gbxDomainDetails.Enabled = true;
             btnDomainDelete.Enabled = true;
@@ -873,44 +784,44 @@ namespace Configuration.DkimSigner
 
         private void btnDomainSave_Click(object sender, EventArgs e)
         {
-            saveDomainData();      
-        }
-
-        private bool saveDomainData()
-        {
             if (errorProvider.GetError(tbxDomainName) != "" || errorProvider.GetError(tbxDomainSelector) != "")
             {
                 MessageBox.Show("You first need to fix the errors in your domain configuration before saving.", "Config error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                return;
             }
-                
-            string domainName = tbxDomainName.Text;
-            if (lbxDomains.SelectedItem != null && (string)lbxDomains.SelectedItem != domainName)
+
+            DomainElement elem;
+            bool addToList = false;
+
+            if (lbxDomains.SelectedItem != null)
             {
-                if (!RegistryHelper.DeleteSubKeyTree((string)lbxDomains.SelectedItem, @"Software\Exchange DkimSigner\Domain\"))
-                {
-                    MessageBox.Show("Couldn't delete old domain data:\n" + RegistryHelper.lastException.Message, "Error deleting domain", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return false;
-                }
+                elem = (DomainElement)lbxDomains.SelectedItem;
             }
-
-
-            if (!RegistryHelper.Write("Selector", tbxDomainSelector.Text, @"Software\Exchange DkimSigner\Domain\" + domainName) ||
-                !RegistryHelper.Write("PrivateKeyFile", tbxDomainPrivateKeyFilename.Text, @"Software\Exchange DkimSigner\Domain\" + domainName)
-                )
+            else
             {
-                MessageBox.Show("Couldn't save domain settings.\n" + RegistryHelper.lastException.Message, "Error saving configuration", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                elem = new DomainElement();
+                addToList = true;
             }
-            
-            reloadDomainsList(domainName);
 
-            this.dataUpdated = false;
-            btnDomainSave.Enabled = false;
-            btnDomainDelete.Enabled = true;
-            settingsChangedButNotRestarted = true;
-            return true;
+            elem.Domain = tbxDomainName.Text;
+            elem.Selector = tbxDomainSelector.Text;
+            elem.PrivateKeyFile = tbxDomainPrivateKeyFilename.Text;
+
+            if (addToList)
+            {
+                config.Domains.Add(elem);
+                lbxDomains.Items.Add(elem);
+                lbxDomains.SelectedItem = elem;
+            }
+
+            if (this.SaveDkimSignerConfig())
+            {
+                btnDomainSave.Enabled = false;
+                btnDomainDelete.Enabled = true;
+            }
+    
         }
+
 
         private void btnDomainCheckDNS_Click(object sender, EventArgs e)
         {
@@ -919,12 +830,15 @@ namespace Configuration.DkimSigner
 
         private void btnDomainDelete_Click(object sender, EventArgs e)
         {
-            if (!RegistryHelper.DeleteSubKeyTree(tbxDomainName.Text, @"Software\Exchange DkimSigner\Domain\"))
+            if (lbxDomains.SelectedItem != null)
             {
-                MessageBox.Show("Couldn't delete domain:\n" + RegistryHelper.lastException.Message, "Error deleting domain", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
+                DomainElement elem = (DomainElement)lbxDomains.SelectedItem;
+                config.Domains.Remove(elem);
 
+                lbxDomains.Items.Remove(elem);
+                lbxDomains.SelectedItem = null;
+
+            }
 
             string keyFile = System.IO.Path.Combine(DKIM_SIGNER_PATH, "keys",tbxDomainPrivateKeyFilename.Text);
 
@@ -948,7 +862,8 @@ namespace Configuration.DkimSigner
                 }
 
             }
-            reloadDomainsList();
+            this.SaveDkimSignerConfig();
+
         }
 
         private void btnAddDomain_Click(object sender, EventArgs e)
@@ -958,13 +873,16 @@ namespace Configuration.DkimSigner
                 DialogResult result = MessageBox.Show("Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
-                    if (!saveDomainData())
+                    if (!SaveDkimSignerConfig())
                         return;
                 } if (result == System.Windows.Forms.DialogResult.Cancel)
                     return;
             }
             this.dataUpdated = false;
             lbxDomains.ClearSelected();
+            tbxDNSRecord.Text = "";
+            tbxDNSName.Text = "";
+            tbxDNSRecord.Text = "";
             gbxDomainDetails.Enabled = true;
             btnDomainDelete.Enabled = false;
         }
@@ -1115,6 +1033,7 @@ namespace Configuration.DkimSigner
             if (openKeyFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 setDomainKeyPath(openKeyFileDialog.FileName);
+                updateSuggestedDNS();
             }
 
         }
@@ -1137,7 +1056,6 @@ namespace Configuration.DkimSigner
                 MessageBox.Show("Couldn't change MSExchangeTransport service status:\n" + ex.Message, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            settingsChangedButNotRestarted = false;
             return true;
         }
 
@@ -1170,6 +1088,28 @@ namespace Configuration.DkimSigner
             else
             {
                 btnRestartTransportService.Enabled = false;
+            }
+        }
+
+        private void lbxHeadersToSign_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            btnHeaderDelete.Enabled = (lbxHeadersToSign.SelectedItem != null);
+        }
+
+        private void btnHeaderDelete_Click(object sender, EventArgs e)
+        {
+            if (lbxHeadersToSign.SelectedItem == null)
+                return;
+            lbxHeadersToSign.Items.Remove(lbxHeadersToSign.SelectedItem);
+        }
+
+        private void btnHeaderAdd_Click(object sender, EventArgs e)
+        {
+            HeaderInputForm hif = new HeaderInputForm();
+            if (hif.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                lbxHeadersToSign.Items.Add(hif.header);
+                lbxHeadersToSign.SelectedItem = hif.header;
             }
         }
 

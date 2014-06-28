@@ -41,6 +41,8 @@
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
             this.gbInstalled = new System.Windows.Forms.GroupBox();
+            this.lblExchangeStatus = new System.Windows.Forms.Label();
+            this.btnRestartTransportService = new System.Windows.Forms.Button();
             this.btnDisable = new System.Windows.Forms.Button();
             this.btUninstall = new System.Windows.Forms.Button();
             this.lbExchangeInstalled = new System.Windows.Forms.Label();
@@ -50,7 +52,6 @@
             this.tpDKIM = new System.Windows.Forms.TabPage();
             this.btSave = new System.Windows.Forms.Button();
             this.gbHeaderToSign = new System.Windows.Forms.GroupBox();
-            this.txtHeaderToSign = new System.Windows.Forms.TextBox();
             this.gbLogLevel = new System.Windows.Forms.GroupBox();
             this.cbLogLevel = new System.Windows.Forms.ComboBox();
             this.gbBodyCanonicalization = new System.Windows.Forms.GroupBox();
@@ -87,9 +88,10 @@
             this.saveKeyFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.openKeyFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
-            this.btnRestartTransportService = new System.Windows.Forms.Button();
             this.timExchangeStatus = new System.Windows.Forms.Timer(this.components);
-            this.lblExchangeStatus = new System.Windows.Forms.Label();
+            this.lbxHeadersToSign = new System.Windows.Forms.ListBox();
+            this.btnHeaderDelete = new System.Windows.Forms.Button();
+            this.btnHeaderAdd = new System.Windows.Forms.Button();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbAvailable.SuspendLayout();
@@ -241,6 +243,26 @@
             this.gbInstalled.TabStop = false;
             this.gbInstalled.Text = "Installed";
             // 
+            // lblExchangeStatus
+            // 
+            this.lblExchangeStatus.AutoSize = true;
+            this.lblExchangeStatus.Location = new System.Drawing.Point(226, 53);
+            this.lblExchangeStatus.Name = "lblExchangeStatus";
+            this.lblExchangeStatus.Size = new System.Drawing.Size(37, 13);
+            this.lblExchangeStatus.TabIndex = 15;
+            this.lblExchangeStatus.Text = "Status";
+            // 
+            // btnRestartTransportService
+            // 
+            this.btnRestartTransportService.Enabled = false;
+            this.btnRestartTransportService.Location = new System.Drawing.Point(346, 48);
+            this.btnRestartTransportService.Name = "btnRestartTransportService";
+            this.btnRestartTransportService.Size = new System.Drawing.Size(194, 23);
+            this.btnRestartTransportService.TabIndex = 14;
+            this.btnRestartTransportService.Text = "Restart MSExchangeTransport";
+            this.btnRestartTransportService.UseVisualStyleBackColor = true;
+            this.btnRestartTransportService.Click += new System.EventHandler(this.btnRestartTransportService_Click);
+            // 
             // btnDisable
             // 
             this.btnDisable.Location = new System.Drawing.Point(346, 19);
@@ -315,7 +337,7 @@
             // 
             // btSave
             // 
-            this.btSave.Location = new System.Drawing.Point(307, 180);
+            this.btSave.Location = new System.Drawing.Point(529, 249);
             this.btSave.Name = "btSave";
             this.btSave.Size = new System.Drawing.Size(125, 23);
             this.btSave.TabIndex = 14;
@@ -325,27 +347,22 @@
             // 
             // gbHeaderToSign
             // 
-            this.gbHeaderToSign.Controls.Add(this.txtHeaderToSign);
+            this.gbHeaderToSign.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.gbHeaderToSign.Controls.Add(this.btnHeaderAdd);
+            this.gbHeaderToSign.Controls.Add(this.btnHeaderDelete);
+            this.gbHeaderToSign.Controls.Add(this.lbxHeadersToSign);
             this.gbHeaderToSign.Location = new System.Drawing.Point(6, 6);
             this.gbHeaderToSign.Name = "gbHeaderToSign";
-            this.gbHeaderToSign.Size = new System.Drawing.Size(426, 52);
+            this.gbHeaderToSign.Size = new System.Drawing.Size(216, 272);
             this.gbHeaderToSign.TabIndex = 1;
             this.gbHeaderToSign.TabStop = false;
             this.gbHeaderToSign.Text = "Header to sign";
             // 
-            // txtHeaderToSign
-            // 
-            this.txtHeaderToSign.Location = new System.Drawing.Point(6, 22);
-            this.txtHeaderToSign.Name = "txtHeaderToSign";
-            this.txtHeaderToSign.Size = new System.Drawing.Size(414, 20);
-            this.txtHeaderToSign.TabIndex = 2;
-            this.txtHeaderToSign.Text = "From; Subject; To; Date; Message-ID;";
-            this.txtHeaderToSign.TextChanged += new System.EventHandler(this.txtHeaderToSign_TextChanged);
-            // 
             // gbLogLevel
             // 
             this.gbLogLevel.Controls.Add(this.cbLogLevel);
-            this.gbLogLevel.Location = new System.Drawing.Point(6, 122);
+            this.gbLogLevel.Location = new System.Drawing.Point(228, 64);
             this.gbLogLevel.Name = "gbLogLevel";
             this.gbLogLevel.Size = new System.Drawing.Size(203, 52);
             this.gbLogLevel.TabIndex = 6;
@@ -370,7 +387,7 @@
             // 
             this.gbBodyCanonicalization.Controls.Add(this.rbRelaxedBodyCanonicalization);
             this.gbBodyCanonicalization.Controls.Add(this.rbSimpleBodyCanonicalization);
-            this.gbBodyCanonicalization.Location = new System.Drawing.Point(215, 122);
+            this.gbBodyCanonicalization.Location = new System.Drawing.Point(437, 64);
             this.gbBodyCanonicalization.Name = "gbBodyCanonicalization";
             this.gbBodyCanonicalization.Size = new System.Drawing.Size(217, 52);
             this.gbBodyCanonicalization.TabIndex = 11;
@@ -405,7 +422,7 @@
             // 
             this.gbHeaderCanonicalization.Controls.Add(this.rbRelaxedHeaderCanonicalization);
             this.gbHeaderCanonicalization.Controls.Add(this.rbSimpleHeaderCanonicalization);
-            this.gbHeaderCanonicalization.Location = new System.Drawing.Point(215, 64);
+            this.gbHeaderCanonicalization.Location = new System.Drawing.Point(437, 6);
             this.gbHeaderCanonicalization.Name = "gbHeaderCanonicalization";
             this.gbHeaderCanonicalization.Size = new System.Drawing.Size(217, 52);
             this.gbHeaderCanonicalization.TabIndex = 8;
@@ -440,7 +457,7 @@
             // 
             this.gbAlgorithm.Controls.Add(this.rbRsaSha256);
             this.gbAlgorithm.Controls.Add(this.rbRsaSha1);
-            this.gbAlgorithm.Location = new System.Drawing.Point(6, 64);
+            this.gbAlgorithm.Location = new System.Drawing.Point(228, 6);
             this.gbAlgorithm.Name = "gbAlgorithm";
             this.gbAlgorithm.Size = new System.Drawing.Size(203, 52);
             this.gbAlgorithm.TabIndex = 3;
@@ -724,31 +741,43 @@
             // 
             this.errorProvider.ContainerControl = this;
             // 
-            // btnRestartTransportService
-            // 
-            this.btnRestartTransportService.Enabled = false;
-            this.btnRestartTransportService.Location = new System.Drawing.Point(346, 48);
-            this.btnRestartTransportService.Name = "btnRestartTransportService";
-            this.btnRestartTransportService.Size = new System.Drawing.Size(194, 23);
-            this.btnRestartTransportService.TabIndex = 14;
-            this.btnRestartTransportService.Text = "Restart MSExchangeTransport";
-            this.btnRestartTransportService.UseVisualStyleBackColor = true;
-            this.btnRestartTransportService.Click += new System.EventHandler(this.btnRestartTransportService_Click);
-            // 
             // timExchangeStatus
             // 
             this.timExchangeStatus.Enabled = true;
             this.timExchangeStatus.Interval = 200;
             this.timExchangeStatus.Tick += new System.EventHandler(this.timExchangeStatus_Tick);
             // 
-            // lblExchangeStatus
+            // lbxHeadersToSign
             // 
-            this.lblExchangeStatus.AutoSize = true;
-            this.lblExchangeStatus.Location = new System.Drawing.Point(226, 53);
-            this.lblExchangeStatus.Name = "lblExchangeStatus";
-            this.lblExchangeStatus.Size = new System.Drawing.Size(37, 13);
-            this.lblExchangeStatus.TabIndex = 15;
-            this.lblExchangeStatus.Text = "Status";
+            this.lbxHeadersToSign.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbxHeadersToSign.FormattingEnabled = true;
+            this.lbxHeadersToSign.IntegralHeight = false;
+            this.lbxHeadersToSign.Location = new System.Drawing.Point(6, 19);
+            this.lbxHeadersToSign.Name = "lbxHeadersToSign";
+            this.lbxHeadersToSign.Size = new System.Drawing.Size(202, 218);
+            this.lbxHeadersToSign.TabIndex = 0;
+            this.lbxHeadersToSign.SelectedIndexChanged += new System.EventHandler(this.lbxHeadersToSign_SelectedIndexChanged);
+            // 
+            // btnHeaderDelete
+            // 
+            this.btnHeaderDelete.Location = new System.Drawing.Point(110, 243);
+            this.btnHeaderDelete.Name = "btnHeaderDelete";
+            this.btnHeaderDelete.Size = new System.Drawing.Size(98, 23);
+            this.btnHeaderDelete.TabIndex = 1;
+            this.btnHeaderDelete.Text = "Delete selected";
+            this.btnHeaderDelete.UseVisualStyleBackColor = true;
+            this.btnHeaderDelete.Click += new System.EventHandler(this.btnHeaderDelete_Click);
+            // 
+            // btnHeaderAdd
+            // 
+            this.btnHeaderAdd.Location = new System.Drawing.Point(6, 243);
+            this.btnHeaderAdd.Name = "btnHeaderAdd";
+            this.btnHeaderAdd.Size = new System.Drawing.Size(98, 23);
+            this.btnHeaderAdd.TabIndex = 2;
+            this.btnHeaderAdd.Text = "Add Header";
+            this.btnHeaderAdd.UseVisualStyleBackColor = true;
+            this.btnHeaderAdd.Click += new System.EventHandler(this.btnHeaderAdd_Click);
             // 
             // MainWindow
             // 
@@ -771,7 +800,6 @@
             this.gbInstalled.PerformLayout();
             this.tpDKIM.ResumeLayout(false);
             this.gbHeaderToSign.ResumeLayout(false);
-            this.gbHeaderToSign.PerformLayout();
             this.gbLogLevel.ResumeLayout(false);
             this.gbBodyCanonicalization.ResumeLayout(false);
             this.gbBodyCanonicalization.PerformLayout();
@@ -813,7 +841,6 @@
         private System.Windows.Forms.GroupBox gbLogLevel;
         private System.Windows.Forms.ComboBox cbLogLevel;
         private System.Windows.Forms.GroupBox gbHeaderToSign;
-        private System.Windows.Forms.TextBox txtHeaderToSign;
         private System.Windows.Forms.Button btnDomainKeySelect;
         private System.Windows.Forms.Button btSave;
         private System.Windows.Forms.Label lblChangelog;
@@ -849,6 +876,9 @@
         private System.Windows.Forms.Button btnRestartTransportService;
         private System.Windows.Forms.Timer timExchangeStatus;
         private System.Windows.Forms.Label lblExchangeStatus;
+        private System.Windows.Forms.Button btnHeaderAdd;
+        private System.Windows.Forms.Button btnHeaderDelete;
+        private System.Windows.Forms.ListBox lbxHeadersToSign;
     }
 }
 

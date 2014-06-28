@@ -243,8 +243,8 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Configuration\DomainElement.cs" />
-    <Compile Include="Configuration\RegistryHelper.cs" />
     <Compile Include="RSA\AsnKeyBuilder.cs" />
     <Compile Include="RSA\AsnKeyParser.cs" />
     <Compile Include="RSA\BerDecodeError.cs" />

@@ -129,10 +129,7 @@ Follow the install instructions but execute `.\uninstall.ps1` instead.
 
 ### Required DLLs for developing
 
-It isn't allowed to distribute the .dll required for development of this transport agent.
-http://blogs.msdn.com/b/webdav_101/archive/2009/04/02/don-t-redistribute-product-dlls-unless-you-know-its-safe-and-legal-to-do-so.aspx
-
-Therefore you have to copy all files from 
+For each Exchange Version we need the following files within the Lib directory:
 <pre>
 C:\Program Files\Microsoft\Exchange Server\V14\Public
 Microsoft.Exchange.Data.Common.dll
@@ -140,7 +137,6 @@ Microsoft.Exchange.Data.Common.xml
 Microsoft.Exchange.Data.Transport.dll
 Microsoft.Exchange.Data.Transport.xml
 </pre>
-into the corresponding subdirectory from the Lib directory of this project.
 
 ### Compiling
 
@@ -160,8 +156,11 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* Current Master :  
-        New: Private key support (PEM, DER, XML)
+* 26.06.2014 [2.0.0]:
+    New: The signer can now be configured through the GUI instead of manual XML editing
+    New: Installation and Update is now done by a simple click within GUI
+    New: Private key support (PEM, DER, XML)
+	Fix: Removed RecipientRule and SenderRule causing trouble when signing emails
 * 21.03.2014 [1.8.3]:  
 	Fix: RecipientRule now matching whole address  
 	Fix: Invalid E-Mail address doesn't cause a crash anymore. Rule will be ignored if error.  
