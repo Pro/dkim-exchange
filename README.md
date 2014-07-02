@@ -25,6 +25,10 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 
 ## Installing the Transport Agent
 
+If you are using Exchange 2013 SP1 or later, you need Version 2.0 of the DKIM Signer. If you have an older version you can use version 2.0 too, it has a GUI for configuration and the install process is much more simplified.
+It is currently in beta status. Read here if you want to install it: [Version 2.0](https://github.com/Pro/dkim-exchange/blob/master/INSTALL_2.md). 
+
+
 1. Download the .zip and extract it e.g. on the Desktop: [Latest Release](https://github.com/Pro/dkim-exchange/releases/latest)
 2. Open "Exchange Management Shell" from the Startmenu
 3. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
