@@ -5,7 +5,7 @@ This file documents on how to install Exchange DKIM Version 2.0
 
 ## Online install
 
-1) Download the latest GUI package: https://github.com/Pro/dkim-exchange/releases/download/v2.0.0-beta/Configuration.DkimSigner.zip  
+1) Download the latest GUI package: https://github.com/Pro/dkim-exchange/releases/download/v2.0.0-beta.2/Configuration.DkimSigner.zip  
 2) Extract it somewhere on your Server (e.g. Desktop)  
 3) Start Configuration.DkimSigner.exe  
 4) If you want to install a prerelease version, check the corresponding box  
@@ -15,7 +15,7 @@ This file documents on how to install Exchange DKIM Version 2.0
 
 ## Offline Install
 
-1) Download the latest GUI package: https://github.com/Pro/dkim-exchange/releases/download/v2.0.0-beta/Configuration.DkimSigner.zip  
+1) Download the latest GUI package: https://github.com/Pro/dkim-exchange/releases/download/v2.0.0-beta.2/Configuration.DkimSigner.zip
 2) Download the whole project package: https://github.com/Pro/dkim-exchange/archive/v2.0.0-beta.zip  
 3) Move those two packages to your server and extract the `Configuration.DkimSigner.zip` package to your Desktop  
 4) Start Configuration.DkimSigner.exe  
