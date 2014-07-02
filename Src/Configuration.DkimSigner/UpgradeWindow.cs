@@ -186,17 +186,24 @@ namespace Configuration.DkimSigner
 
 
             // First copy the configuration executable from Src\Configuration.DkimSigner\bin\Release to the destination:
-            string sourcePath = System.IO.Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
-            string destPath = System.IO.Path.Combine(installPath, "Configuration");
-            string ret = copyAllFiles(sourcePath, destPath);
-            if (ret != null)
-                return ret;
+            try
+            {
+                string sourcePath = System.IO.Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
+                string destPath = System.IO.Path.Combine(installPath, "Configuration");
+                string ret = copyAllFiles(sourcePath, destPath);
+                if (ret != null)
+                    return ret;
 
-            //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
-            //Get source directory for installed Exchange version:
-            string libDir = directoryFromExchangeVersion();
-            sourcePath = System.IO.Path.Combine(tempPath, System.IO.Path.Combine(@"Src\Exchange.DkimSigner\bin\",libDir));
-            return copyAllFiles(sourcePath, installPath);
+                //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
+                //Get source directory for installed Exchange version:
+                string libDir = directoryFromExchangeVersion();
+                sourcePath = System.IO.Path.Combine(tempPath, System.IO.Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
+                return copyAllFiles(sourcePath, installPath);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private void installAgentTask()

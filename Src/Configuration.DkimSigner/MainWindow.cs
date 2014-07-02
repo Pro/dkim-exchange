@@ -37,7 +37,7 @@ namespace Configuration.DkimSigner
 
     public partial class MainWindow : Form
     {
-        private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner\";
+        private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
 
         //private Dictionary<int, byte[]> attachments = new Dictionary<int, byte[]>();
@@ -662,7 +662,8 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                args = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                args = DKIM_SIGNER_PATH;
+
                 if (System.Diagnostics.Debugger.IsAttached)
                     // during development install into updated subfolder
                     args = System.IO.Path.Combine(args, "Updated");
