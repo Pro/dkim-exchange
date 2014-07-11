@@ -23,36 +23,43 @@ namespace Configuration.DkimSigner
         public static string AGENT_DIR = @"C:\Program Files\Exchange DkimSigner";
 
         /// <summary>
-        /// Get the current Exchange version for the current server from Active Directy (ldap).
+        /// Get the current Exchange version for the current server using Get-ExchangServer Cmdlet.
         /// 
         /// The format of the string is 'Version 14.1 (Build 30218.15)'
         /// </summary>
         /// <returns></returns>
         public static string checkExchangeVersionInstalled()
         {
-            try
-            {
-                string domain = System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName;
-                DirectoryEntry rootDSE = new DirectoryEntry(string.Format("LDAP://{0}/rootDSE", domain));
-                DirectoryEntry objDirectoryEntry = new DirectoryEntry(string.Format("LDAP://{0}/{1}", domain, rootDSE.Properties["configurationNamingContext"].Value.ToString()));
-                DirectorySearcher searcher = new DirectorySearcher(objDirectoryEntry, "(&(objectClass=msExchExchangeServer))");
-                SearchResultCollection col = searcher.FindAll();
-                string version = string.Empty;
-                foreach (SearchResult result in col)
+            try {
+                using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
                 {
-                    DirectoryEntry user = result.GetDirectoryEntry();
-                    if (String.Equals(user.Properties["name"].Value.ToString(), Dns.GetHostName(), StringComparison.InvariantCultureIgnoreCase))
+
+                    runspace.Open();
+                    using (PowerShell powershell = PowerShell.Create())
                     {
-                        version = user.Properties["serialNumber"].Value.ToString();
-                        break;
+                        powershell.Runspace = runspace;
+
+                        Collection<PSObject> results;
+
+                        powershell.AddCommand("Get-ExchangeServer");
+                        powershell.AddParameter("Identity", Dns.GetHostName());
+
+                        results = invokePS(powershell, "Error Get-ExchangeServer for host " + Dns.GetHostName());
+
+                        if (results.Count >= 1)
+                        {
+                            return results[0].Properties["AdminDisplayVersion"].Value.ToString();
+                        }
+                        else
+                        {
+                            return "Not installed";
+                        }
                     }
                 }
-
-                return version != string.Empty ? version : "Not installed";
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return "Not installed";
+                return "Error: " + ex.Message;
             }
         }
 
