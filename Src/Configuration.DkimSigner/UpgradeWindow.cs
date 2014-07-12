@@ -13,9 +13,22 @@ namespace Configuration.DkimSigner
 {
     public partial class UpgradeWindow : Form
     {
+        /**********************************************************/
+        /*********************** Constants ************************/
+        /**********************************************************/
+
+
+        /**********************************************************/
+        /*********************** Variables ************************/
+        /**********************************************************/
+
         string tempPath;
         string installPath;
         DialogResult dialogResult;
+
+        /**********************************************************/
+        /*********************** Construtor ***********************/
+        /**********************************************************/
 
         public UpgradeWindow(string tempPath, string installPath)
         {
@@ -23,25 +36,29 @@ namespace Configuration.DkimSigner
 
             this.tempPath = tempPath;
             this.installPath = installPath;
-            dialogResult = System.Windows.Forms.DialogResult.Cancel;
+            dialogResult = DialogResult.Cancel;
         }
 
-        private void UpgradeWindow_Shown(object sender, EventArgs e)
-        {
-        }
+        /**********************************************************/
+        /************************* Events *************************/
+        /**********************************************************/
 
         private void resetStatus()
         {
-            lblStopService.Enabled = false;
-            picStopService.Image = null;
-            lblCopyFiles.Enabled = false;
-            picCopyFiles.Image = null;
-            lblInstallAgent.Enabled = false;
-            picInstallAgent.Image = null;
-            lblStartService.Enabled = false;
-            picStartService.Image = null;
-            lblDone.Enabled = false;
-            picDone.Image = null;
+            this.lbStopService.Enabled = false;
+            this.picStopService.Image = null;
+
+            this.lbCopyFiles.Enabled = false;
+            this.picCopyFiles.Image = null;
+
+            this.lbInstallAgent.Enabled = false;
+            this.picInstallAgent.Image = null;
+
+            this.lbStartService.Enabled = false;
+            this.picStartService.Image = null;
+
+            this.lbDone.Enabled = false;
+            this.picDone.Image = null;
         }
 
         private void startUpgrade()
@@ -53,7 +70,10 @@ namespace Configuration.DkimSigner
         private string stopService()
         {
             if (!ExchangeHelper.isTransportServiceRunning())
+            {
                 return null;
+            }
+
             try
             {
                 ExchangeHelper.stopTransportService();
@@ -87,14 +107,14 @@ namespace Configuration.DkimSigner
 
         private void stopServiceTask()
         {
-            lblStopService.Enabled = true;
+            lbStopService.Enabled = true;
 
-            Task.Factory.StartNew(() => stopService()).ContinueWith(task => stopServiceResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());               
+            Task.Factory.StartNew(() => stopService()).ContinueWith(task => stopServiceResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private void copyFilesTask()
         {
-            lblCopyFiles.Enabled = true;
+            lbCopyFiles.Enabled = true;
 
             Task.Factory.StartNew(() => copyFiles()).ContinueWith(task => copyFilesResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -163,17 +183,20 @@ namespace Configuration.DkimSigner
 
             foreach (string filename in Directory.EnumerateFiles(sourceDir, "*", SearchOption.AllDirectories))
             {
-                string dest = System.IO.Path.Combine(destDir, filename.Substring(sourceDir.Length + 1));
-                string dir = System.IO.Path.GetDirectoryName(dest);
+                string dest = Path.Combine(destDir, filename.Substring(sourceDir.Length + 1));
+                string dir = Path.GetDirectoryName(dest);
+
                 try
                 {
-                    System.IO.Directory.CreateDirectory(dir);
+                    Directory.CreateDirectory(dir);
                 }
                 catch (IOException ex)
                 {
                     return "Couldn't create directory\n" + dir + "\n" + ex.Message;
                 }
+
                 FileHelper.CopyFile(filename, dest, copyComplete);
+
                 if (errorMsg != null)
                     return errorMsg;
             }
@@ -183,13 +206,11 @@ namespace Configuration.DkimSigner
 
         private string copyFiles()
         {
-
-
             // First copy the configuration executable from Src\Configuration.DkimSigner\bin\Release to the destination:
             try
             {
-                string sourcePath = System.IO.Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
-                string destPath = System.IO.Path.Combine(installPath, "Configuration");
+                string sourcePath = Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
+                string destPath = Path.Combine(installPath, "Configuration");
                 string ret = copyAllFiles(sourcePath, destPath);
                 if (ret != null)
                     return ret;
@@ -197,7 +218,7 @@ namespace Configuration.DkimSigner
                 //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
                 //Get source directory for installed Exchange version:
                 string libDir = directoryFromExchangeVersion();
-                sourcePath = System.IO.Path.Combine(tempPath, System.IO.Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
+                sourcePath = Path.Combine(tempPath, System.IO.Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
                 return copyAllFiles(sourcePath, installPath);
             }
             catch (Exception ex)
@@ -208,7 +229,7 @@ namespace Configuration.DkimSigner
 
         private void installAgentTask()
         {
-            lblInstallAgent.Enabled = true;
+            lbInstallAgent.Enabled = true;
 
             Task.Factory.StartNew(() => installAgent()).ContinueWith(task => installAgentResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -256,7 +277,7 @@ namespace Configuration.DkimSigner
 
         private void startServiceTask()
         {
-            lblStartService.Enabled = true;
+            lbStartService.Enabled = true;
 
             Task.Factory.StartNew(() => startService()).ContinueWith(task => startServiceResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
@@ -298,16 +319,16 @@ namespace Configuration.DkimSigner
         {
             if (success)
             {
-                lblDone.Enabled = true;
+                this.lbDone.Enabled = true;
                 picDone.Image = statusImageList.Images[0];
-                dialogResult = System.Windows.Forms.DialogResult.OK;
+                dialogResult = DialogResult.OK;
             }
             else
             {
-                dialogResult = System.Windows.Forms.DialogResult.Cancel;
+                dialogResult = DialogResult.Cancel;
             }
-            btnClose.Enabled = true;
 
+            btnClose.Enabled = true;
         }
 
         private void timUpgrade_Tick(object sender, EventArgs e)
@@ -315,6 +336,15 @@ namespace Configuration.DkimSigner
             timUpgrade.Enabled = false;
             startUpgrade();
         }
+
+        /**********************************************************/
+        /******************* Internal functions *******************/
+        /**********************************************************/
+
+
+        /**********************************************************/
+        /********************** Button click **********************/
+        /**********************************************************/
 
         private void btnClose_Click(object sender, EventArgs e)
         {

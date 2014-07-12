@@ -9,21 +9,21 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.ServiceProcess;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using System.Windows.Forms;
 
 using ConfigurationSettings;
-using DkimSigner.RSA;
 using Configuration.DkimSigner.GitHub;
-using Ionic.Zip;
-using System.Security.Cryptography;
-using System.Xml.Serialization;
-using System.Text.RegularExpressions;
-using System.ServiceProcess;
-using Heijden.DNS;
 using Configuration.DkimSigner.Properties;
+using DkimSigner.RSA;
+using Ionic.Zip;
+using Heijden.DNS;
 
 namespace Configuration.DkimSigner
 {
@@ -37,21 +37,33 @@ namespace Configuration.DkimSigner
 
     public partial class MainWindow : Form
     {
+        /**********************************************************/
+        /*********************** Constants ************************/
+        /**********************************************************/
+
         private const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner";
         private const string DKIM_SIGNER_DLL = @"ExchangeDkimSigner.dll";
 
-        //private Dictionary<int, byte[]> attachments = new Dictionary<int, byte[]>();
+        /**********************************************************/
+        /*********************** Variables ************************/
+        /**********************************************************/
+
+        private Settings config = null;
+
         private Release dkimSignerAvailable = null;
-        private System.Version dkimSignerInstalled = null;
+        private Version dkimSignerInstalled = null;
+        
+        private UpdateButtonType updateButtonType = UpdateButtonType.Disabled;
+
+        private string installPath = "";
+
         private bool dkimSignerEnabled = false;
         private bool dataUpdated = false;
-        private UpdateButtonType updateButtonType = UpdateButtonType.Disabled;
         private bool isUpgrade = false;
-        private string installPath = "";
         private bool isInstall = false;
+        
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
-        Settings config = null;
 
         delegate void SetDkimSignerInstalledCallback();
         delegate void SetDkimSignerAvailableCallback();
@@ -61,29 +73,34 @@ namespace Configuration.DkimSigner
         /**********************************************************/
 
         public MainWindow()
-        {
+        {           
             string[] args = Environment.GetCommandLineArgs();
 
             isUpgrade = (Array.IndexOf(args, "--upgrade") >= 0);
             if (isUpgrade)
             {
                 int idx = Array.IndexOf(args, "--upgrade") + 1;
+                
                 if (args.Length <= idx)
                 {
                     MessageBox.Show("Missing install path for update parameter.", "Invalid argument count", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     this.Close();
                     return;
                 }
+
                 installPath = args[idx];
             }
+
             isInstall = (Array.IndexOf(args, "--install") >= 0);
             if (isInstall)
             {
-                installPath = @"C:\Program Files\Exchange DkimSigner";
+                installPath = DKIM_SIGNER_PATH;
             }
 
             if (!isInstall && !isUpgrade)
-                installPath = System.IO.Path.GetDirectoryName(System.IO.Path.Combine(System.Reflection.Assembly.GetExecutingAssembly().Location,".."));
+            {
+                installPath = Path.GetDirectoryName(Path.Combine(Assembly.GetExecutingAssembly().Location,".."));
+            }
 
             ExchangeHelper.AGENT_DIR = installPath;
 
@@ -104,16 +121,21 @@ namespace Configuration.DkimSigner
         {
             if (isInstall || isUpgrade)
             {
-
                 this.Hide();
+                
                 UpgradeWindow upw = new UpgradeWindow(Path.GetFullPath(System.IO.Path.Combine(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"..\..\..\..")), installPath);
                 upw.ShowDialog();
-                string newExec = System.IO.Path.Combine(installPath,@"Configuration\Configuration.DkimSigner.exe");
-                if (!System.IO.File.Exists(newExec))
+
+                string newExec = Path.Combine(installPath, @"Configuration\Configuration.DkimSigner.exe");   
+                if (!File.Exists(newExec))
                 {
                     MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + installPath, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                } else
+                }
+                else
+                {
                     Process.Start(newExec);
+                }
+
                 this.dataUpdated = false;
                 this.Close();
             }
@@ -138,7 +160,6 @@ namespace Configuration.DkimSigner
             txtDkimSignerAvailable.Text = "Loading ...";
             thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
 
-
             try
             {
                 thDkimSignerInstalled.Start();
@@ -158,14 +179,19 @@ namespace Configuration.DkimSigner
         private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
         {
             if (thDkimSignerAvailable != null && thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
+            {
                 thDkimSignerAvailable.Abort();
+            }
 
             if (thDkimSignerInstalled != null && thDkimSignerInstalled.ThreadState == System.Threading.ThreadState.Running)
+            {
                 thDkimSignerInstalled.Abort();
+            }
 
             if (!checkSaveConfig())
+            {
                 e.Cancel = true;
-
+            }
         }
 
         /// <summary>
@@ -187,7 +213,9 @@ namespace Configuration.DkimSigner
                             return true;
                         }
                         else
+                        {
                             return false;
+                        }
                     }
                 }
                 else if (result == DialogResult.Cancel)
@@ -195,6 +223,7 @@ namespace Configuration.DkimSigner
                     return false;
                 }
             }
+
             return true;
         }
 
@@ -251,6 +280,7 @@ namespace Configuration.DkimSigner
             if (dkimSignerInstalled != null)
             {
                 this.txtDkimSignerInstalled.Text = dkimSignerInstalled.ToString();
+
                 if (this.dkimSignerEnabled)
                 {
                     btnDisable.Text = "Disable";
@@ -259,6 +289,7 @@ namespace Configuration.DkimSigner
                 {
                     btnDisable.Text = "Enable";
                 }
+
                 btnDisable.Enabled = true;
             }
             else
@@ -266,6 +297,7 @@ namespace Configuration.DkimSigner
                 this.txtDkimSignerInstalled.Text = "Not installed";
                 btnDisable.Enabled = false;
             }
+
             this.initUpdateButton();
         }
 
@@ -434,8 +466,7 @@ namespace Configuration.DkimSigner
             {
                 MessageBox.Show("Couldn't load the settings file:\n" + e.Message + "\nSetting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
-             
+            } 
 
             switch (config.Loglevel)
             {
@@ -453,6 +484,7 @@ namespace Configuration.DkimSigner
                     MessageBox.Show(Resources.MainWindows_BadLogLevel);
                     break;
             }
+
             this.rbRsaSha1.Checked = (config.SigningAlgorithm == DkimAlgorithmKind.RsaSha1);
 
             this.rbSimpleHeaderCanonicalization.Checked = (config.HeaderCanonicalization == DkimCanonicalizationKind.Simple);
@@ -461,8 +493,12 @@ namespace Configuration.DkimSigner
             this.rbRelaxedBodyCanonicalization.Checked = (config.BodyCanonicalization == DkimCanonicalizationKind.Relaxed);
 
             this.lbxHeadersToSign.Items.Clear();
+            
             foreach (string str in config.HeadersToSign)
+            {
                 this.lbxHeadersToSign.Items.Add(str);
+            }
+
             this.lbxHeadersToSign.SelectedItem = null;
 
             reloadDomainsList();
@@ -473,15 +509,23 @@ namespace Configuration.DkimSigner
         {
             // Load the list of domains
             DomainElement currSel = null;
+
             if (lbxDomains.SelectedItem != null)
+            {
                 currSel = (DomainElement)lbxDomains.SelectedItem;
+            }
+
             lbxDomains.Items.Clear();
+            
             foreach (DomainElement domain in config.Domains)
             {
                 lbxDomains.Items.Add(domain);
             }
+            
             if (currSel != null)
+            {
                 lbxDomains.SelectedItem = currSel;
+            }
         }
 
         /// <summary>
@@ -497,7 +541,9 @@ namespace Configuration.DkimSigner
 
             config.HeadersToSign.Clear();
             foreach (string str in lbxHeadersToSign.Items)
+            {
                 config.HeadersToSign.Add(str);
+            }
 
             config.Save(Path.Combine(DKIM_SIGNER_PATH, "settings.xml"));
 
@@ -551,7 +597,6 @@ namespace Configuration.DkimSigner
             }
         }
 
-
         private void btUninstall_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Do you really want to UNINSTALL the DKIM Exchange Agent?\nPlease remove the following folder manually:\n" + ExchangeHelper.AGENT_DIR, "Uninstall?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -603,19 +648,16 @@ namespace Configuration.DkimSigner
                 extractAndInstall(tempPath);
             }
 
-            /*
-             * 
-            //testing:
-            MessageBox.Show("Uninstall retval: " + ExchangeHelper.uninstallTransportAgent().ToString());
+            /*** DEBUG ***/
+            /*MessageBox.Show("Uninstall retval: " + ExchangeHelper.uninstallTransportAgent().ToString());
             MessageBox.Show("Install retval: " + ExchangeHelper.installTransportAgent().ToString());*/
-
-
         }
 
         private void extractAndInstall(string zipPath)
         {
             //TODO: Show extract progress
             string dir = zipPath.Substring(0,zipPath.LastIndexOf('.'));
+
             try
             {
                 System.IO.Directory.CreateDirectory(dir);
@@ -863,8 +905,8 @@ namespace Configuration.DkimSigner
                 }
 
             }
-            this.SaveDkimSignerConfig();
 
+            this.SaveDkimSignerConfig();
         }
 
         private void btnAddDomain_Click(object sender, EventArgs e)
@@ -872,13 +914,19 @@ namespace Configuration.DkimSigner
             if (this.dataUpdated)
             {
                 DialogResult result = MessageBox.Show("Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                if (result == System.Windows.Forms.DialogResult.Yes)
+                
+                if (result == DialogResult.Yes)
                 {
                     if (!SaveDkimSignerConfig())
                         return;
-                } if (result == System.Windows.Forms.DialogResult.Cancel)
+                }
+                
+                if (result == System.Windows.Forms.DialogResult.Cancel)
+                {
                     return;
+                }
             }
+
             this.dataUpdated = false;
             lbxDomains.ClearSelected();
             tbxDNSRecord.Text = "";
@@ -1063,57 +1111,76 @@ namespace Configuration.DkimSigner
         private void timExchangeStatus_Tick(object sender, EventArgs e)
         {
             ServiceControllerStatus status;
+            
             try
             {
                 status = ExchangeHelper.getTransportServiceStatus();
             }
             catch (ExchangeHelperException ex)
             {
-                timExchangeStatus.Enabled = false;
-                lblExchangeStatus.Text = "";
+                this.timExchangeStatus.Enabled = false;
+                this.lblExchangeStatus.Text = "";
+                
                 MessageBox.Show("Couldn't get MSExchangeTransport service status:\n" + ex.Message, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                
                 return;
             }
             
-            lblExchangeStatus.Text = status.ToString();
+            this.lblExchangeStatus.Text = status.ToString();
+
             if (status == ServiceControllerStatus.Running)
             {
-                btnRestartTransportService.Text = "Restart MSExchangeTransport";
-                btnRestartTransportService.Enabled = true;
+                this.btnRestartTransportService.Text = "Restart MSExchangeTransport";
+                this.btnRestartTransportService.Enabled = true;
             }
             else if (status == ServiceControllerStatus.Stopped)
             {
-                btnRestartTransportService.Text = "Start MSExchangeTransport";
-                btnRestartTransportService.Enabled = true;
+                this.btnRestartTransportService.Text = "Start MSExchangeTransport";
+                this.btnRestartTransportService.Enabled = true;
             }
             else
             {
-                btnRestartTransportService.Enabled = false;
+                this.btnRestartTransportService.Enabled = false;
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void lbxHeadersToSign_SelectedIndexChanged(object sender, EventArgs e)
         {
-            btnHeaderDelete.Enabled = (lbxHeadersToSign.SelectedItem != null);
+            this.btnHeaderDelete.Enabled = (lbxHeadersToSign.SelectedItem != null);
         }
 
-        private void btnHeaderDelete_Click(object sender, EventArgs e)
-        {
-            if (lbxHeadersToSign.SelectedItem == null)
-                return;
-            lbxHeadersToSign.Items.Remove(lbxHeadersToSign.SelectedItem);
-        }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnHeaderAdd_Click(object sender, EventArgs e)
         {
             HeaderInputForm hif = new HeaderInputForm();
-            if (hif.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (hif.ShowDialog() == DialogResult.OK)
             {
-                lbxHeadersToSign.Items.Add(hif.header);
-                lbxHeadersToSign.SelectedItem = hif.header;
+                this.lbxHeadersToSign.Items.Add(hif.txtHeader);
+                this.lbxHeadersToSign.SelectedItem = hif.txtHeader;
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnHeaderDelete_Click(object sender, EventArgs e)
+        {
+            if (this.lbxHeadersToSign.SelectedItem != null)
+            {
+                this.lbxHeadersToSign.Items.Remove(lbxHeadersToSign.SelectedItem);
+            }
+        }
     }
 }

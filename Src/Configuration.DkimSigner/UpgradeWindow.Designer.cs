@@ -31,17 +31,17 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UpgradeWindow));
             this.picStopService = new System.Windows.Forms.PictureBox();
-            this.lblUpgradeStatus = new System.Windows.Forms.Label();
-            this.lblStopService = new System.Windows.Forms.Label();
-            this.lblCopyFiles = new System.Windows.Forms.Label();
+            this.lbUpgradeStatus = new System.Windows.Forms.Label();
+            this.lbStopService = new System.Windows.Forms.Label();
+            this.lbCopyFiles = new System.Windows.Forms.Label();
             this.picCopyFiles = new System.Windows.Forms.PictureBox();
-            this.lblStartService = new System.Windows.Forms.Label();
+            this.lbStartService = new System.Windows.Forms.Label();
             this.picStartService = new System.Windows.Forms.PictureBox();
-            this.lblDone = new System.Windows.Forms.Label();
+            this.lbDone = new System.Windows.Forms.Label();
             this.picDone = new System.Windows.Forms.PictureBox();
             this.statusImageList = new System.Windows.Forms.ImageList(this.components);
             this.btnClose = new System.Windows.Forms.Button();
-            this.lblInstallAgent = new System.Windows.Forms.Label();
+            this.lbInstallAgent = new System.Windows.Forms.Label();
             this.picInstallAgent = new System.Windows.Forms.PictureBox();
             this.timUpgrade = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picStopService)).BeginInit();
@@ -60,39 +60,39 @@
             this.picStopService.TabIndex = 0;
             this.picStopService.TabStop = false;
             // 
-            // lblUpgradeStatus
+            // lbUpgradeStatus
             // 
-            this.lblUpgradeStatus.AutoSize = true;
-            this.lblUpgradeStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblUpgradeStatus.Location = new System.Drawing.Point(12, 13);
-            this.lblUpgradeStatus.Name = "lblUpgradeStatus";
-            this.lblUpgradeStatus.Size = new System.Drawing.Size(99, 13);
-            this.lblUpgradeStatus.TabIndex = 1;
-            this.lblUpgradeStatus.Text = "Upgrade Status:";
+            this.lbUpgradeStatus.AutoSize = true;
+            this.lbUpgradeStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbUpgradeStatus.Location = new System.Drawing.Point(12, 13);
+            this.lbUpgradeStatus.Name = "lbUpgradeStatus";
+            this.lbUpgradeStatus.Size = new System.Drawing.Size(99, 13);
+            this.lbUpgradeStatus.TabIndex = 1;
+            this.lbUpgradeStatus.Text = "Upgrade Status:";
             // 
-            // lblStopService
+            // lbStopService
             // 
-            this.lblStopService.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lbStopService.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStopService.AutoEllipsis = true;
-            this.lblStopService.Location = new System.Drawing.Point(45, 39);
-            this.lblStopService.Name = "lblStopService";
-            this.lblStopService.Size = new System.Drawing.Size(392, 24);
-            this.lblStopService.TabIndex = 3;
-            this.lblStopService.Text = "Stopping Exchange Transport service";
-            this.lblStopService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbStopService.AutoEllipsis = true;
+            this.lbStopService.Location = new System.Drawing.Point(45, 39);
+            this.lbStopService.Name = "lbStopService";
+            this.lbStopService.Size = new System.Drawing.Size(392, 24);
+            this.lbStopService.TabIndex = 3;
+            this.lbStopService.Text = "Stopping Exchange Transport service";
+            this.lbStopService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblCopyFiles
+            // lbCopyFiles
             // 
-            this.lblCopyFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lbCopyFiles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblCopyFiles.AutoEllipsis = true;
-            this.lblCopyFiles.Location = new System.Drawing.Point(45, 69);
-            this.lblCopyFiles.Name = "lblCopyFiles";
-            this.lblCopyFiles.Size = new System.Drawing.Size(392, 24);
-            this.lblCopyFiles.TabIndex = 5;
-            this.lblCopyFiles.Text = "Copying new files";
-            this.lblCopyFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbCopyFiles.AutoEllipsis = true;
+            this.lbCopyFiles.Location = new System.Drawing.Point(45, 69);
+            this.lbCopyFiles.Name = "lbCopyFiles";
+            this.lbCopyFiles.Size = new System.Drawing.Size(392, 24);
+            this.lbCopyFiles.TabIndex = 5;
+            this.lbCopyFiles.Text = "Copying new files";
+            this.lbCopyFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picCopyFiles
             // 
@@ -103,17 +103,17 @@
             this.picCopyFiles.TabIndex = 4;
             this.picCopyFiles.TabStop = false;
             // 
-            // lblStartService
+            // lbStartService
             // 
-            this.lblStartService.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lbStartService.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblStartService.AutoEllipsis = true;
-            this.lblStartService.Location = new System.Drawing.Point(45, 129);
-            this.lblStartService.Name = "lblStartService";
-            this.lblStartService.Size = new System.Drawing.Size(392, 24);
-            this.lblStartService.TabIndex = 7;
-            this.lblStartService.Text = "Starting Exchange Transport service";
-            this.lblStartService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbStartService.AutoEllipsis = true;
+            this.lbStartService.Location = new System.Drawing.Point(45, 129);
+            this.lbStartService.Name = "lbStartService";
+            this.lbStartService.Size = new System.Drawing.Size(392, 24);
+            this.lbStartService.TabIndex = 7;
+            this.lbStartService.Text = "Starting Exchange Transport service";
+            this.lbStartService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picStartService
             // 
@@ -124,17 +124,17 @@
             this.picStartService.TabIndex = 6;
             this.picStartService.TabStop = false;
             // 
-            // lblDone
+            // lbDone
             // 
-            this.lblDone.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lbDone.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblDone.AutoEllipsis = true;
-            this.lblDone.Location = new System.Drawing.Point(45, 159);
-            this.lblDone.Name = "lblDone";
-            this.lblDone.Size = new System.Drawing.Size(392, 24);
-            this.lblDone.TabIndex = 9;
-            this.lblDone.Text = "Done";
-            this.lblDone.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbDone.AutoEllipsis = true;
+            this.lbDone.Location = new System.Drawing.Point(45, 159);
+            this.lbDone.Name = "lbDone";
+            this.lbDone.Size = new System.Drawing.Size(392, 24);
+            this.lbDone.TabIndex = 9;
+            this.lbDone.Text = "Done";
+            this.lbDone.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picDone
             // 
@@ -164,17 +164,17 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // lblInstallAgent
+            // lbInstallAgent
             // 
-            this.lblInstallAgent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.lbInstallAgent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblInstallAgent.AutoEllipsis = true;
-            this.lblInstallAgent.Location = new System.Drawing.Point(45, 99);
-            this.lblInstallAgent.Name = "lblInstallAgent";
-            this.lblInstallAgent.Size = new System.Drawing.Size(392, 24);
-            this.lblInstallAgent.TabIndex = 12;
-            this.lblInstallAgent.Text = "Checking and registering the agent";
-            this.lblInstallAgent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lbInstallAgent.AutoEllipsis = true;
+            this.lbInstallAgent.Location = new System.Drawing.Point(45, 99);
+            this.lbInstallAgent.Name = "lbInstallAgent";
+            this.lbInstallAgent.Size = new System.Drawing.Size(392, 24);
+            this.lbInstallAgent.TabIndex = 12;
+            this.lbInstallAgent.Text = "Checking and registering the agent";
+            this.lbInstallAgent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picInstallAgent
             // 
@@ -192,27 +192,28 @@
             // 
             // UpgradeWindow
             // 
+            this.AcceptButton = this.btnClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(449, 267);
-            this.Controls.Add(this.lblInstallAgent);
+            this.Controls.Add(this.lbInstallAgent);
             this.Controls.Add(this.picInstallAgent);
             this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.lblDone);
+            this.Controls.Add(this.lbDone);
             this.Controls.Add(this.picDone);
-            this.Controls.Add(this.lblStartService);
+            this.Controls.Add(this.lbStartService);
             this.Controls.Add(this.picStartService);
-            this.Controls.Add(this.lblCopyFiles);
+            this.Controls.Add(this.lbCopyFiles);
             this.Controls.Add(this.picCopyFiles);
-            this.Controls.Add(this.lblStopService);
-            this.Controls.Add(this.lblUpgradeStatus);
+            this.Controls.Add(this.lbStopService);
+            this.Controls.Add(this.lbUpgradeStatus);
             this.Controls.Add(this.picStopService);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "UpgradeWindow";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Exchange DkimSigner - Upgrade";
-            this.Shown += new System.EventHandler(this.UpgradeWindow_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.picStopService)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCopyFiles)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picStartService)).EndInit();
@@ -226,17 +227,17 @@
         #endregion
 
         private System.Windows.Forms.PictureBox picStopService;
-        private System.Windows.Forms.Label lblUpgradeStatus;
-        private System.Windows.Forms.Label lblStopService;
-        private System.Windows.Forms.Label lblCopyFiles;
+        private System.Windows.Forms.Label lbUpgradeStatus;
+        private System.Windows.Forms.Label lbStopService;
+        private System.Windows.Forms.Label lbCopyFiles;
         private System.Windows.Forms.PictureBox picCopyFiles;
-        private System.Windows.Forms.Label lblStartService;
+        private System.Windows.Forms.Label lbStartService;
         private System.Windows.Forms.PictureBox picStartService;
-        private System.Windows.Forms.Label lblDone;
+        private System.Windows.Forms.Label lbDone;
         private System.Windows.Forms.PictureBox picDone;
         private System.Windows.Forms.ImageList statusImageList;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Label lblInstallAgent;
+        private System.Windows.Forms.Label lbInstallAgent;
         private System.Windows.Forms.PictureBox picInstallAgent;
         private System.Windows.Forms.Timer timUpgrade;
     }

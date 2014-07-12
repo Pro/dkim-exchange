@@ -29,7 +29,12 @@ namespace Configuration.DkimSigner
             return DeleteFile(fileName + ":Zone.Identifier");
         }
 
-
+        /// <summary>
+        /// Permit to copy file from source path to destination path
+        /// </summary>
+        /// <param name="sourcePath">Source path</param>
+        /// <param name="destinationPath">Destination path</param>
+        /// <param name="completed">Return exception if any during the process</param>
         public static void CopyFile(String sourcePath, String destinationPath, Action<String, String, Exception> completed)
         {
             Stream source = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);

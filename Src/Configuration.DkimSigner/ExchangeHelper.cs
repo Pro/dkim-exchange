@@ -4,16 +4,16 @@ using System.Collections.ObjectModel;
 using System.DirectoryServices;
 using System.Linq;
 using System.Net;
+using System.Runtime.Serialization;
 using System.ServiceProcess;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Runspaces;
 
 using ConfigurationSettings;
-using System.Runtime.Serialization;
-using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner
 {
@@ -30,11 +30,12 @@ namespace Configuration.DkimSigner
         /// <returns></returns>
         public static string checkExchangeVersionInstalled()
         {
-            try {
+            try
+            {
                 using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
                 {
-
                     runspace.Open();
+
                     using (PowerShell powershell = PowerShell.Create())
                     {
                         powershell.Runspace = runspace;
@@ -68,14 +69,13 @@ namespace Configuration.DkimSigner
             string verStr = checkExchangeVersionInstalled();
 
             Match match = Regex.Match(verStr, @"Version (\d+)\.(\d+)\s\(Build\s(\d+)\.(\d+)\)", RegexOptions.IgnoreCase);
-
-
             if (!match.Success)
+            {
                 return null;
+            }
 
             // compose full version number, cut off first two numbers from build part
             string fullVersion = match.Groups[1].ToString() + "." + match.Groups[2].ToString() + "." + match.Groups[3].ToString().Substring(2) + "." + match.Groups[4].ToString();
-
             return new Version(fullVersion);
         }
 
@@ -91,6 +91,7 @@ namespace Configuration.DkimSigner
             WSManConnectionInfo connectionInfo = new WSManConnectionInfo(new Uri("http://" + hostName + "/Powershell"), "http://schemas.microsoft.com/powershell/Microsoft.Exchange", psCredential);
             connectionInfo.OperationTimeout = 4 * 60 * 1000; // 4 minutes.
             connectionInfo.OpenTimeout = 1 * 60 * 1000; // 1 minute.
+
             return connectionInfo;
         }
 
@@ -103,6 +104,7 @@ namespace Configuration.DkimSigner
         private static Collection<PSObject> invokePS(PowerShell powerShell, string errorPrependMessage)
         {
             Collection<PSObject> results = null;
+
             try
             {
                 results = powerShell.Invoke();
@@ -110,24 +112,37 @@ namespace Configuration.DkimSigner
             catch (System.Management.Automation.RemoteException e)
             {
                 if (errorPrependMessage.Length > 0)
+                {
                     throw new ExchangeHelperException("Error getting list of Transport Agents:\n" + e.Message, e);
+                }
                 else
+                {
                     throw e;
+                }
             }
+
             if (powerShell.Streams.Error.Count > 0)
             {
                 string errors = errorPrependMessage;
+
                 if (errorPrependMessage.Length > 0 && !errorPrependMessage.EndsWith(":"))
+                {
                     errors += ":";
+                }
 
                 foreach (ErrorRecord error in powerShell.Streams.Error)
                 {
                     if (errors.Length > 0)
+                    {
                         errors += "\n";
+                    }
+
                     errors += error.ToString();
                 }
+
                 throw new ExchangeHelperException(errors);
             }
+
             return results;
         }
 
@@ -138,6 +153,7 @@ namespace Configuration.DkimSigner
         public static bool isAgentInstalled(out bool enabled)
         {
             enabled = false;
+
             using (Runspace runspace = RunspaceFactory.CreateRunspace(getPSConnectionInfo()))
             {
                 runspace.Open();
@@ -155,6 +171,7 @@ namespace Configuration.DkimSigner
                         if (result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME))
                         {
                             enabled = Boolean.Parse(result.Properties["Enabled"].Value.ToString());
+
                             return true;
                         }
                     }
@@ -180,7 +197,9 @@ namespace Configuration.DkimSigner
         private static bool isTransportServiceAvailable()
         {
             ServiceController[] services = ServiceController.GetServices();
+
             var service = services.FirstOrDefault(s => s.ServiceName == "MSExchangeTransport");
+
             return service != null;
         }
 
@@ -195,10 +214,15 @@ namespace Configuration.DkimSigner
             {
                 throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
             }
+
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
+
             if (service.Status == ServiceControllerStatus.Stopped)
+            {
                 return;
+            }
+
             try
             {
                 TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMS);
@@ -223,7 +247,9 @@ namespace Configuration.DkimSigner
             {
                 throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
             }
+
             ServiceController service = new ServiceController("MSExchangeTransport");
+
             return service.Status == ServiceControllerStatus.Running;
         }
 
@@ -238,7 +264,9 @@ namespace Configuration.DkimSigner
             {
                 throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
             }
+
             ServiceController service = new ServiceController("MSExchangeTransport");
+
             return service.Status;
         }
 
@@ -253,10 +281,15 @@ namespace Configuration.DkimSigner
             {
                 throw new ExchangeHelperException("No service 'MSExchangeTransport' available");
             }
+
             int timeoutMS = 60 * 1000; //ms
             ServiceController service = new ServiceController("MSExchangeTransport");
+
             if (service.Status == ServiceControllerStatus.Running)
+            {
                 return;
+            }
+
             try
             {
                 TimeSpan timeout = TimeSpan.FromMilliseconds(timeoutMS);
@@ -375,7 +408,6 @@ namespace Configuration.DkimSigner
                 RegistryHelper.WriteSubKeyTree(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
             }
 
-
             //TODO net stop MSExchangeTransport 
             //TODO copy .dll and .config
 
@@ -419,8 +451,8 @@ namespace Configuration.DkimSigner
                     int maxPrio = 0;
                     foreach (PSObject result in results)
                     {
-                        
-                        if (!result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME)){
+                        if (!result.Properties["Identity"].Value.ToString().Equals(AGENT_NAME))
+                        {
                             maxPrio = Math.Max(maxPrio, Int32.Parse(result.Properties["Priority"].Value.ToString()));
                         }
                     }
@@ -444,20 +476,14 @@ namespace Configuration.DkimSigner
     [Serializable]
     public class ExchangeHelperException : Exception
     {
+        public ExchangeHelperException(string message) : base(message) { }
 
-        public ExchangeHelperException(string message)
-            : base(message) { }
+        public ExchangeHelperException(string format, params object[] args) : base(string.Format(format, args)) { }
 
-        public ExchangeHelperException(string format, params object[] args)
-            : base(string.Format(format, args)) { }
+        public ExchangeHelperException(string message, Exception innerException) : base(message, innerException) { }
 
-        public ExchangeHelperException(string message, Exception innerException)
-            : base(message, innerException) { }
+        public ExchangeHelperException(string format, Exception innerException, params object[] args) : base(string.Format(format, args), innerException) { }
 
-        public ExchangeHelperException(string format, Exception innerException, params object[] args)
-            : base(string.Format(format, args), innerException) { }
-
-        protected ExchangeHelperException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+        protected ExchangeHelperException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }
