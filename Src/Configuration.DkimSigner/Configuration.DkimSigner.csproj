@@ -58,6 +58,8 @@
   <ItemGroup>
     <Reference Include="Ionic.Zip">
       <HintPath>..\..\Lib\Ionic.Zip.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -110,7 +112,8 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
       <Link>RSA\RSACryptoHelper.cs</Link>
     </Compile>
-    <Compile Include="Configuration\RegistryHelper.cs" />
+    <Compile Include="RegistryHelper.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="Dns\Header.cs" />
     <Compile Include="Dns\Question.cs" />
     <Compile Include="Dns\RecordReader.cs" />
@@ -219,6 +222,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UpgradeWindow.resx">
       <DependentUpon>UpgradeWindow.cs</DependentUpon>

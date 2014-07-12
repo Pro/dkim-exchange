@@ -14,11 +14,6 @@ namespace Configuration.DkimSigner
     public partial class UpgradeWindow : Form
     {
         /**********************************************************/
-        /*********************** Constants ************************/
-        /**********************************************************/
-
-
-        /**********************************************************/
         /*********************** Variables ************************/
         /**********************************************************/
 
@@ -137,36 +132,38 @@ namespace Configuration.DkimSigner
 
         private string directoryFromExchangeVersion()
         {
-            Version fullVersion = ExchangeHelper.getExchangeVersion();
-            if (fullVersion == null)
-                return null;
+            string sExchangeVersion = null;
 
-            string versionStr = fullVersion.ToString();
+            Version oFullVersion = ExchangeHelper.getExchangeVersion();
+            if (oFullVersion != null)
+            {
+                string sVersion = oFullVersion.ToString();
 
-            if (versionStr.StartsWith("8.3.*"))
-                return "Exchange 2007 SP3";
-            else if (versionStr.StartsWith("14.0."))
-                return "Exchange 2010";
-            else if (versionStr.StartsWith("14.1."))
-                return "Exchange 2010 SP1";
-            else if (versionStr.StartsWith("14.2."))
-                return "Exchange 2010 SP2";
-            else if (versionStr.StartsWith("14.3."))
-                return "Exchange 2010 SP3";
-            else if (versionStr.StartsWith("15.0.516.32"))
-                return "Exchange 2013";
-            else if (versionStr.StartsWith("15.0.620.29"))
-                return "Exchange 2013 CU1";
-            else if (versionStr.StartsWith("15.0.712.24"))
-                return "Exchange 2013 CU2";
-            else if (versionStr.StartsWith("15.0.775.38"))
-                return "Exchange 2013 CU3";
-            else if (versionStr.StartsWith("15.0.847.32"))
-                return "Exchange 2013 SP1 CU4";
-            else if (versionStr.StartsWith("15.0.913.22"))
-                return "Exchange 2013 SP1 CU5";
-            else
-                return null;
+                if (sVersion.StartsWith("8.3.*"))
+                    sExchangeVersion = "Exchange 2007 SP3";
+                else if (sVersion.StartsWith("14.0."))
+                    sExchangeVersion = "Exchange 2010";
+                else if (sVersion.StartsWith("14.1."))
+                    sExchangeVersion = "Exchange 2010 SP1";
+                else if (sVersion.StartsWith("14.2."))
+                    sExchangeVersion = "Exchange 2010 SP2";
+                else if (sVersion.StartsWith("14.3."))
+                    sExchangeVersion = "Exchange 2010 SP3";
+                else if (sVersion.StartsWith("15.0.516.32"))
+                    sExchangeVersion = "Exchange 2013";
+                else if (sVersion.StartsWith("15.0.620.29"))
+                    sExchangeVersion = "Exchange 2013 CU1";
+                else if (sVersion.StartsWith("15.0.712.24"))
+                    sExchangeVersion = "Exchange 2013 CU2";
+                else if (sVersion.StartsWith("15.0.775.38"))
+                    sExchangeVersion = "Exchange 2013 CU3";
+                else if (sVersion.StartsWith("15.0.847.32"))
+                    sExchangeVersion = "Exchange 2013 SP1 CU4";
+                else if (sVersion.StartsWith("15.0.913.22"))
+                    sExchangeVersion = "Exchange 2013 SP1 CU5";
+            }
+
+            return sExchangeVersion;
         }
 
         private string copyAllFiles(string sourceDir, string destDir)
@@ -218,7 +215,7 @@ namespace Configuration.DkimSigner
                 //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
                 //Get source directory for installed Exchange version:
                 string libDir = directoryFromExchangeVersion();
-                sourcePath = Path.Combine(tempPath, System.IO.Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
+                sourcePath = Path.Combine(tempPath, Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
                 return copyAllFiles(sourcePath, installPath);
             }
             catch (Exception ex)
