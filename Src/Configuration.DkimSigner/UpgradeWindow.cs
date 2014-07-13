@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -17,9 +11,9 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
+        DialogResult dialogResult;
         string tempPath;
         string installPath;
-        DialogResult dialogResult;
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -38,28 +32,102 @@ namespace Configuration.DkimSigner
         /************************* Events *************************/
         /**********************************************************/
 
-        private void resetStatus()
-        {
-            this.lbStopService.Enabled = false;
-            this.picStopService.Image = null;
-
-            this.lbCopyFiles.Enabled = false;
-            this.picCopyFiles.Image = null;
-
-            this.lbInstallAgent.Enabled = false;
-            this.picInstallAgent.Image = null;
-
-            this.lbStartService.Enabled = false;
-            this.picStartService.Image = null;
-
-            this.lbDone.Enabled = false;
-            this.picDone.Image = null;
-        }
-
         private void startUpgrade()
         {
             resetStatus();
             stopServiceTask();
+        }
+
+        private string installAgent()
+        {
+            try
+            {
+                bool enabled;
+                bool installed = ExchangeHelper.isAgentInstalled(out enabled);
+                if (installed && enabled)
+                {
+                    return null;
+                }
+
+                if (!installed)
+                {
+                    ExchangeHelper.installTransportAgent();
+                }
+
+                ExchangeHelper.enalbeTransportAgent();
+                return null;
+            }
+            catch (ExchangeHelperException ex)
+            {
+                return ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        private void installAgentTask()
+        {
+            lbInstallAgent.Enabled = true;
+
+            Task.Factory.StartNew(() => installAgent()).ContinueWith(task => installAgentResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void installAgentResult(string ret)
+        {
+            if (ret == null)
+            {
+                picInstallAgent.Image = statusImageList.Images[0];
+                Application.DoEvents();
+                startServiceTask();
+            }
+            else
+            {
+                picInstallAgent.Image = statusImageList.Images[1];
+                MessageBox.Show(ret, "Install Agent error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                done(false);
+            }
+        }
+
+        private string startService()
+        {
+            try
+            {
+                ExchangeHelper.startTransportService();
+                return null;
+            }
+            catch (ExchangeHelperException ex)
+            {
+                return ex.Message;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        private void startServiceTask()
+        {
+            lbStartService.Enabled = true;
+
+            Task.Factory.StartNew(() => startService()).ContinueWith(task => startServiceResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void startServiceResult(string ret)
+        {
+            if (ret == null)
+            {
+                picStartService.Image = statusImageList.Images[0];
+                Application.DoEvents();
+                done(true);
+            }
+            else
+            {
+                picStartService.Image = statusImageList.Images[1];
+                MessageBox.Show(ret, "Start service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                done(false);
+            }
         }
 
         private string stopService()
@@ -107,29 +175,6 @@ namespace Configuration.DkimSigner
             Task.Factory.StartNew(() => stopService()).ContinueWith(task => stopServiceResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private void copyFilesTask()
-        {
-            lbCopyFiles.Enabled = true;
-
-            Task.Factory.StartNew(() => copyFiles()).ContinueWith(task => copyFilesResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        private void copyFilesResult(string ret)
-        {
-            if (ret == null)
-            {
-                picCopyFiles.Image = statusImageList.Images[0];
-                Application.DoEvents();
-                installAgentTask();
-            }
-            else
-            {
-                picCopyFiles.Image = statusImageList.Images[1];
-                MessageBox.Show(ret, "Copy error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                done(false);
-            }
-        }
-
         private string directoryFromExchangeVersion()
         {
             string sExchangeVersion = null;
@@ -164,6 +209,52 @@ namespace Configuration.DkimSigner
             }
 
             return sExchangeVersion;
+        }
+
+        private void copyFilesTask()
+        {
+            lbCopyFiles.Enabled = true;
+
+            Task.Factory.StartNew(() => copyFiles()).ContinueWith(task => copyFilesResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
+        private void copyFilesResult(string ret)
+        {
+            if (ret == null)
+            {
+                picCopyFiles.Image = statusImageList.Images[0];
+                Application.DoEvents();
+                installAgentTask();
+            }
+            else
+            {
+                picCopyFiles.Image = statusImageList.Images[1];
+                MessageBox.Show(ret, "Copy error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                done(false);
+            }
+        }
+
+        private string copyFiles()
+        {
+            // First copy the configuration executable from Src\Configuration.DkimSigner\bin\Release to the destination:
+            try
+            {
+                string sourcePath = Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
+                string destPath = Path.Combine(installPath, "Configuration");
+                string ret = copyAllFiles(sourcePath, destPath);
+                if (ret != null)
+                    return ret;
+
+                //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
+                //Get source directory for installed Exchange version:
+                string libDir = directoryFromExchangeVersion();
+                sourcePath = Path.Combine(tempPath, Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
+                return copyAllFiles(sourcePath, installPath);
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private string copyAllFiles(string sourceDir, string destDir)
@@ -201,115 +292,32 @@ namespace Configuration.DkimSigner
             return null;
         }
 
-        private string copyFiles()
+        private void timUpgrade_Tick(object sender, EventArgs e)
         {
-            // First copy the configuration executable from Src\Configuration.DkimSigner\bin\Release to the destination:
-            try
-            {
-                string sourcePath = Path.Combine(tempPath, @"Src\Configuration.DkimSigner\bin\Release");
-                string destPath = Path.Combine(installPath, "Configuration");
-                string ret = copyAllFiles(sourcePath, destPath);
-                if (ret != null)
-                    return ret;
-
-                //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
-                //Get source directory for installed Exchange version:
-                string libDir = directoryFromExchangeVersion();
-                sourcePath = Path.Combine(tempPath, Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
-                return copyAllFiles(sourcePath, installPath);
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            timUpgrade.Enabled = false;
+            startUpgrade();
         }
 
-        private void installAgentTask()
+        /**********************************************************/
+        /******************* Internal functions *******************/
+        /**********************************************************/
+
+        private void resetStatus()
         {
-            lbInstallAgent.Enabled = true;
+            this.lbStopService.Enabled = false;
+            this.picStopService.Image = null;
 
-            Task.Factory.StartNew(() => installAgent()).ContinueWith(task => installAgentResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
-        }
+            this.lbCopyFiles.Enabled = false;
+            this.picCopyFiles.Image = null;
 
-        private void installAgentResult(string ret)
-        {
-            if (ret == null)
-            {
-                picInstallAgent.Image = statusImageList.Images[0];
-                Application.DoEvents();
-                startServiceTask();
-            }
-            else
-            {
-                picInstallAgent.Image = statusImageList.Images[1];
-                MessageBox.Show(ret, "Install Agent error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                done(false);
-            }
-        }
+            this.lbInstallAgent.Enabled = false;
+            this.picInstallAgent.Image = null;
 
-        private string installAgent()
-        {
-            try
-            {
-                bool enabled;
-                bool installed = ExchangeHelper.isAgentInstalled(out enabled);
-                if (installed && enabled)
-                {
-                    return null;
-                }
-                if (!installed)
-                    ExchangeHelper.installTransportAgent();
-                ExchangeHelper.enalbeTransportAgent();
-                return null;
-            }
-            catch (ExchangeHelperException ex)
-            {
-                return ex.Message;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-        }
+            this.lbStartService.Enabled = false;
+            this.picStartService.Image = null;
 
-        private void startServiceTask()
-        {
-            lbStartService.Enabled = true;
-
-            Task.Factory.StartNew(() => startService()).ContinueWith(task => startServiceResult(task.Result), TaskScheduler.FromCurrentSynchronizationContext());
-        }
-
-        private void startServiceResult(string ret)
-        {
-            if (ret == null)
-            {
-                picStartService.Image = statusImageList.Images[0];
-                Application.DoEvents();
-                done(true);
-            }
-            else
-            {
-                picStartService.Image = statusImageList.Images[1];
-                MessageBox.Show(ret, "Start service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                done(false);
-            }
-        }
-
-        private string startService()
-        {
-            try
-            {
-                ExchangeHelper.startTransportService();
-                return null;
-            }
-            catch (ExchangeHelperException ex)
-            {
-                return ex.Message;
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
+            this.lbDone.Enabled = false;
+            this.picDone.Image = null;
         }
 
         private void done(bool success)
@@ -327,17 +335,6 @@ namespace Configuration.DkimSigner
 
             btnClose.Enabled = true;
         }
-
-        private void timUpgrade_Tick(object sender, EventArgs e)
-        {
-            timUpgrade.Enabled = false;
-            startUpgrade();
-        }
-
-        /**********************************************************/
-        /******************* Internal functions *******************/
-        /**********************************************************/
-
 
         /**********************************************************/
         /********************** Button click **********************/
