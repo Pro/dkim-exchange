@@ -1066,6 +1066,7 @@ namespace Configuration.DkimSigner
             this.dataUpdated = false;
 
             updateSuggestedDNS();
+            txtDomainDNS.Text = "";
             gbxDomainDetails.Enabled = true;
             btnDomainDelete.Enabled = true;
             btnDomainSave.Enabled = false;

@@ -70,6 +70,7 @@
             this.gbDomain = new System.Windows.Forms.GroupBox();
             this.lbxDomains = new System.Windows.Forms.ListBox();
             this.btnAddDomain = new System.Windows.Forms.Button();
+            this.btnDomainDelete = new System.Windows.Forms.Button();
             this.gbxDomainDetails = new System.Windows.Forms.GroupBox();
             this.txtDNSName = new System.Windows.Forms.TextBox();
             this.lbSuggestedDnsName = new System.Windows.Forms.Label();
@@ -78,7 +79,6 @@
             this.txtDNSRecord = new System.Windows.Forms.TextBox();
             this.btnDomainCheckDNS = new System.Windows.Forms.Button();
             this.txtDomainDNS = new System.Windows.Forms.TextBox();
-            this.btnDomainDelete = new System.Windows.Forms.Button();
             this.btnDomainSave = new System.Windows.Forms.Button();
             this.txtDomainPrivateKeyFilename = new System.Windows.Forms.TextBox();
             this.lbPrivateKey = new System.Windows.Forms.Label();
@@ -360,6 +360,7 @@
             // 
             // btHeaderAdd
             // 
+            this.btHeaderAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btHeaderAdd.Location = new System.Drawing.Point(39, 243);
             this.btHeaderAdd.Name = "btHeaderAdd";
             this.btHeaderAdd.Size = new System.Drawing.Size(65, 23);
@@ -370,6 +371,7 @@
             // 
             // btHeaderDelete
             // 
+            this.btHeaderDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btHeaderDelete.Location = new System.Drawing.Point(110, 243);
             this.btHeaderDelete.Name = "btHeaderDelete";
             this.btHeaderDelete.Size = new System.Drawing.Size(65, 23);
@@ -566,6 +568,17 @@
             this.btnAddDomain.UseVisualStyleBackColor = true;
             this.btnAddDomain.Click += new System.EventHandler(this.btAddDomain_Click);
             // 
+            // btnDomainDelete
+            // 
+            this.btnDomainDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnDomainDelete.Location = new System.Drawing.Point(80, 237);
+            this.btnDomainDelete.Name = "btnDomainDelete";
+            this.btnDomainDelete.Size = new System.Drawing.Size(65, 23);
+            this.btnDomainDelete.TabIndex = 12;
+            this.btnDomainDelete.Text = "Delete";
+            this.btnDomainDelete.UseVisualStyleBackColor = true;
+            this.btnDomainDelete.Click += new System.EventHandler(this.btDomainDelete_Click);
+            // 
             // gbxDomainDetails
             // 
             this.gbxDomainDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -646,9 +659,9 @@
             // btnDomainCheckDNS
             // 
             this.btnDomainCheckDNS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDomainCheckDNS.Location = new System.Drawing.Point(17, 205);
+            this.btnDomainCheckDNS.Location = new System.Drawing.Point(9, 210);
             this.btnDomainCheckDNS.Name = "btnDomainCheckDNS";
-            this.btnDomainCheckDNS.Size = new System.Drawing.Size(64, 23);
+            this.btnDomainCheckDNS.Size = new System.Drawing.Size(69, 23);
             this.btnDomainCheckDNS.TabIndex = 14;
             this.btnDomainCheckDNS.Text = "Check";
             this.btnDomainCheckDNS.UseVisualStyleBackColor = true;
@@ -664,17 +677,6 @@
             this.txtDomainDNS.ReadOnly = true;
             this.txtDomainDNS.Size = new System.Drawing.Size(385, 52);
             this.txtDomainDNS.TabIndex = 13;
-            // 
-            // btnDomainDelete
-            // 
-            this.btnDomainDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDomainDelete.Location = new System.Drawing.Point(80, 237);
-            this.btnDomainDelete.Name = "btnDomainDelete";
-            this.btnDomainDelete.Size = new System.Drawing.Size(65, 23);
-            this.btnDomainDelete.TabIndex = 12;
-            this.btnDomainDelete.Text = "Delete";
-            this.btnDomainDelete.UseVisualStyleBackColor = true;
-            this.btnDomainDelete.Click += new System.EventHandler(this.btDomainDelete_Click);
             // 
             // btnDomainSave
             // 
