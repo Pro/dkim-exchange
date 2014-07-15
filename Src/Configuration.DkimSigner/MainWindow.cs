@@ -59,6 +59,7 @@ namespace Configuration.DkimSigner
         {           
             InitializeComponent();
             this.cbLogLevel.SelectedItem = "Information";
+            this.cbKeyLength.SelectedItem = "1024";
         }
 
         /**********************************************************/
@@ -804,7 +805,7 @@ namespace Configuration.DkimSigner
 
             if (oFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                RSACryptoServiceProvider provider = new RSACryptoServiceProvider();
+                RSACryptoServiceProvider provider = new RSACryptoServiceProvider(Convert.ToInt32(this.cbKeyLength.Text, 10));
                 CSInteropKeys.AsnKeyBuilder.AsnMessage publicEncoded = CSInteropKeys.AsnKeyBuilder.PublicKeyToX509(provider.ExportParameters(true));
                 CSInteropKeys.AsnKeyBuilder.AsnMessage privateEncoded = CSInteropKeys.AsnKeyBuilder.PrivateKeyToPKCS8(provider.ExportParameters(true));
 
