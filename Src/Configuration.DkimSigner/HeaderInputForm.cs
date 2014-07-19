@@ -23,6 +23,14 @@ namespace Configuration.DkimSigner
         /************************* Events *************************/
         /**********************************************************/
 
+        private void HeaderInputForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.DialogResult == DialogResult.OK && this.txtHeader.Text == string.Empty)
+            {
+                MessageBox.Show("You must enter a header!", "Value missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                e.Cancel = true;
+            }
+        }
 
         /**********************************************************/
         /******************* Internal functions *******************/

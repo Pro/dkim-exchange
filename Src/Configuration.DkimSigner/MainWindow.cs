@@ -21,14 +21,6 @@ using Heijden.DNS;
 
 namespace Configuration.DkimSigner
 {
-    public enum UpdateButtonType
-    {
-        Install,
-        Downgrade,
-        Upgrade,
-        Disabled
-    };
-
     public partial class MainWindow : Form
     {
         /**********************************************************/
@@ -39,11 +31,9 @@ namespace Configuration.DkimSigner
 
         private Release dkimSignerAvailable = null;
         private Version dkimSignerInstalled = null;
-        
-        private UpdateButtonType updateButtonType = UpdateButtonType.Disabled;
 
-        private bool dkimSignerEnabled = false;
-        private bool dataUpdated = false;
+        private bool bDkimSignerEnabled = false;
+        private bool bDataUpdated = false;
         
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
@@ -57,7 +47,8 @@ namespace Configuration.DkimSigner
 
         public MainWindow()
         {           
-            InitializeComponent();
+            this.InitializeComponent();
+
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
         }
@@ -82,8 +73,11 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void MainWindow_FormClosing(object sender, System.Windows.Forms.FormClosingEventArgs e)
+        private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //
+            // IF any thread running, we stop them before exit
+            //
             if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
             {
                 this.thDkimSignerAvailable.Abort();
@@ -94,7 +88,10 @@ namespace Configuration.DkimSigner
                 this.thDkimSignerInstalled.Abort();
             }
 
-            if (!this.checkSaveConfig())
+            //
+            // Check if the config have been change and haven't been save
+            //
+            if (!this.CheckSaveConfig())
             {
                 e.Cancel = true;
             }
@@ -107,78 +104,100 @@ namespace Configuration.DkimSigner
 
         private void rbRsaSha1_CheckedChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
 
         private void rbRsaSha256_CheckedChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
 
         private void rbSimpleHeaderCanonicalization_CheckedChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
 
         private void rbRelaxedHeaderCanonicalization_CheckedChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
 
         private void rbSimpleBodyCanonicalization_CheckedChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
 
         private void rbRelaxedBodyCanonicalization_CheckedChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
 
         private void cbLogLevel_TextChanged(object sender, System.EventArgs e)
         {
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
         }
-
-        // BUG Should be lbxHeaderToSign_TextChanged
-        /*private void txtHeaderToSign_TextChanged(object sender, System.EventArgs e)
-        {
-            this.dataUpdated = true;
-        }*/
 
         private void lbxHeadersToSign_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.btHeaderDelete.Enabled = (this.lbxHeadersToSign.SelectedItem != null);
         }
 
-        private void txtDomainName_TextChanged(object sender, EventArgs e)
+        private void lbxDomains_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.dataUpdated = true;
-            btnDomainSave.Enabled = true;
-            txtDNSName.Text = txtDomainSelector.Text + "._domainkey." + txtDomainName.Text + ".";
-            if (Uri.CheckHostName(txtDomainName.Text) != UriHostNameType.Dns)
+            if (this.lbxDomains.SelectedItems.Count == 0)
             {
-                errorProvider.SetError(txtDomainName, "Invalid DNS name. Format: 'example.com'");
+                this.txtDomainName.Text = "";
+                this.txtDomainSelector.Text = "";
+                this.txtDomainPrivateKeyFilename.Text = "";
+                this.txtDomainDNS.Text = "";
+                this.gbxDomainDetails.Enabled = false;
             }
             else
             {
-                errorProvider.SetError(txtDomainName, null);
+                DomainElement selected = (DomainElement) this.lbxDomains.SelectedItem;
+                this.txtDomainName.Text = selected.Domain;
+                this.txtDomainSelector.Text = selected.Selector;
+                this.txtDomainPrivateKeyFilename.Text = selected.PrivateKeyFile;
+            
+                this.bDataUpdated = false;
+
+                this.updateSuggestedDNS();
+                this.txtDomainDNS.Text = "";
+                this.gbxDomainDetails.Enabled = true;
+                this.btnDomainDelete.Enabled = true;
+                this.btnDomainSave.Enabled = false;
+            }
+        }
+
+        private void txtDomainName_TextChanged(object sender, EventArgs e)
+        {
+            this.bDataUpdated = true;
+            this.btnDomainSave.Enabled = true;
+            this.txtDNSName.Text = this.txtDomainSelector.Text + "._domainkey." + this.txtDomainName.Text + ".";
+            
+            if (Uri.CheckHostName(this.txtDomainName.Text) != UriHostNameType.Dns)
+            {
+                this.errorProvider.SetError(this.txtDomainName, "Invalid DNS name. Format: 'example.com'");
+            }
+            else
+            {
+                this.errorProvider.SetError(this.txtDomainName, null);
             }
         }
 
         private void txtDomainSelector_TextChanged(object sender, EventArgs e)
         {
-            this.dataUpdated = true;
-            btnDomainSave.Enabled = true;
-            txtDNSName.Text = txtDomainSelector.Text + "._domainkey." + txtDomainName.Text + ".";
+            this.bDataUpdated = true;
+            this.btnDomainSave.Enabled = true;
+            this.txtDNSName.Text = this.txtDomainSelector.Text + "._domainkey." + this.txtDomainName.Text + ".";
 
-            if (!Regex.IsMatch(txtDomainSelector.Text, @"^[a-zA-Z0-9_]+$", RegexOptions.None))
+            if (!Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-zA-Z0-9_]+$", RegexOptions.None))
             {
-                errorProvider.SetError(txtDomainSelector, "The selector should only contain characters, numbers and underscores.");
+                this.errorProvider.SetError(this.txtDomainSelector, "The selector should only contain characters, numbers and underscores.");
             }
             else
             {
-                errorProvider.SetError(txtDomainSelector, null);
+                this.errorProvider.SetError(this.txtDomainSelector, null);
             }
         }
 
@@ -228,28 +247,28 @@ namespace Configuration.DkimSigner
         /// <param name="dkimSignerInstalled"></param>
         private void SetDkimSignerInstalled()
         {
-            if (dkimSignerInstalled != null)
+            if (this.dkimSignerInstalled != null)
             {
-                this.txtDkimSignerInstalled.Text = dkimSignerInstalled.ToString();
+                this.txtDkimSignerInstalled.Text = this.dkimSignerInstalled.ToString();
 
-                if (this.dkimSignerEnabled)
+                if (this.bDkimSignerEnabled)
                 {
-                    btDisable.Text = "Disable";
+                    this.btDisable.Text = "Disable";
                 }
                 else
                 {
-                    btDisable.Text = "Enable";
+                    this.btDisable.Text = "Enable";
                 }
 
-                btDisable.Enabled = true;
+                this.btDisable.Enabled = true;
             }
             else
             {
                 this.txtDkimSignerInstalled.Text = "Not installed";
-                btDisable.Enabled = false;
+                this.btDisable.Enabled = false;
             }
 
-            this.initUpdateButton();
+            this.InitUpdateButton();
         }
 
         /// <summary>
@@ -258,11 +277,11 @@ namespace Configuration.DkimSigner
         /// <param name="dkimSignerAvailable"></param>
         private void SetDkimSignerAvailable()
         {
-            if (dkimSignerAvailable != null)
+            if (this.dkimSignerAvailable != null)
             {
-                string version = dkimSignerAvailable.Version.ToString();
+                string version = this.dkimSignerAvailable.Version.ToString();
 
-                Match match = Regex.Match(dkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
+                Match match = Regex.Match(this.dkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
 
                 if (match.Success)
                 {
@@ -278,7 +297,7 @@ namespace Configuration.DkimSigner
                 }
 
                 this.txtDkimSignerAvailable.Text = version;
-                this.txtChangelog.Text = dkimSignerAvailable.Body;
+                this.txtChangelog.Text = this.dkimSignerAvailable.Body;
             }
             else
             {
@@ -287,7 +306,53 @@ namespace Configuration.DkimSigner
                 btInstallUpate.Enabled = false;
             }
 
-            this.initUpdateButton();
+            this.InitUpdateButton();
+        }
+
+        /// <summary>
+        /// Updates the init button description and functionality.
+        /// </summary>
+        private void InitUpdateButton()
+        {
+            if (this.dkimSignerInstalled != null && this.dkimSignerAvailable != null)
+            {
+                if (this.dkimSignerInstalled.CompareTo(this.dkimSignerAvailable.Version) > 0)
+                {
+                    this.btInstallUpate.Text = "Downgrade";
+                    this.btInstallUpate.Enabled = true;
+                }
+                else if (this.dkimSignerInstalled.CompareTo(this.dkimSignerAvailable.Version) == 0)
+                {
+                    this.btInstallUpate.Text = "Reinstall";
+                    this.btInstallUpate.Enabled = true;
+                }
+                else
+                {
+                    this.btInstallUpate.Text = "Upgrade";
+                    this.btInstallUpate.Enabled = true;
+                }
+            }
+            else if (this.dkimSignerInstalled == null && this.dkimSignerAvailable != null)
+            {
+                this.btInstallUpate.Text = "Install";
+                this.btInstallUpate.Enabled = true;
+            }
+            else
+            {
+                this.btInstallUpate.Text = "Update";
+                this.btInstallUpate.Enabled = false;
+            }
+
+            if (this.dkimSignerInstalled != null)
+            {
+                this.btUninstall.Enabled = true;
+                this.btUninstall.Text = "Uninstall";
+            }
+            else
+            {
+                this.btUninstall.Enabled = false;
+                this.btUninstall.Text = "Uninstall";
+            }
         }
 
         /// <summary>
@@ -320,82 +385,35 @@ namespace Configuration.DkimSigner
         /// Asks the user if he wants to save the current config and saves it.
         /// </summary>
         /// <returns>false if the user pressed cancel. true otherwise</returns>
-        private bool checkSaveConfig()
+        private bool CheckSaveConfig()
         {
-            if (this.dataUpdated)
+            bool bStatus = true;
+
+            // IF the configuration have changed
+            if (this.bDataUpdated)
             {
                 DialogResult result = MessageBox.Show("Do you want to save your changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
+                // IF we want to save the change
                 if (result == DialogResult.Yes)
                 {
+                    // IF we can't save the changes
                     if (!this.SaveDkimSignerConfig())
                     {
-                        if (MessageBox.Show("Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                        if (MessageBox.Show("Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                         {
-                            return true;
-                        }
-                        else
-                        {
-                            return false;
+                            bStatus = false;
                         }
                     }
                 }
+                // IF we cancel the save of our changes
                 else if (result == DialogResult.Cancel)
                 {
-                    return false;
+                    bStatus = false;
                 }
             }
 
-            return true;
-        }
-
-        /// <summary>
-        /// Updates the init button description and functionality.
-        /// </summary>
-        private void initUpdateButton()
-        {
-            if (this.dkimSignerInstalled!=null && this.dkimSignerAvailable!=null)
-            {
-                if (dkimSignerInstalled.CompareTo(dkimSignerAvailable.Version) > 0)
-                {
-                    updateButtonType = UpdateButtonType.Downgrade;
-                    btInstallUpate.Text = "Downgrade";
-                    btInstallUpate.Enabled = true;
-                }
-                else if (dkimSignerInstalled.CompareTo(dkimSignerAvailable.Version) == 0)
-                {
-                    updateButtonType = UpdateButtonType.Install;
-                    btInstallUpate.Text = "Reinstall";
-                    btInstallUpate.Enabled = true;
-                } else {
-                    updateButtonType = UpdateButtonType.Upgrade;
-                    btInstallUpate.Text = "Upgrade";
-                    btInstallUpate.Enabled = true;
-                }
-            }
-            else if (this.dkimSignerInstalled == null && this.dkimSignerAvailable != null)
-            {
-                updateButtonType = UpdateButtonType.Install;
-                btInstallUpate.Text = "Install";
-                btInstallUpate.Enabled = true;
-            }
-            else
-            {
-                updateButtonType = UpdateButtonType.Disabled;
-                btInstallUpate.Text = "Update";
-                btInstallUpate.Enabled = false;
-            }
-
-            if (this.dkimSignerInstalled != null)
-            {
-                btUninstall.Enabled = true;
-                btUninstall.Text = "Uninstall";
-            }
-            else
-            {
-                btUninstall.Enabled = false;
-                btUninstall.Text = "Uninstall";
-            }
+            return bStatus;
         }
 
         /// <summary>
@@ -405,25 +423,26 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                dkimSignerInstalled = System.Version.Parse(FileVersionInfo.GetVersionInfo(System.IO.Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
+                this.dkimSignerInstalled = Version.Parse(FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
             }
             catch (Exception)
             {
-               dkimSignerInstalled = null;
+               this.dkimSignerInstalled = null;
             }
 
-            if (dkimSignerInstalled != null)
+            if (this.dkimSignerInstalled != null)
             {
                 try
                 {
-                    if (!ExchangeHelper.isAgentInstalled(out dkimSignerEnabled))
+                    // ARGGGG!!! No a good way to implement this! Need to redesign Exchange class 
+                    if (!ExchangeHelper.isAgentInstalled(out bDkimSignerEnabled))
                     {
-                        dkimSignerInstalled = null;
+                        this.dkimSignerInstalled = null;
                     }
                 }
                 catch (Exception)
                 {
-                    dkimSignerEnabled = false;
+                    this.bDkimSignerEnabled = false;
                 }
             }
             
@@ -434,7 +453,7 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                SetDkimSignerInstalled();
+                this.SetDkimSignerInstalled();
             }
         }
 
@@ -445,11 +464,11 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                dkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
+                this.dkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
             }
             catch (Exception)
             {
-                dkimSignerAvailable = null;
+                this.dkimSignerAvailable = null;
             }
 
             if (this.txtDkimSignerInstalled.InvokeRequired)
@@ -459,7 +478,7 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                SetDkimSignerAvailable();
+                this.SetDkimSignerAvailable();
             }
         }
 
@@ -470,7 +489,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                config = Settings.LoadOrCreate(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
+                this.config = Settings.LoadOrCreate(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
             }
             catch (Exception e)
             {
@@ -511,11 +530,34 @@ namespace Configuration.DkimSigner
 
             this.lbxHeadersToSign.SelectedItem = null;
 
-            reloadDomainsList();
-            this.dataUpdated = false;
+            this.ReloadDomainsList();
+            this.bDataUpdated = false;
         }
 
-        private void reloadDomainsList(string selectedDomain = null)
+        /// <summary>
+        /// Save the new configuration into registry for Exchange DkimSigner
+        /// </summary>
+        private bool SaveDkimSignerConfig()
+        {
+            config.Loglevel = this.cbLogLevel.SelectedIndex + 1;
+
+            config.SigningAlgorithm = (this.rbRsaSha1.Checked ? DkimAlgorithmKind.RsaSha1 : DkimAlgorithmKind.RsaSha256);
+            config.BodyCanonicalization = (this.rbSimpleBodyCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
+            config.HeaderCanonicalization = (this.rbSimpleHeaderCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
+
+            config.HeadersToSign.Clear();
+            foreach (string str in lbxHeadersToSign.Items)
+            {
+                config.HeadersToSign.Add(str);
+            }
+
+            config.Save(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
+
+            this.bDataUpdated = false;
+            return true;
+        }
+
+        private void ReloadDomainsList(string selectedDomain = null)
         {
             // Load the list of domains
             DomainElement currSel = null;
@@ -538,29 +580,6 @@ namespace Configuration.DkimSigner
             }
         }
 
-        /// <summary>
-        /// Save the new configuration into registry for Exchange DkimSigner
-        /// </summary>
-        private bool SaveDkimSignerConfig()
-        {
-            config.Loglevel = this.cbLogLevel.SelectedIndex + 1;
-
-            config.SigningAlgorithm = (this.rbRsaSha1.Checked ? DkimAlgorithmKind.RsaSha1 : DkimAlgorithmKind.RsaSha256);
-            config.BodyCanonicalization = (this.rbSimpleBodyCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
-            config.HeaderCanonicalization = (this.rbSimpleHeaderCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
-
-            config.HeadersToSign.Clear();
-            foreach (string str in lbxHeadersToSign.Items)
-            {
-                config.HeadersToSign.Add(str);
-            }
-
-            config.Save(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
-
-            this.dataUpdated = false;
-            return true;
-        }
-
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
@@ -574,7 +593,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                if (this.dkimSignerEnabled)
+                if (this.bDkimSignerEnabled)
                 {
                     ExchangeHelper.disalbeTransportAgent();
                 }
@@ -625,28 +644,29 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btInstallUpate_Click(object sender, EventArgs e)
         {
-            switch (updateButtonType)
+            if(this.btInstallUpate.Enabled == true)
             {
-                case UpdateButtonType.Disabled:
-                    break;
-                case UpdateButtonType.Downgrade:
-                    if (MessageBox.Show("Do you really want to downgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Downgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        this.performUpgrade();
-                    }
-                    break;
-                case UpdateButtonType.Upgrade:
-                    if (MessageBox.Show("Do you really want to upgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Upgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        this.performUpgrade();
-                    }
-                    break;
-                case UpdateButtonType.Install:
-                    if (MessageBox.Show("Do you really want to install the DKIM Exchange Agent version " + dkimSignerAvailable.Version.ToString() + "?", "Install?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                    {
-                        this.performUpgrade();
-                    }
-                    break;
+                switch (this.btInstallUpate.Text)
+                {
+                    case "Downgrade":
+                        if (MessageBox.Show("Do you really want to downgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Downgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            this.performUpgrade();
+                        }
+                        break;
+                    case "Upgrade":
+                        if (MessageBox.Show("Do you really want to upgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Upgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            this.performUpgrade();
+                        }
+                        break;
+                    case "Install":
+                        if (MessageBox.Show("Do you really want to install the DKIM Exchange Agent version " + dkimSignerAvailable.Version.ToString() + "?", "Install?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                        {
+                            this.performUpgrade();
+                        }
+                        break;
+                }
             }
         }
 
@@ -680,8 +700,10 @@ namespace Configuration.DkimSigner
 
             if (hif.ShowDialog() == DialogResult.OK)
             {
-                this.lbxHeadersToSign.Items.Add(hif.txtHeader);
+                this.lbxHeadersToSign.Items.Add(hif.txtHeader.Text);
                 this.lbxHeadersToSign.SelectedItem = hif.txtHeader;
+
+                this.bDataUpdated = true;
             }
         }
 
@@ -695,6 +717,8 @@ namespace Configuration.DkimSigner
             if (this.lbxHeadersToSign.SelectedItem != null)
             {
                 this.lbxHeadersToSign.Items.Remove(lbxHeadersToSign.SelectedItem);
+
+                this.bDataUpdated = true;
             }
         }
 
@@ -715,7 +739,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btAddDomain_Click(object sender, EventArgs e)
         {
-            if (this.dataUpdated)
+            if (this.bDataUpdated)
             {
                 DialogResult result = MessageBox.Show("Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
@@ -731,7 +755,7 @@ namespace Configuration.DkimSigner
                 }
             }
 
-            this.dataUpdated = false;
+            this.bDataUpdated = false;
             lbxDomains.ClearSelected();
             txtDNSRecord.Text = "";
             txtDNSName.Text = "";
@@ -955,7 +979,7 @@ namespace Configuration.DkimSigner
             if (dkimSignerAvailable == null)
                 return;
 
-            if (!checkSaveConfig())
+            if (!CheckSaveConfig())
             {
                 return;
             }
@@ -1019,7 +1043,7 @@ namespace Configuration.DkimSigner
                 return;
             }
             string args = "";
-            if (updateButtonType == UpdateButtonType.Install)
+            if (this.btInstallUpate.Enabled == true && this.btInstallUpate.Text == "Install")
             {
                 args = "--install";
             }
@@ -1045,32 +1069,6 @@ namespace Configuration.DkimSigner
             }
 
             this.Close();
-        }
-
-        private void lbxDomains_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lbxDomains.SelectedItems.Count == 0)
-            {
-                txtDomainName.Text = "";
-                txtDomainSelector.Text = "";
-                txtDomainPrivateKeyFilename.Text = "";
-                txtDomainDNS.Text = "";
-                gbxDomainDetails.Enabled = false;
-
-                return;
-            }
-
-            DomainElement selected = (DomainElement)lbxDomains.SelectedItem;
-            txtDomainName.Text = selected.Domain;
-            txtDomainSelector.Text = selected.Selector;
-            txtDomainPrivateKeyFilename.Text = selected.PrivateKeyFile;
-            this.dataUpdated = false;
-
-            updateSuggestedDNS();
-            txtDomainDNS.Text = "";
-            gbxDomainDetails.Enabled = true;
-            btnDomainDelete.Enabled = true;
-            btnDomainSave.Enabled = false;
         }
 
         private void setDomainKeyPath(string path)
@@ -1107,7 +1105,7 @@ namespace Configuration.DkimSigner
                 }
             }
             txtDomainPrivateKeyFilename.Text = path;
-            this.dataUpdated = true;
+            this.bDataUpdated = true;
             btnDomainSave.Enabled = true;
         }
 

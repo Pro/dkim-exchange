@@ -67,7 +67,7 @@
             this.lbUpgradeStatus.Location = new System.Drawing.Point(12, 13);
             this.lbUpgradeStatus.Name = "lbUpgradeStatus";
             this.lbUpgradeStatus.Size = new System.Drawing.Size(99, 13);
-            this.lbUpgradeStatus.TabIndex = 1;
+            this.lbUpgradeStatus.TabIndex = 0;
             this.lbUpgradeStatus.Text = "Upgrade Status:";
             // 
             // lbStopService
@@ -78,7 +78,7 @@
             this.lbStopService.Location = new System.Drawing.Point(45, 39);
             this.lbStopService.Name = "lbStopService";
             this.lbStopService.Size = new System.Drawing.Size(392, 24);
-            this.lbStopService.TabIndex = 3;
+            this.lbStopService.TabIndex = 1;
             this.lbStopService.Text = "Stopping Exchange Transport service";
             this.lbStopService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -90,7 +90,7 @@
             this.lbCopyFiles.Location = new System.Drawing.Point(45, 69);
             this.lbCopyFiles.Name = "lbCopyFiles";
             this.lbCopyFiles.Size = new System.Drawing.Size(392, 24);
-            this.lbCopyFiles.TabIndex = 5;
+            this.lbCopyFiles.TabIndex = 2;
             this.lbCopyFiles.Text = "Copying new files";
             this.lbCopyFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -111,7 +111,7 @@
             this.lbStartService.Location = new System.Drawing.Point(45, 129);
             this.lbStartService.Name = "lbStartService";
             this.lbStartService.Size = new System.Drawing.Size(392, 24);
-            this.lbStartService.TabIndex = 7;
+            this.lbStartService.TabIndex = 4;
             this.lbStartService.Text = "Starting Exchange Transport service";
             this.lbStartService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -132,7 +132,7 @@
             this.lbDone.Location = new System.Drawing.Point(45, 159);
             this.lbDone.Name = "lbDone";
             this.lbDone.Size = new System.Drawing.Size(392, 24);
-            this.lbDone.TabIndex = 9;
+            this.lbDone.TabIndex = 5;
             this.lbDone.Text = "Done";
             this.lbDone.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -159,8 +159,8 @@
             this.btnClose.Location = new System.Drawing.Point(362, 232);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(75, 23);
-            this.btnClose.TabIndex = 10;
-            this.btnClose.Text = "Close";
+            this.btnClose.TabIndex = 6;
+            this.btnClose.Text = "&Close";
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
@@ -172,7 +172,7 @@
             this.lbInstallAgent.Location = new System.Drawing.Point(45, 99);
             this.lbInstallAgent.Name = "lbInstallAgent";
             this.lbInstallAgent.Size = new System.Drawing.Size(392, 24);
-            this.lbInstallAgent.TabIndex = 12;
+            this.lbInstallAgent.TabIndex = 3;
             this.lbInstallAgent.Text = "Checking and registering the agent";
             this.lbInstallAgent.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 

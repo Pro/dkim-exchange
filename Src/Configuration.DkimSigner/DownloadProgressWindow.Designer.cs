@@ -40,8 +40,8 @@
             this.btnCancel.Location = new System.Drawing.Point(467, 66);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 0;
-            this.btnCancel.Text = "Cancel";
+            this.btnCancel.TabIndex = 2;
+            this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
@@ -52,7 +52,7 @@
             this.pgFile.Location = new System.Drawing.Point(12, 12);
             this.pgFile.Name = "pgFile";
             this.pgFile.Size = new System.Drawing.Size(530, 23);
-            this.pgFile.TabIndex = 1;
+            this.pgFile.TabIndex = 0;
             // 
             // lbFile
             // 
@@ -62,7 +62,7 @@
             this.lbFile.Location = new System.Drawing.Point(13, 42);
             this.lbFile.Name = "lbFile";
             this.lbFile.Size = new System.Drawing.Size(529, 19);
-            this.lbFile.TabIndex = 2;
+            this.lbFile.TabIndex = 1;
             this.lbFile.Text = "Downloading file...";
             // 
             // DownloadProgressWindow
