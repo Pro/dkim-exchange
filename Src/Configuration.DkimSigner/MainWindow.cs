@@ -696,12 +696,12 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btHeaderAdd_Click(object sender, EventArgs e)
         {
-            HeaderInputForm hif = new HeaderInputForm();
+            HeaderInputWindows oHiw = new HeaderInputWindows();
 
-            if (hif.ShowDialog() == DialogResult.OK)
+            if (oHiw.ShowDialog() == DialogResult.OK)
             {
-                this.lbxHeadersToSign.Items.Add(hif.txtHeader.Text);
-                this.lbxHeadersToSign.SelectedItem = hif.txtHeader;
+                this.lbxHeadersToSign.Items.Add(oHiw.txtHeader.Text);
+                this.lbxHeadersToSign.SelectedItem = oHiw.txtHeader;
 
                 this.bDataUpdated = true;
             }
