@@ -4,6 +4,8 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
+using Configuration.DkimSigner.Exchange;
+
 namespace Configuration.DkimSigner
 {
     static class Program
@@ -59,6 +61,8 @@ namespace Configuration.DkimSigner
             // Load correct Windows form
             // *******************************************************************
             Form oForm = null;
+            ExchangeServer oExchange = new ExchangeServer();
+
             if (isInstall || isUpgrade)
             {               
                 oForm = new UpgradeWindow(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..")), installPath);
@@ -75,7 +79,7 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                oForm = new MainWindow();
+                oForm = new MainWindow(oExchange);
             }
 
             Application.Run(oForm);

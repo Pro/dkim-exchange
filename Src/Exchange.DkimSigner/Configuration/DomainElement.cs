@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Configuration;
-using System.Security.Cryptography;
 using System.IO;
-
-using DkimSigner.RSA;
-using Configuration.DkimSigner.Properties;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ConfigurationSettings
 {
@@ -64,24 +61,14 @@ namespace ConfigurationSettings
                 throw new FileNotFoundException("PrivateKey for domain " + Domain + " not found: " + path);
             }
 
-            byte[] key = File.ReadAllBytes(path);
-            switch (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(key))
+            try
             {
-                case RSACryptoFormat.PEM:
-                    string pemkey = File.ReadAllText(path, Encoding.ASCII);
-                    cryptoProvider = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(pemkey);
-                    break;
-                case RSACryptoFormat.DER:
-                    cryptoProvider = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(key);
-                    break;
-                case RSACryptoFormat.XML:
-                    string xmlkey = File.ReadAllText(path, Encoding.ASCII);
-                    cryptoProvider = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(xmlkey);
-                    break;
-                default:
-                    throw new ArgumentException(
-                            Resources.RSACryptHelper_UnknownFormat,
-                            "encodedKey");
+                string xmlkey = File.ReadAllText(path, Encoding.ASCII).Trim();
+                cryptoProvider = new RSACryptoServiceProvider();
+                cryptoProvider.FromXmlString(xmlkey);
+            }
+            catch(Exception) 
+            {
             }
 
             return true;

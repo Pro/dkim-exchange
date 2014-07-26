@@ -40,7 +40,7 @@ namespace Configuration.DkimSigner
 
         private string installAgent()
         {
-            try
+            /*try
             {
                 bool enabled;
                 bool installed = ExchangeHelper.isAgentInstalled(out enabled);
@@ -64,7 +64,9 @@ namespace Configuration.DkimSigner
             catch (Exception ex)
             {
                 return ex.Message;
-            }
+            }*/
+
+            return "";
         }
 
         private void installAgentTask()
@@ -92,7 +94,7 @@ namespace Configuration.DkimSigner
 
         private string startService()
         {
-            try
+            /*try
             {
                 ExchangeHelper.startTransportService();
                 return null;
@@ -104,7 +106,9 @@ namespace Configuration.DkimSigner
             catch (Exception ex)
             {
                 return ex.Message;
-            }
+            }*/
+
+            return "";
         }
 
         private void startServiceTask()
@@ -132,7 +136,7 @@ namespace Configuration.DkimSigner
 
         private string stopService()
         {
-            if (!ExchangeHelper.isTransportServiceRunning())
+            /*if (!ExchangeHelper.isTransportServiceRunning())
             {
                 return null;
             }
@@ -149,7 +153,9 @@ namespace Configuration.DkimSigner
             catch (Exception ex)
             {
                 return ex.Message;
-            }
+            }*/
+
+            return "";
         }
 
         private void stopServiceResult(string ret)
@@ -177,7 +183,7 @@ namespace Configuration.DkimSigner
 
         private string directoryFromExchangeVersion()
         {
-            string sExchangeVersion = null;
+            /*string sExchangeVersion = null;
 
             Version oFullVersion = ExchangeHelper.getExchangeVersion();
             if (oFullVersion != null)
@@ -208,7 +214,9 @@ namespace Configuration.DkimSigner
                     sExchangeVersion = "Exchange 2013 SP1 CU5";
             }
 
-            return sExchangeVersion;
+            return sExchangeVersion;*/
+
+            return "";
         }
 
         private void copyFilesTask()

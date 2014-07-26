@@ -32,25 +32,20 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainWindow));
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
-            this.gbAvailable = new System.Windows.Forms.GroupBox();
-            this.btInstallZip = new System.Windows.Forms.Button();
+            this.gbDkimSigner = new System.Windows.Forms.GroupBox();
             this.cbxPrereleases = new System.Windows.Forms.CheckBox();
-            this.btInstallUpate = new System.Windows.Forms.Button();
             this.lblChangelog = new System.Windows.Forms.Label();
             this.txtChangelog = new System.Windows.Forms.TextBox();
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
-            this.gbInstalled = new System.Windows.Forms.GroupBox();
-            this.lblExchangeStatus = new System.Windows.Forms.Label();
-            this.btRestartTransportService = new System.Windows.Forms.Button();
-            this.btDisable = new System.Windows.Forms.Button();
-            this.btUninstall = new System.Windows.Forms.Button();
+            this.gbExchange = new System.Windows.Forms.GroupBox();
+            this.lbExchangeStatus = new System.Windows.Forms.Label();
             this.lbExchangeInstalled = new System.Windows.Forms.Label();
             this.txtDkimSignerInstalled = new System.Windows.Forms.TextBox();
             this.txtExchangeInstalled = new System.Windows.Forms.TextBox();
             this.lbDkimSignerInstalled = new System.Windows.Forms.Label();
             this.tpDKIM = new System.Windows.Forms.TabPage();
-            this.btSave = new System.Windows.Forms.Button();
+            this.btSaveConfiguration = new System.Windows.Forms.Button();
             this.gbHeaderToSign = new System.Windows.Forms.GroupBox();
             this.btHeaderAdd = new System.Windows.Forms.Button();
             this.btHeaderDelete = new System.Windows.Forms.Button();
@@ -69,8 +64,8 @@
             this.tpDomain = new System.Windows.Forms.TabPage();
             this.gbDomain = new System.Windows.Forms.GroupBox();
             this.lbxDomains = new System.Windows.Forms.ListBox();
-            this.btnAddDomain = new System.Windows.Forms.Button();
-            this.btnDomainDelete = new System.Windows.Forms.Button();
+            this.btAddDomain = new System.Windows.Forms.Button();
+            this.btDomainDelete = new System.Windows.Forms.Button();
             this.gbxDomainDetails = new System.Windows.Forms.GroupBox();
             this.cbKeyLength = new System.Windows.Forms.ComboBox();
             this.lbKeyLength = new System.Windows.Forms.Label();
@@ -79,23 +74,28 @@
             this.lbExistingDns = new System.Windows.Forms.Label();
             this.lbSuggestedDnsRecord = new System.Windows.Forms.Label();
             this.txtDNSRecord = new System.Windows.Forms.TextBox();
-            this.btnDomainCheckDNS = new System.Windows.Forms.Button();
+            this.btDomainCheckDNS = new System.Windows.Forms.Button();
             this.txtDomainDNS = new System.Windows.Forms.TextBox();
-            this.btnDomainSave = new System.Windows.Forms.Button();
+            this.btDomainSave = new System.Windows.Forms.Button();
             this.txtDomainPrivateKeyFilename = new System.Windows.Forms.TextBox();
             this.lbPrivateKey = new System.Windows.Forms.Label();
             this.txtDomainSelector = new System.Windows.Forms.TextBox();
             this.lbSelector = new System.Windows.Forms.Label();
             this.txtDomainName = new System.Windows.Forms.TextBox();
             this.lbDomainName = new System.Windows.Forms.Label();
-            this.btnDomainKeySelect = new System.Windows.Forms.Button();
+            this.btDomainKeySelect = new System.Windows.Forms.Button();
             this.btDomainKeyGenerate = new System.Windows.Forms.Button();
-            this.errorProvider = new System.Windows.Forms.ErrorProvider(this.components);
+            this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
             this.timExchangeStatus = new System.Windows.Forms.Timer(this.components);
+            this.btConfigureTransportService = new System.Windows.Forms.Button();
+            this.btStartTransportService = new System.Windows.Forms.Button();
+            this.btStopTransportService = new System.Windows.Forms.Button();
+            this.btRestartTransportService = new System.Windows.Forms.Button();
+            this.txtExchangeStatus = new System.Windows.Forms.TextBox();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
-            this.gbAvailable.SuspendLayout();
-            this.gbInstalled.SuspendLayout();
+            this.gbDkimSigner.SuspendLayout();
+            this.gbExchange.SuspendLayout();
             this.tpDKIM.SuspendLayout();
             this.gbHeaderToSign.SuspendLayout();
             this.gbLogLevel.SuspendLayout();
@@ -105,7 +105,7 @@
             this.tpDomain.SuspendLayout();
             this.gbDomain.SuspendLayout();
             this.gbxDomainDetails.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).BeginInit();
             this.SuspendLayout();
             // 
             // tcConfiguration
@@ -125,8 +125,8 @@
             // 
             // tbInformation
             // 
-            this.tbInformation.Controls.Add(this.gbAvailable);
-            this.tbInformation.Controls.Add(this.gbInstalled);
+            this.tbInformation.Controls.Add(this.gbDkimSigner);
+            this.tbInformation.Controls.Add(this.gbExchange);
             this.tbInformation.Location = new System.Drawing.Point(4, 29);
             this.tbInformation.Name = "tbInformation";
             this.tbInformation.Size = new System.Drawing.Size(707, 284);
@@ -134,39 +134,30 @@
             this.tbInformation.Text = "Information";
             this.tbInformation.UseVisualStyleBackColor = true;
             // 
-            // gbAvailable
+            // gbDkimSigner
             // 
-            this.gbAvailable.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.gbDkimSigner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbAvailable.Controls.Add(this.btInstallZip);
-            this.gbAvailable.Controls.Add(this.cbxPrereleases);
-            this.gbAvailable.Controls.Add(this.btInstallUpate);
-            this.gbAvailable.Controls.Add(this.lblChangelog);
-            this.gbAvailable.Controls.Add(this.txtChangelog);
-            this.gbAvailable.Controls.Add(this.txtDkimSignerAvailable);
-            this.gbAvailable.Controls.Add(this.lbDkimSignerAvailable);
-            this.gbAvailable.Location = new System.Drawing.Point(3, 93);
-            this.gbAvailable.Name = "gbAvailable";
-            this.gbAvailable.Size = new System.Drawing.Size(695, 188);
-            this.gbAvailable.TabIndex = 1;
-            this.gbAvailable.TabStop = false;
-            this.gbAvailable.Text = "Available";
-            // 
-            // btInstallZip
-            // 
-            this.btInstallZip.Location = new System.Drawing.Point(446, 48);
-            this.btInstallZip.Name = "btInstallZip";
-            this.btInstallZip.Size = new System.Drawing.Size(94, 23);
-            this.btInstallZip.TabIndex = 4;
-            this.btInstallZip.Text = "Install from .zip";
-            this.btInstallZip.UseVisualStyleBackColor = true;
-            this.btInstallZip.Click += new System.EventHandler(this.btInstallZip_Click);
+            this.gbDkimSigner.Controls.Add(this.cbxPrereleases);
+            this.gbDkimSigner.Controls.Add(this.lblChangelog);
+            this.gbDkimSigner.Controls.Add(this.txtChangelog);
+            this.gbDkimSigner.Controls.Add(this.txtDkimSignerAvailable);
+            this.gbDkimSigner.Controls.Add(this.btConfigureTransportService);
+            this.gbDkimSigner.Controls.Add(this.lbDkimSignerAvailable);
+            this.gbDkimSigner.Controls.Add(this.txtDkimSignerInstalled);
+            this.gbDkimSigner.Controls.Add(this.lbDkimSignerInstalled);
+            this.gbDkimSigner.Location = new System.Drawing.Point(3, 93);
+            this.gbDkimSigner.Name = "gbDkimSigner";
+            this.gbDkimSigner.Size = new System.Drawing.Size(695, 188);
+            this.gbDkimSigner.TabIndex = 1;
+            this.gbDkimSigner.TabStop = false;
+            this.gbDkimSigner.Text = "DKIM Signer";
             // 
             // cbxPrereleases
             // 
             this.cbxPrereleases.AutoSize = true;
-            this.cbxPrereleases.Location = new System.Drawing.Point(238, 25);
+            this.cbxPrereleases.Location = new System.Drawing.Point(255, 53);
             this.cbxPrereleases.Name = "cbxPrereleases";
             this.cbxPrereleases.Size = new System.Drawing.Size(155, 17);
             this.cbxPrereleases.TabIndex = 2;
@@ -174,21 +165,10 @@
             this.cbxPrereleases.UseVisualStyleBackColor = true;
             this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
             // 
-            // btInstallUpate
-            // 
-            this.btInstallUpate.Enabled = false;
-            this.btInstallUpate.Location = new System.Drawing.Point(446, 19);
-            this.btInstallUpate.Name = "btInstallUpate";
-            this.btInstallUpate.Size = new System.Drawing.Size(94, 23);
-            this.btInstallUpate.TabIndex = 3;
-            this.btInstallUpate.Text = "Update";
-            this.btInstallUpate.UseVisualStyleBackColor = true;
-            this.btInstallUpate.Click += new System.EventHandler(this.btInstallUpate_Click);
-            // 
             // lblChangelog
             // 
             this.lblChangelog.AutoSize = true;
-            this.lblChangelog.Location = new System.Drawing.Point(6, 58);
+            this.lblChangelog.Location = new System.Drawing.Point(6, 76);
             this.lblChangelog.Name = "lblChangelog";
             this.lblChangelog.Size = new System.Drawing.Size(61, 13);
             this.lblChangelog.TabIndex = 5;
@@ -199,17 +179,17 @@
             this.txtChangelog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtChangelog.Location = new System.Drawing.Point(9, 77);
+            this.txtChangelog.Location = new System.Drawing.Point(9, 92);
             this.txtChangelog.Multiline = true;
             this.txtChangelog.Name = "txtChangelog";
             this.txtChangelog.ReadOnly = true;
             this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtChangelog.Size = new System.Drawing.Size(680, 105);
+            this.txtChangelog.Size = new System.Drawing.Size(680, 90);
             this.txtChangelog.TabIndex = 6;
             // 
             // txtDkimSignerAvailable
             // 
-            this.txtDkimSignerAvailable.Location = new System.Drawing.Point(82, 21);
+            this.txtDkimSignerAvailable.Location = new System.Drawing.Point(82, 49);
             this.txtDkimSignerAvailable.Name = "txtDkimSignerAvailable";
             this.txtDkimSignerAvailable.ReadOnly = true;
             this.txtDkimSignerAvailable.Size = new System.Drawing.Size(138, 20);
@@ -219,83 +199,51 @@
             // lbDkimSignerAvailable
             // 
             this.lbDkimSignerAvailable.AutoSize = true;
-            this.lbDkimSignerAvailable.Location = new System.Drawing.Point(6, 24);
+            this.lbDkimSignerAvailable.Location = new System.Drawing.Point(6, 52);
             this.lbDkimSignerAvailable.Name = "lbDkimSignerAvailable";
-            this.lbDkimSignerAvailable.Size = new System.Drawing.Size(70, 13);
+            this.lbDkimSignerAvailable.Size = new System.Drawing.Size(56, 13);
             this.lbDkimSignerAvailable.TabIndex = 0;
-            this.lbDkimSignerAvailable.Text = "Dkim Signer :";
+            this.lbDkimSignerAvailable.Text = "Available :";
             // 
-            // gbInstalled
+            // gbExchange
             // 
-            this.gbInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gbExchange.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbInstalled.Controls.Add(this.lblExchangeStatus);
-            this.gbInstalled.Controls.Add(this.btRestartTransportService);
-            this.gbInstalled.Controls.Add(this.btDisable);
-            this.gbInstalled.Controls.Add(this.btUninstall);
-            this.gbInstalled.Controls.Add(this.lbExchangeInstalled);
-            this.gbInstalled.Controls.Add(this.txtDkimSignerInstalled);
-            this.gbInstalled.Controls.Add(this.txtExchangeInstalled);
-            this.gbInstalled.Controls.Add(this.lbDkimSignerInstalled);
-            this.gbInstalled.Location = new System.Drawing.Point(3, 3);
-            this.gbInstalled.Name = "gbInstalled";
-            this.gbInstalled.Size = new System.Drawing.Size(695, 84);
-            this.gbInstalled.TabIndex = 0;
-            this.gbInstalled.TabStop = false;
-            this.gbInstalled.Text = "Installed";
+            this.gbExchange.Controls.Add(this.txtExchangeStatus);
+            this.gbExchange.Controls.Add(this.btRestartTransportService);
+            this.gbExchange.Controls.Add(this.btStopTransportService);
+            this.gbExchange.Controls.Add(this.btStartTransportService);
+            this.gbExchange.Controls.Add(this.lbExchangeStatus);
+            this.gbExchange.Controls.Add(this.lbExchangeInstalled);
+            this.gbExchange.Controls.Add(this.txtExchangeInstalled);
+            this.gbExchange.Location = new System.Drawing.Point(3, 3);
+            this.gbExchange.Name = "gbExchange";
+            this.gbExchange.Size = new System.Drawing.Size(695, 84);
+            this.gbExchange.TabIndex = 0;
+            this.gbExchange.TabStop = false;
+            this.gbExchange.Text = "Micosoft Exchange";
             // 
-            // lblExchangeStatus
+            // lbExchangeStatus
             // 
-            this.lblExchangeStatus.AutoSize = true;
-            this.lblExchangeStatus.Location = new System.Drawing.Point(226, 53);
-            this.lblExchangeStatus.Name = "lblExchangeStatus";
-            this.lblExchangeStatus.Size = new System.Drawing.Size(37, 13);
-            this.lblExchangeStatus.TabIndex = 4;
-            this.lblExchangeStatus.Text = "Status";
-            // 
-            // btRestartTransportService
-            // 
-            this.btRestartTransportService.Enabled = false;
-            this.btRestartTransportService.Location = new System.Drawing.Point(346, 48);
-            this.btRestartTransportService.Name = "btRestartTransportService";
-            this.btRestartTransportService.Size = new System.Drawing.Size(194, 23);
-            this.btRestartTransportService.TabIndex = 7;
-            this.btRestartTransportService.Text = "Restart MSExchangeTransport";
-            this.btRestartTransportService.UseVisualStyleBackColor = true;
-            this.btRestartTransportService.Click += new System.EventHandler(this.btRestartTransportService_Click);
-            // 
-            // btDisable
-            // 
-            this.btDisable.Location = new System.Drawing.Point(346, 19);
-            this.btDisable.Name = "btDisable";
-            this.btDisable.Size = new System.Drawing.Size(94, 23);
-            this.btDisable.TabIndex = 5;
-            this.btDisable.Text = "Disable";
-            this.btDisable.UseVisualStyleBackColor = true;
-            this.btDisable.Click += new System.EventHandler(this.btDisable_Click);
-            // 
-            // btUninstall
-            // 
-            this.btUninstall.Location = new System.Drawing.Point(446, 19);
-            this.btUninstall.Name = "btUninstall";
-            this.btUninstall.Size = new System.Drawing.Size(94, 23);
-            this.btUninstall.TabIndex = 6;
-            this.btUninstall.Text = "Uninstall";
-            this.btUninstall.UseVisualStyleBackColor = true;
-            this.btUninstall.Click += new System.EventHandler(this.btUninstall_Click);
+            this.lbExchangeStatus.AutoSize = true;
+            this.lbExchangeStatus.Location = new System.Drawing.Point(252, 20);
+            this.lbExchangeStatus.Name = "lbExchangeStatus";
+            this.lbExchangeStatus.Size = new System.Drawing.Size(130, 13);
+            this.lbExchangeStatus.TabIndex = 4;
+            this.lbExchangeStatus.Text = "Transport Service Status :";
             // 
             // lbExchangeInstalled
             // 
             this.lbExchangeInstalled.AutoSize = true;
-            this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 53);
+            this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 20);
             this.lbExchangeInstalled.Name = "lbExchangeInstalled";
-            this.lbExchangeInstalled.Size = new System.Drawing.Size(61, 13);
+            this.lbExchangeInstalled.Size = new System.Drawing.Size(52, 13);
             this.lbExchangeInstalled.TabIndex = 2;
-            this.lbExchangeInstalled.Text = "Exchange :";
+            this.lbExchangeInstalled.Text = "Installed :";
             // 
             // txtDkimSignerInstalled
             // 
-            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 21);
+            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 23);
             this.txtDkimSignerInstalled.Name = "txtDkimSignerInstalled";
             this.txtDkimSignerInstalled.ReadOnly = true;
             this.txtDkimSignerInstalled.Size = new System.Drawing.Size(138, 20);
@@ -304,7 +252,7 @@
             // 
             // txtExchangeInstalled
             // 
-            this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 50);
+            this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 17);
             this.txtExchangeInstalled.Name = "txtExchangeInstalled";
             this.txtExchangeInstalled.ReadOnly = true;
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
@@ -314,15 +262,15 @@
             // lbDkimSignerInstalled
             // 
             this.lbDkimSignerInstalled.AutoSize = true;
-            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 24);
+            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 26);
             this.lbDkimSignerInstalled.Name = "lbDkimSignerInstalled";
-            this.lbDkimSignerInstalled.Size = new System.Drawing.Size(70, 13);
+            this.lbDkimSignerInstalled.Size = new System.Drawing.Size(52, 13);
             this.lbDkimSignerInstalled.TabIndex = 0;
-            this.lbDkimSignerInstalled.Text = "Dkim Signer :";
+            this.lbDkimSignerInstalled.Text = "Installed :";
             // 
             // tpDKIM
             // 
-            this.tpDKIM.Controls.Add(this.btSave);
+            this.tpDKIM.Controls.Add(this.btSaveConfiguration);
             this.tpDKIM.Controls.Add(this.gbHeaderToSign);
             this.tpDKIM.Controls.Add(this.gbLogLevel);
             this.tpDKIM.Controls.Add(this.gbBodyCanonicalization);
@@ -336,15 +284,15 @@
             this.tpDKIM.Text = "DKIM";
             this.tpDKIM.UseVisualStyleBackColor = true;
             // 
-            // btSave
+            // btSaveConfiguration
             // 
-            this.btSave.Location = new System.Drawing.Point(393, 220);
-            this.btSave.Name = "btSave";
-            this.btSave.Size = new System.Drawing.Size(125, 23);
-            this.btSave.TabIndex = 5;
-            this.btSave.Text = "Save configuration";
-            this.btSave.UseVisualStyleBackColor = true;
-            this.btSave.Click += new System.EventHandler(this.btSave_Click);
+            this.btSaveConfiguration.Location = new System.Drawing.Point(393, 220);
+            this.btSaveConfiguration.Name = "btSaveConfiguration";
+            this.btSaveConfiguration.Size = new System.Drawing.Size(125, 23);
+            this.btSaveConfiguration.TabIndex = 5;
+            this.btSaveConfiguration.Text = "Save configuration";
+            this.btSaveConfiguration.UseVisualStyleBackColor = true;
+            this.btSaveConfiguration.Click += new System.EventHandler(this.btSaveConfiguration_Click);
             // 
             // gbHeaderToSign
             // 
@@ -538,8 +486,8 @@
             // gbDomain
             // 
             this.gbDomain.Controls.Add(this.lbxDomains);
-            this.gbDomain.Controls.Add(this.btnAddDomain);
-            this.gbDomain.Controls.Add(this.btnDomainDelete);
+            this.gbDomain.Controls.Add(this.btAddDomain);
+            this.gbDomain.Controls.Add(this.btDomainDelete);
             this.gbDomain.Location = new System.Drawing.Point(6, 6);
             this.gbDomain.Name = "gbDomain";
             this.gbDomain.Size = new System.Drawing.Size(151, 266);
@@ -559,27 +507,27 @@
             this.lbxDomains.TabIndex = 0;
             this.lbxDomains.SelectedIndexChanged += new System.EventHandler(this.lbxDomains_SelectedIndexChanged);
             // 
-            // btnAddDomain
+            // btAddDomain
             // 
-            this.btnAddDomain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAddDomain.Location = new System.Drawing.Point(6, 237);
-            this.btnAddDomain.Name = "btnAddDomain";
-            this.btnAddDomain.Size = new System.Drawing.Size(65, 23);
-            this.btnAddDomain.TabIndex = 1;
-            this.btnAddDomain.Text = "Add";
-            this.btnAddDomain.UseVisualStyleBackColor = true;
-            this.btnAddDomain.Click += new System.EventHandler(this.btAddDomain_Click);
+            this.btAddDomain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btAddDomain.Location = new System.Drawing.Point(6, 237);
+            this.btAddDomain.Name = "btAddDomain";
+            this.btAddDomain.Size = new System.Drawing.Size(65, 23);
+            this.btAddDomain.TabIndex = 1;
+            this.btAddDomain.Text = "Add";
+            this.btAddDomain.UseVisualStyleBackColor = true;
+            this.btAddDomain.Click += new System.EventHandler(this.btAddDomain_Click);
             // 
-            // btnDomainDelete
+            // btDomainDelete
             // 
-            this.btnDomainDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDomainDelete.Location = new System.Drawing.Point(80, 237);
-            this.btnDomainDelete.Name = "btnDomainDelete";
-            this.btnDomainDelete.Size = new System.Drawing.Size(65, 23);
-            this.btnDomainDelete.TabIndex = 2;
-            this.btnDomainDelete.Text = "Delete";
-            this.btnDomainDelete.UseVisualStyleBackColor = true;
-            this.btnDomainDelete.Click += new System.EventHandler(this.btDomainDelete_Click);
+            this.btDomainDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btDomainDelete.Location = new System.Drawing.Point(80, 237);
+            this.btDomainDelete.Name = "btDomainDelete";
+            this.btDomainDelete.Size = new System.Drawing.Size(65, 23);
+            this.btDomainDelete.TabIndex = 2;
+            this.btDomainDelete.Text = "Delete";
+            this.btDomainDelete.UseVisualStyleBackColor = true;
+            this.btDomainDelete.Click += new System.EventHandler(this.btDomainDelete_Click);
             // 
             // gbxDomainDetails
             // 
@@ -593,16 +541,16 @@
             this.gbxDomainDetails.Controls.Add(this.lbExistingDns);
             this.gbxDomainDetails.Controls.Add(this.lbSuggestedDnsRecord);
             this.gbxDomainDetails.Controls.Add(this.txtDNSRecord);
-            this.gbxDomainDetails.Controls.Add(this.btnDomainCheckDNS);
+            this.gbxDomainDetails.Controls.Add(this.btDomainCheckDNS);
             this.gbxDomainDetails.Controls.Add(this.txtDomainDNS);
-            this.gbxDomainDetails.Controls.Add(this.btnDomainSave);
+            this.gbxDomainDetails.Controls.Add(this.btDomainSave);
             this.gbxDomainDetails.Controls.Add(this.txtDomainPrivateKeyFilename);
             this.gbxDomainDetails.Controls.Add(this.lbPrivateKey);
             this.gbxDomainDetails.Controls.Add(this.txtDomainSelector);
             this.gbxDomainDetails.Controls.Add(this.lbSelector);
             this.gbxDomainDetails.Controls.Add(this.txtDomainName);
             this.gbxDomainDetails.Controls.Add(this.lbDomainName);
-            this.gbxDomainDetails.Controls.Add(this.btnDomainKeySelect);
+            this.gbxDomainDetails.Controls.Add(this.btDomainKeySelect);
             this.gbxDomainDetails.Controls.Add(this.btDomainKeyGenerate);
             this.gbxDomainDetails.Enabled = false;
             this.gbxDomainDetails.Location = new System.Drawing.Point(163, 9);
@@ -680,16 +628,16 @@
             this.txtDNSRecord.Size = new System.Drawing.Size(385, 52);
             this.txtDNSRecord.TabIndex = 13;
             // 
-            // btnDomainCheckDNS
+            // btDomainCheckDNS
             // 
-            this.btnDomainCheckDNS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDomainCheckDNS.Location = new System.Drawing.Point(9, 210);
-            this.btnDomainCheckDNS.Name = "btnDomainCheckDNS";
-            this.btnDomainCheckDNS.Size = new System.Drawing.Size(69, 23);
-            this.btnDomainCheckDNS.TabIndex = 16;
-            this.btnDomainCheckDNS.Text = "Check";
-            this.btnDomainCheckDNS.UseVisualStyleBackColor = true;
-            this.btnDomainCheckDNS.Click += new System.EventHandler(this.btDomainCheckDNS_Click);
+            this.btDomainCheckDNS.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btDomainCheckDNS.Location = new System.Drawing.Point(9, 210);
+            this.btDomainCheckDNS.Name = "btDomainCheckDNS";
+            this.btDomainCheckDNS.Size = new System.Drawing.Size(69, 23);
+            this.btDomainCheckDNS.TabIndex = 16;
+            this.btDomainCheckDNS.Text = "Check";
+            this.btDomainCheckDNS.UseVisualStyleBackColor = true;
+            this.btDomainCheckDNS.Click += new System.EventHandler(this.btDomainCheckDNS_Click);
             // 
             // txtDomainDNS
             // 
@@ -702,16 +650,16 @@
             this.txtDomainDNS.Size = new System.Drawing.Size(385, 52);
             this.txtDomainDNS.TabIndex = 15;
             // 
-            // btnDomainSave
+            // btDomainSave
             // 
-            this.btnDomainSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDomainSave.Location = new System.Drawing.Point(447, 240);
-            this.btnDomainSave.Name = "btnDomainSave";
-            this.btnDomainSave.Size = new System.Drawing.Size(75, 23);
-            this.btnDomainSave.TabIndex = 17;
-            this.btnDomainSave.Text = "Save";
-            this.btnDomainSave.UseVisualStyleBackColor = true;
-            this.btnDomainSave.Click += new System.EventHandler(this.btDomainSave_Click);
+            this.btDomainSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btDomainSave.Location = new System.Drawing.Point(447, 240);
+            this.btDomainSave.Name = "btDomainSave";
+            this.btDomainSave.Size = new System.Drawing.Size(75, 23);
+            this.btDomainSave.TabIndex = 17;
+            this.btDomainSave.Text = "Save";
+            this.btDomainSave.UseVisualStyleBackColor = true;
+            this.btDomainSave.Click += new System.EventHandler(this.btDomainSave_Click);
             // 
             // txtDomainPrivateKeyFilename
             // 
@@ -764,16 +712,16 @@
             this.lbDomainName.TabIndex = 0;
             this.lbDomainName.Text = "Domain name :";
             // 
-            // btnDomainKeySelect
+            // btDomainKeySelect
             // 
-            this.btnDomainKeySelect.AutoSize = true;
-            this.btnDomainKeySelect.Location = new System.Drawing.Point(418, 71);
-            this.btnDomainKeySelect.Name = "btnDomainKeySelect";
-            this.btnDomainKeySelect.Size = new System.Drawing.Size(104, 23);
-            this.btnDomainKeySelect.TabIndex = 9;
-            this.btnDomainKeySelect.Text = "Select key file";
-            this.btnDomainKeySelect.UseVisualStyleBackColor = true;
-            this.btnDomainKeySelect.Click += new System.EventHandler(this.btDomainKeySelect_Click);
+            this.btDomainKeySelect.AutoSize = true;
+            this.btDomainKeySelect.Location = new System.Drawing.Point(418, 71);
+            this.btDomainKeySelect.Name = "btDomainKeySelect";
+            this.btDomainKeySelect.Size = new System.Drawing.Size(104, 23);
+            this.btDomainKeySelect.TabIndex = 9;
+            this.btDomainKeySelect.Text = "Select key file";
+            this.btDomainKeySelect.UseVisualStyleBackColor = true;
+            this.btDomainKeySelect.Click += new System.EventHandler(this.btDomainKeySelect_Click);
             // 
             // btDomainKeyGenerate
             // 
@@ -786,15 +734,64 @@
             this.btDomainKeyGenerate.UseVisualStyleBackColor = true;
             this.btDomainKeyGenerate.Click += new System.EventHandler(this.btDomainKeyGenerate_Click);
             // 
-            // errorProvider
+            // epvDomainSelector
             // 
-            this.errorProvider.ContainerControl = this;
+            this.epvDomainSelector.ContainerControl = this;
             // 
             // timExchangeStatus
             // 
             this.timExchangeStatus.Enabled = true;
             this.timExchangeStatus.Interval = 200;
             this.timExchangeStatus.Tick += new System.EventHandler(this.timExchangeStatus_Tick);
+            // 
+            // btConfigureTransportService
+            // 
+            this.btConfigureTransportService.Location = new System.Drawing.Point(255, 21);
+            this.btConfigureTransportService.Name = "btConfigureTransportService";
+            this.btConfigureTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btConfigureTransportService.TabIndex = 6;
+            this.btConfigureTransportService.Text = "&Configure";
+            this.btConfigureTransportService.UseVisualStyleBackColor = true;
+            this.btConfigureTransportService.Click += new System.EventHandler(this.btConfigureTransportService_Click);
+            // 
+            // btStartTransportService
+            // 
+            this.btStartTransportService.Location = new System.Drawing.Point(255, 47);
+            this.btStartTransportService.Name = "btStartTransportService";
+            this.btStartTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btStartTransportService.TabIndex = 7;
+            this.btStartTransportService.Text = "St&art";
+            this.btStartTransportService.UseVisualStyleBackColor = true;
+            this.btStartTransportService.Click += new System.EventHandler(this.btStartTransportService_Click);
+            // 
+            // btStopTransportService
+            // 
+            this.btStopTransportService.Location = new System.Drawing.Point(348, 47);
+            this.btStopTransportService.Name = "btStopTransportService";
+            this.btStopTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btStopTransportService.TabIndex = 8;
+            this.btStopTransportService.Text = "St&op";
+            this.btStopTransportService.UseVisualStyleBackColor = true;
+            this.btStopTransportService.Click += new System.EventHandler(this.btStopTransportService_Click);
+            // 
+            // btRestartTransportService
+            // 
+            this.btRestartTransportService.Location = new System.Drawing.Point(441, 47);
+            this.btRestartTransportService.Name = "btRestartTransportService";
+            this.btRestartTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btRestartTransportService.TabIndex = 9;
+            this.btRestartTransportService.Text = "Re&start";
+            this.btRestartTransportService.UseVisualStyleBackColor = true;
+            this.btRestartTransportService.Click += new System.EventHandler(this.btRestartTransportService_Click);
+            // 
+            // txtExchangeStatus
+            // 
+            this.txtExchangeStatus.Location = new System.Drawing.Point(388, 17);
+            this.txtExchangeStatus.Name = "txtExchangeStatus";
+            this.txtExchangeStatus.ReadOnly = true;
+            this.txtExchangeStatus.Size = new System.Drawing.Size(138, 20);
+            this.txtExchangeStatus.TabIndex = 10;
+            this.txtExchangeStatus.Text = "Loading...";
             // 
             // MainWindow
             // 
@@ -811,10 +808,10 @@
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.tcConfiguration.ResumeLayout(false);
             this.tbInformation.ResumeLayout(false);
-            this.gbAvailable.ResumeLayout(false);
-            this.gbAvailable.PerformLayout();
-            this.gbInstalled.ResumeLayout(false);
-            this.gbInstalled.PerformLayout();
+            this.gbDkimSigner.ResumeLayout(false);
+            this.gbDkimSigner.PerformLayout();
+            this.gbExchange.ResumeLayout(false);
+            this.gbExchange.PerformLayout();
             this.tpDKIM.ResumeLayout(false);
             this.gbHeaderToSign.ResumeLayout(false);
             this.gbLogLevel.ResumeLayout(false);
@@ -828,7 +825,7 @@
             this.gbDomain.ResumeLayout(false);
             this.gbxDomainDetails.ResumeLayout(false);
             this.gbxDomainDetails.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -839,10 +836,10 @@
         private System.Windows.Forms.TabPage tpDKIM;
         private System.Windows.Forms.TabPage tpDomain;
         private System.Windows.Forms.TabPage tbInformation;
-        private System.Windows.Forms.GroupBox gbAvailable;
+        private System.Windows.Forms.GroupBox gbDkimSigner;
         private System.Windows.Forms.TextBox txtDkimSignerAvailable;
         private System.Windows.Forms.Label lbDkimSignerAvailable;
-        private System.Windows.Forms.GroupBox gbInstalled;
+        private System.Windows.Forms.GroupBox gbExchange;
         private System.Windows.Forms.Label lbExchangeInstalled;
         private System.Windows.Forms.TextBox txtDkimSignerInstalled;
         private System.Windows.Forms.TextBox txtExchangeInstalled;
@@ -859,44 +856,44 @@
         private System.Windows.Forms.GroupBox gbLogLevel;
         private System.Windows.Forms.ComboBox cbLogLevel;
         private System.Windows.Forms.GroupBox gbHeaderToSign;
-        private System.Windows.Forms.Button btnDomainKeySelect;
-        private System.Windows.Forms.Button btSave;
+        private System.Windows.Forms.Button btDomainKeySelect;
+        private System.Windows.Forms.Button btSaveConfiguration;
         private System.Windows.Forms.Label lblChangelog;
         private System.Windows.Forms.TextBox txtChangelog;
-        private System.Windows.Forms.Button btInstallUpate;
         private System.Windows.Forms.Button btDomainKeyGenerate;
-        private System.Windows.Forms.Button btUninstall;
         private System.Windows.Forms.CheckBox cbxPrereleases;
-        private System.Windows.Forms.Button btInstallZip;
-        private System.Windows.Forms.Button btDisable;
         private System.Windows.Forms.GroupBox gbxDomainDetails;
-        private System.Windows.Forms.Button btnDomainDelete;
-        private System.Windows.Forms.Button btnDomainSave;
+        private System.Windows.Forms.Button btDomainDelete;
+        private System.Windows.Forms.Button btDomainSave;
         private System.Windows.Forms.TextBox txtDomainPrivateKeyFilename;
         private System.Windows.Forms.Label lbPrivateKey;
         private System.Windows.Forms.TextBox txtDomainSelector;
         private System.Windows.Forms.Label lbSelector;
         private System.Windows.Forms.TextBox txtDomainName;
         private System.Windows.Forms.Label lbDomainName;
-        private System.Windows.Forms.Button btnAddDomain;
+        private System.Windows.Forms.Button btAddDomain;
         private System.Windows.Forms.ListBox lbxDomains;
         private System.Windows.Forms.TextBox txtDomainDNS;
-        private System.Windows.Forms.Button btnDomainCheckDNS;
+        private System.Windows.Forms.Button btDomainCheckDNS;
         private System.Windows.Forms.Label lbExistingDns;
         private System.Windows.Forms.Label lbSuggestedDnsRecord;
         private System.Windows.Forms.TextBox txtDNSRecord;
         private System.Windows.Forms.TextBox txtDNSName;
         private System.Windows.Forms.Label lbSuggestedDnsName;
-        private System.Windows.Forms.ErrorProvider errorProvider;
-        private System.Windows.Forms.Button btRestartTransportService;
+        private System.Windows.Forms.ErrorProvider epvDomainSelector;
         private System.Windows.Forms.Timer timExchangeStatus;
-        private System.Windows.Forms.Label lblExchangeStatus;
+        private System.Windows.Forms.Label lbExchangeStatus;
         private System.Windows.Forms.Button btHeaderAdd;
         private System.Windows.Forms.Button btHeaderDelete;
         private System.Windows.Forms.ListBox lbxHeadersToSign;
         private System.Windows.Forms.GroupBox gbDomain;
         private System.Windows.Forms.ComboBox cbKeyLength;
         private System.Windows.Forms.Label lbKeyLength;
+        private System.Windows.Forms.Button btConfigureTransportService;
+        private System.Windows.Forms.TextBox txtExchangeStatus;
+        private System.Windows.Forms.Button btRestartTransportService;
+        private System.Windows.Forms.Button btStopTransportService;
+        private System.Windows.Forms.Button btStartTransportService;
     }
 }
 
