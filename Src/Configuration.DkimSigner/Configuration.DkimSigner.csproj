@@ -194,11 +194,11 @@
     <Compile Include="GitHub\Api.cs" />
     <Compile Include="GitHub\ApiWrapper.cs" />
     <Compile Include="GitHub\DataContract.cs" />
-    <Compile Include="HeaderInputForm.cs">
+    <Compile Include="HeaderInputWindows.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="HeaderInputForm.Designer.cs">
-      <DependentUpon>HeaderInputForm.cs</DependentUpon>
+    <Compile Include="HeaderInputWindows.Designer.cs">
+      <DependentUpon>HeaderInputWindows.cs</DependentUpon>
     </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
@@ -217,8 +217,8 @@
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="HeaderInputForm.resx">
-      <DependentUpon>HeaderInputForm.cs</DependentUpon>
+    <EmbeddedResource Include="HeaderInputWindows.resx">
+      <DependentUpon>HeaderInputWindows.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
