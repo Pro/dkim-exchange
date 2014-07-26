@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
 {
-    public partial class HeaderInputForm : Form
+    public partial class HeaderInputWindows : Form
     {
         /**********************************************************/
         /*********************** Variables ************************/
@@ -14,7 +14,7 @@ namespace Configuration.DkimSigner
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public HeaderInputForm()
+        public HeaderInputWindows()
         {
             InitializeComponent();
         }

@@ -1,6 +1,6 @@
 ﻿namespace Configuration.DkimSigner
 {
-    partial class HeaderInputForm
+    partial class HeaderInputWindows
     {
         /// <summary>
         /// Required designer variable.
@@ -77,7 +77,7 @@
             this.Name = "HeaderInputForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Add a new Header";
+            this.Text = "Add a new header";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.HeaderInputForm_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
