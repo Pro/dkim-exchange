@@ -2,9 +2,9 @@
 using System;
 using System.Text;
 
-namespace ConfigurationSettings
+namespace Configuration.DkimSigner
 {
-    class RegistryHelper
+    public class RegistryHelper
     {
         public static Exception lastException = null;
 
