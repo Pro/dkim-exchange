@@ -23,8 +23,8 @@ namespace Configuration.DkimSigner
 
         private ExchangeServer oExchange = null;
         private Settings oConfig = null;
-        private Release dkimSignerAvailable = null;
-        private Version dkimSignerInstalled = null;
+        //private Release dkimSignerAvailable = null;
+        //private Version dkimSignerInstalled = null;
 
         private bool bDataUpdated = false;
         
@@ -33,8 +33,8 @@ namespace Configuration.DkimSigner
         private Thread thTransportServiceOperation = null;
         private System.Threading.Timer tiTransportServiceStatus = null;
 
-        delegate void SetDkimSignerInstalledCallback();
-        delegate void SetDkimSignerAvailableCallback();
+        delegate void SetDkimSignerInstalledCallback(Version oDkimSignerInstalled);
+        delegate void SetDkimSignerAvailableCallback(Release oDkimSignerAvailable);
         delegate void SetExchangeTransportServiceStatusCallback();
 
         /**********************************************************/
@@ -283,22 +283,22 @@ namespace Configuration.DkimSigner
         /// Set the value of txtDkimSignerInstalled from CheckDkimSignerInstalledSafe (use by thread DkimSignerInstalled)
         /// </summary>
         /// <param name="dkimSignerInstalled"></param>
-        private void SetDkimSignerInstalled()
+        private void SetDkimSignerInstalled(Version oDkimSignerInstalled)
         {
-            this.txtDkimSignerInstalled.Text = (this.dkimSignerInstalled != null ? this.dkimSignerInstalled.ToString() : "Not installed");
+            this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed");
         }
 
         /// <summary>
         ///  Set the value of txtDkimSignerAvailable from CheckDkimSignerAvailableSafe (use by thread DkimSignerAvailable)
         /// </summary>
         /// <param name="dkimSignerAvailable"></param>
-        private void SetDkimSignerAvailable()
+        private void SetDkimSignerAvailable(Release oDkimSignerAvailable)
         {
-            if (this.dkimSignerAvailable != null)
+            if (oDkimSignerAvailable != null)
             {
-                string version = this.dkimSignerAvailable.Version.ToString();
+                string version = oDkimSignerAvailable.Version.ToString();
 
-                Match match = Regex.Match(this.dkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
+                Match match = Regex.Match(oDkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
 
                 if (match.Success)
                 {
@@ -314,7 +314,7 @@ namespace Configuration.DkimSigner
                 }
 
                 this.txtDkimSignerAvailable.Text = version;
-                this.txtChangelog.Text = this.dkimSignerAvailable.Body;
+                this.txtChangelog.Text = oDkimSignerAvailable.Body;
             }
             else
             {
@@ -345,24 +345,23 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void CheckDkimSignerInstalledSafe()
         {
+            Version oDkimSignerInstalled = null;
+            
             // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
             try
             {
-                this.dkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
+                oDkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
             }
-            catch (Exception)
-            {
-                this.dkimSignerInstalled = null;
-            }
+            catch (Exception) {}
 
             // Check if DKIM agent have been load in Exchange
-            if (this.dkimSignerInstalled != null)
+            if (oDkimSignerInstalled != null)
             {
                 try
                 {
                     if (!oExchange.IsDkimAgentTransportInstalled())
                     {
-                        this.dkimSignerInstalled = null;
+                        oDkimSignerInstalled = null;
                     }
                 }
                 catch (Exception) { }
@@ -372,11 +371,11 @@ namespace Configuration.DkimSigner
             if (this.txtDkimSignerInstalled.InvokeRequired)
             {
                 SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
-                this.Invoke(d);
+                this.Invoke(d, oDkimSignerInstalled);
             }
             else
             {
-                this.SetDkimSignerInstalled();
+                this.SetDkimSignerInstalled(oDkimSignerInstalled);
             }
         }
 
@@ -385,25 +384,24 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void CheckDkimSignerAvailableSafe()
         {
+            Release oDkimSignerAvailable = null;
+
             // Check the lastest Release
             try
             {
-                this.dkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
+                oDkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
             }
-            catch (Exception)
-            {
-                this.dkimSignerAvailable = null;
-            }
+            catch (Exception) {}
 
             // Set the result in the textbox
             if (this.txtDkimSignerInstalled.InvokeRequired)
             {
                 SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
-                this.Invoke(d);
+                this.Invoke(d, oDkimSignerAvailable);
             }
             else
             {
-                this.SetDkimSignerAvailable();
+                this.SetDkimSignerAvailable(oDkimSignerAvailable);
             }
         }
 

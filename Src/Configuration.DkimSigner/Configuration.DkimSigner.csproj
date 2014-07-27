@@ -216,11 +216,11 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UpgradeWindow.cs">
+    <Compile Include="InstallWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UpgradeWindow.Designer.cs">
-      <DependentUpon>UpgradeWindow.cs</DependentUpon>
+    <Compile Include="InstallWindow.Designer.cs">
+      <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
@@ -239,8 +239,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UpgradeWindow.resx">
-      <DependentUpon>UpgradeWindow.cs</DependentUpon>
+    <EmbeddedResource Include="InstallWindow.resx">
+      <DependentUpon>InstallWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="app.manifest">

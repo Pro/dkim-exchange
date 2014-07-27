@@ -47,7 +47,7 @@
             this.btRefresh.Location = new System.Drawing.Point(403, 12);
             this.btRefresh.Name = "btRefresh";
             this.btRefresh.Size = new System.Drawing.Size(94, 23);
-            this.btRefresh.TabIndex = 0;
+            this.btRefresh.TabIndex = 1;
             this.btRefresh.Text = "&Refresh";
             this.btRefresh.UseVisualStyleBackColor = true;
             this.btRefresh.Click += new System.EventHandler(this.btRefresh_Click);
@@ -57,7 +57,7 @@
             this.btUninstall.Location = new System.Drawing.Point(403, 96);
             this.btUninstall.Name = "btUninstall";
             this.btUninstall.Size = new System.Drawing.Size(94, 23);
-            this.btUninstall.TabIndex = 2;
+            this.btUninstall.TabIndex = 3;
             this.btUninstall.Text = "U&ninstall";
             this.btUninstall.UseVisualStyleBackColor = true;
             this.btUninstall.Click += new System.EventHandler(this.btUninstall_Click);
@@ -67,7 +67,7 @@
             this.btDisable.Location = new System.Drawing.Point(403, 125);
             this.btDisable.Name = "btDisable";
             this.btDisable.Size = new System.Drawing.Size(94, 23);
-            this.btDisable.TabIndex = 3;
+            this.btDisable.TabIndex = 4;
             this.btDisable.Text = "Disa&ble";
             this.btDisable.UseVisualStyleBackColor = true;
             this.btDisable.Click += new System.EventHandler(this.btDisable_Click);
@@ -78,7 +78,7 @@
             this.btMoveUp.Location = new System.Drawing.Point(403, 186);
             this.btMoveUp.Name = "btMoveUp";
             this.btMoveUp.Size = new System.Drawing.Size(94, 23);
-            this.btMoveUp.TabIndex = 4;
+            this.btMoveUp.TabIndex = 5;
             this.btMoveUp.Text = "Move &Up";
             this.btMoveUp.UseVisualStyleBackColor = true;
             this.btMoveUp.Click += new System.EventHandler(this.btMoveUp_Click);
@@ -89,7 +89,7 @@
             this.btMoveDown.Location = new System.Drawing.Point(403, 215);
             this.btMoveDown.Name = "btMoveDown";
             this.btMoveDown.Size = new System.Drawing.Size(94, 23);
-            this.btMoveDown.TabIndex = 5;
+            this.btMoveDown.TabIndex = 6;
             this.btMoveDown.Text = "Move  &Down";
             this.btMoveDown.UseVisualStyleBackColor = true;
             this.btMoveDown.Click += new System.EventHandler(this.btMoveDown_Click);
@@ -100,7 +100,7 @@
             this.btClose.Location = new System.Drawing.Point(403, 269);
             this.btClose.Name = "btClose";
             this.btClose.Size = new System.Drawing.Size(94, 23);
-            this.btClose.TabIndex = 6;
+            this.btClose.TabIndex = 7;
             this.btClose.Text = "&Close";
             this.btClose.UseVisualStyleBackColor = true;
             this.btClose.Click += new System.EventHandler(this.btClose_Click);
@@ -124,7 +124,7 @@
             this.dgvTransportServiceAgents.RowHeadersVisible = false;
             this.dgvTransportServiceAgents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvTransportServiceAgents.Size = new System.Drawing.Size(372, 280);
-            this.dgvTransportServiceAgents.TabIndex = 1;
+            this.dgvTransportServiceAgents.TabIndex = 0;
             // 
             // dgvcPriority
             // 
@@ -156,7 +156,7 @@
             this.btUpdate.Location = new System.Drawing.Point(403, 67);
             this.btUpdate.Name = "btUpdate";
             this.btUpdate.Size = new System.Drawing.Size(94, 23);
-            this.btUpdate.TabIndex = 7;
+            this.btUpdate.TabIndex = 2;
             this.btUpdate.Text = "U&pdate";
             this.btUpdate.UseVisualStyleBackColor = true;
             this.btUpdate.Click += new System.EventHandler(this.btUpdate_Click);

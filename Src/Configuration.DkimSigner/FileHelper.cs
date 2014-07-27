@@ -19,61 +19,68 @@ namespace Configuration.DkimSigner
         /// Only supported on NTFS file system. If file is located on another FS type, this method will most probably return false.
         /// See: http://stackoverflow.com/questions/6374673/unblock-file-from-within-net-4-c-sharp
         /// </summary>
-        /// <param name="fileName">The file to unlock</param>
+        /// <param name="sFileName">The file to unlock</param>
         /// <returns>True if successfully unlocked.</returns>
-        public bool Unblock(string fileName)
+        public bool Unblock(string sFileName)
         {
-            return DeleteFile(fileName + ":Zone.Identifier");
+            return DeleteFile(sFileName + ":Zone.Identifier");
         }
 
         /// <summary>
         /// Permit to copy file from source path to destination path
         /// </summary>
-        /// <param name="sourcePath">Source path</param>
-        /// <param name="destinationPath">Destination path</param>
-        /// <param name="completed">Return exception if any during the process</param>
-        public static void CopyFile(String sourcePath, String destinationPath, Action<String, String, Exception> completed)
+        /// <param name="sSourcePath">Source path</param>
+        /// <param name="sDestinationPath">Destination path</param>
+        /// <param name="oCompleted">Return exception if any during the process</param>
+        public static void CopyFile(string sSourcePath, string sDestinationPath, Action<string, string, Exception> oCompleted)
         {
-            Stream source = new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
-            Stream destination = new FileStream(destinationPath, FileMode.Create, FileAccess.Write);
-            byte[] buffer = new byte[0x1000];
-            AsyncOperation asyncOp = AsyncOperationManager.CreateOperation(null);
+            Stream oSourceFile = new FileStream(sSourcePath, FileMode.Open, FileAccess.Read);
+            Stream oDestinationFile = new FileStream(sDestinationPath, FileMode.Create, FileAccess.Write);
+            byte[] oBuffer = new byte[0x1000];
+            AsyncOperation oAsyncOper = AsyncOperationManager.CreateOperation(null);
 
-            Action<Exception> cbCompleted = e =>
+            Action<Exception> oCbCompleted = e =>
             {
-                if (completed != null) asyncOp.Post(delegate
-                     {
-                         source.Close();
-                         destination.Close();
-                         completed(sourcePath, destinationPath, e);
-                     }, null);
+                if (oCompleted != null)
+                {
+                    oAsyncOper.Post(delegate { oSourceFile.Close(); oDestinationFile.Close(); oCompleted(sSourcePath, sDestinationPath, e); }, null);
+                }
             };
 
-            AsyncCallback rc = null;
-            rc = readResult =>
+            AsyncCallback oAsyncCall = null;
+            oAsyncCall = readResult =>
             {
                 try
                 {
-                    int read = source.EndRead(readResult);
-                    if (read > 0)
+                    int iRead = oSourceFile.EndRead(readResult);
+
+                    if (iRead > 0)
                     {
-                        destination.BeginWrite(buffer, 0, read, writeResult =>
+                        oDestinationFile.BeginWrite(oBuffer, 0, iRead, writeResult =>
                         {
                             try
                             {
-                                destination.EndWrite(writeResult);
-                                source.BeginRead(
-                                    buffer, 0, buffer.Length, rc, null);
+                                oDestinationFile.EndWrite(writeResult);
+                                oSourceFile.BeginRead(oBuffer, 0, oBuffer.Length, oAsyncCall, null);
                             }
-                            catch (Exception exc) { cbCompleted(exc); }
+                            catch (Exception ex)
+                            {
+                                oCbCompleted(ex);
+                            }
                         }, null);
                     }
-                    else cbCompleted(null);
+                    else
+                    {
+                        oCbCompleted(null);
+                    }
                 }
-                catch (Exception exc) { cbCompleted(exc); }
+                catch (Exception ex)
+                {
+                    oCbCompleted(ex);
+                }
             };
 
-            source.BeginRead(buffer, 0, buffer.Length, rc, null);
+            oSourceFile.BeginRead(oBuffer, 0, oBuffer.Length, oAsyncCall, null);
         }
     }
 }

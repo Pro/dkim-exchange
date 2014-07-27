@@ -116,18 +116,6 @@ namespace Configuration.DkimSigner
                 this.btInstallUpate.Enabled = true;
                 return;
             }
-
-            try
-            {
-                Process.Start(exePath, this.btInstallUpate.Enabled == true && this.btInstallUpate.Text == "Install" ? "--install" : "--upgrade \"" + Constants.DKIM_SIGNER_PATH + "\"");
-
-                this.Close();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Couldn't start updater:\n" + e.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.btInstallUpate.Enabled = true;
-            }
         }*/
 
         /*private void performUpgrade()
@@ -182,58 +170,6 @@ namespace Configuration.DkimSigner
         /********************** Button click **********************/
         /**********************************************************/
 
-        /// <summary>
-        /// Update the current Configuration.ExchangeDkimSigner WindowsForm and the Exchange.DkimSigner transport agent
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /*private void btInstallUpate_Click(object sender, EventArgs e)
-        {
-            if (this.btInstallUpate.Enabled == true)
-            {
-                switch (this.btInstallUpate.Text)
-                {
-                    case "Downgrade":
-                        if (MessageBox.Show("Do you really want to downgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Downgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            this.performUpgrade();
-                        }
-                        break;
-                    case "Upgrade":
-                        if (MessageBox.Show("Do you really want to upgrade the DKIM Exchange Agent from Version " + dkimSignerInstalled.ToString() + " to " + dkimSignerAvailable.Version.ToString() + "?", "Upgrade?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            this.performUpgrade();
-                        }
-                        break;
-                    case "Install":
-                        if (MessageBox.Show("Do you really want to install the DKIM Exchange Agent version " + dkimSignerAvailable.Version.ToString() + "?", "Install?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                        {
-                            this.performUpgrade();
-                        }
-                        break;
-                }
-            }
-        }*/
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /*private void btInstallZip_Click(object sender, EventArgs e)
-        {
-            OpenFileDialog oFileDialog = new OpenFileDialog();
-
-            oFileDialog.FileName = "dkim-exchange.zip";
-            oFileDialog.Filter = "ZIP files|*.zip";
-            oFileDialog.Title = "Select the .zip file downloaded from github.com";
-
-            if (oFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                this.extractAndInstall(oFileDialog.FileName);
-            }
-        }*/
-
         private void btRefresh_Click(object sender, EventArgs e)
         {
             this.RefreshTransportServiceAgents();
@@ -241,19 +177,24 @@ namespace Configuration.DkimSigner
 
         private void btUpdate_Click(object sender, EventArgs e)
         {
-            if(this.btUpdate.Text == "Install")
+            if (this.btUpdate.Text == "Update" ? MessageBox.Show("Do you really want to UPDATE the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
+                /*try
+                {
+                    Process.Start(exePath, this.btUpdate.Text == "Install" ? "--install" : "--upgrade \"" + Constants.DKIM_SIGNER_PATH + "\"");
 
-            }
-            else
-            {
-
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Couldn't start updater:\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }*/
             }
         }
 
         private void btUninstall_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you really want to UNINSTALL the DKIM Exchange Agent?\nPlease remove the following folder manually:\n" + Constants.DKIM_SIGNER_PATH, "Uninstall?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("Do you really want to UNINSTALL the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 //this.performUninstall();
             }

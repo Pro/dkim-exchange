@@ -189,7 +189,7 @@ namespace Configuration.DkimSigner.Exchange
             {
                 PowerShellHelper.ExecPowerShellCommand("Install-TransportAgent -Name \"Exchange DkimSigner\" -TransportAgentFactory \"Exchange.DkimSigner.DkimSigningRoutingAgentFactory\" -AssemblyPath \"" + Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL) + "\"", true);
 
-                this.EnableDkimTransportAgent();
+                PowerShellHelper.ExecPowerShellCommand("Enable-TransportAgent -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
             }
         }
 
