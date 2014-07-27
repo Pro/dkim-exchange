@@ -11,7 +11,6 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
-        DialogResult dialogResult;
         string tempPath;
         string installPath;
 
@@ -21,11 +20,10 @@ namespace Configuration.DkimSigner
 
         public UpgradeWindow(string tempPath, string installPath)
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
             this.tempPath = tempPath;
             this.installPath = installPath;
-            dialogResult = DialogResult.Cancel;
         }
 
         /**********************************************************/
@@ -34,8 +32,8 @@ namespace Configuration.DkimSigner
 
         private void startUpgrade()
         {
-            resetStatus();
-            stopServiceTask();
+            this.resetStatus();
+            this.stopServiceTask();
         }
 
         private string installAgent()
@@ -334,11 +332,6 @@ namespace Configuration.DkimSigner
             {
                 this.lbDone.Enabled = true;
                 picDone.Image = statusImageList.Images[0];
-                dialogResult = DialogResult.OK;
-            }
-            else
-            {
-                dialogResult = DialogResult.Cancel;
             }
 
             btnClose.Enabled = true;
@@ -350,7 +343,6 @@ namespace Configuration.DkimSigner
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            this.DialogResult = dialogResult;
             this.Close();
         }
     }

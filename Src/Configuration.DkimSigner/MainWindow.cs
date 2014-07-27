@@ -30,9 +30,11 @@ namespace Configuration.DkimSigner
         
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
+        private System.Threading.Timer tiTransportServiceStatus = null;
 
         delegate void SetDkimSignerInstalledCallback();
         delegate void SetDkimSignerAvailableCallback();
+        delegate void SetExchangeTransportServiceStatusCallback();
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -44,6 +46,7 @@ namespace Configuration.DkimSigner
 
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
+
             this.oExchange = oServer;
         }
 
@@ -58,7 +61,13 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            // Uptade Microsft Exchange Transport Service stuatus
+            this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
+            
+            // Update Exchange and DKIM Signer version
             this.UpdateVersions();
+
+            // Load setting from XML file
             this.LoadDkimSignerConfig();
         }
 
@@ -84,6 +93,29 @@ namespace Configuration.DkimSigner
             if (!this.CheckSaveConfig())
             {
                 e.Cancel = true;
+            }
+        }
+
+        private void txtExchangeStatus_TextChanged(object sender, System.EventArgs e)
+        {
+            switch (this.txtExchangeStatus.Text)
+            {
+                case "Running":
+                    this.btStartTransportService.Enabled = false;
+                    this.btStopTransportService.Enabled = true;
+                    this.btRestartTransportService.Enabled = true;
+                    break;
+
+                case "Stopped":
+                    this.btStartTransportService.Enabled = true;
+                    this.btStopTransportService.Enabled = false;
+                    this.btRestartTransportService.Enabled = false;
+                    break;
+                default:
+                    this.btStartTransportService.Enabled = false;
+                    this.btStopTransportService.Enabled = false;
+                    this.btRestartTransportService.Enabled = false;
+                    break;
             }
         }
 
@@ -193,44 +225,6 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
-        private void timExchangeStatus_Tick(object sender, EventArgs e)
-        {
-            try
-            {
-                this.txtExchangeStatus.Text = oExchange.GetTransportServiceStatus().ToString();
-
-                switch (this.oExchange.GetTransportServiceStatus().ToString())
-                {
-                    case "Running":
-                        this.btStartTransportService.Enabled = false;
-                        this.btStopTransportService.Enabled = true;
-                        this.btRestartTransportService.Enabled= true;
-                        break;
-                        
-                    case "Stopped":
-                        this.btStartTransportService.Enabled = true;
-                        this.btStopTransportService.Enabled = false;
-                        this.btRestartTransportService.Enabled= false;
-                        break;
-                    default :
-                        this.btStartTransportService.Enabled = false;
-                        this.btStopTransportService.Enabled = false;
-                        this.btRestartTransportService.Enabled= false;
-                        break;
-                }
-            }
-            catch (ExchangeHelperException)
-            {
-                this.timExchangeStatus.Enabled = false;
-
-                this.btStartTransportService.Enabled = false;
-                this.btStopTransportService.Enabled = false;
-                this.btRestartTransportService.Enabled= false;
-
-                this.txtExchangeStatus.Text = "Unknown";
-            }
-        }
-
         /**********************************************************/
         /******************* Internal functions *******************/
         /**********************************************************/
@@ -244,6 +238,25 @@ namespace Configuration.DkimSigner
         {
             s = s.Trim();
             return (s.Length % 4 == 0) && Regex.IsMatch(s, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void SetExchangeTransportServiceStatus()
+        {
+            string sStatus = null;
+
+            try
+            {
+                sStatus = oExchange.GetTransportServiceStatus().ToString();
+            }
+            catch (ExchangeHelperException)
+            {
+                this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+
+            this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown");
         }
 
         /// <summary>
@@ -287,6 +300,90 @@ namespace Configuration.DkimSigner
             {
                 this.txtDkimSignerAvailable.Text = "Unknown";
                 this.txtChangelog.Text = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="state"></param>
+        private void CheckExchangeTransportServiceStatus(object state)
+        {
+            if (this.txtExchangeStatus.InvokeRequired)
+            {
+                SetExchangeTransportServiceStatusCallback d = new SetExchangeTransportServiceStatusCallback(SetExchangeTransportServiceStatus);
+                this.Invoke(d);
+            }
+            else
+            {
+                this.SetExchangeTransportServiceStatus();
+            }
+        }
+
+        /// <summary>
+        /// Thread safe function for the thread DkimSignerInstalled
+        /// </summary>
+        private void CheckDkimSignerInstalledSafe()
+        {
+            // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
+            try
+            {
+                this.dkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
+            }
+            catch (Exception)
+            {
+                this.dkimSignerInstalled = null;
+            }
+
+            // Check if DKIM agent have been load in Exchange
+            if (this.dkimSignerInstalled != null)
+            {
+                try
+                {
+                    if (!oExchange.IsDkimAgentTransportInstalled())
+                    {
+                        this.dkimSignerInstalled = null;
+                    }
+                }
+                catch (Exception) { }
+            }
+
+            // Set the result in the textbox
+            if (this.txtDkimSignerInstalled.InvokeRequired)
+            {
+                SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
+                this.Invoke(d);
+            }
+            else
+            {
+                this.SetDkimSignerInstalled();
+            }
+        }
+
+        /// <summary>
+        /// Thread safe function for the thread DkimSignerAvailable
+        /// </summary>
+        private void CheckDkimSignerAvailableSafe()
+        {
+            // Check the lastest Release
+            try
+            {
+                this.dkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
+            }
+            catch (Exception)
+            {
+                this.dkimSignerAvailable = null;
+            }
+
+            // Set the result in the textbox
+            if (this.txtDkimSignerInstalled.InvokeRequired)
+            {
+                SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
+                this.Invoke(d);
+            }
+            else
+            {
+                this.SetDkimSignerAvailable();
             }
         }
 
@@ -348,73 +445,6 @@ namespace Configuration.DkimSigner
             }
 
             return bStatus;
-        }
-
-        /// <summary>
-        /// Thread safe function for the thread DkimSignerInstalled
-        /// </summary>
-        private void CheckDkimSignerInstalledSafe()
-        {
-            // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
-            try
-            {
-                this.dkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
-            }
-            catch (Exception)
-            {
-               this.dkimSignerInstalled = null;
-            }
-
-            // Check if DKIM agent have been load in Exchange
-            if (this.dkimSignerInstalled != null)
-            {
-                try
-                {
-                    if (!oExchange.IsDkimAgentTransportInstalled())
-                    {
-                        this.dkimSignerInstalled = null;
-                    }
-                }
-                catch (Exception) {}
-            }
-            
-            // Set the result in the textbox
-            if (this.txtDkimSignerInstalled.InvokeRequired)
-            {
-                SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
-                this.Invoke(d);
-            }
-            else
-            {
-                this.SetDkimSignerInstalled();
-            }
-        }
-
-        /// <summary>
-        /// Thread safe function for the thread DkimSignerAvailable
-        /// </summary>
-        private void CheckDkimSignerAvailableSafe()
-        {
-            // Check the lastest Release
-            try
-            {
-                this.dkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
-            }
-            catch (Exception)
-            {
-                this.dkimSignerAvailable = null;
-            }
-
-            // Set the result in the textbox
-            if (this.txtDkimSignerInstalled.InvokeRequired)
-            {
-                SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
-                this.Invoke(d);
-            }
-            else
-            {
-                this.SetDkimSignerAvailable();
-            }
         }
 
         /// <summary>
@@ -607,19 +637,61 @@ namespace Configuration.DkimSigner
         /********************** Button click **********************/
         /**********************************************************/
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btStartTransportService_Click(object sender, EventArgs e)
         {
+            try
+            {
+                this.oExchange.StartTransportService();
+            }
+            catch (ExchangeHelperException)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
+            this.CheckExchangeTransportServiceStatus(null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btStopTransportService_Click(object sender, EventArgs e)
         {
+            try
+            {
+                this.oExchange.StopTransportService();
+            }
+            catch (ExchangeHelperException)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
+            this.CheckExchangeTransportServiceStatus(null);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btRestartTransportService_Click(object sender, EventArgs e)
         {
+            try
+            {
+                this.oExchange.RestartTransportService();
+            }
+            catch (ExchangeHelperException)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
+            this.CheckExchangeTransportServiceStatus(null);
         }
 
         /// <summary>

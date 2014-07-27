@@ -37,13 +37,18 @@
             this.lblChangelog = new System.Windows.Forms.Label();
             this.txtChangelog = new System.Windows.Forms.TextBox();
             this.txtDkimSignerAvailable = new System.Windows.Forms.TextBox();
+            this.btConfigureTransportService = new System.Windows.Forms.Button();
             this.lbDkimSignerAvailable = new System.Windows.Forms.Label();
+            this.txtDkimSignerInstalled = new System.Windows.Forms.TextBox();
+            this.lbDkimSignerInstalled = new System.Windows.Forms.Label();
             this.gbExchange = new System.Windows.Forms.GroupBox();
+            this.txtExchangeStatus = new System.Windows.Forms.TextBox();
+            this.btRestartTransportService = new System.Windows.Forms.Button();
+            this.btStopTransportService = new System.Windows.Forms.Button();
+            this.btStartTransportService = new System.Windows.Forms.Button();
             this.lbExchangeStatus = new System.Windows.Forms.Label();
             this.lbExchangeInstalled = new System.Windows.Forms.Label();
-            this.txtDkimSignerInstalled = new System.Windows.Forms.TextBox();
             this.txtExchangeInstalled = new System.Windows.Forms.TextBox();
-            this.lbDkimSignerInstalled = new System.Windows.Forms.Label();
             this.tpDKIM = new System.Windows.Forms.TabPage();
             this.btSaveConfiguration = new System.Windows.Forms.Button();
             this.gbHeaderToSign = new System.Windows.Forms.GroupBox();
@@ -86,12 +91,6 @@
             this.btDomainKeySelect = new System.Windows.Forms.Button();
             this.btDomainKeyGenerate = new System.Windows.Forms.Button();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
-            this.timExchangeStatus = new System.Windows.Forms.Timer(this.components);
-            this.btConfigureTransportService = new System.Windows.Forms.Button();
-            this.btStartTransportService = new System.Windows.Forms.Button();
-            this.btStopTransportService = new System.Windows.Forms.Button();
-            this.btRestartTransportService = new System.Windows.Forms.Button();
-            this.txtExchangeStatus = new System.Windows.Forms.TextBox();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -196,6 +195,17 @@
             this.txtDkimSignerAvailable.TabIndex = 1;
             this.txtDkimSignerAvailable.Text = "Loading...";
             // 
+            // btConfigureTransportService
+            // 
+            this.btConfigureTransportService.Enabled = false;
+            this.btConfigureTransportService.Location = new System.Drawing.Point(255, 21);
+            this.btConfigureTransportService.Name = "btConfigureTransportService";
+            this.btConfigureTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btConfigureTransportService.TabIndex = 6;
+            this.btConfigureTransportService.Text = "&Configure";
+            this.btConfigureTransportService.UseVisualStyleBackColor = true;
+            this.btConfigureTransportService.Click += new System.EventHandler(this.btConfigureTransportService_Click);
+            // 
             // lbDkimSignerAvailable
             // 
             this.lbDkimSignerAvailable.AutoSize = true;
@@ -204,6 +214,24 @@
             this.lbDkimSignerAvailable.Size = new System.Drawing.Size(56, 13);
             this.lbDkimSignerAvailable.TabIndex = 0;
             this.lbDkimSignerAvailable.Text = "Available :";
+            // 
+            // txtDkimSignerInstalled
+            // 
+            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 23);
+            this.txtDkimSignerInstalled.Name = "txtDkimSignerInstalled";
+            this.txtDkimSignerInstalled.ReadOnly = true;
+            this.txtDkimSignerInstalled.Size = new System.Drawing.Size(138, 20);
+            this.txtDkimSignerInstalled.TabIndex = 1;
+            this.txtDkimSignerInstalled.Text = "Loading...";
+            // 
+            // lbDkimSignerInstalled
+            // 
+            this.lbDkimSignerInstalled.AutoSize = true;
+            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 26);
+            this.lbDkimSignerInstalled.Name = "lbDkimSignerInstalled";
+            this.lbDkimSignerInstalled.Size = new System.Drawing.Size(52, 13);
+            this.lbDkimSignerInstalled.TabIndex = 0;
+            this.lbDkimSignerInstalled.Text = "Installed :";
             // 
             // gbExchange
             // 
@@ -223,6 +251,49 @@
             this.gbExchange.TabStop = false;
             this.gbExchange.Text = "Micosoft Exchange";
             // 
+            // txtExchangeStatus
+            // 
+            this.txtExchangeStatus.Location = new System.Drawing.Point(388, 17);
+            this.txtExchangeStatus.Name = "txtExchangeStatus";
+            this.txtExchangeStatus.ReadOnly = true;
+            this.txtExchangeStatus.Size = new System.Drawing.Size(138, 20);
+            this.txtExchangeStatus.TabIndex = 10;
+            this.txtExchangeStatus.Text = "Loading...";
+            this.txtExchangeStatus.TextChanged += new System.EventHandler(this.txtExchangeStatus_TextChanged);
+            // 
+            // btRestartTransportService
+            // 
+            this.btRestartTransportService.Enabled = false;
+            this.btRestartTransportService.Location = new System.Drawing.Point(441, 47);
+            this.btRestartTransportService.Name = "btRestartTransportService";
+            this.btRestartTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btRestartTransportService.TabIndex = 9;
+            this.btRestartTransportService.Text = "Re&start";
+            this.btRestartTransportService.UseVisualStyleBackColor = true;
+            this.btRestartTransportService.Click += new System.EventHandler(this.btRestartTransportService_Click);
+            // 
+            // btStopTransportService
+            // 
+            this.btStopTransportService.Enabled = false;
+            this.btStopTransportService.Location = new System.Drawing.Point(348, 47);
+            this.btStopTransportService.Name = "btStopTransportService";
+            this.btStopTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btStopTransportService.TabIndex = 8;
+            this.btStopTransportService.Text = "St&op";
+            this.btStopTransportService.UseVisualStyleBackColor = true;
+            this.btStopTransportService.Click += new System.EventHandler(this.btStopTransportService_Click);
+            // 
+            // btStartTransportService
+            // 
+            this.btStartTransportService.Enabled = false;
+            this.btStartTransportService.Location = new System.Drawing.Point(255, 47);
+            this.btStartTransportService.Name = "btStartTransportService";
+            this.btStartTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btStartTransportService.TabIndex = 7;
+            this.btStartTransportService.Text = "St&art";
+            this.btStartTransportService.UseVisualStyleBackColor = true;
+            this.btStartTransportService.Click += new System.EventHandler(this.btStartTransportService_Click);
+            // 
             // lbExchangeStatus
             // 
             this.lbExchangeStatus.AutoSize = true;
@@ -241,15 +312,6 @@
             this.lbExchangeInstalled.TabIndex = 2;
             this.lbExchangeInstalled.Text = "Installed :";
             // 
-            // txtDkimSignerInstalled
-            // 
-            this.txtDkimSignerInstalled.Location = new System.Drawing.Point(82, 23);
-            this.txtDkimSignerInstalled.Name = "txtDkimSignerInstalled";
-            this.txtDkimSignerInstalled.ReadOnly = true;
-            this.txtDkimSignerInstalled.Size = new System.Drawing.Size(138, 20);
-            this.txtDkimSignerInstalled.TabIndex = 1;
-            this.txtDkimSignerInstalled.Text = "Loading...";
-            // 
             // txtExchangeInstalled
             // 
             this.txtExchangeInstalled.Location = new System.Drawing.Point(82, 17);
@@ -258,15 +320,6 @@
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
             this.txtExchangeInstalled.TabIndex = 3;
             this.txtExchangeInstalled.Text = "Loading...";
-            // 
-            // lbDkimSignerInstalled
-            // 
-            this.lbDkimSignerInstalled.AutoSize = true;
-            this.lbDkimSignerInstalled.Location = new System.Drawing.Point(6, 26);
-            this.lbDkimSignerInstalled.Name = "lbDkimSignerInstalled";
-            this.lbDkimSignerInstalled.Size = new System.Drawing.Size(52, 13);
-            this.lbDkimSignerInstalled.TabIndex = 0;
-            this.lbDkimSignerInstalled.Text = "Installed :";
             // 
             // tpDKIM
             // 
@@ -738,61 +791,6 @@
             // 
             this.epvDomainSelector.ContainerControl = this;
             // 
-            // timExchangeStatus
-            // 
-            this.timExchangeStatus.Enabled = true;
-            this.timExchangeStatus.Interval = 200;
-            this.timExchangeStatus.Tick += new System.EventHandler(this.timExchangeStatus_Tick);
-            // 
-            // btConfigureTransportService
-            // 
-            this.btConfigureTransportService.Location = new System.Drawing.Point(255, 21);
-            this.btConfigureTransportService.Name = "btConfigureTransportService";
-            this.btConfigureTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btConfigureTransportService.TabIndex = 6;
-            this.btConfigureTransportService.Text = "&Configure";
-            this.btConfigureTransportService.UseVisualStyleBackColor = true;
-            this.btConfigureTransportService.Click += new System.EventHandler(this.btConfigureTransportService_Click);
-            // 
-            // btStartTransportService
-            // 
-            this.btStartTransportService.Location = new System.Drawing.Point(255, 47);
-            this.btStartTransportService.Name = "btStartTransportService";
-            this.btStartTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btStartTransportService.TabIndex = 7;
-            this.btStartTransportService.Text = "St&art";
-            this.btStartTransportService.UseVisualStyleBackColor = true;
-            this.btStartTransportService.Click += new System.EventHandler(this.btStartTransportService_Click);
-            // 
-            // btStopTransportService
-            // 
-            this.btStopTransportService.Location = new System.Drawing.Point(348, 47);
-            this.btStopTransportService.Name = "btStopTransportService";
-            this.btStopTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btStopTransportService.TabIndex = 8;
-            this.btStopTransportService.Text = "St&op";
-            this.btStopTransportService.UseVisualStyleBackColor = true;
-            this.btStopTransportService.Click += new System.EventHandler(this.btStopTransportService_Click);
-            // 
-            // btRestartTransportService
-            // 
-            this.btRestartTransportService.Location = new System.Drawing.Point(441, 47);
-            this.btRestartTransportService.Name = "btRestartTransportService";
-            this.btRestartTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btRestartTransportService.TabIndex = 9;
-            this.btRestartTransportService.Text = "Re&start";
-            this.btRestartTransportService.UseVisualStyleBackColor = true;
-            this.btRestartTransportService.Click += new System.EventHandler(this.btRestartTransportService_Click);
-            // 
-            // txtExchangeStatus
-            // 
-            this.txtExchangeStatus.Location = new System.Drawing.Point(388, 17);
-            this.txtExchangeStatus.Name = "txtExchangeStatus";
-            this.txtExchangeStatus.ReadOnly = true;
-            this.txtExchangeStatus.Size = new System.Drawing.Size(138, 20);
-            this.txtExchangeStatus.TabIndex = 10;
-            this.txtExchangeStatus.Text = "Loading...";
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -881,7 +879,6 @@
         private System.Windows.Forms.TextBox txtDNSName;
         private System.Windows.Forms.Label lbSuggestedDnsName;
         private System.Windows.Forms.ErrorProvider epvDomainSelector;
-        private System.Windows.Forms.Timer timExchangeStatus;
         private System.Windows.Forms.Label lbExchangeStatus;
         private System.Windows.Forms.Button btHeaderAdd;
         private System.Windows.Forms.Button btHeaderDelete;

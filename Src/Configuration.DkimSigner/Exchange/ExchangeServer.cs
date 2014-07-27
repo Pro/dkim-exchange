@@ -222,14 +222,38 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
+        // TODO : Validate the return of PowershelHelper, throw ExchangeException
+        // TODO : Validate priority
+        public void SetPriorityDkimTransportAgent(int iPriority)
+        {
+            if (this.IsDkimAgentTransportEnabled())
+            {
+                PowerShellHelper.ExecPowerShellCommand("Set-TransportAgent -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\" -Priority " + iPriority, true);
+            }
+        }
+
         public void MoveUpTransportAgent()
         {
-
+            foreach (TransportServiceAgent oAgent in this.GetTransportServiceAgents())
+            {
+                if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
+                {
+                    this.SetPriorityDkimTransportAgent(++oAgent.Priority);
+                    break;
+                }
+            }
         }
 
         public void MoveDownTransportAgent()
         {
-
+            foreach (TransportServiceAgent oAgent in this.GetTransportServiceAgents())
+            {
+                if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
+                {
+                    this.SetPriorityDkimTransportAgent(--oAgent.Priority);
+                    break;
+                }
+            }
         }
     }
 }
