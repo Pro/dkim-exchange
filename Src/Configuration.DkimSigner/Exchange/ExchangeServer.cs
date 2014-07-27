@@ -86,7 +86,7 @@ namespace Configuration.DkimSigner.Exchange
 
             try
             {
-                TimeSpan oTimeout = TimeSpan.FromMilliseconds(6000);
+                TimeSpan oTimeout = TimeSpan.FromMilliseconds(60000);
                 ServiceController oService = new ServiceController("MSExchangeTransport");
                 oService.Start();
                 oService.WaitForStatus(ServiceControllerStatus.Running, oTimeout);
@@ -106,10 +106,10 @@ namespace Configuration.DkimSigner.Exchange
 
             try
             {
-                TimeSpan oTimeout = TimeSpan.FromMilliseconds(6000);
+                TimeSpan oTimeout = TimeSpan.FromMilliseconds(60000);
                 ServiceController oService = new ServiceController("MSExchangeTransport");
                 oService.Stop();
-                oService.WaitForStatus(ServiceControllerStatus.Running, oTimeout);
+                oService.WaitForStatus(ServiceControllerStatus.Stopped, oTimeout);
             }
             catch (Exception e)
             {

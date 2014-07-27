@@ -30,6 +30,7 @@ namespace Configuration.DkimSigner
         
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
+        private Thread thTransportServiceOperation = null;
         private System.Threading.Timer tiTransportServiceStatus = null;
 
         delegate void SetDkimSignerInstalledCallback();
@@ -61,8 +62,15 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            // Get Exchange version installed + load the current configuration
+            this.txtExchangeInstalled.Text = oExchange.GetInstalledVersion();
+
             // Uptade Microsft Exchange Transport Service stuatus
-            this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
+            if (this.txtExchangeInstalled.Text != "Not installed")
+            {
+                this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
+                this.btConfigureTransportService.Enabled = true;
+            }
             
             // Update Exchange and DKIM Signer version
             this.UpdateVersions();
@@ -387,6 +395,49 @@ namespace Configuration.DkimSigner
             }
         }
 
+        private void StartTransportServiceSafe()
+        {
+            try
+            {
+                this.oExchange.StartTransportService();
+
+                MessageBox.Show("MSExchangeTransport service have been successfully started.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ExchangeHelperException)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void StopTransportServiceSafe()
+        {
+            try
+            {
+                this.oExchange.StopTransportService();
+
+                MessageBox.Show("MSExchangeTransport service have been successfully stopped.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ExchangeHelperException)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
+        private void RestartTransportServiceSafe()
+        {
+            try
+            {
+                this.oExchange.RestartTransportService();
+
+                MessageBox.Show("MSExchangeTransport service have been successfully restarted.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (ExchangeHelperException)
+            {
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         /// <summary>
         /// Update the current available and installed version info
         /// </summary>
@@ -407,9 +458,6 @@ namespace Configuration.DkimSigner
                 this.thDkimSignerAvailable.Start();
             }
             catch (ThreadAbortException) { }
-
-            // Get Exchange version installed + load the current configuration
-            this.txtExchangeInstalled.Text = oExchange.GetInstalledVersion();
         }
 
         /// <summary>
@@ -644,16 +692,13 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btStartTransportService_Click(object sender, EventArgs e)
         {
+            this.thTransportServiceOperation = new Thread(new ThreadStart(this.StartTransportServiceSafe));
+
             try
             {
-                this.oExchange.StartTransportService();
+                this.thTransportServiceOperation.Start();
             }
-            catch (ExchangeHelperException)
-            {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            this.CheckExchangeTransportServiceStatus(null);
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>
@@ -663,16 +708,13 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btStopTransportService_Click(object sender, EventArgs e)
         {
+            this.thTransportServiceOperation = new Thread(new ThreadStart(this.StopTransportServiceSafe));
+
             try
             {
-                this.oExchange.StopTransportService();
+                this.thTransportServiceOperation.Start();
             }
-            catch (ExchangeHelperException)
-            {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            this.CheckExchangeTransportServiceStatus(null);
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>
@@ -682,16 +724,13 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btRestartTransportService_Click(object sender, EventArgs e)
         {
+            this.thTransportServiceOperation = new Thread(new ThreadStart(this.RestartTransportServiceSafe));
+
             try
             {
-                this.oExchange.RestartTransportService();
+                this.thTransportServiceOperation.Start();
             }
-            catch (ExchangeHelperException)
-            {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            this.CheckExchangeTransportServiceStatus(null);
+            catch (ThreadAbortException) { }
         }
 
         /// <summary>
