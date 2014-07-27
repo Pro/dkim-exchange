@@ -181,17 +181,6 @@ namespace Configuration.DkimSigner
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        /*private void btRestartTransportService_Click(object sender, EventArgs e)
-        {
-            this.lblExchangeStatus.Text = "Restarting ...";
-            Application.DoEvents();
-            this.restartTransportService();
-        }*/
 
         /// <summary>
         /// Update the current Configuration.ExchangeDkimSigner WindowsForm and the Exchange.DkimSigner transport agent

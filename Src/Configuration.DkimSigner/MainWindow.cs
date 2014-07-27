@@ -41,15 +41,19 @@ namespace Configuration.DkimSigner
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public MainWindow(ExchangeServer oServer)
+        public MainWindow(ExchangeServer oExchange)
         {           
             this.InitializeComponent();
 
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
-            this.txtAbout.Text = Constants.DKIM_SIGNER_VERSION + "\r\n\r\n" + Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" + Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" + Constants.DKIM_SIGNER_AUTHOR;
+            this.txtAbout.Text =    Constants.DKIM_SIGNER_VERSION + "\r\n\r\n" +
+                                    Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" +
+                                    Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
+                                    Constants.DKIM_SIGNER_AUTHOR + "\r\n\r\n" +
+                                    Constants.DKIM_SIGNER_WEBSITE;
 
-            this.oExchange = oServer;
+            this.oExchange = oExchange;
         }
 
         /**********************************************************/
@@ -87,21 +91,28 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
-            // IF any thread running, we stop them before exit
-            if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == ThreadState.Running)
-            {
-                this.thDkimSignerAvailable.Abort();
-            }
-
-            if (this.thDkimSignerInstalled != null && this.thDkimSignerInstalled.ThreadState == ThreadState.Running)
-            {
-                this.thDkimSignerInstalled.Abort();
-            }
-
             // Check if the config have been change and haven't been save
             if (!this.CheckSaveConfig())
             {
                 e.Cancel = true;
+            }
+            else
+            {
+                // IF any thread running, we stop them before exit
+                if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == ThreadState.Running)
+                {
+                    this.thDkimSignerAvailable.Abort();
+                }
+
+                if (this.thDkimSignerInstalled != null && this.thDkimSignerInstalled.ThreadState == ThreadState.Running)
+                {
+                    this.thDkimSignerInstalled.Abort();
+                }
+
+                if (this.thTransportServiceOperation != null && this.thTransportServiceOperation.ThreadState == ThreadState.Running)
+                {
+                    this.thTransportServiceOperation.Join();
+                }
             }
         }
 
@@ -313,7 +324,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Check the Microsoft Exchange Transport Service Status
         /// </summary>
         /// <param name="state"></param>
         private void CheckExchangeTransportServiceStatus(object state)
@@ -396,6 +407,9 @@ namespace Configuration.DkimSigner
             }
         }
 
+        /// <summary>
+        /// Thread safe function for the thread to start Microsoft Exchange Transport Service
+        /// </summary>
         private void StartTransportServiceSafe()
         {
             try
@@ -410,6 +424,9 @@ namespace Configuration.DkimSigner
             }
         }
 
+        /// <summary>
+        /// Thread safe function for the thread to stop Microsoft Exchange Transport Service
+        /// </summary>
         private void StopTransportServiceSafe()
         {
             try
@@ -424,7 +441,9 @@ namespace Configuration.DkimSigner
             }
         }
 
-
+        /// <summary>
+        /// Thread safe function for the thread to restart Microsoft Exchange Transport Service
+        /// </summary>
         private void RestartTransportServiceSafe()
         {
             try
@@ -639,7 +658,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Set the domain key path for the keys
         /// </summary>
         /// <param name="sPath"></param>
         private void SetDomainKeyPath(string sPath)
@@ -687,7 +706,7 @@ namespace Configuration.DkimSigner
         /**********************************************************/
 
         /// <summary>
-        /// 
+        /// Button "start" Microsoft Exchange Transport Service have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -703,7 +722,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "stop" Microsoft Exchange Transport Service have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -719,7 +738,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "restart" Microsoft Exchange Transport Service have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -735,7 +754,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "configure" Microsoft Exchange Transport Service have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -747,7 +766,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "add header" have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -765,7 +784,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "delete header" have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -780,7 +799,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// Button "Save configuration" action
+        /// Button "Save configuration" have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -790,7 +809,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "add domain" have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -823,7 +842,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "delete domain" have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -864,7 +883,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "generate key" in domain configuration have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -904,7 +923,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "select key" in domain configuration have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -925,7 +944,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "check DNS" in domain configuration have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -972,7 +991,7 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
+        /// Button "save" in domain configuration have been click
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
