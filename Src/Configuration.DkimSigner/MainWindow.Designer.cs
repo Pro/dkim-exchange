@@ -90,7 +90,11 @@
             this.lbDomainName = new System.Windows.Forms.Label();
             this.btDomainKeySelect = new System.Windows.Forms.Button();
             this.btDomainKeyGenerate = new System.Windows.Forms.Button();
+            this.tpAbout = new System.Windows.Forms.TabPage();
+            this.picLogo = new System.Windows.Forms.PictureBox();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
+            this.txtAbout = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -104,6 +108,8 @@
             this.tpDomain.SuspendLayout();
             this.gbDomain.SuspendLayout();
             this.gbxDomainDetails.SuspendLayout();
+            this.tpAbout.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).BeginInit();
             this.SuspendLayout();
             // 
@@ -115,6 +121,7 @@
             this.tcConfiguration.Controls.Add(this.tbInformation);
             this.tcConfiguration.Controls.Add(this.tpDKIM);
             this.tcConfiguration.Controls.Add(this.tpDomain);
+            this.tcConfiguration.Controls.Add(this.tpAbout);
             this.tcConfiguration.ItemSize = new System.Drawing.Size(150, 25);
             this.tcConfiguration.Location = new System.Drawing.Point(12, 12);
             this.tcConfiguration.Name = "tcConfiguration";
@@ -787,9 +794,49 @@
             this.btDomainKeyGenerate.UseVisualStyleBackColor = true;
             this.btDomainKeyGenerate.Click += new System.EventHandler(this.btDomainKeyGenerate_Click);
             // 
+            // tpAbout
+            // 
+            this.tpAbout.Controls.Add(this.label1);
+            this.tpAbout.Controls.Add(this.txtAbout);
+            this.tpAbout.Controls.Add(this.picLogo);
+            this.tpAbout.Location = new System.Drawing.Point(4, 29);
+            this.tpAbout.Name = "tpAbout";
+            this.tpAbout.Size = new System.Drawing.Size(707, 284);
+            this.tpAbout.TabIndex = 3;
+            this.tpAbout.Text = "About";
+            this.tpAbout.UseVisualStyleBackColor = true;
+            // 
+            // picLogo
+            // 
+            this.picLogo.Image = ((System.Drawing.Image)(resources.GetObject("picLogo.Image")));
+            this.picLogo.Location = new System.Drawing.Point(14, 18);
+            this.picLogo.Name = "picLogo";
+            this.picLogo.Size = new System.Drawing.Size(128, 128);
+            this.picLogo.TabIndex = 0;
+            this.picLogo.TabStop = false;
+            // 
             // epvDomainSelector
             // 
             this.epvDomainSelector.ContainerControl = this;
+            // 
+            // txtAbout
+            // 
+            this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtAbout.Location = new System.Drawing.Point(158, 59);
+            this.txtAbout.Multiline = true;
+            this.txtAbout.Name = "txtAbout";
+            this.txtAbout.Size = new System.Drawing.Size(531, 207);
+            this.txtAbout.TabIndex = 1;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(155, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(441, 26);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "DKIM Signer for Microsoft Exchanger Server";
             // 
             // MainWindow
             // 
@@ -801,7 +848,7 @@
             this.MinimumSize = new System.Drawing.Size(730, 380);
             this.Name = "MainWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Exchange DkimSigner";
+            this.Text = "Exchange DKIM Signer";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainWindow_FormClosing);
             this.Load += new System.EventHandler(this.MainWindow_Load);
             this.tcConfiguration.ResumeLayout(false);
@@ -823,6 +870,9 @@
             this.gbDomain.ResumeLayout(false);
             this.gbxDomainDetails.ResumeLayout(false);
             this.gbxDomainDetails.PerformLayout();
+            this.tpAbout.ResumeLayout(false);
+            this.tpAbout.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).EndInit();
             this.ResumeLayout(false);
 
@@ -891,6 +941,10 @@
         private System.Windows.Forms.Button btRestartTransportService;
         private System.Windows.Forms.Button btStopTransportService;
         private System.Windows.Forms.Button btStartTransportService;
+        private System.Windows.Forms.TabPage tpAbout;
+        private System.Windows.Forms.PictureBox picLogo;
+        private System.Windows.Forms.TextBox txtAbout;
+        private System.Windows.Forms.Label label1;
     }
 }
 

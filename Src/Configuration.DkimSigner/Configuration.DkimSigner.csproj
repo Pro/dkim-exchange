@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\Resources\Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -250,7 +250,6 @@
   <ItemGroup>
     <Content Include="Dns\Records\totla.txt" />
     <Content Include="Dns\Root\named_root.txt" />
-    <Content Include="Saki-NuoveXT-2-Mimetypes-document-seal.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

@@ -47,6 +47,7 @@ namespace Configuration.DkimSigner
 
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
+            this.txtAbout.Text = Constants.DKIM_SIGNER_VERSION + "\r\n\r\n" + Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" + Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" + Constants.DKIM_SIGNER_AUTHOR;
 
             this.oExchange = oServer;
         }
