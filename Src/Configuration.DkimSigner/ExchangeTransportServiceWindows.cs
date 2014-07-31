@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using Configuration.DkimSigner.Exchange;
-using Ionic.Zip;
 
 namespace Configuration.DkimSigner
 {
@@ -118,41 +117,19 @@ namespace Configuration.DkimSigner
             }
         }*/
 
-        /*private void performUpgrade()
-        {
-            if (dkimSignerAvailable == null)
-                return;
-
-            if (!CheckSaveConfig())
-            {
-                return;
-            }
-
-            this.btInstallUpate.Enabled = false;
-
-            string tempDir = Path.GetTempPath() + Guid.NewGuid().ToString();
-            string tempPath = tempDir + ".zip";
-            DownloadProgressWindow dpw = new DownloadProgressWindow(dkimSignerAvailable.ZipballUrl, tempPath);
-
-            if (dpw.ShowDialog() == DialogResult.OK)
-            {
-                extractAndInstall(tempPath);
-            }
-        }*/
-
        /*private void performUninstall()
         {
             try
             {
                 ExchangeHelper.uninstallTransportAgent();
 
-                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     if (File.Exists(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
                         File.Delete(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
                 }
 
-                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all it's content?", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all it's content?", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     var dir = new DirectoryInfo(Constants.DKIM_SIGNER_PATH);
                     dir.Delete(true);
@@ -215,7 +192,7 @@ namespace Configuration.DkimSigner
                     this.btDisable.Text = "Disable";
                 }
             }
-            catch (ExchangeHelperException ex)
+            catch (ExchangeServerException ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

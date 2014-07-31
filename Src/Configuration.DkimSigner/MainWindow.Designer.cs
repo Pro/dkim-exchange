@@ -91,10 +91,10 @@
             this.btDomainKeySelect = new System.Windows.Forms.Button();
             this.btDomainKeyGenerate = new System.Windows.Forms.Button();
             this.tpAbout = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtAbout = new System.Windows.Forms.TextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
-            this.txtAbout = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -166,7 +166,7 @@
             this.cbxPrereleases.Location = new System.Drawing.Point(255, 53);
             this.cbxPrereleases.Name = "cbxPrereleases";
             this.cbxPrereleases.Size = new System.Drawing.Size(155, 17);
-            this.cbxPrereleases.TabIndex = 2;
+            this.cbxPrereleases.TabIndex = 5;
             this.cbxPrereleases.Text = "Include prerelease versions";
             this.cbxPrereleases.UseVisualStyleBackColor = true;
             this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
@@ -177,7 +177,7 @@
             this.lblChangelog.Location = new System.Drawing.Point(6, 76);
             this.lblChangelog.Name = "lblChangelog";
             this.lblChangelog.Size = new System.Drawing.Size(61, 13);
-            this.lblChangelog.TabIndex = 5;
+            this.lblChangelog.TabIndex = 6;
             this.lblChangelog.Text = "Changelog:";
             // 
             // txtChangelog
@@ -191,7 +191,7 @@
             this.txtChangelog.ReadOnly = true;
             this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
             this.txtChangelog.Size = new System.Drawing.Size(680, 90);
-            this.txtChangelog.TabIndex = 6;
+            this.txtChangelog.TabIndex = 7;
             // 
             // txtDkimSignerAvailable
             // 
@@ -199,7 +199,7 @@
             this.txtDkimSignerAvailable.Name = "txtDkimSignerAvailable";
             this.txtDkimSignerAvailable.ReadOnly = true;
             this.txtDkimSignerAvailable.Size = new System.Drawing.Size(138, 20);
-            this.txtDkimSignerAvailable.TabIndex = 1;
+            this.txtDkimSignerAvailable.TabIndex = 4;
             this.txtDkimSignerAvailable.Text = "Loading...";
             // 
             // btConfigureTransportService
@@ -208,7 +208,7 @@
             this.btConfigureTransportService.Location = new System.Drawing.Point(255, 21);
             this.btConfigureTransportService.Name = "btConfigureTransportService";
             this.btConfigureTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btConfigureTransportService.TabIndex = 6;
+            this.btConfigureTransportService.TabIndex = 2;
             this.btConfigureTransportService.Text = "&Configure";
             this.btConfigureTransportService.UseVisualStyleBackColor = true;
             this.btConfigureTransportService.Click += new System.EventHandler(this.btConfigureTransportService_Click);
@@ -219,7 +219,7 @@
             this.lbDkimSignerAvailable.Location = new System.Drawing.Point(6, 52);
             this.lbDkimSignerAvailable.Name = "lbDkimSignerAvailable";
             this.lbDkimSignerAvailable.Size = new System.Drawing.Size(56, 13);
-            this.lbDkimSignerAvailable.TabIndex = 0;
+            this.lbDkimSignerAvailable.TabIndex = 3;
             this.lbDkimSignerAvailable.Text = "Available :";
             // 
             // txtDkimSignerInstalled
@@ -264,7 +264,7 @@
             this.txtExchangeStatus.Name = "txtExchangeStatus";
             this.txtExchangeStatus.ReadOnly = true;
             this.txtExchangeStatus.Size = new System.Drawing.Size(138, 20);
-            this.txtExchangeStatus.TabIndex = 10;
+            this.txtExchangeStatus.TabIndex = 3;
             this.txtExchangeStatus.Text = "Loading...";
             this.txtExchangeStatus.TextChanged += new System.EventHandler(this.txtExchangeStatus_TextChanged);
             // 
@@ -274,7 +274,7 @@
             this.btRestartTransportService.Location = new System.Drawing.Point(441, 47);
             this.btRestartTransportService.Name = "btRestartTransportService";
             this.btRestartTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btRestartTransportService.TabIndex = 9;
+            this.btRestartTransportService.TabIndex = 6;
             this.btRestartTransportService.Text = "Re&start";
             this.btRestartTransportService.UseVisualStyleBackColor = true;
             this.btRestartTransportService.Click += new System.EventHandler(this.btRestartTransportService_Click);
@@ -285,7 +285,7 @@
             this.btStopTransportService.Location = new System.Drawing.Point(348, 47);
             this.btStopTransportService.Name = "btStopTransportService";
             this.btStopTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btStopTransportService.TabIndex = 8;
+            this.btStopTransportService.TabIndex = 5;
             this.btStopTransportService.Text = "St&op";
             this.btStopTransportService.UseVisualStyleBackColor = true;
             this.btStopTransportService.Click += new System.EventHandler(this.btStopTransportService_Click);
@@ -296,7 +296,7 @@
             this.btStartTransportService.Location = new System.Drawing.Point(255, 47);
             this.btStartTransportService.Name = "btStartTransportService";
             this.btStartTransportService.Size = new System.Drawing.Size(87, 23);
-            this.btStartTransportService.TabIndex = 7;
+            this.btStartTransportService.TabIndex = 4;
             this.btStartTransportService.Text = "St&art";
             this.btStartTransportService.UseVisualStyleBackColor = true;
             this.btStartTransportService.Click += new System.EventHandler(this.btStartTransportService_Click);
@@ -307,7 +307,7 @@
             this.lbExchangeStatus.Location = new System.Drawing.Point(252, 20);
             this.lbExchangeStatus.Name = "lbExchangeStatus";
             this.lbExchangeStatus.Size = new System.Drawing.Size(130, 13);
-            this.lbExchangeStatus.TabIndex = 4;
+            this.lbExchangeStatus.TabIndex = 2;
             this.lbExchangeStatus.Text = "Transport Service Status :";
             // 
             // lbExchangeInstalled
@@ -316,7 +316,7 @@
             this.lbExchangeInstalled.Location = new System.Drawing.Point(6, 20);
             this.lbExchangeInstalled.Name = "lbExchangeInstalled";
             this.lbExchangeInstalled.Size = new System.Drawing.Size(52, 13);
-            this.lbExchangeInstalled.TabIndex = 2;
+            this.lbExchangeInstalled.TabIndex = 0;
             this.lbExchangeInstalled.Text = "Installed :";
             // 
             // txtExchangeInstalled
@@ -325,7 +325,7 @@
             this.txtExchangeInstalled.Name = "txtExchangeInstalled";
             this.txtExchangeInstalled.ReadOnly = true;
             this.txtExchangeInstalled.Size = new System.Drawing.Size(138, 20);
-            this.txtExchangeInstalled.TabIndex = 3;
+            this.txtExchangeInstalled.TabIndex = 1;
             this.txtExchangeInstalled.Text = "Loading...";
             // 
             // tpDKIM
@@ -346,11 +346,11 @@
             // 
             // btSaveConfiguration
             // 
-            this.btSaveConfiguration.Location = new System.Drawing.Point(393, 220);
+            this.btSaveConfiguration.Location = new System.Drawing.Point(393, 249);
             this.btSaveConfiguration.Name = "btSaveConfiguration";
             this.btSaveConfiguration.Size = new System.Drawing.Size(125, 23);
             this.btSaveConfiguration.TabIndex = 5;
-            this.btSaveConfiguration.Text = "Save configuration";
+            this.btSaveConfiguration.Text = "&Save configuration";
             this.btSaveConfiguration.UseVisualStyleBackColor = true;
             this.btSaveConfiguration.Click += new System.EventHandler(this.btSaveConfiguration_Click);
             // 
@@ -375,7 +375,7 @@
             this.btHeaderAdd.Name = "btHeaderAdd";
             this.btHeaderAdd.Size = new System.Drawing.Size(65, 23);
             this.btHeaderAdd.TabIndex = 1;
-            this.btHeaderAdd.Text = "Add";
+            this.btHeaderAdd.Text = "&Add";
             this.btHeaderAdd.UseVisualStyleBackColor = true;
             this.btHeaderAdd.Click += new System.EventHandler(this.btHeaderAdd_Click);
             // 
@@ -386,7 +386,7 @@
             this.btHeaderDelete.Name = "btHeaderDelete";
             this.btHeaderDelete.Size = new System.Drawing.Size(65, 23);
             this.btHeaderDelete.TabIndex = 2;
-            this.btHeaderDelete.Text = "Delete";
+            this.btHeaderDelete.Text = "&Delete";
             this.btHeaderDelete.UseVisualStyleBackColor = true;
             this.btHeaderDelete.Click += new System.EventHandler(this.btHeaderDelete_Click);
             // 
@@ -548,9 +548,9 @@
             this.gbDomain.Controls.Add(this.lbxDomains);
             this.gbDomain.Controls.Add(this.btAddDomain);
             this.gbDomain.Controls.Add(this.btDomainDelete);
-            this.gbDomain.Location = new System.Drawing.Point(6, 6);
+            this.gbDomain.Location = new System.Drawing.Point(6, 9);
             this.gbDomain.Name = "gbDomain";
-            this.gbDomain.Size = new System.Drawing.Size(151, 266);
+            this.gbDomain.Size = new System.Drawing.Size(151, 272);
             this.gbDomain.TabIndex = 0;
             this.gbDomain.TabStop = false;
             this.gbDomain.Text = "Domains";
@@ -563,29 +563,29 @@
             this.lbxDomains.IntegralHeight = false;
             this.lbxDomains.Location = new System.Drawing.Point(6, 19);
             this.lbxDomains.Name = "lbxDomains";
-            this.lbxDomains.Size = new System.Drawing.Size(139, 212);
+            this.lbxDomains.Size = new System.Drawing.Size(139, 218);
             this.lbxDomains.TabIndex = 0;
             this.lbxDomains.SelectedIndexChanged += new System.EventHandler(this.lbxDomains_SelectedIndexChanged);
             // 
             // btAddDomain
             // 
             this.btAddDomain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btAddDomain.Location = new System.Drawing.Point(6, 237);
+            this.btAddDomain.Location = new System.Drawing.Point(6, 243);
             this.btAddDomain.Name = "btAddDomain";
             this.btAddDomain.Size = new System.Drawing.Size(65, 23);
             this.btAddDomain.TabIndex = 1;
-            this.btAddDomain.Text = "Add";
+            this.btAddDomain.Text = "&Add";
             this.btAddDomain.UseVisualStyleBackColor = true;
             this.btAddDomain.Click += new System.EventHandler(this.btAddDomain_Click);
             // 
             // btDomainDelete
             // 
             this.btDomainDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btDomainDelete.Location = new System.Drawing.Point(80, 237);
+            this.btDomainDelete.Location = new System.Drawing.Point(80, 243);
             this.btDomainDelete.Name = "btDomainDelete";
             this.btDomainDelete.Size = new System.Drawing.Size(65, 23);
             this.btDomainDelete.TabIndex = 2;
-            this.btDomainDelete.Text = "Delete";
+            this.btDomainDelete.Text = "&Delete";
             this.btDomainDelete.UseVisualStyleBackColor = true;
             this.btDomainDelete.Click += new System.EventHandler(this.btDomainDelete_Click);
             // 
@@ -695,7 +695,7 @@
             this.btDomainCheckDNS.Name = "btDomainCheckDNS";
             this.btDomainCheckDNS.Size = new System.Drawing.Size(69, 23);
             this.btDomainCheckDNS.TabIndex = 16;
-            this.btDomainCheckDNS.Text = "Check";
+            this.btDomainCheckDNS.Text = "&Check";
             this.btDomainCheckDNS.UseVisualStyleBackColor = true;
             this.btDomainCheckDNS.Click += new System.EventHandler(this.btDomainCheckDNS_Click);
             // 
@@ -717,7 +717,7 @@
             this.btDomainSave.Name = "btDomainSave";
             this.btDomainSave.Size = new System.Drawing.Size(75, 23);
             this.btDomainSave.TabIndex = 17;
-            this.btDomainSave.Text = "Save";
+            this.btDomainSave.Text = "&Save";
             this.btDomainSave.UseVisualStyleBackColor = true;
             this.btDomainSave.Click += new System.EventHandler(this.btDomainSave_Click);
             // 
@@ -779,7 +779,7 @@
             this.btDomainKeySelect.Name = "btDomainKeySelect";
             this.btDomainKeySelect.Size = new System.Drawing.Size(104, 23);
             this.btDomainKeySelect.TabIndex = 9;
-            this.btDomainKeySelect.Text = "Select key file";
+            this.btDomainKeySelect.Text = "S&elect key file";
             this.btDomainKeySelect.UseVisualStyleBackColor = true;
             this.btDomainKeySelect.Click += new System.EventHandler(this.btDomainKeySelect_Click);
             // 
@@ -790,7 +790,7 @@
             this.btDomainKeyGenerate.Name = "btDomainKeyGenerate";
             this.btDomainKeyGenerate.Size = new System.Drawing.Size(104, 23);
             this.btDomainKeyGenerate.TabIndex = 8;
-            this.btDomainKeyGenerate.Text = "Generate new key";
+            this.btDomainKeyGenerate.Text = "&Generate new key";
             this.btDomainKeyGenerate.UseVisualStyleBackColor = true;
             this.btDomainKeyGenerate.Click += new System.EventHandler(this.btDomainKeyGenerate_Click);
             // 
@@ -806,6 +806,25 @@
             this.tpAbout.Text = "About";
             this.tpAbout.UseVisualStyleBackColor = true;
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(155, 18);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(441, 26);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "DKIM Signer for Microsoft Exchanger Server";
+            // 
+            // txtAbout
+            // 
+            this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtAbout.Location = new System.Drawing.Point(158, 59);
+            this.txtAbout.Multiline = true;
+            this.txtAbout.Name = "txtAbout";
+            this.txtAbout.Size = new System.Drawing.Size(531, 207);
+            this.txtAbout.TabIndex = 1;
+            // 
             // picLogo
             // 
             this.picLogo.Image = ((System.Drawing.Image)(resources.GetObject("picLogo.Image")));
@@ -818,25 +837,6 @@
             // epvDomainSelector
             // 
             this.epvDomainSelector.ContainerControl = this;
-            // 
-            // txtAbout
-            // 
-            this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txtAbout.Location = new System.Drawing.Point(158, 59);
-            this.txtAbout.Multiline = true;
-            this.txtAbout.Name = "txtAbout";
-            this.txtAbout.Size = new System.Drawing.Size(531, 207);
-            this.txtAbout.TabIndex = 1;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(155, 18);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(441, 26);
-            this.label1.TabIndex = 2;
-            this.label1.Text = "DKIM Signer for Microsoft Exchanger Server";
             // 
             // MainWindow
             // 

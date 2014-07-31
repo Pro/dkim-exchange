@@ -116,6 +116,7 @@
     <Compile Include="Exchange\ExchangeServerException.cs" />
     <Compile Include="Exchange\TransportServiceAgent.cs" />
     <Compile Include="Exchange\PowershellHelper.cs" />
+    <Compile Include="FileIO\FileOperation.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -222,6 +223,7 @@
     <Compile Include="InstallWindow.Designer.cs">
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileIO\ShellFileOperation.cs" />
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>

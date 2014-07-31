@@ -16,16 +16,27 @@ namespace Configuration.DkimSigner.GitHub
             HttpWebRequest oRequest = (HttpWebRequest) WebRequest.Create(sUrl);
             oRequest.UserAgent = ".NET Framework API Client";
 
-            using (HttpWebResponse oResponse = (HttpWebResponse) oRequest.GetResponse())
+            string sResult = null;
+            try
             {
-                if (oResponse.StatusCode != HttpStatusCode.OK)
+                HttpWebResponse oResponse = (HttpWebResponse) oRequest.GetResponse();
+
+                if (oResponse.StatusCode == HttpStatusCode.OK)
                 {
-                    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", oResponse.StatusCode, oResponse.StatusDescription));
+                    sResult = new StreamReader(oResponse.GetResponseStream()).ReadToEnd();
+                    
                 }
-
-                return new StreamReader(oResponse.GetResponseStream()).ReadToEnd();
+                //else
+                //{
+                //    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", oResponse.StatusCode, oResponse.StatusDescription));
+                //}
             }
-        }
+            catch (Exception)
+            {
+                sResult = null;
+            }
 
+            return sResult;
+        }
     }
 }

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
 
 using Configuration.DkimSigner.Exchange;
@@ -33,28 +30,29 @@ namespace Configuration.DkimSigner
             ExchangeServer oExchange = new ExchangeServer();
             Form oForm = null;
 
-            if (Array.IndexOf(asArgv, "--install") >= 0 || Array.IndexOf(asArgv, "--upgrade") >= 0)
-            {
-                // Start Install/Upgrade process
+            //if (Array.IndexOf(asArgv, "--install") >= 0)
+            //{
                 oForm = new InstallWindow(oExchange);
-                Application.Run(oForm);
+            //}
+            //else if(Array.IndexOf(asArgv, "--upgrade") >= 0)
+            //{
+            //}
+            //else if (Array.IndexOf(asArgv, "--uninstall") >= 0)
+            //{
+            //    // Delete Itself
+            //    ProcessStartInfo Info=new ProcessStartInfo();
+            //    Info.Arguments="/C choice /C Y /N /D Y /T 5 & Del "+ Application.ExecutablePath;
+            //    Info.WindowStyle=ProcessWindowStyle.Hidden;
+            //    Info.CreateNoWindow=true;
+            //    Info.FileName="cmd.exe";
+            //    Process.Start(Info); 
+            //}
+            //else
+            //{
+            //    oForm = new MainWindow(oExchange);    
+            //}
 
-                // Start new installed DKIM Signer Configuration GUI
-                string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
-                if (File.Exists(sPathExec))
-                {
-                    Process.Start(sPathExec);
-                }
-                else
-                {
-                    MessageBox.Show("Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-            else
-            {
-                oForm = new MainWindow(oExchange);
-                Application.Run(oForm);
-            }
+            Application.Run(oForm);
         }
     }
 }

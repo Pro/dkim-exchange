@@ -5,7 +5,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Xml.Serialization;
 using System.Windows.Forms;
 
 using ConfigurationSettings;
@@ -23,8 +22,6 @@ namespace Configuration.DkimSigner
 
         private ExchangeServer oExchange = null;
         private Settings oConfig = null;
-        //private Release dkimSignerAvailable = null;
-        //private Version dkimSignerInstalled = null;
 
         private bool bDataUpdated = false;
         
@@ -35,7 +32,7 @@ namespace Configuration.DkimSigner
 
         delegate void SetDkimSignerInstalledCallback(Version oDkimSignerInstalled);
         delegate void SetDkimSignerAvailableCallback(Release oDkimSignerAvailable);
-        delegate void SetExchangeTransportServiceStatusCallback();
+        delegate void SetExchangeTransportServiceStatusCallback(string sStatus);
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -73,8 +70,12 @@ namespace Configuration.DkimSigner
             // Uptade Microsft Exchange Transport Service stuatus
             if (this.txtExchangeInstalled.Text != "Not installed")
             {
-                this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
+                this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatusSafe), null, 0, 1000);
                 this.btConfigureTransportService.Enabled = true;
+            }
+            else
+            {
+                this.SetExchangeTransportServiceStatus("Unavailable");
             }
             
             // Update Exchange and DKIM Signer version
@@ -263,19 +264,8 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// 
         /// </summary>
-        private void SetExchangeTransportServiceStatus()
+        private void SetExchangeTransportServiceStatus(string sStatus)
         {
-            string sStatus = null;
-
-            try
-            {
-                sStatus = oExchange.GetTransportServiceStatus().ToString();
-            }
-            catch (ExchangeHelperException)
-            {
-                this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
-            }
-
             this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown");
         }
 
@@ -327,16 +317,27 @@ namespace Configuration.DkimSigner
         /// Check the Microsoft Exchange Transport Service Status
         /// </summary>
         /// <param name="state"></param>
-        private void CheckExchangeTransportServiceStatus(object state)
+        private void CheckExchangeTransportServiceStatusSafe(object state)
         {
+            string sStatus = null;
+
+            try
+            {
+                sStatus = oExchange.GetTransportServiceStatus().ToString();
+            }
+            catch (ExchangeServerException)
+            {
+                this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+            }
+            
             if (this.txtExchangeStatus.InvokeRequired)
             {
-                SetExchangeTransportServiceStatusCallback d = new SetExchangeTransportServiceStatusCallback(SetExchangeTransportServiceStatus);
-                this.Invoke(d);
+                SetExchangeTransportServiceStatusCallback d = new SetExchangeTransportServiceStatusCallback(this.SetExchangeTransportServiceStatus);
+                this.Invoke(d, sStatus);
             }
             else
             {
-                this.SetExchangeTransportServiceStatus();
+                this.SetExchangeTransportServiceStatus(sStatus);
             }
         }
 
@@ -389,7 +390,7 @@ namespace Configuration.DkimSigner
             // Check the lastest Release
             try
             {
-                oDkimSignerAvailable = ApiWrapper.getNewestRelease(cbxPrereleases.Checked);
+                oDkimSignerAvailable = ApiWrapper.GetNewestRelease(cbxPrereleases.Checked);
             }
             catch (Exception) {}
 
@@ -416,7 +417,7 @@ namespace Configuration.DkimSigner
 
                 MessageBox.Show("MSExchangeTransport service have been successfully started.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (ExchangeHelperException)
+            catch (ExchangeServerException)
             {
                 MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -433,7 +434,7 @@ namespace Configuration.DkimSigner
 
                 MessageBox.Show("MSExchangeTransport service have been successfully stopped.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (ExchangeHelperException)
+            catch (ExchangeServerException)
             {
                 MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -450,7 +451,7 @@ namespace Configuration.DkimSigner
 
                 MessageBox.Show("MSExchangeTransport service have been successfully restarted.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
-            catch (ExchangeHelperException)
+            catch (ExchangeServerException)
             {
                 MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
