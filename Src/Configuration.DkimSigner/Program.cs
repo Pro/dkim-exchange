@@ -30,10 +30,10 @@ namespace Configuration.DkimSigner
             ExchangeServer oExchange = new ExchangeServer();
             Form oForm = null;
 
-            //if (Array.IndexOf(asArgv, "--install") >= 0)
-            //{
-                oForm = new InstallWindow(oExchange);
-            //}
+            if (Array.IndexOf(asArgv, "--install") >= 0)
+            {
+                oForm = new InstallWindow();
+            }
             //else if(Array.IndexOf(asArgv, "--upgrade") >= 0)
             //{
             //}
@@ -47,10 +47,10 @@ namespace Configuration.DkimSigner
             //    Info.FileName="cmd.exe";
             //    Process.Start(Info); 
             //}
-            //else
-            //{
-            //    oForm = new MainWindow(oExchange);    
-            //}
+            else
+            {
+                oForm = new MainWindow();    
+            }
 
             Application.Run(oForm);
         }

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Configuration.DkimSigner.GitHub;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.FileIO;
+using Ionic.Zip;
 
 namespace Configuration.DkimSigner
 {
@@ -16,9 +17,9 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
-        private ExchangeServer oExchange = null;
-
         private List<Release> aoVersionAvailable = null;
+
+        private string sExchangeVersion = null;
 
         private Thread thDkimSignerAvailable = null;
         private Thread thInstallProcess = null;
@@ -30,7 +31,7 @@ namespace Configuration.DkimSigner
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public InstallWindow(ExchangeServer oServer)
+        public InstallWindow()
         {
             this.InitializeComponent();
 
@@ -38,9 +39,6 @@ namespace Configuration.DkimSigner
             this.picCopyFiles.Image = null;
             this.picInstallAgent.Image = null;
             this.picStartService.Image = null;
-
-            // Load variable
-            this.oExchange = oServer;
         }
 
         /**********************************************************/
@@ -50,6 +48,8 @@ namespace Configuration.DkimSigner
         private void InstallWindow_Load(object sender, EventArgs e)
         {
             this.UpdateDkimSignerAvailable();
+
+            this.sExchangeVersion = ExchangeServer.GetInstalledVersion();
         }
 
         private void InstallWindow_FormClosing(object sender, FormClosingEventArgs e)
@@ -81,11 +81,18 @@ namespace Configuration.DkimSigner
         /******************* Internal functions *******************/
         /**********************************************************/
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sStatus"></param>
         private void EnablePrereleases(bool sStatus)
         {
             this.cbxPrereleases.Enabled = sStatus;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void RefreshVersionWebItems()
         {
             this.cbVersionWeb.Items.Clear();
@@ -118,6 +125,9 @@ namespace Configuration.DkimSigner
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void CheckDkimSignerAvailableSafe()
         {
             this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked);
@@ -144,6 +154,9 @@ namespace Configuration.DkimSigner
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void UpdateDkimSignerAvailable()
         {
             // Get Exchange.DkimSigner version available
@@ -157,6 +170,11 @@ namespace Configuration.DkimSigner
             catch (ThreadAbortException) { }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sZipPath"></param>
+        /// <returns></returns>
         private bool DownloadFile(string sZipPath)
         {
             string sZipballUrl = string.Empty;
@@ -170,11 +188,44 @@ namespace Configuration.DkimSigner
                 }
             }
 
-            DownloadProgressWindow oDpw = new DownloadProgressWindow(sZipballUrl, Path.Combine(Path.GetTempPath(), sZipPath));
+            DownloadProgressWindow oDpw = new DownloadProgressWindow(sZipballUrl, sZipPath);
             return (oDpw.ShowDialog() == DialogResult.OK);
         }
 
-        private bool CopyFiles(string sSourcePath)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sZipPath"></param>
+        /// <returns></returns>
+        private bool ExtractFiles(string sZipPath)
+        {
+            bool bStatus = true;
+
+            try
+            {
+                using (ZipFile zip1 = ZipFile.Read(sZipPath))
+                {
+                    foreach (ZipEntry e in zip1)
+                    {
+                        e.Extract(Path.GetDirectoryName(sZipPath), ExtractExistingFileAction.OverwriteSilently);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                bStatus = false;
+            }
+
+            return bStatus;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="asSourcePath"></param>
+        /// <returns></returns>
+        private bool CopyFiles(List<string> asSourcePath)
         {
             bool bReturn = false;
             bool bAnyOperationsAborted = false;
@@ -185,111 +236,61 @@ namespace Configuration.DkimSigner
                 Directory.CreateDirectory(Constants.DKIM_SIGNER_PATH);
             }
 
-            string[] asSourceFiles = Directory.GetFiles(sSourcePath);
+            // Generate list of source files
+            string[] asSourceFiles = new string[0];
+            foreach (string sSourcePath in asSourcePath)
+            {
+                string[] asTemp = Directory.GetFiles(sSourcePath);
+
+                Array.Resize(ref asSourceFiles, asSourceFiles.Length + asTemp.Length);
+                Array.Copy(asTemp, 0, asSourceFiles,  asSourceFiles.Length - asTemp.Length, asTemp.Length);
+            }
+
+            // Generate list of destinations files
             string[] asDestinationFiles = new string[asSourceFiles.Length];
-
-
             for (int i = 0; i < asSourceFiles.Length; i++)
             {
                 string sFile =  Path.GetFileName(asSourceFiles[i]);
                 asDestinationFiles[i] = Path.Combine(Constants.DKIM_SIGNER_PATH,sFile);
             }
 
-            bReturn = FileOperation.CopyFiles(this.Handle, asSourceFiles, asDestinationFiles, true, "Test", out bAnyOperationsAborted);
+            bReturn = FileOperation.CopyFiles(this.Handle, asSourceFiles, asDestinationFiles, true, "Copy files", out bAnyOperationsAborted);
 
             return bReturn && !bAnyOperationsAborted;
-
-            //try
-            //{
-                //FileSystem.CopyDirectory(sSource, Constants.DKIM_SIGNER_PATH, UIOption.AllDialogs, UICancelOption.ThrowException);
-            //}
-            //catch (Exception)
-            //{
-            //    bStatus = false;
-            //}
-
-            // First copy the configuration executable from Src\Configuration.DkimSigner\bin\Release to the destination:
-            //string sourcePath = Path.Combine(sTempPath, @"Src\Configuration.DkimSigner\bin\Release");
-            //string destPath = Path.Combine(sInstallPath, "Configuration");
-            //string ret = copyAllFiles(sourcePath, destPath);
-
-            //now copy the agent .dll from e.g. \Src\Exchange.DkimSigner\bin\Exchange 2007 SP3 to the destination
-            //Get source directory for installed Exchange version:
-            //string libDir = directoryFromExchangeVersion();
-            //sourcePath = Path.Combine(sTempPath, Path.Combine(@"Src\Exchange.DkimSigner\bin\", libDir));
-            //return copyAllFiles(sourcePath, sInstallPath);
-
-            //return bStatus;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         private void StopService()
         {
             try
             {
-                this.oExchange.StopTransportService();
+                ExchangeServer.StopTransportService();
             }
             catch (ExchangeServerException) { }
         }
-
-        /*private string directoryFromExchangeVersion()
-        {
-            string sExchangeVersion = null;
-
-            Version oFullVersion = ExchangeHelper.getExchangeVersion();
-            if (oFullVersion != null)
-            {
-                string sVersion = oFullVersion.ToString();
-
-                if (sVersion.StartsWith("8.3.*"))
-                    sExchangeVersion = "Exchange 2007 SP3";
-                else if (sVersion.StartsWith("14.0."))
-                    sExchangeVersion = "Exchange 2010";
-                else if (sVersion.StartsWith("14.1."))
-                    sExchangeVersion = "Exchange 2010 SP1";
-                else if (sVersion.StartsWith("14.2."))
-                    sExchangeVersion = "Exchange 2010 SP2";
-                else if (sVersion.StartsWith("14.3."))
-                    sExchangeVersion = "Exchange 2010 SP3";
-                else if (sVersion.StartsWith("15.0.516.32"))
-                    sExchangeVersion = "Exchange 2013";
-                else if (sVersion.StartsWith("15.0.620.29"))
-                    sExchangeVersion = "Exchange 2013 CU1";
-                else if (sVersion.StartsWith("15.0.712.24"))
-                    sExchangeVersion = "Exchange 2013 CU2";
-                else if (sVersion.StartsWith("15.0.775.38"))
-                    sExchangeVersion = "Exchange 2013 CU3";
-                else if (sVersion.StartsWith("15.0.847.32"))
-                    sExchangeVersion = "Exchange 2013 SP1 CU4";
-                else if (sVersion.StartsWith("15.0.913.22"))
-                    sExchangeVersion = "Exchange 2013 SP1 CU5";
-            }
-
-            return sExchangeVersion;
-        }*/
 
         /// <summary>
         /// 
         /// </summary>
         private void InstallAgent()
         {
-            if (this.txtVersionFile.Text != string.Empty || this.cbVersionWeb.SelectedIndex > -1)
+            if (!ExchangeServer.IsTransportServiceInstalled())
             {
-                if (!this.oExchange.IsTransportServiceInstalled())
+                // First make sure the following Registry key exists
+                // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
+                if (RegistryHelper.Open(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM") != null)
                 {
-                    // First make sure the following Registry key exists
-                    // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
-                    if (RegistryHelper.Open(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM") != null)
-                    {
-                        RegistryHelper.WriteSubKeyTree(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
-                    }
-
-                    // Install DKIM Transport Agent in Microsoft Exchange 
-                    try
-                    {
-                        this.oExchange.InstallDkimTransportAgent();
-                    }
-                    catch (ExchangeServerException) { }
+                    RegistryHelper.WriteSubKeyTree(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
                 }
+
+                // Install DKIM Transport Agent in Microsoft Exchange 
+                try
+                {
+                    ExchangeServer.InstallDkimTransportAgent();
+                }
+                catch (ExchangeServerException) { }
             }
         }
 
@@ -300,7 +301,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                this.oExchange.StartTransportService();
+                ExchangeServer.StartTransportService();
             }
             catch (ExchangeServerException) { }
         }
@@ -327,97 +328,172 @@ namespace Configuration.DkimSigner
 
         private void btInstall_Click(object sender, EventArgs e)
         {
-            if (this.txtVersionFile.Text != string.Empty || this.cbVersionWeb.SelectedIndex > -1)
+            if(this.sExchangeVersion != "Not installed")
             {
-                bool bStatus = true;
-                string sZipPath = string.Empty;
-
-                this.cbVersionWeb.Enabled = false;
-                this.cbxPrereleases.Enabled = false;
-                this.btBrowse.Enabled = false;
-                this.btInstall.Enabled = false;
-
-                //
-                // Download required files
-                //
-                this.lbDownloadFiles.Enabled = true;
-
-                if (this.cbVersionWeb.SelectedIndex > -1)
+                if (this.txtVersionFile.Text != string.Empty || this.cbVersionWeb.SelectedIndex > -1)
                 {
-                    sZipPath = Guid.NewGuid().ToString() + ".zip";
-                    bStatus = this.DownloadFile(sZipPath);
+                    bool bStatus = true;
+                    string sZipPath = string.Empty;
+
+                    this.cbVersionWeb.Enabled = false;
+                    this.cbxPrereleases.Enabled = false;
+                    this.btBrowse.Enabled = false;
+                    this.btInstall.Enabled = false;
+                    this.btClose.Enabled = false;
+
+                    //
+                    // Download required files
+                    //
+
+                    this.lbDownloadFiles.Enabled = true;
+
+                    if (this.cbVersionWeb.SelectedIndex > -1)
+                    {
+                        sZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
+                        bStatus = this.DownloadFile(sZipPath);
+                    }
+                    else
+                    {
+                        sZipPath = this.txtVersionFile.Text;
+                    }
+
+                    this.picDownloadFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                    this.Refresh();
+
+                    //
+                    // Copy required files
+                    //
+
+                    this.lbCopyFiles.Enabled = true;
+
+                    string sTemp = string.Empty;
+                    if (bStatus)
+                    {
+                        if (this.sExchangeVersion.StartsWith("8.3."))
+                        {
+                            sTemp = "Exchange 2007 SP3";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("14.0."))
+                        {
+                            sTemp = "Exchange 2010";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("14.1."))
+                        {
+                            sTemp = "Exchange 2010 SP1";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("14.2."))
+                        {
+                            sTemp = "Exchange 2010 SP2";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("14.3."))
+                        {
+                            sTemp = "Exchange 2010 SP3";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("15.0.516.32"))
+                        {
+                            sTemp = "Exchange 2013";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("15.0.620.29"))
+                        {
+                            sTemp = "Exchange 2013 CU1";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("15.0.712.24"))
+                        {
+                            sTemp = "Exchange 2013 CU2";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("15.0.775.38"))
+                        {
+                            sTemp = "Exchange 2013 CU3";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("15.0.847.32"))
+                        {
+                            sTemp = "Exchange 2013 SP1 CU4";
+                        }
+                        else if (this.sExchangeVersion.StartsWith("15.0.913.22"))
+                        {
+                            sTemp = "Exchange 2013 SP1 CU5";
+                        }
+                        else
+                        {
+                            MessageBox.Show("The current Microsoft Exchange version isn't support by DKIM agent.");
+                            bStatus = false;
+                        }
+                    }
+
+                    if (bStatus)
+                    { 
+                        bStatus = this.ExtractFiles(sZipPath);
+                    }
+
+                    if (bStatus)
+                    {  
+                        List<string> asCopyFilePath = new List<string>();
+                        asCopyFilePath.Add(Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath), @"Src\Configuration.DkimSigner\bin\Release"));
+                        asCopyFilePath.Add(Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath), Path.Combine(@"Src\Exchange.DkimSigner\bin\" + sTemp)));
+                        bStatus = this.CopyFiles(asCopyFilePath);
+
+                        Directory.Delete(Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath)), true);
+                    }
+
+                    this.picCopyFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                    this.Refresh();
+
+                    //
+                    // Stop Microsoft Exchange Transport Service
+                    //
+
+                    this.lbStopService.Enabled = true;
+
+                    if (bStatus)
+                    {
+                        //this.StopService();
+                    }
+
+                    this.picStopService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                    this.Refresh();
+
+                    //
+                    // Instal DKIM Signer agent in Microsoft Exchange Transport Service
+                    //
+
+                    this.lbInstallAgent.Enabled = true;
+
+                    if (bStatus)
+                    {
+                        //this.InstallAgent();
+                    }
+
+                    this.picInstallAgent.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                    this.Refresh();
+
+                    //
+                    // Start Microsoft Exchange Transport Service
+                    //
+
+                    this.lbStartService.Enabled = true;
+
+                    if (bStatus)
+                    {
+                        //this.StartService();
+                    }
+
+                    this.picStartService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                    this.Refresh();
+
+                    //
+                    // Done
+                    //
+
+                    this.btClose.Enabled = true;
                 }
                 else
                 {
-                    sZipPath = this.txtVersionFile.Text;
+                    MessageBox.Show("You have to select a version to install from the Web or a ZIP file.");
                 }
-
-                this.picDownloadFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-                this.Refresh();
-
-                //
-                // Copy required files
-                //
-                this.lbCopyFiles.Enabled = true;
-
-                // ZIPExtract
-
-                if (bStatus)
-                {
-                    bStatus = this.CopyFiles(@"C:\Users\Alexandre Laroche\Downloads\");
-                }
-
-                this.picCopyFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-                this.Refresh();
-
-                //
-                // Stop Microsoft Exchange Transport Service
-                //
-                this.lbStopService.Enabled = true;
-
-                if (bStatus)
-                {
-                    //this.StopService();
-                }
-
-                this.picStopService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-                this.Refresh();
-
-                //
-                // Instal DKIM Signer agent in Microsoft Exchange Transport Service
-                //
-                this.lbInstallAgent.Enabled = true;
-
-                if (bStatus)
-                {
-                    //this.InstallAgent();
-                }
-
-                this.picInstallAgent.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-                this.Refresh();
-
-                //
-                // Start Microsoft Exchange Transport Service
-                //
-                this.lbStartService.Enabled = true;
-
-                if (bStatus)
-                {
-                    //this.StartService();
-                }
-
-                this.picStartService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-                this.Refresh();
-
-                //
-                // Done
-                //
-
-                this.btClose.Enabled = true;
             }
             else
             {
-                MessageBox.Show("You have to select a version to install from the Web or a ZIP file.");
+                MessageBox.Show("Microsoft Exchange server must be installed before attempt to install DKIM agent.");
             }
         }
 
@@ -429,16 +505,19 @@ namespace Configuration.DkimSigner
         private void btClose_Click(object sender, EventArgs e)
         {
             // Start new installed DKIM Signer Configuration GUI
-            if (MessageBox.Show("Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (this.btInstall.Enabled == false && this.picStopService.Image == this.statusImageList.Images[0])
             {
-                string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
-                if (File.Exists(sPathExec))
+                if (MessageBox.Show("Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    System.Diagnostics.Process.Start(sPathExec);
-                }
-                else
-                {
-                    MessageBox.Show("Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
+                    if (File.Exists(sPathExec))
+                    {
+                        System.Diagnostics.Process.Start(sPathExec);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
 

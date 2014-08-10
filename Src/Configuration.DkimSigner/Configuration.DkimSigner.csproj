@@ -199,7 +199,6 @@
     <Compile Include="DownloadProgressWindow.Designer.cs">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="FileHelper.cs" />
     <Compile Include="GitHub\Api.cs" />
     <Compile Include="GitHub\ApiWrapper.cs" />
     <Compile Include="GitHub\DataContract.cs" />

@@ -20,7 +20,6 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
-        private ExchangeServer oExchange = null;
         private Settings oConfig = null;
 
         private bool bDataUpdated = false;
@@ -38,7 +37,7 @@ namespace Configuration.DkimSigner
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public MainWindow(ExchangeServer oExchange)
+        public MainWindow()
         {           
             this.InitializeComponent();
 
@@ -49,8 +48,6 @@ namespace Configuration.DkimSigner
                                     Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_AUTHOR + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_WEBSITE;
-
-            this.oExchange = oExchange;
         }
 
         /**********************************************************/
@@ -65,7 +62,7 @@ namespace Configuration.DkimSigner
         private void MainWindow_Load(object sender, EventArgs e)
         {
             // Get Exchange version installed + load the current configuration
-            this.txtExchangeInstalled.Text = oExchange.GetInstalledVersion();
+            this.txtExchangeInstalled.Text = ExchangeServer.GetInstalledVersion();
 
             // Uptade Microsft Exchange Transport Service stuatus
             if (this.txtExchangeInstalled.Text != "Not installed")
@@ -323,7 +320,7 @@ namespace Configuration.DkimSigner
 
             try
             {
-                sStatus = oExchange.GetTransportServiceStatus().ToString();
+                sStatus = ExchangeServer.GetTransportServiceStatus().ToString();
             }
             catch (ExchangeServerException)
             {
@@ -360,7 +357,7 @@ namespace Configuration.DkimSigner
             {
                 try
                 {
-                    if (!oExchange.IsDkimAgentTransportInstalled())
+                    if (!ExchangeServer.IsDkimAgentTransportInstalled())
                     {
                         oDkimSignerInstalled = null;
                     }
@@ -413,7 +410,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                this.oExchange.StartTransportService();
+                ExchangeServer.StartTransportService();
 
                 MessageBox.Show("MSExchangeTransport service have been successfully started.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -430,7 +427,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                this.oExchange.StopTransportService();
+                ExchangeServer.StopTransportService();
 
                 MessageBox.Show("MSExchangeTransport service have been successfully stopped.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -447,7 +444,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                this.oExchange.RestartTransportService();
+                ExchangeServer.RestartTransportService();
 
                 MessageBox.Show("MSExchangeTransport service have been successfully restarted.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -759,7 +756,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btConfigureTransportService_Click(object sender, EventArgs e)
         {
-            ExchangeTransportServiceWindows oEtsw = new ExchangeTransportServiceWindows(this.oExchange);
+            ExchangeTransportServiceWindows oEtsw = new ExchangeTransportServiceWindows();
 
             oEtsw.ShowDialog();
         }

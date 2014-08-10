@@ -17,11 +17,9 @@ namespace Configuration.DkimSigner
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public ExchangeTransportServiceWindows(ExchangeServer oServer)
+        public ExchangeTransportServiceWindows()
         {
             this.InitializeComponent();
-
-            this.oExchange = oServer;
         }
 
         /**********************************************************/
@@ -32,9 +30,9 @@ namespace Configuration.DkimSigner
         {
             this.RefreshTransportServiceAgents();
 
-            if(this.oExchange.IsDkimAgentTransportInstalled())
+            if(ExchangeServer.IsDkimAgentTransportInstalled())
             {
-                if (this.oExchange.IsDkimAgentTransportEnabled())
+                if (ExchangeServer.IsDkimAgentTransportEnabled())
                 {
                     this.btDisable.Text = "Enable";
                 }
@@ -61,7 +59,7 @@ namespace Configuration.DkimSigner
 
             try
             {
-                aoAgent = this.oExchange.GetTransportServiceAgents();
+                aoAgent = ExchangeServer.GetTransportServiceAgents();
             }
             catch(Exception) { }
 
@@ -76,73 +74,6 @@ namespace Configuration.DkimSigner
             }
         }
 
-        /*private void extractAndInstall(string zipPath)
-        {
-            //TODO: Show extract progress
-            string dir = zipPath.Substring(0, zipPath.LastIndexOf('.'));
-
-            try
-            {
-                Directory.CreateDirectory(dir);
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Couldn't create directory:\n" + dir + "\n" + e.Message, "Directory error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btInstallUpate.Enabled = true;
-                return;
-            }
-
-            using (ZipFile zip1 = ZipFile.Read(zipPath))
-            {
-                foreach (ZipEntry e in zip1)
-                {
-                    e.Extract(dir, ExtractExistingFileAction.OverwriteSilently);
-                }
-            }
-
-            string[] contents = Directory.GetDirectories(dir);
-            if (contents.Length == 0)
-            {
-                MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                btInstallUpate.Enabled = true;
-                return;
-            }
-
-            string exePath = Path.Combine(contents[0], @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
-            if (!File.Exists(exePath))
-            {
-                MessageBox.Show("Executable not found within downloaded .zip is empty. Please try again.", "Missing .exe", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                this.btInstallUpate.Enabled = true;
-                return;
-            }
-        }*/
-
-       /*private void performUninstall()
-        {
-            try
-            {
-                ExchangeHelper.uninstallTransportAgent();
-
-                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    if (File.Exists(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
-                        File.Delete(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
-                }
-
-                if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all it's content?", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-                {
-                    var dir = new DirectoryInfo(Constants.DKIM_SIGNER_PATH);
-                    dir.Delete(true);
-                }
-            }
-            catch (ExchangeHelperException e)
-            {
-                MessageBox.Show(e.Message, "Uninstall error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            this.UpdateVersions();
-        }*/
-
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
@@ -156,16 +87,16 @@ namespace Configuration.DkimSigner
         {
             if (this.btUpdate.Text == "Update" ? MessageBox.Show("Do you really want to UPDATE the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
-                /*try
+                try
                 {
-                    Process.Start(exePath, this.btUpdate.Text == "Install" ? "--install" : "--upgrade \"" + Constants.DKIM_SIGNER_PATH + "\"");
+                    System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, this.btUpdate.Text == "Install" ? "--install" : "--upgrade");
 
                     this.Close();
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Couldn't start updater:\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }*/
+                    MessageBox.Show("Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
@@ -183,12 +114,12 @@ namespace Configuration.DkimSigner
             {
                 if (this.btDisable.Text == "Disable")
                 {
-                    this.oExchange.DisableDkimTransportAgent();
+                    ExchangeServer.DisableDkimTransportAgent();
                     this.btDisable.Text = "Enable";
                 }
                 else
                 {
-                    this.oExchange.EnableDkimTransportAgent();
+                    ExchangeServer.EnableDkimTransportAgent();
                     this.btDisable.Text = "Disable";
                 }
             }

@@ -19,21 +19,10 @@ namespace Configuration.DkimSigner.Exchange
         private const string REGEX_TRANSPORT_SERVICE_AGENT = "(?<name>.*?)\\s*(?<status>(True|False))\\s*(?<priority>\\d+?)";
 
         /**********************************************************/
-        /*********************** Variables ************************/
-        /**********************************************************/
-
-
-        /**********************************************************/
-        /*********************** Construtor ***********************/
-        /**********************************************************/
-
-        public ExchangeServer() { }
-
-        /**********************************************************/
         /*********************** Methods **************************/
         /**********************************************************/
 
-        public string GetInstalledVersion()
+        public static string GetInstalledVersion()
         {
             string sReturn = "Not installed";
 
@@ -52,14 +41,14 @@ namespace Configuration.DkimSigner.Exchange
             return sReturn;
         }
 
-        public bool IsTransportServiceInstalled()
+        public static bool IsTransportServiceInstalled()
         {
             return (ServiceController.GetServices().FirstOrDefault(s => s.ServiceName == "MSExchangeTransport") != null);
         }
 
-        public ServiceControllerStatus GetTransportServiceStatus()
+        public static ServiceControllerStatus GetTransportServiceStatus()
         {
-            if (!this.IsTransportServiceInstalled())
+            if (!ExchangeServer.IsTransportServiceInstalled())
             {
                 throw new ExchangeServerException("No service 'MSExchangeTransport' available.");
             }
@@ -67,19 +56,19 @@ namespace Configuration.DkimSigner.Exchange
             return new ServiceController("MSExchangeTransport").Status;
         }
 
-        public bool IsTransportServiceRunning()
+        public static bool IsTransportServiceRunning()
         {
-            return (this.GetTransportServiceStatus() == ServiceControllerStatus.Running);
+            return (ExchangeServer.GetTransportServiceStatus() == ServiceControllerStatus.Running);
         }
 
-        public bool IsTransportServiceStopped()
+        public static bool IsTransportServiceStopped()
         {
-            return (this.GetTransportServiceStatus() == ServiceControllerStatus.Stopped);
+            return (ExchangeServer.GetTransportServiceStatus() == ServiceControllerStatus.Stopped);
         }
 
-        public void StartTransportService()
+        public static void StartTransportService()
         {
-            if (!this.IsTransportServiceStopped())
+            if (!ExchangeServer.IsTransportServiceStopped())
             {
                 throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service because it's already running.");
             }
@@ -97,9 +86,9 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public void StopTransportService()
+        public static void StopTransportService()
         {
-            if (!this.IsTransportServiceRunning())
+            if (!ExchangeServer.IsTransportServiceRunning())
             {
                 throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service because it's already stopped.");
             }
@@ -117,13 +106,13 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public void RestartTransportService()
+        public static void RestartTransportService()
         {
-            this.StopTransportService();
-            this.StartTransportService();
+            ExchangeServer.StopTransportService();
+            ExchangeServer.StartTransportService();
         }
 
-        public List<TransportServiceAgent> GetTransportServiceAgents()
+        public static List<TransportServiceAgent> GetTransportServiceAgents()
         {
             List<TransportServiceAgent> aoAgent = new List<TransportServiceAgent>();
             string sResult = PowerShellHelper.ExecPowerShellCommand("Get-TransportAgent", true);
@@ -149,11 +138,11 @@ namespace Configuration.DkimSigner.Exchange
             return aoAgent;
         }
 
-        public bool IsDkimAgentTransportInstalled()
+        public static bool IsDkimAgentTransportInstalled()
         {
             bool bResult = false;
 
-            foreach (TransportServiceAgent oAgent in this.GetTransportServiceAgents())
+            foreach (TransportServiceAgent oAgent in ExchangeServer.GetTransportServiceAgents())
             {
                 if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
                 {
@@ -165,11 +154,11 @@ namespace Configuration.DkimSigner.Exchange
             return bResult;
         }
 
-        public bool IsDkimAgentTransportEnabled()
+        public static bool IsDkimAgentTransportEnabled()
         {
             bool bResult = false;
 
-            foreach (TransportServiceAgent oAgent in this.GetTransportServiceAgents())
+            foreach (TransportServiceAgent oAgent in ExchangeServer.GetTransportServiceAgents())
             {
                 if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
                 {
@@ -181,9 +170,9 @@ namespace Configuration.DkimSigner.Exchange
             return bResult;
         }
 
-        public void InstallDkimTransportAgent()
+        public static void InstallDkimTransportAgent()
         {
-            if (!this.IsDkimAgentTransportInstalled())
+            if (!ExchangeServer.IsDkimAgentTransportInstalled())
             {
                 string sResult = PowerShellHelper.ExecPowerShellCommand("Install-TransportAgent -Confirm:$false -Name \"Exchange DkimSigner\" -TransportAgentFactory \"Exchange.DkimSigner.DkimSigningRoutingAgentFactory\" -AssemblyPath \"" + Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL) + "\"", true);
 
@@ -193,15 +182,15 @@ namespace Configuration.DkimSigner.Exchange
                     throw new ExchangeServerException("Couldn't install 'Exchange DkimSigner' agent :\n");
                 }
 
-                this.EnableDkimTransportAgent();
+                ExchangeServer.EnableDkimTransportAgent();
             }
         }
 
-        public void UninstallDkimTransportAgent()
+        public static void UninstallDkimTransportAgent()
         {
-            if (this.IsDkimAgentTransportInstalled())
+            if (ExchangeServer.IsDkimAgentTransportInstalled())
             {
-                this.DisableDkimTransportAgent();
+                ExchangeServer.DisableDkimTransportAgent();
 
                 string sResult = PowerShellHelper.ExecPowerShellCommand("Uninstall-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
 
@@ -213,9 +202,9 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public void EnableDkimTransportAgent()
+        public static void EnableDkimTransportAgent()
         {
-            if (!this.IsDkimAgentTransportEnabled())
+            if (!ExchangeServer.IsDkimAgentTransportEnabled())
             {
                 string sResult = PowerShellHelper.ExecPowerShellCommand("Enable-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
 
@@ -227,9 +216,9 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public void DisableDkimTransportAgent()
+        public static void DisableDkimTransportAgent()
         {
-            if (this.IsDkimAgentTransportEnabled())
+            if (ExchangeServer.IsDkimAgentTransportEnabled())
             {
                 string sResult = PowerShellHelper.ExecPowerShellCommand("Disable-TransportAgent -Confirm:$false -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
 
@@ -241,9 +230,9 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public void SetPriorityDkimTransportAgent(int iPriority)
+        public static void SetPriorityDkimTransportAgent(int iPriority)
         {
-            if (this.IsDkimAgentTransportEnabled())
+            if (ExchangeServer.IsDkimAgentTransportEnabled())
             {
                 string sResult = PowerShellHelper.ExecPowerShellCommand("Set-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\" -Priority " + iPriority, true);
 
@@ -255,25 +244,25 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public void MoveUpTransportAgent()
+        public static void MoveUpTransportAgent()
         {
-            foreach (TransportServiceAgent oAgent in this.GetTransportServiceAgents())
+            foreach (TransportServiceAgent oAgent in ExchangeServer.GetTransportServiceAgents())
             {
                 if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
                 {
-                    this.SetPriorityDkimTransportAgent(++oAgent.Priority);
+                    ExchangeServer.SetPriorityDkimTransportAgent(++oAgent.Priority);
                     break;
                 }
             }
         }
 
-        public void MoveDownTransportAgent()
+        public static void MoveDownTransportAgent()
         {
-            foreach (TransportServiceAgent oAgent in this.GetTransportServiceAgents())
+            foreach (TransportServiceAgent oAgent in ExchangeServer.GetTransportServiceAgents())
             {
                 if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
                 {
-                    this.SetPriorityDkimTransportAgent(--oAgent.Priority);
+                    ExchangeServer.SetPriorityDkimTransportAgent(--oAgent.Priority);
                     break;
                 }
             }

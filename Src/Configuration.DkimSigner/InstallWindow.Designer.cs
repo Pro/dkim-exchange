@@ -88,7 +88,7 @@
             this.lbStopService.Name = "lbStopService";
             this.lbStopService.Size = new System.Drawing.Size(465, 24);
             this.lbStopService.TabIndex = 12;
-            this.lbStopService.Text = "Stopping Exchange Transport service";
+            this.lbStopService.Text = "Stopping Microsoft Exchange Transport service";
             this.lbStopService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lbCopyFiles
@@ -101,7 +101,7 @@
             this.lbCopyFiles.Name = "lbCopyFiles";
             this.lbCopyFiles.Size = new System.Drawing.Size(465, 24);
             this.lbCopyFiles.TabIndex = 11;
-            this.lbCopyFiles.Text = "Copying new files";
+            this.lbCopyFiles.Text = "Extract and copying new files";
             this.lbCopyFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picCopyFiles
@@ -123,7 +123,7 @@
             this.lbStartService.Name = "lbStartService";
             this.lbStartService.Size = new System.Drawing.Size(465, 24);
             this.lbStartService.TabIndex = 14;
-            this.lbStartService.Text = "Starting Exchange Transport service";
+            this.lbStartService.Text = "Starting Microsoft Exchange Transport service";
             this.lbStartService.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // picStartService
@@ -145,7 +145,6 @@
             // btClose
             // 
             this.btClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btClose.Enabled = false;
             this.btClose.Location = new System.Drawing.Point(435, 308);
             this.btClose.Name = "btClose";
             this.btClose.Size = new System.Drawing.Size(75, 23);
@@ -295,6 +294,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(522, 346);
+            this.ControlBox = false;
             this.Controls.Add(this.btInstall);
             this.Controls.Add(this.lbSelectVersion);
             this.Controls.Add(this.cbxPrereleases);

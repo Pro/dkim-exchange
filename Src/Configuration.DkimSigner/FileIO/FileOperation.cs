@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Configuration.DkimSigner.FileIO
@@ -83,5 +82,21 @@ namespace Configuration.DkimSigner.FileIO
 
             return returnValue;
         }
+
+        /// <summary>
+        /// Removes the Zone identifier from a file (protects files downloaded through IE).
+        /// Only supported on NTFS file system. If file is located on another FS type, this method will most probably return false.
+        /// See: http://stackoverflow.com/questions/6374673/unblock-file-from-within-net-4-c-sharp
+        /// </summary>
+        /// <param name="sFileName">The file to unlock</param>
+        /// <returns>True if successfully unlocked.</returns>
+        public bool Unblock(string sFileName)
+        {
+            return DeleteFile(sFileName + ":Zone.Identifier");
+        }
+
+        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool DeleteFile(string name);
     }
 }
