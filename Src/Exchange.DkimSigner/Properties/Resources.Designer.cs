@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Configuration.DkimSigner.Properties {
+namespace Exchange.DkimSigner.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Configuration.DkimSigner.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Configuration.DkimSigner.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Exchange.DkimSigner.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -57,150 +57,6 @@ namespace Configuration.DkimSigner.Properties {
             }
             set {
                 resourceCulture = value;
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The MIME body could not be located, so DKIM signing was skipped..
-        /// </summary>
-        internal static string DkimSigningRoutingAgent_MimeBodyNotFound {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgent_MimeBodyNotFound", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The PEM-encoded RSA Private Key is not specified, so DKIM signing was skipped..
-        /// </summary>
-        internal static string DkimSigningRoutingAgent_NoKey {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgent_NoKey", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Signing a mail item according to DKIM failed with an exception. Check the logged exception for details..
-        /// </summary>
-        internal static string DkimSigningRoutingAgent_SignFailed {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgent_SignFailed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The configuration for Exchange Dkim Agent is not defined..
-        /// </summary>
-        internal static string DkimSigningRoutingAgentFactory_BadDkimConfig {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadDkimConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The domain was not found in the configuration file or is blank. Check the value of the &apos;DefaultDkimSigner_Domain&apos; key under the &lt;appSettings&gt; section..
-        /// </summary>
-        internal static string DkimSigningRoutingAgentFactory_BadDkimDomainConfig {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadDkimDomainConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The PEM-encoded private RSA key was not found in the configuration file or is blank. Check the value of the &apos;DefaultDkimSigner_PrivateKey&apos; key in the &lt;appSettings&gt; section..
-        /// </summary>
-        internal static string DkimSigningRoutingAgentFactory_BadDkimPrivateKeyConfig {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadDkimPrivateKeyConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The selector was not found in the configuration file or is blank. Check the value of the &apos;DefaultDkimSigner_Selector&apos; key under &lt;appSettings&gt;..
-        /// </summary>
-        internal static string DkimSigningRoutingAgentFactory_BadDkimSelectorConfig {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadDkimSelectorConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The log level is not defined or is invalid..
-        /// </summary>
-        internal static string DkimSigningRoutingAgentFactory_BadLogLevel {
-            get {
-                return ResourceManager.GetString("DkimSigningRoutingAgentFactory_BadLogLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Impossible to load the specified DKIM algorithm..
-        /// </summary>
-        internal static string MainWindows_BadDkimAlgorithmConfig {
-            get {
-                return ResourceManager.GetString("MainWindows_BadDkimAlgorithmConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Impossible to load the specified DKIM canonicalization body format. The &quot;Simple&quot; format has been selected..
-        /// </summary>
-        internal static string MainWindows_BadDkimCanonicalizationBodyConfig {
-            get {
-                return ResourceManager.GetString("MainWindows_BadDkimCanonicalizationBodyConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Impossible to load the specified DKIM canonicalization header format. The &quot;Simple&quot; format has been selected..
-        /// </summary>
-        internal static string MainWindows_BadDkimCanonicalizationHeaderConfig {
-            get {
-                return ResourceManager.GetString("MainWindows_BadDkimCanonicalizationHeaderConfig", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The log level is not defined or is invalid. The &quot;information&quot; log level have been selected..
-        /// </summary>
-        internal static string MainWindows_BadLogLevel {
-            get {
-                return ResourceManager.GetString("MainWindows_BadLogLevel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The encoded key is not in the proper DER format..
-        /// </summary>
-        internal static string RSACryptHelper_BadDerFormat {
-            get {
-                return ResourceManager.GetString("RSACryptHelper_BadDerFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The encoded key is not in the proper PEM format..
-        /// </summary>
-        internal static string RSACryptHelper_BadPemFormat {
-            get {
-                return ResourceManager.GetString("RSACryptHelper_BadPemFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The encoded key is not in the proper XML format..
-        /// </summary>
-        internal static string RSACryptHelper_BadXmlFormat {
-            get {
-                return ResourceManager.GetString("RSACryptHelper_BadXmlFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The encoded key is not in a proper format..
-        /// </summary>
-        internal static string RSACryptHelper_UnknownFormat {
-            get {
-                return ResourceManager.GetString("RSACryptHelper_UnknownFormat", resourceCulture);
             }
         }
     }

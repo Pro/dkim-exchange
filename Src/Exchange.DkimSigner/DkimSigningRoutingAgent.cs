@@ -58,7 +58,7 @@ namespace Exchange.DkimSigner
             }
             catch (Exception ex)
             {
-                Logger.LogError(Resources.DkimSigningRoutingAgent_SignFailed + "\n" + ex.ToString());
+                Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex.ToString());
             }
         }
 

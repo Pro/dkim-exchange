@@ -55,7 +55,7 @@ namespace DkimSigner.RSA
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException(Resources.RSACryptHelper_UnknownFormat, "encodedKey", ex);
+                        throw new ArgumentException("Unknown key format. (" + ex.Message + ")", "encodedKey", ex);
                     }
                 }
             }
@@ -92,7 +92,7 @@ namespace DkimSigner.RSA
             if (!encodedKey.StartsWith(PemRsaPrivateKeyHeader, StringComparison.Ordinal) ||
                 !encodedKey.EndsWith(PemRsaPrivateKeyFooter, StringComparison.Ordinal))
             {
-                throw new ArgumentException(Resources.RSACryptHelper_BadPemFormat, "encodedKey");
+                throw new ArgumentException("Invalid PEM format for key. The key needs to start with '" + PemRsaPrivateKeyHeader + "' and end with '" + PemRsaPrivateKeyFooter"'", "encodedKey");
             }
 
             encodedKey = encodedKey.Substring(
@@ -188,7 +188,7 @@ namespace DkimSigner.RSA
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException(Resources.RSACryptHelper_BadDerFormat, "encodedKey", ex);
+                        throw new ArgumentException("Invalid DER format for key. (" + ex.Message + ")", "encodedKey", ex);
                     }
                 }
             }
@@ -217,7 +217,7 @@ namespace DkimSigner.RSA
             }
             catch (Exception ex)
             {
-                throw new ArgumentException(Resources.RSACryptHelper_BadXmlFormat, "encodedKey", ex);
+                throw new ArgumentException("Invalid XML format for key. (" + ex.Message + ")", "encodedKey", ex);
             }
 
             return provider;
