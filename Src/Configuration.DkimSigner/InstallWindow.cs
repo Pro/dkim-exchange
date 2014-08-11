@@ -8,6 +8,7 @@ using Configuration.DkimSigner.GitHub;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.FileIO;
 using Ionic.Zip;
+using System.Diagnostics;
 
 namespace Configuration.DkimSigner
 {
@@ -55,12 +56,12 @@ namespace Configuration.DkimSigner
         private void InstallWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             // IF any thread running, we stop them before exit
-            if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == ThreadState.Running)
+            if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
             {
                 this.thDkimSignerAvailable.Abort();
             }
-            
-            if (this.thInstallProcess != null && this.thInstallProcess.ThreadState == ThreadState.Running)
+
+            if (this.thInstallProcess != null && this.thInstallProcess.ThreadState == System.Threading.ThreadState.Running)
             {
                 this.thInstallProcess.Abort();
             }
@@ -280,9 +281,26 @@ namespace Configuration.DkimSigner
             {
                 // First make sure the following Registry key exists
                 // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
-                if (RegistryHelper.Open(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM") != null)
+
+                // Create the event source if it does not exist.
+                if (!EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
                 {
-                    RegistryHelper.WriteSubKeyTree(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM");
+                    // Create a new event source for the custom event log 
+
+                    EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, Constants.DKIM_SIGNER_EVENTLOG_SOURCE);
+
+                    // Set the specified file as the resource
+                    // file for message text, category text, and 
+                    // message parameter strings.  
+
+                    // set dummy file. We don't have our own message files. See http://www.codeproject.com/Articles/4166/Using-MC-exe-message-resources-and-the-NT-event-lo if own file needed.
+                    mySourceData.MessageResourceFile = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll";
+                    //mySourceData.CategoryResourceFile = messageFile;
+                    //mySourceData.CategoryCount = CategoryCount;
+                    //mySourceData.ParameterResourceFile = messageFile;
+
+
+                    EventLog.CreateEventSource(mySourceData);
                 }
 
                 // Install DKIM Transport Agent in Microsoft Exchange 
@@ -415,7 +433,7 @@ namespace Configuration.DkimSigner
                         }
                         else
                         {
-                            MessageBox.Show("The current Microsoft Exchange version isn't support by DKIM agent.");
+                            MessageBox.Show("The current Microsoft Exchange version isn't supported by DKIM agent: " + this.sExchangeVersion, "Version not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             bStatus = false;
                         }
                     }
