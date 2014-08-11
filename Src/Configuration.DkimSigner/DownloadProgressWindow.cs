@@ -11,21 +11,21 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
-        private WebClient webClient;
-        private string url;
-        private string targetLocation;
+        private WebClient oWebClient;
+        private string sUrl;
+        private string sTargetLocation;
 
         /**********************************************************/
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public DownloadProgressWindow(string url, string targetLocation)
+        public DownloadProgressWindow(string sUrl, string sTargetLocation)
         {
-            InitializeComponent();
+            this.InitializeComponent();
 
-            this.webClient = new WebClient();
-            this.url = url;
-            this.targetLocation = targetLocation;
+            this.oWebClient = new WebClient();
+            this.sUrl = sUrl;
+            this.sTargetLocation = sTargetLocation;
         }
 
         /**********************************************************/
@@ -34,11 +34,11 @@ namespace Configuration.DkimSigner
 
         private void DownloadProgressWindow_Load(object sender, EventArgs e)
         {
-            this.lbFile.Text = "Downloading " + this.url;
-            this.webClient.Headers.Add("User-Agent", ".NET Framework API Client");
-            this.webClient.DownloadFileCompleted += new AsyncCompletedEventHandler(this.Completed);
-            this.webClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(this.ProgressChanged);
-            this.webClient.DownloadFileAsync(new Uri(this.url), this.targetLocation);
+            this.lbFile.Text = "Downloading " + this.sUrl;
+            this.oWebClient.Headers.Add("User-Agent", ".NET Framework API Client");
+            this.oWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(this.Completed);
+            this.oWebClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(this.ProgressChanged);
+            this.oWebClient.DownloadFileAsync(new Uri(this.sUrl), this.sTargetLocation);
         }
 
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -55,22 +55,24 @@ namespace Configuration.DkimSigner
                 this.pgFile.Value = 0;
                 this.lbFile.Text = "Cancelled";
 
-                this.Close();
-                return;
+                this.DialogResult = DialogResult.Cancel;
             }
             else if (e.Error != null)
             {
-                MessageBox.Show("Error downloading file: " + url + "\n" + e.Error.Message);
+                MessageBox.Show("Error downloading file: " + sUrl + "\n" + e.Error.Message);
                 
                 this.pgFile.Value = 0;
                 this.lbFile.Text = "Error: " + e.Error.Message;
-                
-                return;
+
+                this.DialogResult = DialogResult.Cancel;
+            }
+            else
+            {
+                this.pgFile.Value = 100;
+
+                this.DialogResult = DialogResult.OK;
             }
 
-            this.pgFile.Value = 100;
-
-            this.DialogResult = DialogResult.OK;
             this.Close();
         }
 
@@ -83,11 +85,11 @@ namespace Configuration.DkimSigner
         /********************** Button click **********************/
         /**********************************************************/
 
-        private void btnCancel_Click(object sender, EventArgs e)
+        private void btCancel_Click(object sender, EventArgs e)
         {
-            if (this.webClient.IsBusy)
+            if (this.oWebClient.IsBusy)
             {
-                this.webClient.CancelAsync();
+                this.oWebClient.CancelAsync();
             }
             else
             {

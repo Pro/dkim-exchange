@@ -1,6 +1,5 @@
 ﻿using Microsoft.Win32;
 using System;
-using System.Text;
 
 namespace Configuration.DkimSigner
 {

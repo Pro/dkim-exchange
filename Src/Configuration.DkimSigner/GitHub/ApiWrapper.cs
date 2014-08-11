@@ -8,41 +8,69 @@ using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner.GitHub
 {
-    class ApiWrapper
+    public class ApiWrapper
     {
-        public static Release getNewestRelease(bool includePrerelease = false)
+        public static List<Release> GetAllRelease(bool bIncludePrerelease = false, Version oMinimalVersion = null)
         {
-            string json = Api.MakeRequest(Api.CreateRequest("/repos/pro/dkim-exchange/releases"));
-            if (json == null)
-                return null;
-            DataContractJsonSerializer jsonSerializer = new DataContractJsonSerializer(typeof(Release[]));
-            var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
-            object objResponse = jsonSerializer.ReadObject(stream);
-            Release[] releases = objResponse as Release[];
+            List<Release> aoRelease = null;
 
-            // find max version
+            string sJson = null;
+            sJson = Api.MakeRequest(Api.CreateRequest("/repos/pro/dkim-exchange/releases"));
 
-            Release newest = null;
-
-
-            foreach (Release r in releases)
+            if (sJson != null)
             {
-                if (r.Draft || (!includePrerelease && r.Prerelease))
-                    continue;
-                // check for valid version string
-                Match match = Regex.Match(r.TagName, @"v?((?:\d+\.){0,3}\d+)",RegexOptions.IgnoreCase);
+                DataContractJsonSerializer oJsonSerializer = new DataContractJsonSerializer(typeof(Release[]));
+                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(sJson));
+                
+                object objResponse = oJsonSerializer.ReadObject(stream);
+                Release[] oTemp = (Release[]) objResponse;
 
-                if (!match.Success)
-                    continue;
-                string vStr = match.Groups[1].Value;
-                r.Version = new Version(vStr);
-                if (newest == null)
-                    newest = r;
-                else if (newest.Version < r.Version)
-                    newest = r;
+                aoRelease = new List<Release>(oTemp);
+
+                foreach (Release oRelease in aoRelease.ToList())
+                {
+                    if (oRelease.Draft || (!bIncludePrerelease && oRelease.Prerelease))
+                    {
+                        aoRelease.Remove(oRelease);
+                        continue;
+                    }
+
+                    // Check for valid version string
+                    Match oMatch = Regex.Match(oRelease.TagName, @"v?((?:\d+\.){0,3}\d+)",RegexOptions.IgnoreCase);
+                    if (!oMatch.Success)
+                    {
+                        aoRelease.Remove(oRelease);
+                    }
+                    else
+                    {
+                        string sVersion = oMatch.Groups[1].Value;
+                        oRelease.Version = new Version(sVersion);
+
+                        if (oMinimalVersion != null && oRelease.Version < oMinimalVersion)
+                        {
+                            aoRelease.Remove(oRelease);
+                        }
+                    }
+                }
             }
 
-            return newest;
+            return aoRelease;
+        }
+
+        public static Release GetNewestRelease(bool bIncludePrerelease = false, Version oMinimalVersion = null)
+        {
+            List<Release> aoRelease = ApiWrapper.GetAllRelease(bIncludePrerelease, oMinimalVersion);
+            Release oNewestRelease = null;
+
+            foreach (Release oRelease in aoRelease)
+            {
+                if (oNewestRelease == null || oNewestRelease.Version < oRelease.Version)
+                {
+                    oNewestRelease = oRelease;
+                }
+            }
+
+            return oNewestRelease;
         }
     }
 }

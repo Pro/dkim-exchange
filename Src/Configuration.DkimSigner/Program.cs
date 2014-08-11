@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Windows.Forms;
+
+using Configuration.DkimSigner.Exchange;
 
 namespace Configuration.DkimSigner
 {
@@ -23,59 +22,34 @@ namespace Configuration.DkimSigner
             // *******************************************************************
             // Variables
             // *******************************************************************
-            string[] args = Environment.GetCommandLineArgs();
-            string installPath = "";
-
-            // *******************************************************************
-            // IF upgrade process
-            // *******************************************************************
-            bool isUpgrade = (Array.IndexOf(args, "--upgrade") >= 0);
-            if (isUpgrade)
-            {
-                int idx = Array.IndexOf(args, "--upgrade") + 1;
-
-                if (args.Length <= idx)
-                {
-                    MessageBox.Show("Missing install path for update parameter.", "Invalid argument count", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Application.Exit();
-                    return;
-                }
-                else
-                {
-                    installPath = args[idx];
-                }
-            }
-
-            // *******************************************************************
-            // IF install process
-            // *******************************************************************
-            bool isInstall = (Array.IndexOf(args, "--install") >= 0);
-            if (isInstall)
-            {
-                installPath = Constants.DKIM_SIGNER_PATH;
-            }
+            string[] asArgv = Environment.GetCommandLineArgs();
 
             // *******************************************************************
             // Load correct Windows form
             // *******************************************************************
+            ExchangeServer oExchange = new ExchangeServer();
             Form oForm = null;
-            if (isInstall || isUpgrade)
-            {               
-                oForm = new UpgradeWindow(Path.GetFullPath(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"..\..\..\..")), installPath);
 
-                string sPathExec = Path.Combine(installPath, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
-                if (File.Exists(sPathExec))
-                {
-                    Process.Start(sPathExec);
-                }
-                else
-                {
-                    MessageBox.Show("Couldn't find 'Configuration.DkimSigner.exe' in \n" + installPath, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+            if (Array.IndexOf(asArgv, "--install") >= 0)
+            {
+                oForm = new InstallWindow();
             }
+            //else if(Array.IndexOf(asArgv, "--upgrade") >= 0)
+            //{
+            //}
+            //else if (Array.IndexOf(asArgv, "--uninstall") >= 0)
+            //{
+            //    // Delete Itself
+            //    ProcessStartInfo Info=new ProcessStartInfo();
+            //    Info.Arguments="/C choice /C Y /N /D Y /T 5 & Del "+ Application.ExecutablePath;
+            //    Info.WindowStyle=ProcessWindowStyle.Hidden;
+            //    Info.CreateNoWindow=true;
+            //    Info.FileName="cmd.exe";
+            //    Process.Start(Info); 
+            //}
             else
             {
-                oForm = new MainWindow();
+                oForm = new MainWindow();    
             }
 
             Application.Run(oForm);

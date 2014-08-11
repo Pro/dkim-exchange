@@ -1,35 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 
 namespace Configuration.DkimSigner.GitHub
 {
-    class Api
+    public class Api
     {
-        public static string CreateRequest(string queryString)
+        public static string CreateRequest(string sQuery)
         {
-            string UrlRequest = "https://api.github.com" +
-                                 queryString;
-            return (UrlRequest);
+            return "https://api.github.com" + sQuery;
         }
 
-        public static string MakeRequest(string requestUrl)
+        public static string MakeRequest(string sUrl)
         {
-            HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
-            request.UserAgent = ".NET Framework API Client";
-            using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+            HttpWebRequest oRequest = (HttpWebRequest) WebRequest.Create(sUrl);
+            oRequest.UserAgent = ".NET Framework API Client";
+
+            string sResult = null;
+            try
             {
-                if (response.StatusCode != HttpStatusCode.OK)
-                    throw new Exception(String.Format(
-                    "Server error (HTTP {0}: {1}).",
-                    response.StatusCode,
-                    response.StatusDescription));
-                return new StreamReader(response.GetResponseStream()).ReadToEnd();
-            }
-        }
+                HttpWebResponse oResponse = (HttpWebResponse) oRequest.GetResponse();
 
+                if (oResponse.StatusCode == HttpStatusCode.OK)
+                {
+                    sResult = new StreamReader(oResponse.GetResponseStream()).ReadToEnd();
+                    
+                }
+                //else
+                //{
+                //    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", oResponse.StatusCode, oResponse.StatusDescription));
+                //}
+            }
+            catch (Exception)
+            {
+                sResult = null;
+            }
+
+            return sResult;
+        }
     }
 }

@@ -30,7 +30,7 @@
         {
             this.lbHeader = new System.Windows.Forms.Label();
             this.txtHeader = new System.Windows.Forms.TextBox();
-            this.btnAdd = new System.Windows.Forms.Button();
+            this.btAdd = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbHeader
@@ -52,29 +52,29 @@
             this.txtHeader.TabIndex = 1;
             this.txtHeader.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtHeader_KeyPress);
             // 
-            // btnAdd
+            // btAdd
             // 
-            this.btnAdd.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnAdd.Location = new System.Drawing.Point(197, 51);
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnAdd.TabIndex = 2;
-            this.btnAdd.Text = "&Add";
-            this.btnAdd.UseVisualStyleBackColor = true;
+            this.btAdd.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btAdd.Location = new System.Drawing.Point(197, 51);
+            this.btAdd.Name = "btAdd";
+            this.btAdd.Size = new System.Drawing.Size(75, 23);
+            this.btAdd.TabIndex = 2;
+            this.btAdd.Text = "&Add";
+            this.btAdd.UseVisualStyleBackColor = true;
             // 
-            // HeaderInputForm
+            // HeaderInputWindows
             // 
-            this.AcceptButton = this.btnAdd;
+            this.AcceptButton = this.btAdd;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 87);
-            this.Controls.Add(this.btnAdd);
+            this.Controls.Add(this.btAdd);
             this.Controls.Add(this.txtHeader);
             this.Controls.Add(this.lbHeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "HeaderInputForm";
+            this.Name = "HeaderInputWindows";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add a new header";
@@ -87,7 +87,7 @@
         #endregion
 
         private System.Windows.Forms.Label lbHeader;
-        private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.Button btAdd;
         public System.Windows.Forms.TextBox txtHeader;
     }
 }

@@ -49,7 +49,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
+    <ApplicationIcon>..\..\Resources\Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -106,11 +106,21 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\BigInteger.cs">
       <Link>RSA\BigInteger.cs</Link>
     </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
-      <Link>RSA\RSACryptoFormat.cs</Link>
+    <Compile Include="ExchangeTransportServiceWindows.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
-      <Link>RSA\RSACryptoHelper.cs</Link>
+    <Compile Include="ExchangeTransportServiceWindows.Designer.cs">
+      <DependentUpon>ExchangeTransportServiceWindows.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exchange\ExchangeServer.cs" />
+    <Compile Include="Exchange\ExchangeServerException.cs" />
+    <Compile Include="Exchange\TransportServiceAgent.cs" />
+    <Compile Include="Exchange\PowershellHelper.cs" />
+    <Compile Include="FileIO\FileOperation.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="RegistryHelper.cs" />
     <Compile Include="Constants.cs" />
@@ -189,8 +199,6 @@
     <Compile Include="DownloadProgressWindow.Designer.cs">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="ExchangeHelper.cs" />
-    <Compile Include="FileHelper.cs" />
     <Compile Include="GitHub\Api.cs" />
     <Compile Include="GitHub\ApiWrapper.cs" />
     <Compile Include="GitHub\DataContract.cs" />
@@ -208,14 +216,18 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UpgradeWindow.cs">
+    <Compile Include="InstallWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UpgradeWindow.Designer.cs">
-      <DependentUpon>UpgradeWindow.cs</DependentUpon>
+    <Compile Include="InstallWindow.Designer.cs">
+      <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="FileIO\ShellFileOperation.cs" />
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExchangeTransportServiceWindows.resx">
+      <DependentUpon>ExchangeTransportServiceWindows.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="HeaderInputWindows.resx">
       <DependentUpon>HeaderInputWindows.cs</DependentUpon>
@@ -224,33 +236,21 @@
       <DependentUpon>MainWindow.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UpgradeWindow.resx">
-      <DependentUpon>UpgradeWindow.cs</DependentUpon>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstallWindow.resx">
+      <DependentUpon>InstallWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
-    <Compile Include="..\Exchange.DkimSigner\Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <Link>Properties\Resources.Designer.cs</Link>
-    </Compile>
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\Exchange.DkimSigner\Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <Link>Properties\Resources.resx</Link>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Dns\Records\totla.txt" />
     <Content Include="Dns\Root\named_root.txt" />
-    <Content Include="Saki-NuoveXT-2-Mimetypes-document-seal.ico" />
-    <Content Include="WebSecurity.ico" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">
