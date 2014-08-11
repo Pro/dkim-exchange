@@ -6,18 +6,18 @@ using Configuration.DkimSigner.Exchange;
 
 namespace Configuration.DkimSigner
 {
-    public partial class ExchangeTransportServiceWindows : Form
+    public partial class ExchangeTransportServiceWindow : Form
     {
         /**********************************************************/
         /*********************** Variables ************************/
         /**********************************************************/
-        private ExchangeServer oExchange = null;
+
 
         /**********************************************************/
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public ExchangeTransportServiceWindows()
+        public ExchangeTransportServiceWindow()
         {
             this.InitializeComponent();
         }

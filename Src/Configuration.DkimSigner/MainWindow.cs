@@ -756,7 +756,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btConfigureTransportService_Click(object sender, EventArgs e)
         {
-            ExchangeTransportServiceWindows oEtsw = new ExchangeTransportServiceWindows();
+            ExchangeTransportServiceWindow oEtsw = new ExchangeTransportServiceWindow();
 
             oEtsw.ShowDialog();
         }
@@ -768,7 +768,7 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btHeaderAdd_Click(object sender, EventArgs e)
         {
-            HeaderInputWindows oHiw = new HeaderInputWindows();
+            HeaderInputWindow oHiw = new HeaderInputWindow();
 
             if (oHiw.ShowDialog() == DialogResult.OK)
             {

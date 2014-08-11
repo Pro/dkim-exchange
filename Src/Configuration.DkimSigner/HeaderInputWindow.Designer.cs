@@ -1,6 +1,6 @@
 ﻿namespace Configuration.DkimSigner
 {
-    partial class HeaderInputWindows
+    partial class HeaderInputWindow
     {
         /// <summary>
         /// Required designer variable.

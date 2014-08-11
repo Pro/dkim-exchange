@@ -1,6 +1,6 @@
 ﻿namespace Configuration.DkimSigner
 {
-    partial class ExchangeTransportServiceWindows
+    partial class ExchangeTransportServiceWindow
     {
         /// <summary>
         /// Required designer variable.
