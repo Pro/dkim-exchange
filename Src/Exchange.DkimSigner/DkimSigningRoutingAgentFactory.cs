@@ -9,7 +9,6 @@ using Microsoft.Exchange.Data.Transport.Routing;
 
 using ConfigurationSettings;
 using System.Diagnostics;
-using Configuration.DkimSigner.Properties;
 using System.Runtime.InteropServices;
 
 namespace Exchange.DkimSigner
