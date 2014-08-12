@@ -92,7 +92,7 @@ namespace DkimSigner.RSA
             if (!encodedKey.StartsWith(PemRsaPrivateKeyHeader, StringComparison.Ordinal) ||
                 !encodedKey.EndsWith(PemRsaPrivateKeyFooter, StringComparison.Ordinal))
             {
-                throw new ArgumentException("Invalid PEM format for key. The key needs to start with '" + PemRsaPrivateKeyHeader + "' and end with '" + PemRsaPrivateKeyFooter"'", "encodedKey");
+                throw new ArgumentException("Invalid PEM format for key. The key needs to start with '" + PemRsaPrivateKeyHeader + "' and end with '" + PemRsaPrivateKeyFooter +"'", "encodedKey");
             }
 
             encodedKey = encodedKey.Substring(
