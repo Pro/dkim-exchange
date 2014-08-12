@@ -90,11 +90,18 @@
             this.lbDomainName = new System.Windows.Forms.Label();
             this.btDomainKeySelect = new System.Windows.Forms.Button();
             this.btDomainKeyGenerate = new System.Windows.Forms.Button();
+            this.tpLog = new System.Windows.Forms.TabPage();
+            this.btEventLogRefresh = new System.Windows.Forms.Button();
+            this.dgEventLog = new System.Windows.Forms.DataGridView();
+            this.label2 = new System.Windows.Forms.Label();
             this.tpAbout = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.txtAbout = new System.Windows.Forms.TextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
+            this.icon = new System.Windows.Forms.DataGridViewImageColumn();
+            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -108,6 +115,8 @@
             this.tpDomain.SuspendLayout();
             this.gbDomain.SuspendLayout();
             this.gbxDomainDetails.SuspendLayout();
+            this.tpLog.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgEventLog)).BeginInit();
             this.tpAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).BeginInit();
@@ -121,6 +130,7 @@
             this.tcConfiguration.Controls.Add(this.tbInformation);
             this.tcConfiguration.Controls.Add(this.tpDKIM);
             this.tcConfiguration.Controls.Add(this.tpDomain);
+            this.tcConfiguration.Controls.Add(this.tpLog);
             this.tcConfiguration.Controls.Add(this.tpAbout);
             this.tcConfiguration.ItemSize = new System.Drawing.Size(150, 25);
             this.tcConfiguration.Location = new System.Drawing.Point(12, 12);
@@ -545,6 +555,8 @@
             // 
             // gbDomain
             // 
+            this.gbDomain.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.gbDomain.Controls.Add(this.lbxDomains);
             this.gbDomain.Controls.Add(this.btAddDomain);
             this.gbDomain.Controls.Add(this.btDomainDelete);
@@ -794,6 +806,58 @@
             this.btDomainKeyGenerate.UseVisualStyleBackColor = true;
             this.btDomainKeyGenerate.Click += new System.EventHandler(this.btDomainKeyGenerate_Click);
             // 
+            // tpLog
+            // 
+            this.tpLog.Controls.Add(this.btEventLogRefresh);
+            this.tpLog.Controls.Add(this.dgEventLog);
+            this.tpLog.Controls.Add(this.label2);
+            this.tpLog.Location = new System.Drawing.Point(4, 29);
+            this.tpLog.Name = "tpLog";
+            this.tpLog.Padding = new System.Windows.Forms.Padding(3);
+            this.tpLog.Size = new System.Drawing.Size(707, 284);
+            this.tpLog.TabIndex = 4;
+            this.tpLog.Text = "EventLog";
+            this.tpLog.UseVisualStyleBackColor = true;
+            // 
+            // btEventLogRefresh
+            // 
+            this.btEventLogRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btEventLogRefresh.Location = new System.Drawing.Point(626, 255);
+            this.btEventLogRefresh.Name = "btEventLogRefresh";
+            this.btEventLogRefresh.Size = new System.Drawing.Size(75, 23);
+            this.btEventLogRefresh.TabIndex = 2;
+            this.btEventLogRefresh.Text = "Refresh";
+            this.btEventLogRefresh.UseVisualStyleBackColor = true;
+            this.btEventLogRefresh.Click += new System.EventHandler(this.btEventLogRefresh_Click);
+            // 
+            // dgEventLog
+            // 
+            this.dgEventLog.AllowUserToAddRows = false;
+            this.dgEventLog.AllowUserToDeleteRows = false;
+            this.dgEventLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgEventLog.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
+            this.dgEventLog.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgEventLog.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.icon,
+            this.time,
+            this.message});
+            this.dgEventLog.Location = new System.Drawing.Point(6, 19);
+            this.dgEventLog.Name = "dgEventLog";
+            this.dgEventLog.ReadOnly = true;
+            this.dgEventLog.Size = new System.Drawing.Size(695, 230);
+            this.dgEventLog.TabIndex = 1;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(3, 3);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(186, 13);
+            this.label2.TabIndex = 0;
+            this.label2.Text = "DKIM signing agent EventLog entries:";
+            // 
             // tpAbout
             // 
             this.tpAbout.Controls.Add(this.label1);
@@ -838,6 +902,31 @@
             // 
             this.epvDomainSelector.ContainerControl = this;
             // 
+            // icon
+            // 
+            this.icon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.icon.HeaderText = "";
+            this.icon.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.icon.MinimumWidth = 24;
+            this.icon.Name = "icon";
+            this.icon.ReadOnly = true;
+            this.icon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.icon.Width = 24;
+            // 
+            // time
+            // 
+            this.time.HeaderText = "Time";
+            this.time.Name = "time";
+            this.time.ReadOnly = true;
+            this.time.Width = 55;
+            // 
+            // message
+            // 
+            this.message.HeaderText = "Message";
+            this.message.Name = "message";
+            this.message.ReadOnly = true;
+            this.message.Width = 75;
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -870,6 +959,9 @@
             this.gbDomain.ResumeLayout(false);
             this.gbxDomainDetails.ResumeLayout(false);
             this.gbxDomainDetails.PerformLayout();
+            this.tpLog.ResumeLayout(false);
+            this.tpLog.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgEventLog)).EndInit();
             this.tpAbout.ResumeLayout(false);
             this.tpAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
@@ -945,6 +1037,13 @@
         private System.Windows.Forms.PictureBox picLogo;
         private System.Windows.Forms.TextBox txtAbout;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TabPage tpLog;
+        private System.Windows.Forms.Button btEventLogRefresh;
+        private System.Windows.Forms.DataGridView dgEventLog;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.DataGridViewImageColumn icon;
+        private System.Windows.Forms.DataGridViewTextBoxColumn time;
+        private System.Windows.Forms.DataGridViewTextBoxColumn message;
     }
 }
 

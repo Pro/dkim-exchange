@@ -11,6 +11,8 @@ using ConfigurationSettings;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.GitHub;
 using Heijden.DNS;
+using System.Diagnostics;
+using System.Drawing;
 
 namespace Configuration.DkimSigner
 {
@@ -27,11 +29,13 @@ namespace Configuration.DkimSigner
         private Thread thDkimSignerInstalled = null;
         private Thread thDkimSignerAvailable = null;
         private Thread thTransportServiceOperation = null;
+        private Thread thExchangeInstalled = null;
         private System.Threading.Timer tiTransportServiceStatus = null;
 
         delegate void SetDkimSignerInstalledCallback(Version oDkimSignerInstalled);
         delegate void SetDkimSignerAvailableCallback(Release oDkimSignerAvailable);
         delegate void SetExchangeTransportServiceStatusCallback(string sStatus);
+        delegate void SetExchangeInstalledCallback(string sStatus);
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -62,18 +66,16 @@ namespace Configuration.DkimSigner
         private void MainWindow_Load(object sender, EventArgs e)
         {
             // Get Exchange version installed + load the current configuration
-            this.txtExchangeInstalled.Text = ExchangeServer.GetInstalledVersion();
-
-            // Uptade Microsft Exchange Transport Service stuatus
-            if (this.txtExchangeInstalled.Text != "Not installed")
+            // Get Exchange.DkimSigner version installed
+            this.txtExchangeInstalled.Text = "Loading ...";
+            this.thExchangeInstalled = new Thread(new ThreadStart(this.CheckExchangeInstalledSafe));
+            
+            // Start the threads that will do lookup
+            try
             {
-                this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatusSafe), null, 0, 1000);
-                this.btConfigureTransportService.Enabled = true;
+                this.thExchangeInstalled.Start();
             }
-            else
-            {
-                this.SetExchangeTransportServiceStatus("Unavailable");
-            }
+            catch (ThreadAbortException) { }
             
             // Update Exchange and DKIM Signer version
             this.UpdateVersions();
@@ -97,17 +99,23 @@ namespace Configuration.DkimSigner
             else
             {
                 // IF any thread running, we stop them before exit
-                if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == ThreadState.Running)
+                if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
                 {
                     this.thDkimSignerAvailable.Abort();
                 }
 
-                if (this.thDkimSignerInstalled != null && this.thDkimSignerInstalled.ThreadState == ThreadState.Running)
+                if (this.thDkimSignerInstalled != null && this.thDkimSignerInstalled.ThreadState == System.Threading.ThreadState.Running)
                 {
                     this.thDkimSignerInstalled.Abort();
                 }
 
-                if (this.thTransportServiceOperation != null && this.thTransportServiceOperation.ThreadState == ThreadState.Running)
+                if (this.thExchangeInstalled != null && this.thExchangeInstalled.ThreadState == System.Threading.ThreadState.Running)
+                {
+                    this.thExchangeInstalled.Abort();
+                }
+
+
+                if (this.thTransportServiceOperation != null && this.thTransportServiceOperation.ThreadState == System.Threading.ThreadState.Running)
                 {
                     this.thTransportServiceOperation.Join();
                 }
@@ -335,6 +343,60 @@ namespace Configuration.DkimSigner
             else
             {
                 this.SetExchangeTransportServiceStatus(sStatus);
+            }
+        }
+
+        /// <summary>
+        /// Set the value of txtExchangeInstalled from CheckExchangeInstalledSafe (use by thread in Load)
+        /// </summary>
+        /// <param name="dkimSignerInstalled"></param>
+        private void SetDkimSignerInstalled(string exchangeInstalled)
+        {
+            this.txtExchangeInstalled.Text = exchangeInstalled;
+
+            // Uptade Microsft Exchange Transport Service stuatus
+            if (exchangeInstalled != null && exchangeInstalled != "Not installed")
+            {
+                if (this.tiTransportServiceStatus != null)
+                    this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatusSafe), null, 0, 1000);
+                this.btConfigureTransportService.Enabled = true;
+            }
+            else
+            {
+                this.SetExchangeTransportServiceStatus("Unavailable");
+                this.btConfigureTransportService.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Check the Microsoft Exchange Transport Service Status
+        /// </summary>
+        /// <param name="state"></param>
+        private void CheckExchangeInstalledSafe()
+        {
+            string version = null;
+
+            try
+            {
+                version = ExchangeServer.GetInstalledVersion();
+            }
+            catch (ExchangeServerException)
+            {
+                version = "Unknown";
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Couldn't determine installed Exchange Version: " + e.Message, "Exchange Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (this.txtExchangeStatus.InvokeRequired)
+            {
+                SetExchangeInstalledCallback d = new SetExchangeInstalledCallback(this.SetDkimSignerInstalled);
+                this.Invoke(d, version);
+            }
+            else
+            {
+                this.SetDkimSignerInstalled(version);
             }
         }
 
@@ -697,6 +759,37 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
+        /// <summary>
+        /// Reloads all the entries from event log and shows them on the EventLog Tab page.
+        /// </summary>
+        private void refreshEventLog()
+        {
+            dgEventLog.Rows.Clear();
+            if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
+            {
+                EventLog logger = new EventLog();
+                logger.Source = Constants.DKIM_SIGNER_EVENTLOG_SOURCE;
+
+                foreach (System.Diagnostics.EventLogEntry entry in logger.Entries)
+                {
+                    Image img = null;
+                    switch (entry.EntryType)
+                    {
+                        case EventLogEntryType.Information:
+                            img = SystemIcons.Information.ToBitmap();
+                            break;
+                        case EventLogEntryType.Warning:
+                            img = SystemIcons.Warning.ToBitmap();
+                            break;
+                        case EventLogEntryType.Error:
+                            img = SystemIcons.Error.ToBitmap();
+                            break;
+                    }
+                    dgEventLog.Rows.Add(img, entry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), entry.Message);
+                }
+            }
+        }
+
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
@@ -1029,6 +1122,17 @@ namespace Configuration.DkimSigner
             {
                 MessageBox.Show("You first need to fix the errors in your domain configuration before saving.", "Config error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+
+        /// <summary>
+        /// Button "Refresh" on EventLog TabPage
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btEventLogRefresh_Click(object sender, EventArgs e)
+        {
+            refreshEventLog();
         }
     }
 }
