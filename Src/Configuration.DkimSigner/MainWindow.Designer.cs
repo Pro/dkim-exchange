@@ -822,7 +822,7 @@
             // btEventLogRefresh
             // 
             this.btEventLogRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btEventLogRefresh.Location = new System.Drawing.Point(626, 255);
+            this.btEventLogRefresh.Location = new System.Drawing.Point(618, 258);
             this.btEventLogRefresh.Name = "btEventLogRefresh";
             this.btEventLogRefresh.Size = new System.Drawing.Size(75, 23);
             this.btEventLogRefresh.TabIndex = 2;
@@ -834,6 +834,8 @@
             // 
             this.dgEventLog.AllowUserToAddRows = false;
             this.dgEventLog.AllowUserToDeleteRows = false;
+            this.dgEventLog.AllowUserToResizeColumns = false;
+            this.dgEventLog.AllowUserToResizeRows = false;
             this.dgEventLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
@@ -843,20 +845,24 @@
             this.icon,
             this.time,
             this.message});
-            this.dgEventLog.Location = new System.Drawing.Point(6, 19);
+            this.dgEventLog.Location = new System.Drawing.Point(11, 37);
+            this.dgEventLog.MultiSelect = false;
             this.dgEventLog.Name = "dgEventLog";
             this.dgEventLog.ReadOnly = true;
-            this.dgEventLog.Size = new System.Drawing.Size(695, 230);
+            this.dgEventLog.RowHeadersVisible = false;
+            this.dgEventLog.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dgEventLog.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgEventLog.Size = new System.Drawing.Size(682, 212);
             this.dgEventLog.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 3);
+            this.label2.Location = new System.Drawing.Point(9, 15);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(186, 13);
+            this.label2.Size = new System.Drawing.Size(206, 13);
             this.label2.TabIndex = 0;
-            this.label2.Text = "DKIM signing agent EventLog entries:";
+            this.label2.Text = "EventLog entries for DKIM Signing agent :";
             // 
             // tpAbout
             // 
@@ -918,14 +924,16 @@
             this.time.HeaderText = "Time";
             this.time.Name = "time";
             this.time.ReadOnly = true;
+            this.time.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.time.Width = 55;
             // 
             // message
             // 
+            this.message.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.message.HeaderText = "Message";
             this.message.Name = "message";
             this.message.ReadOnly = true;
-            this.message.Width = 75;
+            this.message.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             // 
             // MainWindow
             // 
