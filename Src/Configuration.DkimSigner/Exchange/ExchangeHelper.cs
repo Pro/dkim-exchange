@@ -12,7 +12,7 @@ using System.Management.Automation.Runspaces;
 
 using ConfigurationSettings;
 
-namespace Configuration.DkimSigner
+namespace Configuration.DkimSigner.Exchange
 {
     public class ExchangeHelper
     {
