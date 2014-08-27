@@ -77,7 +77,10 @@ namespace Configuration.DkimSigner
                 this.thExchangeInstalled.Start();
             }
             catch (ThreadAbortException) { }
-            
+
+            // update transport service status each second
+            this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatusSafe), null, 0, 1000);
+
             // Update Exchange and DKIM Signer version
             this.UpdateVersions();
 
@@ -99,6 +102,10 @@ namespace Configuration.DkimSigner
             }
             else
             {
+                //stop timer
+                if (this.tiTransportServiceStatus != null)
+                    this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+
                 // IF any thread running, we stop them before exit
                 if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
                 {
@@ -333,6 +340,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException)
             {
+                // stop timer if we couldn't get service status
                 this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
             }
             
@@ -358,8 +366,6 @@ namespace Configuration.DkimSigner
             // Uptade Microsft Exchange Transport Service stuatus
             if (exchangeInstalled != null && exchangeInstalled != "Not installed")
             {
-                if (this.tiTransportServiceStatus != null)
-                    this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatusSafe), null, 0, 1000);
                 this.btConfigureTransportService.Enabled = true;
             }
             else
@@ -471,7 +477,7 @@ namespace Configuration.DkimSigner
             {
                 ExchangeServer.StartTransportService();
 
-                MessageBox.Show("MSExchangeTransport service have been successfully started.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("MSExchangeTransport service successfully started.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ExchangeServerException)
             {
@@ -488,7 +494,7 @@ namespace Configuration.DkimSigner
             {
                 ExchangeServer.StopTransportService();
 
-                MessageBox.Show("MSExchangeTransport service have been successfully stopped.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("MSExchangeTransport service successfully stopped.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ExchangeServerException)
             {
@@ -505,7 +511,7 @@ namespace Configuration.DkimSigner
             {
                 ExchangeServer.RestartTransportService();
 
-                MessageBox.Show("MSExchangeTransport service have been successfully restarted.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("MSExchangeTransport service successfully restarted.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ExchangeServerException)
             {
