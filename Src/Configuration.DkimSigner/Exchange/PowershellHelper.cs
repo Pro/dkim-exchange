@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Security;
 using System.Text;
 
 namespace Configuration.DkimSigner.Exchange
@@ -34,59 +35,71 @@ namespace Configuration.DkimSigner.Exchange
 		        pSSnapInInfo = runspaceConfiguration.AddPSSnapIn("Microsoft.Exchange.Management.PowerShell.SnapIn", out ex);
 	        }
 	        catch {}
-
     
 	        string result = null;
-	        if (pSSnapInInfo != null)
-	        {
-		        Runspace runspace = null;
-		        Pipeline pipeline = null;
-		        
-                try
-		        {
-			        runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
-			        runspace.Open();
-			        pipeline = runspace.CreatePipeline();
-			        pipeline.Commands.AddScript(sCommand);
-			        pipeline.Commands.Add("Out-String");
-			        
-                    Collection<PSObject> collection = pipeline.Invoke();
-			        StringBuilder stringBuilder = new StringBuilder();
-			        
-                    foreach (PSObject current in collection)
-			        {
-				        stringBuilder.AppendLine(current.ToString());
-			        }
-			        
-                    string text = stringBuilder.ToString();
-			        if (bRemoveEmptyLines)
-			        {
-				        stringBuilder = new StringBuilder();
-				        string[] array = text.Split(new char[]{'\n'}, StringSplitOptions.RemoveEmptyEntries);
-				       
-                        for (int i = 0; i < array.Length; i++)
-				        {
-					        string value = array[i].Trim();
-					        
-                            if (!string.IsNullOrEmpty(value))
-					        {
-						        stringBuilder.AppendLine(value);
-					        }
-				        }
-				        
-                        text = stringBuilder.ToString();
-			        }
+            if (pSSnapInInfo != null)
+            {
+                Runspace runspace = null;
+                Pipeline pipeline = null;
 
-			        result = text;
-		        }
-		        finally
-		        {
-			        pipeline.Dispose();
-			        runspace.Dispose();
-		        }
-	        }
+                Exception except = null;
+
+                try
+                {
+                    runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
+                    runspace.Open();
+                    pipeline = runspace.CreatePipeline();
+                    pipeline.Commands.AddScript(sCommand);
+                    pipeline.Commands.Add("Out-String");
+                    Collection<PSObject> collection = pipeline.Invoke();
+
+                    StringBuilder stringBuilder = new StringBuilder();
+
+                    foreach (PSObject current in collection)
+                    {
+                        stringBuilder.AppendLine(current.ToString());
+                    }
+
+                    string text = stringBuilder.ToString();
+                    if (bRemoveEmptyLines)
+                    {
+                        stringBuilder = new StringBuilder();
+                        string[] array = text.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+                        for (int i = 0; i < array.Length; i++)
+                        {
+                            string value = array[i].Trim();
+
+                            if (!string.IsNullOrEmpty(value))
+                            {
+                                stringBuilder.AppendLine(value);
+                            }
+                        }
+
+                        text = stringBuilder.ToString();
+                    }
+
+                    result = text;
+                }
+                catch (Exception exc)
+                {
+                    except = exc;
+                }
+                finally
+                {
+                    pipeline.Dispose();
+                    runspace.Dispose();
+                }
+                if (except != null)
+                    throw except;
+            }
+            else
+            {
+                throw new Configuration.DkimSigner.Exchange.ExchangeHelperException("Couldn't add PowerShell Exchange Snapin");
+            }
 
 	        return result;
         }
     }
+
 }
