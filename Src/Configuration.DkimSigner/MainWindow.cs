@@ -13,6 +13,7 @@ using Configuration.DkimSigner.GitHub;
 using Heijden.DNS;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 
 namespace Configuration.DkimSigner
 {
@@ -760,14 +761,25 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void refreshEventLog()
         {
+            int count = 0;
             dgEventLog.Rows.Clear();
             if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
             {
-                EventLog logger = new EventLog();
-                logger.Source = Constants.DKIM_SIGNER_EVENTLOG_SOURCE;
 
-                foreach (System.Diagnostics.EventLogEntry entry in logger.Entries)
+                EventLog logger = new EventLog();
+                logger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
+                var reversed = logger.Entries.Cast<EventLogEntry>().Reverse<EventLogEntry>();
+
+                foreach (System.Diagnostics.EventLogEntry entry in reversed)
                 {
+                    if (entry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
+                        continue;
+                    count++;
+                    if (count > 100)
+                    {
+                        dgEventLog.Rows.Add(SystemIcons.Information.ToBitmap(), "-----", "Maximum number of 100 Log entries shown");
+                        break;
+                    }
                     Image img = null;
                     switch (entry.EntryType)
                     {
@@ -779,6 +791,12 @@ namespace Configuration.DkimSigner
                             break;
                         case EventLogEntryType.Error:
                             img = SystemIcons.Error.ToBitmap();
+                            break;
+                        case EventLogEntryType.FailureAudit:
+                            img = SystemIcons.Error.ToBitmap();
+                            break;
+                        case EventLogEntryType.SuccessAudit:
+                            img = SystemIcons.Question.ToBitmap();
                             break;
                     }
                     dgEventLog.Rows.Add(img, entry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), entry.Message);
