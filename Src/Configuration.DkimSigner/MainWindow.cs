@@ -374,15 +374,11 @@ namespace Configuration.DkimSigner
         /// <param name="state"></param>
         private void CheckExchangeInstalledSafe()
         {
-            string version = null;
+            string version = "Unknown";
 
             try
             {
                 version = ExchangeServer.GetInstalledVersion();
-            }
-            catch (ExchangeServerException)
-            {
-                version = "Unknown";
             }
             catch (Exception e)
             {
