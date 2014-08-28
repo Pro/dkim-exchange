@@ -431,6 +431,10 @@ namespace Configuration.DkimSigner
                         {
                             sTemp = "Exchange 2013 SP1 CU5";
                         }
+                        else if (this.sExchangeVersion.StartsWith("15.0.995.29"))
+                        {
+                            sTemp = "Exchange 2013 SP1 CU6";
+                        }
                         else
                         {
                             MessageBox.Show("The current Microsoft Exchange version isn't supported by DKIM agent: " + this.sExchangeVersion, "Version not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
