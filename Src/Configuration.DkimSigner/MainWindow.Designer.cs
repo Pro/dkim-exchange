@@ -33,6 +33,7 @@
             this.tcConfiguration = new System.Windows.Forms.TabControl();
             this.tbInformation = new System.Windows.Forms.TabPage();
             this.gbDkimSigner = new System.Windows.Forms.GroupBox();
+            this.btUpgrade = new System.Windows.Forms.Button();
             this.cbxPrereleases = new System.Windows.Forms.CheckBox();
             this.lblChangelog = new System.Windows.Forms.Label();
             this.txtChangelog = new System.Windows.Forms.TextBox();
@@ -93,15 +94,15 @@
             this.tpLog = new System.Windows.Forms.TabPage();
             this.btEventLogRefresh = new System.Windows.Forms.Button();
             this.dgEventLog = new System.Windows.Forms.DataGridView();
+            this.icon = new System.Windows.Forms.DataGridViewImageColumn();
+            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label2 = new System.Windows.Forms.Label();
             this.tpAbout = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
             this.txtAbout = new System.Windows.Forms.TextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
-            this.icon = new System.Windows.Forms.DataGridViewImageColumn();
-            this.time = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.message = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -155,6 +156,7 @@
             this.gbDkimSigner.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDkimSigner.Controls.Add(this.btUpgrade);
             this.gbDkimSigner.Controls.Add(this.cbxPrereleases);
             this.gbDkimSigner.Controls.Add(this.lblChangelog);
             this.gbDkimSigner.Controls.Add(this.txtChangelog);
@@ -170,10 +172,21 @@
             this.gbDkimSigner.TabStop = false;
             this.gbDkimSigner.Text = "DKIM Signer";
             // 
+            // btUpgrade
+            // 
+            this.btUpgrade.Enabled = false;
+            this.btUpgrade.Location = new System.Drawing.Point(255, 47);
+            this.btUpgrade.Name = "btUpgrade";
+            this.btUpgrade.Size = new System.Drawing.Size(180, 23);
+            this.btUpgrade.TabIndex = 8;
+            this.btUpgrade.Text = "&Upgrade";
+            this.btUpgrade.UseVisualStyleBackColor = true;
+            this.btUpgrade.Click += new System.EventHandler(this.btUpgrade_Click);
+            // 
             // cbxPrereleases
             // 
             this.cbxPrereleases.AutoSize = true;
-            this.cbxPrereleases.Location = new System.Drawing.Point(255, 53);
+            this.cbxPrereleases.Location = new System.Drawing.Point(441, 51);
             this.cbxPrereleases.Name = "cbxPrereleases";
             this.cbxPrereleases.Size = new System.Drawing.Size(155, 17);
             this.cbxPrereleases.TabIndex = 5;
@@ -217,7 +230,7 @@
             this.btConfigureTransportService.Enabled = false;
             this.btConfigureTransportService.Location = new System.Drawing.Point(255, 21);
             this.btConfigureTransportService.Name = "btConfigureTransportService";
-            this.btConfigureTransportService.Size = new System.Drawing.Size(87, 23);
+            this.btConfigureTransportService.Size = new System.Drawing.Size(180, 23);
             this.btConfigureTransportService.TabIndex = 2;
             this.btConfigureTransportService.Text = "&Configure";
             this.btConfigureTransportService.UseVisualStyleBackColor = true;
@@ -855,6 +868,33 @@
             this.dgEventLog.Size = new System.Drawing.Size(682, 212);
             this.dgEventLog.TabIndex = 1;
             // 
+            // icon
+            // 
+            this.icon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.icon.HeaderText = "";
+            this.icon.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
+            this.icon.MinimumWidth = 24;
+            this.icon.Name = "icon";
+            this.icon.ReadOnly = true;
+            this.icon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.icon.Width = 24;
+            // 
+            // time
+            // 
+            this.time.HeaderText = "Time";
+            this.time.Name = "time";
+            this.time.ReadOnly = true;
+            this.time.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.time.Width = 55;
+            // 
+            // message
+            // 
+            this.message.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.message.HeaderText = "Message";
+            this.message.Name = "message";
+            this.message.ReadOnly = true;
+            this.message.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -908,38 +948,11 @@
             // 
             this.epvDomainSelector.ContainerControl = this;
             // 
-            // icon
-            // 
-            this.icon.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.icon.HeaderText = "";
-            this.icon.ImageLayout = System.Windows.Forms.DataGridViewImageCellLayout.Zoom;
-            this.icon.MinimumWidth = 24;
-            this.icon.Name = "icon";
-            this.icon.ReadOnly = true;
-            this.icon.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.icon.Width = 24;
-            // 
-            // time
-            // 
-            this.time.HeaderText = "Time";
-            this.time.Name = "time";
-            this.time.ReadOnly = true;
-            this.time.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.time.Width = 55;
-            // 
-            // message
-            // 
-            this.message.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.message.HeaderText = "Message";
-            this.message.Name = "message";
-            this.message.ReadOnly = true;
-            this.message.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(739, 342);
+            this.ClientSize = new System.Drawing.Size(739, 353);
             this.Controls.Add(this.tcConfiguration);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(730, 380);
@@ -1052,6 +1065,7 @@
         private System.Windows.Forms.DataGridViewImageColumn icon;
         private System.Windows.Forms.DataGridViewTextBoxColumn time;
         private System.Windows.Forms.DataGridViewTextBoxColumn message;
+        private System.Windows.Forms.Button btUpgrade;
     }
 }
 

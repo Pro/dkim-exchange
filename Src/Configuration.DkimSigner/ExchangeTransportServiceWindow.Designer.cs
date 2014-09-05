@@ -38,7 +38,7 @@
             this.dgvcPriority = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvcEnabled = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.btUpdate = new System.Windows.Forms.Button();
+            this.lbHint = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransportServiceAgents)).BeginInit();
             this.SuspendLayout();
             // 
@@ -54,7 +54,7 @@
             // 
             // btUninstall
             // 
-            this.btUninstall.Location = new System.Drawing.Point(403, 96);
+            this.btUninstall.Location = new System.Drawing.Point(403, 69);
             this.btUninstall.Name = "btUninstall";
             this.btUninstall.Size = new System.Drawing.Size(94, 23);
             this.btUninstall.TabIndex = 3;
@@ -64,7 +64,7 @@
             // 
             // btDisable
             // 
-            this.btDisable.Location = new System.Drawing.Point(403, 125);
+            this.btDisable.Location = new System.Drawing.Point(403, 98);
             this.btDisable.Name = "btDisable";
             this.btDisable.Size = new System.Drawing.Size(94, 23);
             this.btDisable.TabIndex = 4;
@@ -117,14 +117,14 @@
             this.dgvcPriority,
             this.dgvcName,
             this.dgvcEnabled});
-            this.dgvTransportServiceAgents.Enabled = false;
             this.dgvTransportServiceAgents.Location = new System.Drawing.Point(13, 12);
             this.dgvTransportServiceAgents.Name = "dgvTransportServiceAgents";
             this.dgvTransportServiceAgents.ReadOnly = true;
             this.dgvTransportServiceAgents.RowHeadersVisible = false;
             this.dgvTransportServiceAgents.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvTransportServiceAgents.Size = new System.Drawing.Size(372, 280);
+            this.dgvTransportServiceAgents.Size = new System.Drawing.Size(372, 259);
             this.dgvTransportServiceAgents.TabIndex = 0;
+            this.dgvTransportServiceAgents.SelectionChanged += new System.EventHandler(this.dgvTransportServiceAgents_SelectionChanged);
             // 
             // dgvcPriority
             // 
@@ -151,24 +151,23 @@
             this.dgvcEnabled.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.dgvcEnabled.Width = 60;
             // 
-            // btUpdate
+            // lbHint
             // 
-            this.btUpdate.Location = new System.Drawing.Point(403, 67);
-            this.btUpdate.Name = "btUpdate";
-            this.btUpdate.Size = new System.Drawing.Size(94, 23);
-            this.btUpdate.TabIndex = 2;
-            this.btUpdate.Text = "U&pdate";
-            this.btUpdate.UseVisualStyleBackColor = true;
-            this.btUpdate.Click += new System.EventHandler(this.btUpdate_Click);
+            this.lbHint.AutoSize = true;
+            this.lbHint.Location = new System.Drawing.Point(12, 274);
+            this.lbHint.Name = "lbHint";
+            this.lbHint.Size = new System.Drawing.Size(292, 13);
+            this.lbHint.TabIndex = 9;
+            this.lbHint.Text = "Hint: The DKIM signing agent should have the lowest priority";
             // 
-            // ExchangeTransportServiceWindows
+            // ExchangeTransportServiceWindow
             // 
             this.AcceptButton = this.btClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btClose;
             this.ClientSize = new System.Drawing.Size(509, 304);
-            this.Controls.Add(this.btUpdate);
+            this.Controls.Add(this.lbHint);
             this.Controls.Add(this.dgvTransportServiceAgents);
             this.Controls.Add(this.btClose);
             this.Controls.Add(this.btMoveDown);
@@ -179,13 +178,14 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "ExchangeTransportServiceWindows";
+            this.Name = "ExchangeTransportServiceWindow";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Exchange Transport Agents";
             this.Load += new System.EventHandler(this.ExchangeTransportServiceWindows_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvTransportServiceAgents)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -198,10 +198,10 @@
         private System.Windows.Forms.Button btMoveDown;
         private System.Windows.Forms.Button btClose;
         private System.Windows.Forms.DataGridView dgvTransportServiceAgents;
-        private System.Windows.Forms.Button btUpdate;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcPriority;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvcName;
         private System.Windows.Forms.DataGridViewCheckBoxColumn dgvcEnabled;
+        private System.Windows.Forms.Label lbHint;
 
     }
 }

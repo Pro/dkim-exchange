@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 
 using Configuration.DkimSigner.Exchange;
+using System.IO;
 
 namespace Configuration.DkimSigner
 {
@@ -12,6 +13,8 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
+        private List<TransportServiceAgent> installedAgentsList = null;
+        private int currentAgentPriority = 0;
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -34,18 +37,41 @@ namespace Configuration.DkimSigner
             {
                 if (ExchangeServer.IsDkimAgentTransportEnabled())
                 {
+                    this.btDisable.Text = "Disable";
+                }
+                else
+                {
                     this.btDisable.Text = "Enable";
                 }
             }
             else
             {
-                this.btUpdate.Text = "Install";
                 this.btDisable.Text = "Enable";
+            }
 
-                this.btUninstall.Enabled = false;
-                this.btDisable.Enabled = false;
-                this.btMoveUp.Enabled = false;
-                this.btMoveDown.Enabled = false;
+        }
+
+        private void performUninstall()
+        {
+            try
+            {
+                ExchangeHelper.uninstallTransportAgent();
+                this.RefreshTransportServiceAgents();
+                MessageBox.Show("Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DKIM_SIGNER_PATH + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!","Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                /*if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    if (File.Exists(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
+                        File.Delete(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
+                }*/
+                /*if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all its content?\nWARNING: All your settings and keys will be deleted too!", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                {
+                    var dir = new DirectoryInfo(Constants.DKIM_SIGNER_PATH);
+                    dir.Delete(true);
+                }*/
+            }
+            catch (ExchangeHelperException e)
+            {
+                MessageBox.Show(e.Message, "Uninstall error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -55,23 +81,50 @@ namespace Configuration.DkimSigner
 
         private void RefreshTransportServiceAgents()
         {
-            List<TransportServiceAgent> aoAgent = null;
+            installedAgentsList = null;
 
             try
             {
-                aoAgent = ExchangeServer.GetTransportServiceAgents();
+                installedAgentsList = ExchangeServer.GetTransportServiceAgents();
             }
             catch(Exception) { }
 
             this.dgvTransportServiceAgents.Rows.Clear();
 
-            if (aoAgent != null)
+            if (installedAgentsList != null)
             {
-                foreach (TransportServiceAgent oAgent in aoAgent)
+                foreach (TransportServiceAgent oAgent in installedAgentsList)
                 {
                     this.dgvTransportServiceAgents.Rows.Add(oAgent.Priority, oAgent.Name, oAgent.Enabled);
+                    if (oAgent.Name == Constants.DKIM_SIGNER_AGENT_NAME)
+                        currentAgentPriority = oAgent.Priority;
                 }
             }
+            foreach (DataGridViewRow r in this.dgvTransportServiceAgents.Rows)
+            {
+                if (r.Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME))
+                {
+                    r.Selected = true;
+                }
+                else
+                {
+                    r.Selected = false;
+                }
+            }
+        }
+
+
+        private void refreshMoveButtons(bool isEnabled)
+        {
+            if (!isEnabled)
+            {
+                this.btMoveUp.Enabled = false;
+                this.btMoveDown.Enabled = false;
+                return;
+            }
+
+            this.btMoveUp.Enabled = currentAgentPriority > 1;
+            this.btMoveDown.Enabled = true;
         }
 
         /**********************************************************/
@@ -83,28 +136,11 @@ namespace Configuration.DkimSigner
             this.RefreshTransportServiceAgents();
         }
 
-        private void btUpdate_Click(object sender, EventArgs e)
-        {
-            if (this.btUpdate.Text == "Update" ? MessageBox.Show("Do you really want to UPDATE the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
-            {
-                try
-                {
-                    System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, this.btUpdate.Text == "Install" ? "--install" : "--upgrade");
-
-                    this.Close();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
         private void btUninstall_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Do you really want to UNINSTALL the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                //this.performUninstall();
+                this.performUninstall();
             }
         }
 
@@ -115,12 +151,16 @@ namespace Configuration.DkimSigner
                 if (this.btDisable.Text == "Disable")
                 {
                     ExchangeServer.DisableDkimTransportAgent();
+                    this.RefreshTransportServiceAgents();
                     this.btDisable.Text = "Enable";
+                    refreshMoveButtons(false);
                 }
                 else
                 {
                     ExchangeServer.EnableDkimTransportAgent();
+                    this.RefreshTransportServiceAgents();
                     this.btDisable.Text = "Disable";
+                    refreshMoveButtons(true);
                 }
             }
             catch (ExchangeServerException ex)
@@ -131,17 +171,43 @@ namespace Configuration.DkimSigner
 
         private void btMoveUp_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                ExchangeServer.SetPriorityDkimTransportAgent(currentAgentPriority - 1);
+                this.RefreshTransportServiceAgents();
+            }
+            catch (ExchangeServerException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btMoveDown_Click(object sender, EventArgs e)
         {
-
+            try
+            {
+                ExchangeServer.SetPriorityDkimTransportAgent(currentAgentPriority + 1);
+                this.RefreshTransportServiceAgents();
+            }
+            catch (ExchangeServerException ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void btClose_Click(object sender, EventArgs e)
         {
             this.Close();
+        }
+
+        private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
+        {
+            bool dkimAgentSelected = dgvTransportServiceAgents.SelectedRows.Count == 1 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
+
+
+            this.btUninstall.Enabled = dkimAgentSelected;
+            this.btDisable.Enabled = dkimAgentSelected;
+            refreshMoveButtons(dkimAgentSelected);
         }
     }
 }

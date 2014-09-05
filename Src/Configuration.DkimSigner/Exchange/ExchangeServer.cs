@@ -70,7 +70,8 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (!ExchangeServer.IsTransportServiceStopped())
             {
-                throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service because it's already running.");
+                //throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service because it's already running.");
+                return;
             }
 
             try
@@ -90,7 +91,8 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (!ExchangeServer.IsTransportServiceRunning())
             {
-                throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service because it's already stopped.");
+                //throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service because it's already stopped.");
+                return;
             }
 
             try
@@ -220,7 +222,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (ExchangeServer.IsDkimAgentTransportEnabled())
             {
-                string sResult = PowerShellHelper.ExecPowerShellCommand("Disable-TransportAgent -Confirm:$false -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
+                string sResult = PowerShellHelper.ExecPowerShellCommand("Disable-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
 
                 Match oMatch = Regex.Match(sResult, "^Disable-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)

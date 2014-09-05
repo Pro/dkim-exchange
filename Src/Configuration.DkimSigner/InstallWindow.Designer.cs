@@ -43,6 +43,9 @@
             this.picInstallAgent = new System.Windows.Forms.PictureBox();
             this.lbDownloadFiles = new System.Windows.Forms.Label();
             this.picDownloadFiles = new System.Windows.Forms.PictureBox();
+            this.pnlInstall = new System.Windows.Forms.Panel();
+            this.btInstall = new System.Windows.Forms.Button();
+            this.lbSelectVersion = new System.Windows.Forms.Label();
             this.cbxPrereleases = new System.Windows.Forms.CheckBox();
             this.btBrowse = new System.Windows.Forms.Button();
             this.txtVersionFile = new System.Windows.Forms.TextBox();
@@ -50,18 +53,18 @@
             this.lbOr = new System.Windows.Forms.Label();
             this.cbVersionWeb = new System.Windows.Forms.ComboBox();
             this.lbVersionWeb = new System.Windows.Forms.Label();
-            this.lbSelectVersion = new System.Windows.Forms.Label();
-            this.btInstall = new System.Windows.Forms.Button();
+            this.lblWait = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picStopService)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCopyFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picStartService)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInstallAgent)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picDownloadFiles)).BeginInit();
+            this.pnlInstall.SuspendLayout();
             this.SuspendLayout();
             // 
             // picStopService
             // 
-            this.picStopService.Location = new System.Drawing.Point(15, 221);
+            this.picStopService.Location = new System.Drawing.Point(15, 191);
             this.picStopService.Name = "picStopService";
             this.picStopService.Size = new System.Drawing.Size(24, 24);
             this.picStopService.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -84,7 +87,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbStopService.AutoEllipsis = true;
             this.lbStopService.Enabled = false;
-            this.lbStopService.Location = new System.Drawing.Point(45, 221);
+            this.lbStopService.Location = new System.Drawing.Point(45, 191);
             this.lbStopService.Name = "lbStopService";
             this.lbStopService.Size = new System.Drawing.Size(465, 24);
             this.lbStopService.TabIndex = 12;
@@ -97,7 +100,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbCopyFiles.AutoEllipsis = true;
             this.lbCopyFiles.Enabled = false;
-            this.lbCopyFiles.Location = new System.Drawing.Point(45, 191);
+            this.lbCopyFiles.Location = new System.Drawing.Point(45, 221);
             this.lbCopyFiles.Name = "lbCopyFiles";
             this.lbCopyFiles.Size = new System.Drawing.Size(465, 24);
             this.lbCopyFiles.TabIndex = 11;
@@ -106,7 +109,7 @@
             // 
             // picCopyFiles
             // 
-            this.picCopyFiles.Location = new System.Drawing.Point(15, 191);
+            this.picCopyFiles.Location = new System.Drawing.Point(15, 221);
             this.picCopyFiles.Name = "picCopyFiles";
             this.picCopyFiles.Size = new System.Drawing.Size(24, 24);
             this.picCopyFiles.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -197,14 +200,52 @@
             this.picDownloadFiles.TabIndex = 13;
             this.picDownloadFiles.TabStop = false;
             // 
+            // pnlInstall
+            // 
+            this.pnlInstall.Controls.Add(this.btInstall);
+            this.pnlInstall.Controls.Add(this.lbSelectVersion);
+            this.pnlInstall.Controls.Add(this.cbxPrereleases);
+            this.pnlInstall.Controls.Add(this.btBrowse);
+            this.pnlInstall.Controls.Add(this.txtVersionFile);
+            this.pnlInstall.Controls.Add(this.lbVersionFile);
+            this.pnlInstall.Controls.Add(this.lbOr);
+            this.pnlInstall.Controls.Add(this.cbVersionWeb);
+            this.pnlInstall.Controls.Add(this.lbVersionWeb);
+            this.pnlInstall.Location = new System.Drawing.Point(1, 0);
+            this.pnlInstall.Name = "pnlInstall";
+            this.pnlInstall.Size = new System.Drawing.Size(509, 133);
+            this.pnlInstall.TabIndex = 16;
+            // 
+            // btInstall
+            // 
+            this.btInstall.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btInstall.Enabled = false;
+            this.btInstall.Location = new System.Drawing.Point(434, 110);
+            this.btInstall.Name = "btInstall";
+            this.btInstall.Size = new System.Drawing.Size(75, 23);
+            this.btInstall.TabIndex = 17;
+            this.btInstall.Text = "&Install";
+            this.btInstall.UseVisualStyleBackColor = true;
+            this.btInstall.Click += new System.EventHandler(this.btInstall_Click);
+            // 
+            // lbSelectVersion
+            // 
+            this.lbSelectVersion.AutoSize = true;
+            this.lbSelectVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbSelectVersion.Location = new System.Drawing.Point(11, 9);
+            this.lbSelectVersion.Name = "lbSelectVersion";
+            this.lbSelectVersion.Size = new System.Drawing.Size(165, 13);
+            this.lbSelectVersion.TabIndex = 9;
+            this.lbSelectVersion.Text = "Selection version to install :";
+            // 
             // cbxPrereleases
             // 
             this.cbxPrereleases.AutoSize = true;
             this.cbxPrereleases.Enabled = false;
-            this.cbxPrereleases.Location = new System.Drawing.Point(256, 39);
+            this.cbxPrereleases.Location = new System.Drawing.Point(242, 37);
             this.cbxPrereleases.Name = "cbxPrereleases";
             this.cbxPrereleases.Size = new System.Drawing.Size(155, 17);
-            this.cbxPrereleases.TabIndex = 3;
+            this.cbxPrereleases.TabIndex = 12;
             this.cbxPrereleases.Text = "Include prerelease versions";
             this.cbxPrereleases.UseVisualStyleBackColor = true;
             this.cbxPrereleases.CheckedChanged += new System.EventHandler(this.cbxPrereleases_CheckedChanged);
@@ -212,39 +253,39 @@
             // btBrowse
             // 
             this.btBrowse.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btBrowse.Location = new System.Drawing.Point(435, 77);
+            this.btBrowse.Location = new System.Drawing.Point(434, 77);
             this.btBrowse.Name = "btBrowse";
             this.btBrowse.Size = new System.Drawing.Size(75, 23);
-            this.btBrowse.TabIndex = 7;
+            this.btBrowse.TabIndex = 16;
             this.btBrowse.Text = "&Browse";
             this.btBrowse.UseVisualStyleBackColor = true;
             this.btBrowse.Click += new System.EventHandler(this.btBrowse_Click);
             // 
             // txtVersionFile
             // 
-            this.txtVersionFile.Enabled = false;
-            this.txtVersionFile.Location = new System.Drawing.Point(105, 79);
+            this.txtVersionFile.Location = new System.Drawing.Point(104, 79);
             this.txtVersionFile.Name = "txtVersionFile";
+            this.txtVersionFile.ReadOnly = true;
             this.txtVersionFile.Size = new System.Drawing.Size(321, 20);
-            this.txtVersionFile.TabIndex = 6;
+            this.txtVersionFile.TabIndex = 15;
             // 
             // lbVersionFile
             // 
             this.lbVersionFile.AutoSize = true;
-            this.lbVersionFile.Location = new System.Drawing.Point(12, 82);
+            this.lbVersionFile.Location = new System.Drawing.Point(11, 82);
             this.lbVersionFile.Name = "lbVersionFile";
             this.lbVersionFile.Size = new System.Drawing.Size(87, 13);
-            this.lbVersionFile.TabIndex = 5;
+            this.lbVersionFile.TabIndex = 14;
             this.lbVersionFile.Text = "ZIP file to install :";
             // 
             // lbOr
             // 
             this.lbOr.AutoSize = true;
             this.lbOr.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbOr.Location = new System.Drawing.Point(12, 59);
+            this.lbOr.Location = new System.Drawing.Point(11, 59);
             this.lbOr.Name = "lbOr";
             this.lbOr.Size = new System.Drawing.Size(20, 13);
-            this.lbOr.TabIndex = 4;
+            this.lbOr.TabIndex = 13;
             this.lbOr.Text = "Or";
             // 
             // cbVersionWeb
@@ -252,41 +293,29 @@
             this.cbVersionWeb.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbVersionWeb.Enabled = false;
             this.cbVersionWeb.FormattingEnabled = true;
-            this.cbVersionWeb.Location = new System.Drawing.Point(108, 35);
+            this.cbVersionWeb.Location = new System.Drawing.Point(104, 35);
             this.cbVersionWeb.Name = "cbVersionWeb";
             this.cbVersionWeb.Size = new System.Drawing.Size(132, 21);
-            this.cbVersionWeb.TabIndex = 2;
+            this.cbVersionWeb.TabIndex = 11;
             this.cbVersionWeb.SelectedIndexChanged += new System.EventHandler(this.cbVersionWeb_SelectedIndexChanged);
             // 
             // lbVersionWeb
             // 
             this.lbVersionWeb.AutoSize = true;
-            this.lbVersionWeb.Location = new System.Drawing.Point(12, 38);
+            this.lbVersionWeb.Location = new System.Drawing.Point(11, 38);
             this.lbVersionWeb.Name = "lbVersionWeb";
             this.lbVersionWeb.Size = new System.Drawing.Size(89, 13);
-            this.lbVersionWeb.TabIndex = 1;
+            this.lbVersionWeb.TabIndex = 10;
             this.lbVersionWeb.Text = "Install from Web :";
             // 
-            // lbSelectVersion
+            // lblWait
             // 
-            this.lbSelectVersion.AutoSize = true;
-            this.lbSelectVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbSelectVersion.Location = new System.Drawing.Point(12, 9);
-            this.lbSelectVersion.Name = "lbSelectVersion";
-            this.lbSelectVersion.Size = new System.Drawing.Size(165, 13);
-            this.lbSelectVersion.TabIndex = 0;
-            this.lbSelectVersion.Text = "Selection version to install :";
-            // 
-            // btInstall
-            // 
-            this.btInstall.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btInstall.Location = new System.Drawing.Point(435, 110);
-            this.btInstall.Name = "btInstall";
-            this.btInstall.Size = new System.Drawing.Size(75, 23);
-            this.btInstall.TabIndex = 8;
-            this.btInstall.Text = "&Install";
-            this.btInstall.UseVisualStyleBackColor = true;
-            this.btInstall.Click += new System.EventHandler(this.btInstall_Click);
+            this.lblWait.AutoSize = true;
+            this.lblWait.Location = new System.Drawing.Point(137, 73);
+            this.lblWait.Name = "lblWait";
+            this.lblWait.Size = new System.Drawing.Size(213, 13);
+            this.lblWait.TabIndex = 17;
+            this.lblWait.Text = "Checking Exchange Version...  Please Wait";
             // 
             // InstallWindow
             // 
@@ -295,15 +324,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(522, 346);
             this.ControlBox = false;
-            this.Controls.Add(this.btInstall);
-            this.Controls.Add(this.lbSelectVersion);
-            this.Controls.Add(this.cbxPrereleases);
-            this.Controls.Add(this.btBrowse);
-            this.Controls.Add(this.txtVersionFile);
-            this.Controls.Add(this.lbVersionFile);
-            this.Controls.Add(this.lbOr);
-            this.Controls.Add(this.cbVersionWeb);
-            this.Controls.Add(this.lbVersionWeb);
+            this.Controls.Add(this.lblWait);
+            this.Controls.Add(this.pnlInstall);
             this.Controls.Add(this.lbDownloadFiles);
             this.Controls.Add(this.picDownloadFiles);
             this.Controls.Add(this.lbInstallAgent);
@@ -330,6 +352,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.picStartService)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picInstallAgent)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picDownloadFiles)).EndInit();
+            this.pnlInstall.ResumeLayout(false);
+            this.pnlInstall.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -350,6 +374,9 @@
         private System.Windows.Forms.PictureBox picInstallAgent;
         private System.Windows.Forms.Label lbDownloadFiles;
         private System.Windows.Forms.PictureBox picDownloadFiles;
+        private System.Windows.Forms.Panel pnlInstall;
+        private System.Windows.Forms.Button btInstall;
+        private System.Windows.Forms.Label lbSelectVersion;
         private System.Windows.Forms.CheckBox cbxPrereleases;
         private System.Windows.Forms.Button btBrowse;
         public System.Windows.Forms.TextBox txtVersionFile;
@@ -357,7 +384,6 @@
         private System.Windows.Forms.Label lbOr;
         public System.Windows.Forms.ComboBox cbVersionWeb;
         private System.Windows.Forms.Label lbVersionWeb;
-        private System.Windows.Forms.Label lbSelectVersion;
-        private System.Windows.Forms.Button btInstall;
+        private System.Windows.Forms.Label lblWait;
     }
 }

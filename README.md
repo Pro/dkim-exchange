@@ -161,11 +161,13 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* 26.06.2014 [2.0.0]:
-    New: The signer can now be configured through the GUI instead of manual XML editing
-    New: Installation and Update is now done by a simple click within GUI
-    New: Private key support (PEM, DER, XML)
-	Fix: Removed RecipientRule and SenderRule causing trouble when signing emails
+* 05.09.2014 [2.0.0]:  
+    New: The signer can now be configured through the GUI instead of manual XML editing  
+    New: Installation, Update and Uninstall is now done by a simple click within GUI  
+    New: Private key support (PEM, DER, XML)  
+	New: Set agent priority through GUI  
+	New: View Agent event log within GUI  
+	Fix: Removed RecipientRule and SenderRule causing trouble when signing emails  
 * 21.03.2014 [1.8.3]:  
 	Fix: RecipientRule now matching whole address  
 	Fix: Invalid E-Mail address doesn't cause a crash anymore. Rule will be ignored if error.  

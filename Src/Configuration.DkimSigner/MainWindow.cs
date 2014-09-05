@@ -32,6 +32,8 @@ namespace Configuration.DkimSigner
         private Thread thTransportServiceOperation = null;
         private Thread thExchangeInstalled = null;
         private System.Threading.Timer tiTransportServiceStatus = null;
+        private Version dkimSignerInstalled = null;
+        private Release dkimSignerAvailable = null;
 
         delegate void SetDkimSignerInstalledCallback(Version oDkimSignerInstalled);
         delegate void SetDkimSignerAvailableCallback(Release oDkimSignerAvailable);
@@ -289,6 +291,9 @@ namespace Configuration.DkimSigner
         private void SetDkimSignerInstalled(Version oDkimSignerInstalled)
         {
             this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed");
+            this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null);
+            dkimSignerInstalled = oDkimSignerInstalled;
+            setUpgradeButton();
         }
 
         /// <summary>
@@ -297,6 +302,7 @@ namespace Configuration.DkimSigner
         /// <param name="dkimSignerAvailable"></param>
         private void SetDkimSignerAvailable(Release oDkimSignerAvailable)
         {
+            dkimSignerAvailable = oDkimSignerAvailable;
             if (oDkimSignerAvailable != null)
             {
                 string version = oDkimSignerAvailable.Version.ToString();
@@ -324,6 +330,7 @@ namespace Configuration.DkimSigner
                 this.txtDkimSignerAvailable.Text = "Unknown";
                 this.txtChangelog.Text = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
             }
+            setUpgradeButton();
         }
 
         /// <summary>
@@ -359,7 +366,7 @@ namespace Configuration.DkimSigner
         /// Set the value of txtExchangeInstalled from CheckExchangeInstalledSafe (use by thread in Load)
         /// </summary>
         /// <param name="dkimSignerInstalled"></param>
-        private void SetDkimSignerInstalled(string exchangeInstalled)
+        private void SetExchangeInstalled(string exchangeInstalled)
         {
             this.txtExchangeInstalled.Text = exchangeInstalled;
 
@@ -394,12 +401,12 @@ namespace Configuration.DkimSigner
 
             if (this.txtExchangeStatus.InvokeRequired)
             {
-                SetExchangeInstalledCallback d = new SetExchangeInstalledCallback(this.SetDkimSignerInstalled);
+                SetExchangeInstalledCallback d = new SetExchangeInstalledCallback(this.SetExchangeInstalled);
                 this.Invoke(d, version);
             }
             else
             {
-                this.SetDkimSignerInstalled(version);
+                this.SetExchangeInstalled(version);
             }
         }
 
@@ -810,6 +817,40 @@ namespace Configuration.DkimSigner
             }
         }
 
+        private void setUpgradeButton()
+        {
+            if (dkimSignerAvailable == null)
+            {
+                btUpgrade.Text = "Install from .zip";
+                btUpgrade.Enabled = true;
+                return;
+            }
+            if (dkimSignerInstalled == null)
+            {
+                btUpgrade.Text = "Install";
+                btUpgrade.Enabled = true;
+            }
+            else
+            {
+                if (dkimSignerInstalled < dkimSignerAvailable.Version)
+                {
+                    btUpgrade.Text = "Upgrade";
+                    btUpgrade.Enabled = true;
+                }
+                else if (dkimSignerInstalled == dkimSignerAvailable.Version)
+                {
+                    btUpgrade.Text = "Reinstall";
+                    btUpgrade.Enabled = true;
+                }
+                else
+                {
+                    btUpgrade.Text = "Upgrade";
+                    btUpgrade.Enabled = false;
+                }
+            }
+
+        }
+
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
@@ -1153,6 +1194,23 @@ namespace Configuration.DkimSigner
         private void btEventLogRefresh_Click(object sender, EventArgs e)
         {
             refreshEventLog();
+        }
+
+        private void btUpgrade_Click(object sender, EventArgs e)
+        {
+            if (this.btUpgrade.Text == "Upgrade" || this.btUpgrade.Text == "Reinstall" ? MessageBox.Show("Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
+            {
+                try
+                {
+                    System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, this.btUpgrade.Text == "Install" ? "--install" : ("--upgrade \"" + dkimSignerAvailable.ZipballUrl + "\""));
+
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }
