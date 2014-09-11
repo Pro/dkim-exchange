@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
 using System.Security;
 using System.Text;
 
@@ -66,7 +67,7 @@ namespace Configuration.DkimSigner.Exchange
             }
             else
             {
-                throw new Configuration.DkimSigner.Exchange.ExchangeHelperException("Couldn't initialize PowerShell Runspace");
+                throw new ExchangeServerException("Couldn't initialize PowerShell Runspace");
             }
 
             return runspace;
