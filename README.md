@@ -26,9 +26,32 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 
 ## Installing the Transport Agent
 
-If you are using Exchange 2013 SP1 or later, you need Version 2.0 of the DKIM Signer. If you have an older version you can use version 2.0 too, it has a GUI for configuration and the install process is much more simplified.
-It is currently in beta status. Read here if you want to install it: [Version 2.0](https://github.com/Pro/dkim-exchange/blob/master/INSTALL_2.md). 
+## Online install
 
+1. Download the latest GUI package: https://github.com/Pro/dkim-exchange/releases/latest (Configuration.DkimSigner.zip)  
+2. Extract it somewhere on your Server (e.g. Desktop)  
+3. Start Configuration.DkimSigner.exe  
+4. Select `Install`  
+5. In the new opened window, select the version you like to install. If you want to install a prerelease version, check the corresponding box  
+6. Press install and wait until the installation successfully finished, then close the window.  
+7. Now configure the DKIM Signer with the installed GUI (located under `"C:\Program Files\Exchange DkimSigner\Configuration\Configuration.DkimSigner.exe"`  
+8. Once you save the config, the Signer Agent will automatically reload these changes  
+
+## Offline Install
+
+1. Download the latest GUI package: https://github.com/Pro/dkim-exchange/releases/latest (Configuration.DkimSigner.zip)  
+2. Download the whole project package: https://github.com/Pro/dkim-exchange/releases/latest (Source Code (zip))
+3. Move those two packages to your server and extract the `Configuration.DkimSigner.zip` package to your Desktop
+4. Start Configuration.DkimSigner.exe
+5. Select `Install`
+6. In the new opened window, browse for the downloaded DkimSigner.zip and press `Install`
+7. wait until the installation successfully finished, then close the window.
+8. Now configure the DKIM Signer with the installed GUI (located under `"C:\Program Files\Exchange DkimSigner\Configuration\Configuration.DkimSigner.exe"`
+9. Once you save the config, the Signer Agent will automatically reload these changes
+
+## Manual Install
+
+If you have problems installing the agent using the options above, you can use the powershell script. Just follow these instructions:
 
 1. Download the .zip and extract it e.g. on the Desktop: [Latest Release](https://github.com/Pro/dkim-exchange/releases/latest)
 2. Open "Exchange Management Shell" from the Startmenu
@@ -45,45 +68,61 @@ To get a list of all the Export Agents use the Command `Get-TransportAgent`
 
 To change the priority use `Set-TransportAgent -Identity "Exchange DkimSigner" -Priority 3`
 
+## Problems?
+
 If you have any problems installing, please check out the [troubleshooting guideline](https://github.com/Pro/dkim-exchange/blob/master/TROUBLESHOOT.md).  
 **Exchange 2013 SP1**: If you have any problems installing the agent on Exchange 2013 SP1 please first try to apply the fix mentioned in issue [#24](https://github.com/Pro/dkim-exchange/issues/24)
 
 ### Configuring the agent
-Edit the .config file to fit your needs.
+
+After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see next section).
+
+#### Manual configuration
+
+Open `C:\Program Files\Exchange DkimSigner\settigs.xml` and configure the DKIM agent.
+
+Here's an example file:
 
 ```xml
-  <domainSection>
-    <Domains>
-      <Domain Domain="example.com" Selector="sel2012" PrivateKeyFile="keys/example.com.private" />
-      <Domain Domain="example.org" Selector="sel2013" PrivateKeyFile="keys/example.org.private" RecipientRule="yahoo\.[^\.]+"/>
-      <Domain Domain="example.net" Selector="sel2013" PrivateKeyFile="keys/example.net.private" SenderRule="user@.*" RecipientRule="yahoo\.[^\.]+"/>
-    </Domains>
-  </domainSection>
-  <customSection>
-    <general LogLevel="3" HeadersToSign="From; Subject; To; Date; Message-ID;" Algorithm="RsaSha1" HeaderCanonicalization="Simple" BodyCanonicalization="Simple" />
-  </customSection>
+<?xml version="1.0" encoding="utf-8"?>
+<Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <Loglevel>3</Loglevel>
+  <SigningAlgorithm>RsaSha1</SigningAlgorithm>
+  <HeaderCanonicalization>Relaxed</HeaderCanonicalization>
+  <BodyCanonicalization>Relaxed</BodyCanonicalization>
+  <HeadersToSign>
+    <string>From</string>
+    <string>Subject</string>
+    <string>To</string>
+    <string>Date</string>
+    <string>Message-ID</string>
+  </HeadersToSign>
+  <Domains>
+    <DomainElement>
+      <Domain>example.com</Domain>
+      <Selector>ex201302</Selector>
+	  <!-- if relative path, then it's relative to C:\Program Files\Exchange DkimSigner\keys -->
+      <PrivateKeyFile>example.com\ex201302.private</PrivateKeyFile>
+    </DomainElement>
+    <DomainElement>
+      <Domain>example.org</Domain>
+      <Selector>ex201302</Selector>
+	  <!-- if relative path, then it's relative to C:\Program Files\Exchange DkimSigner\keys -->
+      <PrivateKeyFile>example.org\ex201302.private</PrivateKeyFile>
+    </DomainElement>
+  </Domains>
+</Settings>
 ```
 
 You can add as many domain items as you need. For each domain item, the domain, the selector and the path to the private key file is needed.
 
-This path may be relative (based on the location of the .dll) or absolute.
-
-The `RecipientRule` attribute is an optional parameter defined as a Regular Expression telling the agent on which `To` E-Mail addresses the DKIM should be applied.
-The RegEx is checked against the whole E-Mail address of the `To` E-Mail header. Default is set to match any address `.*`.
-
-The `SenderRule` attribute is also optional and defined as a Regular Expression. It defines on which `From` E-Mail addresses the DKIM should be applied.
-The RegEx is checked against the whole E-Mail address of the `From` header. Default is set to match any address `.*`.
-
-Keep in mind that you need to escape the dot `.` if you want to match it explicitly as `\.` otherwise the dot means to match any character which you most probably don't want.
-
-You can use this tool to test your regular expressions: http://derekslager.com/blog/posts/2007/09/a-better-dotnet-regular-expression-tester.ashx (activate IgnoreCase) and use e.g as Source `yahoo.com` and Pattern `yahoo\.[^\.]+`.
-E.g. the pattern `yahoo\.[^\.]+` matches all yahoo domains, regardless the TLD (top level domain).
+This path may be relative or absolute.
 
 Possible values for `HeaderCanonicalization` and `BodyCanonicalization` are `Simple` (recommended) and `Relaxed`.
 
 #### Logging
 The dkim signing agent logs by default all errors and warnings into EventLog.
-You can set the LogLevel in the .config file:
+You can set the LogLevel in the `settings.xml` file:
 
 Possible values:
 * 0 = no logging
@@ -92,6 +131,8 @@ Possible values:
 * 3 = Info+Warn+Error
 
 ### Creating the keys
+
+You can create the private and public keys using Configuration.DkimSigner.exe (recommended) or you can create them with any other tool and then select them within the GUI.
 
 You can use the following service for creating public and private keys:
 http://www.port25.com/support/domainkeysdkim-wizard/
@@ -107,28 +148,18 @@ If you want to test, if everything is working, simply send a mail to check-auth@
 
 ## Updating the Transport Agent
 
-If you want to update the Exchange DKIM Transport Agent simply re-download the .zip file and follow the steps in the installation section.
+If you want to update the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Upgrade button. (If no new version is available the button shows 'Reinstall').
 
-### Update from Version 0.5
+### Update from Version 1.* to 2.0.*
 
-If you have a version installed previous to 26.11.2013 (i.e. 0.5) read the following instructions to update to version 1.5 or above:
-
-1. Backup your folder `C:\Program Files\Exchange DKIM`
-2. Then execute the following commands in Exchange Management Shell:
-<pre>
-Net Stop MSExchangeTransport 
-Disable-TransportAgent -Identity "Exchange DKIM" 
-Uninstall-TransportAgent -Identity "Exchange DKIM" 
-</pre>
-3. Now delete the folder `C:\Program Files\Exchange DKIM` (keep the backup!!)
-4. You will need some parts of your old config file in the new one. You also have to copy the keys back after installation (if in this folder).
-5. Follow the instructions in the [Install Section](#installing-the-transport-agent).
-6. When you copy the `<domain ...` parts from the old config, please change the tag to upper case: `<Domain ...`
-7. That's it!
+We had to change the settings file for the new version.
+The best way to update is to make a backup copy from your `C:\Program Files\Exchange DkimSigner` directory. Then just follow the install and configure instructions. You can then also port the old configuration file (`ExchangeDkimSigner.dll.config`) from your backup by opening the new (`settings.xml`) and the old file in a text editor and manually editing the entries.
 
 ## Uninstalling the Transport Agent
 
-Follow the install instructions but execute `.\uninstall.ps1` instead.
+If you want to uninstall the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Configure button. In the new opened Window make sure the DKIM signer is selected. Then press `Uninstall`.
+
+If you want to use the powershell script to uninstall the agent (not recommended) follow the manual install instructions but execute `.\uninstall.ps1` instead.
 
 ## Notes for developers
 
@@ -161,7 +192,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* 05.09.2014 [2.0.0]:  
+* 11.09.2014 [2.0.1]:  
     New: The signer can now be configured through the GUI instead of manual XML editing  
     New: Installation, Update and Uninstall is now done by a simple click within GUI  
     New: Private key support (PEM, DER, XML)  
