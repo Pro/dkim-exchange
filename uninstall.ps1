@@ -10,13 +10,18 @@ Disable-TransportAgent -Identity "Exchange DkimSigner"
 write-host "Uninstalling agent..."  -f "green"
 Uninstall-TransportAgent -Identity "Exchange DkimSigner" 
  
-write-host "Deleting directories and files..." -f "green"
-Remove-Item $EXDIR\* -Recurse -Force -ErrorAction SilentlyContinue 
-Remove-Item $EXDIR -Recurse -Force -ErrorAction SilentlyContinue 
+$overwrite = read-host "Do you want to delete all the files in '$EXDIR' (WARNING: all your keys within this directory will get deleted too)? [Y/N]"
+if ($overwrite -eq "Y" -or $overwrite -eq "y") { 
+	write-host "Deleting directories and files..." -f "green"
+	Remove-Item $EXDIR\* -Recurse -Force -ErrorAction SilentlyContinue 
+	Remove-Item $EXDIR -Recurse -Force -ErrorAction SilentlyContinue 
+} else {
+	write-host "Not deleting files" -f "yellow"
+} 
 
 write-host "Removing registry key for EventLog" -f "green"
-if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DkimSigner") {
-	Remove-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DkimSigner"
+if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM") {
+	Remove-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM"
 } else {
 	write-host "Key already removed. Continuing..." -f "yellow"
 }

@@ -55,6 +55,7 @@ if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exch
 	write-host "Registry key for EventLog already exists. Continuing..." -f "yellow"
 } else {
 	New-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM"
+	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM" -Name EventMessageFile -PropertyType String -Value "C:\Windows\Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll"
 }
 
 
@@ -63,11 +64,11 @@ net stop MSExchangeTransport
 write-host "Creating install directory: '$EXDIR' and copying data from '$SRCDIR'"  -f "green"
 new-item -Type Directory -path $EXDIR -ErrorAction SilentlyContinue 
 
-copy-item "$SRCDIR\ExchangeDkimSigner.dll" $EXDIR -force 
-copy-item "$SRCDIR\ExchangeDkimSigner.pdb" $EXDIR -force 
-$overwrite = read-host "Do you want to copy (and overwrite) the config file: '$SRCDIR\ExchangeDkimSigner.dll.config'? [Y/N]"
+copy-item "$SRCDIR\*" $EXDIR -force
+copy-item "Src\Configuration.DkimSigner\bin\Release\*" $EXDIR -force
+$overwrite = read-host "Do you want to copy (and overwrite) the config file: '$SRCDIR\settings.xml'? [Y/N]"
 if ($overwrite -eq "Y" -or $overwrite -eq "y") {
-	copy-item "$SRCDIR\ExchangeDkimSigner.dll.config" $EXDIR -force
+	copy-item "Src\Exchange.DkimSigner\settings.xml" $EXDIR -force
 } else {
 	write-host "Not copying config file" -f "yellow"
 }
@@ -75,8 +76,9 @@ if ($overwrite -eq "Y" -or $overwrite -eq "y") {
 # Unblocks files that were downloaded from the Internet.
 unblock-file "$EXDIR\ExchangeDkimSigner.dll"
 unblock-file "$EXDIR\ExchangeDkimSigner.pdb"
+unblock-file "$EXDIR\settings.xml"
 
-read-host "Now open '$EXDIR\ExchangeDkimSigner.dll.config' to configure Exchange DkimSigner.\nDon't forget to setup all the keys! When done and saved press 'Return'"
+read-host "Now open '$EXDIR\Configuration.DkimSigner.exe' to configure Exchange DkimSigner. Don't forget to setup all the keys! When done and saved press 'Return'"
 
 write-host "Registering agent" -f "green"
 Install-TransportAgent -Name "Exchange DkimSigner" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "$EXDIR\ExchangeDkimSigner.dll"
