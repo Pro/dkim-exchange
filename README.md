@@ -192,7 +192,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 ## Changelog
 
-* 11.09.2014 [2.0.1]:  
+* 11.09.2014 [2.0.2]:  
     New: The signer can now be configured through the GUI instead of manual XML editing  
     New: Installation, Update and Uninstall is now done by a simple click within GUI  
     New: Private key support (PEM, DER, XML)  
