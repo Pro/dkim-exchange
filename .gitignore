@@ -111,5 +111,5 @@ UpgradeLog*.XML
 /Src/Exchange.DkimSigner/bin/*/Microsoft.Exchange.Data.Transport.xml
 
 /Src/Configuration.DkimSigner/bin/Debug *
-/Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe.config
+/Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe*
 /Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe
