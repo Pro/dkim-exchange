@@ -9,6 +9,7 @@ using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.FileIO;
 using Ionic.Zip;
 using System.Diagnostics;
+using Microsoft.Win32;
 
 namespace Configuration.DkimSigner
 {
@@ -331,12 +332,32 @@ namespace Configuration.DkimSigner
                 // First make sure the following Registry key exists
                 // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
 
+                bool createEventLogSource;
+                if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
+                {
+                    RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM", false);
+                    if (key == null || key.GetValue("EventMessageFile") == null)
+                    {
+                        // make sure we recreate the event log source to fix messageResourceFile from versions previous to 2.0.0
+                        EventLog.DeleteEventSource(Constants.DKIM_SIGNER_EVENTLOG_SOURCE);
+                        createEventLogSource = true;
+                    }
+                    else
+                    {
+                        createEventLogSource = false;
+                    }
+                }
+                else
+                {
+                    createEventLogSource = true;
+                }
+
                 // Create the event source if it does not exist.
-                if (!EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
+                if (createEventLogSource)
                 {
                     // Create a new event source for the custom event log 
 
-                    EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, Constants.DKIM_SIGNER_EVENTLOG_SOURCE);
+                    EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, "Application");
 
                     // Set the specified file as the resource
                     // file for message text, category text, and 

@@ -307,7 +307,7 @@ namespace Configuration.DkimSigner
             {
                 string version = oDkimSignerAvailable.Version.ToString();
 
-                Match match = Regex.Match(oDkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
+                Match match = Regex.Match(oDkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta|rc)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
 
                 if (match.Success)
                 {
@@ -691,8 +691,7 @@ namespace Configuration.DkimSigner
                 //
         private void UpdateSuggestedDNS(string sRsaPublicKeyBase64 = "")
         {
-            string sDNSRecord = "v=DKIM1; k=rsa; p=" + sRsaPublicKeyBase64;
-
+            string sDNSRecord = "";
             if (sRsaPublicKeyBase64 == string.Empty)
             {
                 string sPubKeyPath = this.txtDomainPrivateKeyFilename.Text;
@@ -721,6 +720,8 @@ namespace Configuration.DkimSigner
                     sDNSRecord = "No RSA pub key found:\n" + sPubKeyPath;
                 }
             }
+            if (sRsaPublicKeyBase64 != null && sRsaPublicKeyBase64 != string.Empty)
+                sDNSRecord = "v=DKIM1; k=rsa; p=" + sRsaPublicKeyBase64;
 
             this.txtDNSRecord.Text = sDNSRecord;
         }
