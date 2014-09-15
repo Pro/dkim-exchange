@@ -1,9 +1,9 @@
 Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)
 =============
 
-DKIM Signing Agent for Exchange Server.
+DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications.
 
-The code fot the signing agent is based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
+The code for the signing agent is based on the work from  http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
 ## Supported versions
 
