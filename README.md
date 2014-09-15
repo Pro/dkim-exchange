@@ -3,9 +3,7 @@ Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.pn
 
 DKIM Signing Agent for Exchange Server.
 
-This code is mainly based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
-
-If you have a version installed previous to 26.11.2013 read the Section [Update from Version 0.5](#update-from-version-05)
+The code fot the signing agent is based on the work of http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
 ## Supported versions
 
@@ -24,7 +22,7 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 * Exchange 2013 CU5 (15.0.913.22)
 * Exchange 2013 CU6 (15.0.995.29)
 
-## Installing the Transport Agent
+# Installing the Transport Agent
 
 ## Online install
 
@@ -73,11 +71,11 @@ To change the priority use `Set-TransportAgent -Identity "Exchange DkimSigner" -
 If you have any problems installing, please check out the [troubleshooting guideline](https://github.com/Pro/dkim-exchange/blob/master/TROUBLESHOOT.md).  
 **Exchange 2013 SP1**: If you have any problems installing the agent on Exchange 2013 SP1 please first try to apply the fix mentioned in issue [#24](https://github.com/Pro/dkim-exchange/issues/24)
 
-### Configuring the agent
+# Configuring the agent
 
 After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see next section).
 
-#### Manual configuration
+## Manual configuration
 
 Open `C:\Program Files\Exchange DkimSigner\settigs.xml` and configure the DKIM agent.
 
@@ -120,7 +118,7 @@ This path may be relative or absolute.
 
 Possible values for `HeaderCanonicalization` and `BodyCanonicalization` are `Simple` (recommended) and `Relaxed`.
 
-#### Logging
+### Logging
 The dkim signing agent logs by default all errors and warnings into EventLog.
 You can set the LogLevel in the `settings.xml` file:
 
@@ -130,7 +128,7 @@ Possible values:
 * 2 = Warn+Error
 * 3 = Info+Warn+Error
 
-### Creating the keys
+## Creating the keys
 
 You can create the private and public keys using Configuration.DkimSigner.exe (recommended) or you can create them with any other tool and then select them within the GUI.
 
@@ -142,28 +140,28 @@ Or if you have a linux installation, use (from the opendkim package):
 
 The keys can be in DER or PEM format (the format will be automatically detected).
 	
-### Testing the setup
+# Testing the setup
 
 If you want to test, if everything is working, simply send a mail to check-auth@verifier.port25.com and you will get an immediate response with the results of the DKIM check.
 
-## Updating the Transport Agent
+# Updating the Transport Agent
 
 If you want to update the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Upgrade button. (If no new version is available the button shows 'Reinstall').
 
-### Update from Version 1.* to 2.0.*
+## Update from Version 1.* to 2.0.*
 
 We had to change the settings file for the new version.
 The best way to update is to make a backup copy from your `C:\Program Files\Exchange DkimSigner` directory. Then just follow the install and configure instructions. You can then also port the old configuration file (`ExchangeDkimSigner.dll.config`) from your backup by opening the new (`settings.xml`) and the old file in a text editor and manually editing the entries.
 
-## Uninstalling the Transport Agent
+# Uninstalling the Transport Agent
 
 If you want to uninstall the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Configure button. In the new opened Window make sure the DKIM signer is selected. Then press `Uninstall`.
 
 If you want to use the powershell script to uninstall the agent (not recommended) follow the manual install instructions but execute `.\uninstall.ps1` instead.
 
-## Notes for developers
+# Notes for developers
 
-### Required DLLs for developing
+## Required DLLs for developing
 
 For each Exchange Version we need the following files within the Lib directory:
 <pre>
@@ -174,11 +172,14 @@ Microsoft.Exchange.Data.Transport.dll
 Microsoft.Exchange.Data.Transport.xml
 </pre>
 
-### Compiling
+## Compiling
 
-You need to compile the .dll for Exchange 2010 for .Net Framework 3.5 (double click Properties in Visual Studio). Exchange 2012 needs .Net Framework 4 as target framework.
+There are two projects in the Visual Studio Solution.
+To compile the `Configuration.DKIMSigner` executable just go to Project Menu and then `Build Solution`.
+To compile the .dll's for the Exchange Agent, got to Project Menu and then select  `Batch Build`. Make sure all the configurations are selected, then press Build. This will automatically link the agent DLLs with the correct version of the Exchange libraries.
 
-#### Debugging
+
+## Debugging
 If you want to debug the .dll on your Exchange Server, you need to install [Visual Studio Remote Debugging](http://msdn.microsoft.com/en-us/library/vstudio/bt727f1t.aspx) on the Server.
 
 1. After the Remote Debugging Tools are installed on the Server, open Visual Studio
@@ -190,7 +191,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 7. Select the process `EdgeTransport.exe` and then press 'Attach'
 8. When reached, the process should stop at the breakpoint
 
-## Changelog
+# Changelog
 
 * 11.09.2014 [2.0.2]:  
     New: The signer can now be configured through the GUI instead of manual XML editing  
