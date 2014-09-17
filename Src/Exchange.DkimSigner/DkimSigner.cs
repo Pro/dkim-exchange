@@ -406,7 +406,46 @@ namespace Exchange.DkimSigner
                             // Delete any WSP characters remaining before and after the colon
                             // separating the header field name from the header field value.  The
                             // colon separator MUST be retained.
-                            header = Regex.Replace(header, @" ?: ?", ":");
+                            // We can't simply replace all " : " with ":" because only the first
+                            // colon should be changed. If e.g. the subject header contains a
+                            // "RE: TEST" it mustn't be replaced with "RE:TEST"
+                            int firstPos = header.IndexOf(':');
+                            if (firstPos > 0 && firstPos < header.Length - 2)
+                            {
+                                // colon found. Now remove any spaces before/after the colon
+
+                                //check how many whitespaces are before the colon
+                                int beforeCount = 0;
+                                for (int i = firstPos - 1; i >= 0; i--)
+                                {
+                                    if (header[i] == ' ')
+                                        beforeCount++;
+                                    else
+                                        break;
+                                }
+                                if (beforeCount > 0)
+                                {
+                                    //now remove them
+                                    header = header.Remove(firstPos-beforeCount,beforeCount);
+                                }
+                                // colon is now at another position
+                                firstPos -= beforeCount;
+
+                                //check how many whitespaces are after the colon
+                                int afterCount = 0;
+                                for (int i = firstPos + 1; i <header.Length; i++)
+                                {
+                                    if (header[i] == ' ')
+                                        afterCount++;
+                                    else
+                                        break;
+                                }
+                                if (afterCount > 0)
+                                {
+                                    //now remove them
+                                    header = header.Remove(firstPos + 1,  afterCount);
+                                }
+                            }
 
                             // Convert all header field names (not the header field values) to
                             // lowercase.  For example, convert "SUBJect: AbC" to "subject: AbC".
