@@ -151,7 +151,7 @@ namespace Exchange.DkimSigner
                 this.eligibleHeaders.Add("From");
 
             Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + validDomains.Count);
- 
+
         }
 
         public void watchSettings()
@@ -318,11 +318,11 @@ namespace Exchange.DkimSigner
                     bodyText += temp;
                 }
             }
-            
+
             // We have to ignore all empty lines at the end of the message body.
             bodyText = Regex.Replace(bodyText, "(\r?\n)*$", string.Empty);
             bodyText += "\r\n";
-            
+
             bodyBytes = Encoding.ASCII.GetBytes(bodyText);
             hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
             stream.Seek(0, SeekOrigin.Begin);
@@ -426,14 +426,14 @@ namespace Exchange.DkimSigner
                                 if (beforeCount > 0)
                                 {
                                     //now remove them
-                                    header = header.Remove(firstPos-beforeCount,beforeCount);
+                                    header = header.Remove(firstPos - beforeCount, beforeCount);
                                 }
                                 // colon is now at another position
                                 firstPos -= beforeCount;
 
                                 //check how many whitespaces are after the colon
                                 int afterCount = 0;
-                                for (int i = firstPos + 1; i <header.Length; i++)
+                                for (int i = firstPos + 1; i < header.Length; i++)
                                 {
                                     if (header[i] == ' ')
                                         afterCount++;
@@ -443,7 +443,7 @@ namespace Exchange.DkimSigner
                                 if (afterCount > 0)
                                 {
                                     //now remove them
-                                    header = header.Remove(firstPos + 1,  afterCount);
+                                    header = header.Remove(firstPos + 1, afterCount);
                                 }
                             }
 
@@ -459,7 +459,7 @@ namespace Exchange.DkimSigner
             }
 
             stream.Seek(0, SeekOrigin.Begin);
-            
+
             return headerNameToLineMap.Values.OrderBy(x => x, StringComparer.Ordinal);
         }
 
