@@ -5,6 +5,8 @@ DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emai
 
 The code for the signing agent is based on the work from  http://nicholas.piasecki.name/blog/2010/12/dkim-signing-outbound-messages-in-exchange-server-2007/
 
+We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
+
 ## Supported versions
 
 The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013)
@@ -142,7 +144,7 @@ The keys can be in DER or PEM format (the format will be automatically detected)
 	
 # Testing the setup
 
-If you want to test, if everything is working, simply send a mail to check-auth@verifier.port25.com and you will get an immediate response with the results of the DKIM check.
+If you want to test, if everything is working, simply send a mail to mailtest@unlocktheinbox.com and you will get an immediate response with the results of the DKIM check.
 
 # Updating the Transport Agent
 
