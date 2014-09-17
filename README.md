@@ -194,7 +194,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
-
+* 17.09.2014 [2.0.3]:  
+	Fix: Wrong signature if subject contained colon and spaces. See issue #62  
 * 11.09.2014 [2.0.2]:  
     New: The signer can now be configured through the GUI instead of manual XML editing  
     New: Installation, Update and Uninstall is now done by a simple click within GUI  
