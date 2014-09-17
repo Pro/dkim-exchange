@@ -77,6 +77,11 @@ namespace Exchange.DkimSigner
                 DomainElement domain = null;
                 foreach (DomainElement e in dkimSigner.getValidDomains())
                 {
+                    if (mailItem.FromAddress == null || mailItem.FromAddress.DomainPart == null)
+                    {
+                        Logger.LogWarning("Invalid from address: '" + mailItem.FromAddress + "'. Not signing email.");
+                        continue;
+                    }
                     if (mailItem.FromAddress.DomainPart
                                             .ToUpperInvariant()
                                             .Contains(e.Domain.ToUpperInvariant()))
