@@ -151,6 +151,7 @@ namespace Configuration.DkimSigner
                 if (this.btDisable.Text == "Disable")
                 {
                     ExchangeServer.DisableDkimTransportAgent();
+                    ExchangeServer.RestartTransportService();
                     this.RefreshTransportServiceAgents();
                     this.btDisable.Text = "Enable";
                     refreshMoveButtons(false);
@@ -158,6 +159,7 @@ namespace Configuration.DkimSigner
                 else
                 {
                     ExchangeServer.EnableDkimTransportAgent();
+                    ExchangeServer.RestartTransportService();
                     this.RefreshTransportServiceAgents();
                     this.btDisable.Text = "Disable";
                     refreshMoveButtons(true);
