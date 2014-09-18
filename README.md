@@ -34,7 +34,7 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 4. Select `Install`  
 5. In the new opened window, select the version you like to install. If you want to install a prerelease version, check the corresponding box  
 6. Press install and wait until the installation successfully finished, then close the window.  
-7. Now configure the DKIM Signer with the installed GUI (located under `"C:\Program Files\Exchange DkimSigner\Configuration\Configuration.DkimSigner.exe"`  
+7. Now configure the DKIM Signer with the installed GUI (located under `"C:\Program Files\Exchange DkimSigner\Configuration.DkimSigner.exe"`  
 8. Once you save the config, the Signer Agent will automatically reload these changes  
 
 ## Offline Install
@@ -46,7 +46,7 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 5. Select `Install`
 6. In the new opened window, browse for the downloaded DkimSigner.zip and press `Install`
 7. wait until the installation successfully finished, then close the window.
-8. Now configure the DKIM Signer with the installed GUI (located under `"C:\Program Files\Exchange DkimSigner\Configuration\Configuration.DkimSigner.exe"`
+8. Now configure the DKIM Signer with the installed GUI (located under `"C:\Program Files\Exchange DkimSigner\Configuration.DkimSigner.exe"`
 9. Once you save the config, the Signer Agent will automatically reload these changes
 
 ## Manual Install
