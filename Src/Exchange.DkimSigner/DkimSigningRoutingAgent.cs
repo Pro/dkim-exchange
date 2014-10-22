@@ -82,10 +82,14 @@ namespace Exchange.DkimSigner
                         Logger.LogWarning("Invalid from address: '" + mailItem.FromAddress + "'. Not signing email.");
                         continue;
                     }
+                    
                     if (mailItem.FromAddress.DomainPart
                                             .ToUpperInvariant()
-                                            .Contains(e.Domain.ToUpperInvariant()))
+                                            .Equals(e.Domain.ToUpperInvariant()))
+                    {
                         domain = e;
+                        break;
+                    }  
                 }
 
                 /* If domain was found in define domain configuration, we just do nothing */
@@ -131,13 +135,16 @@ namespace Exchange.DkimSigner
         private static byte[] ReadFully(Stream input)
         {
             byte[] buffer = new byte[16 * 1024];
+            
             using (MemoryStream ms = new MemoryStream())
             {
                 int read;
+                
                 while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     ms.Write(buffer, 0, read);
                 }
+                
                 return ms.ToArray();
             }
         }
