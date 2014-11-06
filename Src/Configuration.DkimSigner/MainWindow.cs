@@ -1,5 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.Linq;
+using System.Reflection;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -11,9 +15,6 @@ using ConfigurationSettings;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.GitHub;
 using Heijden.DNS;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
 
 namespace Configuration.DkimSigner
 {
@@ -588,9 +589,16 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void LoadDkimSignerConfig()
         {
+            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
+
             try
             {
-                this.oConfig = Settings.LoadOrCreate(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
+                this.oConfig = new Settings();
+                
+                if (File.Exists(filename))
+                {
+                    this.oConfig.Load(filename);
+                }
 
                 switch (this.oConfig.Loglevel)
                 {

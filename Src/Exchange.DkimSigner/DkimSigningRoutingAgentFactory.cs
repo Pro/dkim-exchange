@@ -1,15 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Reflection;
-using System.Xml;
-using Microsoft.Exchange.Data.Transport;
+﻿using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
-
-using ConfigurationSettings;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace Exchange.DkimSigner
 {
@@ -21,15 +11,12 @@ namespace Exchange.DkimSigner
         /// <summary>
         /// The object that knows how to sign messages.
         /// </summary>
-        private ISigner dkimSigner;
+        private DkimSigner dkimSigner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgentFactory"/> class.
         /// </summary>
-        public DkimSigningRoutingAgentFactory()
-        {
-            this.Initialize();
-        }
+        public DkimSigningRoutingAgentFactory() {}
 
         /// <summary>
         /// When overridden in a derived class, the 
@@ -40,15 +27,7 @@ namespace Exchange.DkimSigner
         /// <returns>The <see cref="DkimSigningRoutingAgent"/> instance.</returns>
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            return new DkimSigningRoutingAgent(dkimSigner);
-        }
-
-        /// <summary>
-        /// Initializes various settings based on configuration.
-        /// </summary>
-        private void Initialize()
-        {
-            this.dkimSigner = new DkimSigner();
+            return new DkimSigningRoutingAgent();
         }
     }
 }

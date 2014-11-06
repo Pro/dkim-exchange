@@ -14,21 +14,74 @@ namespace Exchange.DkimSigner
     /// </summary>
     public sealed class DkimSigningRoutingAgent : RoutingAgent
     {
-
         /// <summary>
         /// The object that knows how to sign messages.
         /// </summary>
-        private ISigner dkimSigner;
+        private DkimSigner dkimSigner;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
-        public DkimSigningRoutingAgent(ISigner dkimSigner)
+        public DkimSigningRoutingAgent()
         {
-            this.dkimSigner = dkimSigner;
-            
+            this.dkimSigner = new DkimSigner(new Settings());
+
+            this.LoadSettings();
+            this.WatchSettings();
+
             this.OnCategorizedMessage += this.WhenMessageCategorized;
+        }
+
+        private void LoadSettings()
+        {
+            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
+            Settings config = new Settings();
+            
+            try
+            {
+                if (File.Exists(filename))
+                {
+                    config.Load(filename);
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.LogError("Couldn't load the settings file:\n" + e.Message);
+                return;
+            }
+
+            Logger.logLevel = config.Loglevel;
+            Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + this.dkimSigner.GetDomains().Count);
+        }
+
+        public void WatchSettings()
+        {
+            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
+
+            // Create a new FileSystemWatcher and set its properties.
+            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher.Path = Path.GetDirectoryName(filename);
+
+            // Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
+            watcher.NotifyFilter = NotifyFilters.LastWrite;
+
+            // Only watch text files.
+            watcher.Filter = Path.GetFileName(filename);
+
+            // Add event handlers.
+            watcher.Changed += new FileSystemEventHandler(this.OnChanged);
+            watcher.Created += new FileSystemEventHandler(this.OnChanged);
+
+            // Begin watching.
+            watcher.EnableRaisingEvents = true;
+        }
+
+        // Define the event handlers.
+        private void OnChanged(object source, FileSystemEventArgs e)
+        {
+            Logger.LogInformation("Detected settings file change. Reloading...");
+            this.LoadSettings();
         }
 
         /// <summary>
@@ -40,15 +93,8 @@ namespace Exchange.DkimSigner
         /// though.)
         /// </summary>
         /// <param name="source">The source.</param>
-        /// <param name="e">The 
-        /// <see cref="Microsoft.Exchange.Data.Transport.Routing.QueuedMessageEventArgs"/> 
-        /// instance containing the event data.</param>
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1031",
-            Justification = "If an exception is thrown, then the message is eaten " +
-                "by Exchange. Better to catch the exception and write it to a log " +
-                "than to end up with a non-functioning MTA.")]
+        /// <param name="e">The <see cref="Microsoft.Exchange.Data.Transport.Routing.QueuedMessageEventArgs"/> instance containing the event data.</param>
+        [SuppressMessage("Microsoft.Design", "CA1031", Justification = "If an exception is thrown, then the message is eaten by Exchange. Better to catch the exception and write it to a log than to end up with a non-functioning MTA.")]
         private void WhenMessageCategorized(CategorizedMessageEventSource source, QueuedMessageEventArgs e)
         {
             try
@@ -75,7 +121,7 @@ namespace Exchange.DkimSigner
             {
                  /* Check if DKIM is defined for the current domain */
                 DomainElement domain = null;
-                foreach (DomainElement e in dkimSigner.getValidDomains())
+                foreach (DomainElement e in this.dkimSigner.GetDomains())
                 {
                     if (mailItem.FromAddress == null || mailItem.FromAddress.DomainPart == null)
                     {

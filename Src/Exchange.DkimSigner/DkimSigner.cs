@@ -15,7 +15,7 @@ namespace Exchange.DkimSigner
     /// <summary>
     /// Signs MIME messages according to the DKIM standard.
     /// </summary>
-    public class DkimSigner : ISigner
+    public class DkimSigner
     {
         /// <summary>
         /// The sentinel for a header separator.
@@ -57,69 +57,34 @@ namespace Exchange.DkimSigner
         /// </summary>
         private DkimCanonicalizationKind bodyCanonicalization;
 
-        private List<DomainElement> validDomains;
-
-        private string settingsPath;
+        private List<DomainElement> domains;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigner"/> class.
         /// </summary>
-        public DkimSigner()
+        public DkimSigner(Settings config)
         {
-            settingsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
-
-            loadSettings();
-            watchSettings();
+            this.UpdateSettings(config);
         }
 
-        /// <summary>
-        /// Finalizes an instance of the <see cref="DkimSigner"/> class.
-        /// </summary>
-        ~DkimSigner()
+        public void UpdateSettings(Settings config)
         {
-            this.Dispose(false);
-        }
-
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, 
-        /// releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        private void loadSettings()
-        {
-            Settings config = null;
-            try
-            {
-                config = Settings.LoadOrCreate(settingsPath);
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("Couldn't load the settings file:\n" + e.Message);
-                return;
-            }
-            Logger.logLevel = config.Loglevel;
-
             // Load the list of domains
-            validDomains = new List<DomainElement>();
+            this.domains = new List<DomainElement>();
             foreach (DomainElement domainElement in config.Domains)
             {
                 try
                 {
-                    if (domainElement.initElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                    if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
                     {
-                        validDomains.Add(domainElement);
+                        this.domains.Add(domainElement);
                     }
                 }
                 catch (FileNotFoundException e)
                 {
                     Logger.LogError(e.Message);
                 }
-            }
+            }   
 
             switch (config.SigningAlgorithm)
             {
@@ -141,48 +106,22 @@ namespace Exchange.DkimSigner
             this.bodyCanonicalization = config.BodyCanonicalization;
 
             this.eligibleHeaders = new HashSet<string>();
-            foreach (var headerToSign in config.HeadersToSign)
+            foreach (string headerToSign in config.HeadersToSign)
             {
                 this.eligibleHeaders.Add(headerToSign.Trim());
             }
+
             // The From header must always be signed according to the 
             // DKIM specification.
             if (!this.eligibleHeaders.Contains("From"))
+            {
                 this.eligibleHeaders.Add("From");
-
-            Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + validDomains.Count);
-
+            }
         }
 
-        public void watchSettings()
+        public List<DomainElement> GetDomains()
         {
-            // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher();
-            watcher.Path = Path.GetDirectoryName(settingsPath);
-            /* Watch for changes in LastAccess and LastWrite times, and 
-               the renaming of files or directories. */
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-            // Only watch text files.
-            watcher.Filter = Path.GetFileName(settingsPath);
-
-            // Add event handlers.
-            watcher.Changed += new FileSystemEventHandler(this.OnChanged);
-            watcher.Created += new FileSystemEventHandler(this.OnChanged);
-
-            // Begin watching.
-            watcher.EnableRaisingEvents = true;
-        }
-
-        // Define the event handlers.
-        private void OnChanged(object source, FileSystemEventArgs e)
-        {
-            Logger.LogInformation("Detected settings file change. Reloading...");
-            loadSettings();
-        }
-
-        public List<DomainElement> getValidDomains()
-        {
-            return this.validDomains;
+            return this.domains;
         }
 
         /// <summary>
@@ -246,25 +185,6 @@ namespace Exchange.DkimSigner
                     return false;
 
             return true;
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources;
-        /// <c>false</c> to release only unmanaged resources.</param>
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (this.hashAlgorithm != null)
-                {
-                    this.hashAlgorithm.Clear();
-                    this.hashAlgorithm = null;
-                }
-            }
-
-            this.disposed = true;
         }
 
         /// <summary>
@@ -616,6 +536,43 @@ namespace Exchange.DkimSigner
             }
 
             sb.Length = dest;
+        }
+
+        /// <summary>
+        /// Finalizes an instance of the <see cref="DkimSigner"/> class.
+        /// </summary>
+        ~DkimSigner()
+        {
+            this.Dispose(false);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, 
+        /// releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources;
+        /// <c>false</c> to release only unmanaged resources.</param>
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (this.hashAlgorithm != null)
+                {
+                    this.hashAlgorithm.Clear();
+                    this.hashAlgorithm = null;
+                }
+            }
+
+            this.disposed = true;
         }
     }
 }

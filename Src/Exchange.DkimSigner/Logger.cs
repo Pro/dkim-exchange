@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace Exchange.DkimSigner
 {
-    class Logger
+    public class Logger
     {
         /// <summary>
         /// The log level defined.
@@ -24,7 +24,9 @@ namespace Exchange.DkimSigner
         public static void LogInformation(string message, int id)
         {
             if (logLevel >= 3)
+            {
                 LogEntry(message, id, EventLogEntryType.Information);
+            }
         }
 
         public static void LogWarning(string message)
@@ -35,7 +37,9 @@ namespace Exchange.DkimSigner
         public static void LogWarning(string message, int id)
         {
             if (logLevel >= 2)
+            {
                 LogEntry(message, id, EventLogEntryType.Warning);
+            }
         }
 
         public static void LogError(string message)
@@ -46,7 +50,9 @@ namespace Exchange.DkimSigner
         public static void LogError(string message, int id)
         {
             if (logLevel >= 1)
+            {
                 LogEntry(message, id, EventLogEntryType.Error);
+            }
         }
 
         private static void LogEntry(string message, int id, EventLogEntryType logType)

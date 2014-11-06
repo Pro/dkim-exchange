@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -14,15 +11,21 @@ namespace ConfigurationSettings
         public string Selector { get; set; }
         public string PrivateKeyFile { get; set; }
 
-        public DomainElement()
+        /// <summary>
+        /// RSACryptoServiceProvider to manipulate to encrypt the information
+        /// </summary>
+        private RSACryptoServiceProvider cryptoProvider;
+        public RSACryptoServiceProvider CryptoProvider
         {
-            
+            get { return cryptoProvider; }
         }
 
         /// <summary>
         /// Domain element constructor
         /// </summary>
-        public DomainElement(string domain, string selector, string privateKeyFile, string recipientRule = null, string senderRule = null)
+        public DomainElement() { }
+
+        public DomainElement(string domain, string selector, string privateKeyFile)
         {
             Domain = domain;
             Selector = selector;
@@ -35,26 +38,13 @@ namespace ConfigurationSettings
         }
 
         /// <summary>
-        /// RSACryptoServiceProvider to manipulate to encrypt the information
-        /// </summary>
-        public RSACryptoServiceProvider CryptoProvider
-        {
-            get { return cryptoProvider; }
-        }
-        private RSACryptoServiceProvider cryptoProvider;
-
-        /// <summary>
         /// Create the RSACryptoServiceProvider for the domain
         /// </summary>
         /// <param name="basePath">Path of the private key to open</param>
         /// <returns></returns>
-        public bool initElement(string basePath)
+        public bool InitElement(string basePath)
         {
-            string path;
-            if (Path.IsPathRooted(PrivateKeyFile))
-                path = @"keys\" + PrivateKeyFile;
-            else
-                path = Path.Combine(basePath, @"keys\" + PrivateKeyFile);
+            string path = Path.IsPathRooted(PrivateKeyFile) ? @"keys\" + PrivateKeyFile : Path.Combine(basePath, @"keys\" + PrivateKeyFile);
 
             if (!File.Exists(path))
             {
@@ -67,16 +57,9 @@ namespace ConfigurationSettings
                 cryptoProvider = new RSACryptoServiceProvider();
                 cryptoProvider.FromXmlString(xmlkey);
             }
-            catch(Exception) 
-            {
-            }
+            catch(Exception) { }
 
             return true;
-        }
-
-        internal string Key
-        {
-            get { return string.Format("{0}|{1}", Selector, Domain); }
         }
 
         /// <summary>
