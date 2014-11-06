@@ -46,18 +46,21 @@ namespace ConfigurationSettings
         {
             string path = Path.IsPathRooted(PrivateKeyFile) ? @"keys\" + PrivateKeyFile : Path.Combine(basePath, @"keys\" + PrivateKeyFile);
 
-            if (!File.Exists(path))
+            if (String.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                throw new FileNotFoundException("PrivateKey for domain " + Domain + " not found: " + path);
+                throw new FileNotFoundException("The private key for domain " + Domain + " not found: " + path);
             }
 
             try
             {
                 string xmlkey = File.ReadAllText(path, Encoding.ASCII).Trim();
                 cryptoProvider = new RSACryptoServiceProvider();
-                cryptoProvider.FromXmlString(xmlkey);
+                cryptoProvider.FromXmlString(xmlkey);                    
             }
-            catch(Exception) { }
+            catch(Exception)
+            {
+                throw new CryptographicException("The format of the private key for domain " + Domain + " isn't valid. The private key should be in a XML format.");
+            }
 
             return true;
         }
