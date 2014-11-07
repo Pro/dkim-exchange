@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Threading;
 using System.Windows.Forms;
 
 using Configuration.DkimSigner.GitHub;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.FileIO;
+using Ionic.Zip;
 using System.Diagnostics;
 using Microsoft.Win32;
 
@@ -243,17 +243,17 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="sZipPath"></param>
         /// <returns></returns>
-        private bool ExtractFiles(string sZipPath, string sExtractPath)
+        private bool ExtractFiles(string sZipPath, string extractPath)
         {
             bool bStatus = true;
 
             try
             {
-                using (ZipArchive oArchive = ZipFile.OpenRead(sZipPath))
+                using (ZipFile zip1 = ZipFile.Read(sZipPath))
                 {
-                    foreach (ZipArchiveEntry oEntry in oArchive.Entries)
+                    foreach (ZipEntry e in zip1)
                     {
-                        oEntry.ExtractToFile(Path.Combine(sExtractPath, oEntry.FullName),true);
+                        e.Extract(extractPath, ExtractExistingFileAction.OverwriteSilently);
                     }
                 }
             }
