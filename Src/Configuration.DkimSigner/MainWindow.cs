@@ -589,17 +589,10 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void LoadDkimSignerConfig()
         {
-            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
+            this.oConfig = new Settings();
 
-            try
+            if (this.oConfig.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
             {
-                this.oConfig = new Settings();
-                
-                if (File.Exists(filename))
-                {
-                    this.oConfig.Load(filename);
-                }
-
                 switch (this.oConfig.Loglevel)
                 {
                     case 1:
@@ -637,9 +630,9 @@ namespace Configuration.DkimSigner
 
                 this.bDataUpdated = false;
             }
-            catch (Exception e)
+            else
             {
-                MessageBox.Show("Couldn't load the settings file:\n" + e.Message + "\nSetting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Couldn't load the settings file.\n Setting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

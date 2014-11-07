@@ -33,20 +33,27 @@ namespace ConfigurationSettings
         /// </summary>
         /// <param name="filename">Xml file name</param>
         /// <returns>The object created from the xml file</returns>
-        public void Load(string filename)
+        public bool Load(string filename)
         {
-            using (var stream = File.OpenRead(filename))
+            if (File.Exists(filename))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Settings));
-                Settings settings = serializer.Deserialize(stream) as Settings;
+                using (var stream = File.OpenRead(filename))
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(Settings));
+                    Settings settings = serializer.Deserialize(stream) as Settings;
 
-                this.Loglevel = settings.Loglevel;
-                this.SigningAlgorithm = settings.SigningAlgorithm;
-                this.HeaderCanonicalization = settings.HeaderCanonicalization;
-                this.BodyCanonicalization = settings.BodyCanonicalization;
-                this.HeadersToSign = settings.HeadersToSign;
-                this.Domains = settings.Domains;
+                    this.Loglevel = settings.Loglevel;
+                    this.SigningAlgorithm = settings.SigningAlgorithm;
+                    this.HeaderCanonicalization = settings.HeaderCanonicalization;
+                    this.BodyCanonicalization = settings.BodyCanonicalization;
+                    this.HeadersToSign = settings.HeadersToSign;
+                    this.Domains = settings.Domains;
+
+                    return true;
+                }
             }
+
+            return false;
         }
 
         /// <summary>
@@ -55,6 +62,12 @@ namespace ConfigurationSettings
         /// <param name="filename">File path of the new xml file</param>
         public void Save(string filename)
         {
+            string directory = Path.GetDirectoryName(filename);
+            if(!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
             using (StreamWriter writer = new StreamWriter(filename))
             {
                 XmlSerializer serializer = new XmlSerializer(this.GetType());

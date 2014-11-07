@@ -35,24 +35,17 @@ namespace Exchange.DkimSigner
 
         private void LoadSettings()
         {
-            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
             Settings config = new Settings();
-            
-            try
-            {
-                if (File.Exists(filename))
-                {
-                    config.Load(filename);
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.LogError("Couldn't load the settings file:\n" + e.Message);
-                return;
-            }
 
-            Logger.logLevel = config.Loglevel;
-            Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + this.dkimSigner.GetDomains().Count);
+            if(config.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
+            {
+                Logger.logLevel = config.Loglevel;
+                Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + this.dkimSigner.GetDomains().Count);
+            }
+            else
+            {
+                Logger.LogError("Couldn't load the settings file.\n");
+            }
         }
 
         public void WatchSettings()
