@@ -591,49 +591,73 @@ namespace Configuration.DkimSigner
         {
             this.oConfig = new Settings();
 
-            if (this.oConfig.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
-            {
-                switch (this.oConfig.Loglevel)
-                {
-                    case 1:
-                        this.cbLogLevel.Text = "Error";
-                        break;
-                    case 2:
-                        this.cbLogLevel.Text = "Warning";
-                        break;
-                    case 3:
-                        this.cbLogLevel.Text = "Information";
-                        break;
-                    default:
-                        this.cbLogLevel.Text = "Information";
-                        MessageBox.Show("The log level is invalid. The log level have been set to Information.");
-                        break;
-                }
-
-                this.rbRsaSha1.Checked = (oConfig.SigningAlgorithm == DkimAlgorithmKind.RsaSha1);
-
-                this.rbSimpleHeaderCanonicalization.Checked = (this.oConfig.HeaderCanonicalization == DkimCanonicalizationKind.Simple);
-                this.rbRelaxedHeaderCanonicalization.Checked = (this.oConfig.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed);
-                this.rbSimpleBodyCanonicalization.Checked = (this.oConfig.BodyCanonicalization == DkimCanonicalizationKind.Simple);
-                this.rbRelaxedBodyCanonicalization.Checked = (this.oConfig.BodyCanonicalization == DkimCanonicalizationKind.Relaxed);
-
-                this.lbxHeadersToSign.Items.Clear();
-
-                foreach (string sItem in this.oConfig.HeadersToSign)
-                {
-                    this.lbxHeadersToSign.Items.Add(sItem);
-                }
-
-                this.lbxHeadersToSign.SelectedItem = null;
-
-                this.ReloadDomainsList();
-
-                this.bDataUpdated = false;
-            }
-            else
+            if (!this.oConfig.Load(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
             {
                 MessageBox.Show("Couldn't load the settings file.\n Setting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+
+            //
+            // Log level
+            //
+            switch (this.oConfig.Loglevel)
+            {
+                case 1:
+                    this.cbLogLevel.Text = "Error";
+                    break;
+                case 2:
+                    this.cbLogLevel.Text = "Warning";
+                    break;
+                case 3:
+                    this.cbLogLevel.Text = "Information";
+                    break;
+                default:
+                    this.cbLogLevel.Text = "Information";
+                    MessageBox.Show("The log level is invalid. The log level have been set to Information.");
+                    break;
+            }
+
+            //
+            // Algorithm and Canonicalization
+            //
+            this.rbRsaSha1.Checked = (oConfig.SigningAlgorithm == DkimAlgorithmKind.RsaSha1);
+            this.rbSimpleHeaderCanonicalization.Checked = (this.oConfig.HeaderCanonicalization == DkimCanonicalizationKind.Simple);
+            this.rbRelaxedHeaderCanonicalization.Checked = (this.oConfig.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed);
+            this.rbSimpleBodyCanonicalization.Checked = (this.oConfig.BodyCanonicalization == DkimCanonicalizationKind.Simple);
+            this.rbRelaxedBodyCanonicalization.Checked = (this.oConfig.BodyCanonicalization == DkimCanonicalizationKind.Relaxed);
+
+            //
+            // Headers to sign
+            //
+            this.lbxHeadersToSign.Items.Clear();
+
+            foreach (string sItem in this.oConfig.HeadersToSign)
+            {
+                this.lbxHeadersToSign.Items.Add(sItem);
+            }
+
+            //
+            // Domain
+            //
+            DomainElement oCurrentDomain = null;
+
+            if (this.lbxDomains.SelectedItem != null)
+            {
+                oCurrentDomain = (DomainElement) this.lbxDomains.SelectedItem;
+            }
+
+            this.lbxDomains.Items.Clear();
+            
+            foreach (DomainElement oConfigDomain in this.oConfig.Domains)
+            {
+                this.lbxDomains.Items.Add(oConfigDomain);
+            }
+
+            if (oCurrentDomain != null)
+            {
+                this.lbxDomains.SelectedItem = oCurrentDomain;
+            }
+
+            this.bDataUpdated = false;
         }
 
         /// <summary>
@@ -659,32 +683,6 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = false;
 
             return true;
-        }
-
-        /// <summary>
-        /// Reload the list of domain from the configuration file
-        /// </summary>
-        /// <param name="selectedDomain"></param>
-        private void ReloadDomainsList(string selectedDomain = null)
-        {
-            DomainElement oCurrentDomain = null;
-
-            if (this.lbxDomains.SelectedItem != null)
-            {
-                oCurrentDomain = (DomainElement) this.lbxDomains.SelectedItem;
-            }
-
-            this.lbxDomains.Items.Clear();
-            
-            foreach (DomainElement oConfigDomain in this.oConfig.Domains)
-            {
-                this.lbxDomains.Items.Add(oConfigDomain);
-            }
-            
-            if (oCurrentDomain != null)
-            {
-                this.lbxDomains.SelectedItem = oCurrentDomain;
-            }
         }
 
                 //
@@ -1066,8 +1064,8 @@ namespace Configuration.DkimSigner
                 CSInteropKeys.AsnKeyBuilder.AsnMessage oPrivateEncoded = CSInteropKeys.AsnKeyBuilder.PrivateKeyToPKCS8(oProvider.ExportParameters(true));
 
                 File.WriteAllBytes(oFileDialog.FileName, Encoding.ASCII.GetBytes(oProvider.ToXmlString(true)));
-                File.WriteAllText(oFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
-                File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN RSA PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END RSA PRIVATE KEY-----");
+                File.WriteAllText(Path.GetFileNameWithoutExtension(oFileDialog.FileName) + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
+                File.WriteAllText(Path.GetFileNameWithoutExtension(oFileDialog.FileName) + ".pem", "-----BEGIN RSA PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END RSA PRIVATE KEY-----");
 
                 this.UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
                 this.SetDomainKeyPath(oFileDialog.FileName);

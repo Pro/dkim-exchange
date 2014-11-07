@@ -21,10 +21,15 @@ namespace ConfigurationSettings
         public Settings()
         {
             Loglevel = 3;
+            
             SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
-            HeaderCanonicalization = DkimCanonicalizationKind.Relaxed;
-            BodyCanonicalization = DkimCanonicalizationKind.Relaxed;
-            HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
+            HeaderCanonicalization = DkimCanonicalizationKind.Simple;
+            BodyCanonicalization = DkimCanonicalizationKind.Simple;
+            
+            // Don't change because of serializer problem
+            // this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
+            HeadersToSign = new List<string>();
+            
             Domains = new List<DomainElement>();
         }
 
@@ -34,7 +39,7 @@ namespace ConfigurationSettings
         /// <param name="filename">Xml file name</param>
         /// <returns>The object created from the xml file</returns>
         public bool Load(string filename)
-        {
+        {            
             if (File.Exists(filename))
             {
                 using (var stream = File.OpenRead(filename))
