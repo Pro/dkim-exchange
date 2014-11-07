@@ -94,18 +94,6 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
       <Link>Configuration\Settings.cs</Link>
     </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\AsnKeyBuilder.cs">
-      <Link>RSA\AsnKeyBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\AsnKeyParser.cs">
-      <Link>RSA\AsnKeyParser.cs</Link>
-    </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\BerDecodeError.cs">
-      <Link>RSA\BerDecodeError.cs</Link>
-    </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\BigInteger.cs">
-      <Link>RSA\BigInteger.cs</Link>
-    </Compile>
     <Compile Include="ExchangeTransportServiceWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -223,6 +211,10 @@
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="FileIO\ShellFileOperation.cs" />
+    <Compile Include="RSA\AsnKeyBuilder.cs" />
+    <Compile Include="RSA\AsnKeyParser.cs" />
+    <Compile Include="RSA\BerDecodeError.cs" />
+    <Compile Include="RSA\BigInteger.cs" />
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>
