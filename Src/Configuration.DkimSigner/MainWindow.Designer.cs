@@ -300,7 +300,7 @@
             this.btRestartTransportService.TabIndex = 6;
             this.btRestartTransportService.Text = "Re&start";
             this.btRestartTransportService.UseVisualStyleBackColor = true;
-            this.btRestartTransportService.Click += new System.EventHandler(this.btRestartTransportService_Click);
+            this.btRestartTransportService.Click += new System.EventHandler(this.genericTransportService_Click);
             // 
             // btStopTransportService
             // 
@@ -311,7 +311,7 @@
             this.btStopTransportService.TabIndex = 5;
             this.btStopTransportService.Text = "St&op";
             this.btStopTransportService.UseVisualStyleBackColor = true;
-            this.btStopTransportService.Click += new System.EventHandler(this.btStopTransportService_Click);
+            this.btStopTransportService.Click += new System.EventHandler(this.genericTransportService_Click);
             // 
             // btStartTransportService
             // 
@@ -322,7 +322,7 @@
             this.btStartTransportService.TabIndex = 4;
             this.btStartTransportService.Text = "St&art";
             this.btStartTransportService.UseVisualStyleBackColor = true;
-            this.btStartTransportService.Click += new System.EventHandler(this.btStartTransportService_Click);
+            this.btStartTransportService.Click += new System.EventHandler(this.genericTransportService_Click);
             // 
             // lbExchangeStatus
             // 
@@ -447,7 +447,7 @@
             this.cbLogLevel.Name = "cbLogLevel";
             this.cbLogLevel.Size = new System.Drawing.Size(191, 21);
             this.cbLogLevel.TabIndex = 0;
-            this.cbLogLevel.TextChanged += new System.EventHandler(this.cbLogLevel_TextChanged);
+            this.cbLogLevel.TextChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // gbBodyCanonicalization
             // 
@@ -469,7 +469,7 @@
             this.rbRelaxedBodyCanonicalization.TabIndex = 1;
             this.rbRelaxedBodyCanonicalization.Text = "Relaxed";
             this.rbRelaxedBodyCanonicalization.UseVisualStyleBackColor = true;
-            this.rbRelaxedBodyCanonicalization.CheckedChanged += new System.EventHandler(this.rbRelaxedBodyCanonicalization_CheckedChanged);
+            this.rbRelaxedBodyCanonicalization.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // rbSimpleBodyCanonicalization
             // 
@@ -482,7 +482,7 @@
             this.rbSimpleBodyCanonicalization.TabStop = true;
             this.rbSimpleBodyCanonicalization.Text = "Simple";
             this.rbSimpleBodyCanonicalization.UseVisualStyleBackColor = true;
-            this.rbSimpleBodyCanonicalization.CheckedChanged += new System.EventHandler(this.rbSimpleBodyCanonicalization_CheckedChanged);
+            this.rbSimpleBodyCanonicalization.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // gbHeaderCanonicalization
             // 
@@ -504,7 +504,7 @@
             this.rbRelaxedHeaderCanonicalization.TabIndex = 1;
             this.rbRelaxedHeaderCanonicalization.Text = "Relaxed";
             this.rbRelaxedHeaderCanonicalization.UseVisualStyleBackColor = true;
-            this.rbRelaxedHeaderCanonicalization.CheckedChanged += new System.EventHandler(this.rbRelaxedHeaderCanonicalization_CheckedChanged);
+            this.rbRelaxedHeaderCanonicalization.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // rbSimpleHeaderCanonicalization
             // 
@@ -517,7 +517,7 @@
             this.rbSimpleHeaderCanonicalization.TabStop = true;
             this.rbSimpleHeaderCanonicalization.Text = "Simple";
             this.rbSimpleHeaderCanonicalization.UseVisualStyleBackColor = true;
-            this.rbSimpleHeaderCanonicalization.CheckedChanged += new System.EventHandler(this.rbSimpleHeaderCanonicalization_CheckedChanged);
+            this.rbSimpleHeaderCanonicalization.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // gbAlgorithm
             // 
@@ -539,7 +539,7 @@
             this.rbRsaSha256.TabIndex = 1;
             this.rbRsaSha256.Text = "RsaSha256";
             this.rbRsaSha256.UseVisualStyleBackColor = true;
-            this.rbRsaSha256.CheckedChanged += new System.EventHandler(this.rbRsaSha256_CheckedChanged);
+            this.rbRsaSha256.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // rbRsaSha1
             // 
@@ -552,7 +552,7 @@
             this.rbRsaSha1.TabStop = true;
             this.rbRsaSha1.Text = "RsaSha1";
             this.rbRsaSha1.UseVisualStyleBackColor = true;
-            this.rbRsaSha1.CheckedChanged += new System.EventHandler(this.rbRsaSha1_CheckedChanged);
+            this.rbRsaSha1.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
             // 
             // tpDomain
             // 

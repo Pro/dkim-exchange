@@ -64,6 +64,7 @@ namespace Configuration.DkimSigner
                 this.UpdateDkimSignerAvailable();
                 lblWait.Hide();
             }
+
             this.UpdateExchangeInstalled();
         }
 
@@ -143,7 +144,6 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void CheckDkimSignerAvailableSafe()
         {
-            //this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked);
             this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked, new Version("2.0.0"));
 
             if (this.cbVersionWeb.InvokeRequired)
@@ -560,8 +560,6 @@ namespace Configuration.DkimSigner
                     this.picStopService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
                     this.Refresh();
 
-
-
                     this.lbCopyFiles.Enabled = true;
                     if (bStatus)
                     {
@@ -682,6 +680,5 @@ namespace Configuration.DkimSigner
 
             this.Close();
         }
-
     }
 }

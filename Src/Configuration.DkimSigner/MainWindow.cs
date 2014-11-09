@@ -20,26 +20,21 @@ namespace Configuration.DkimSigner
 {
     public partial class MainWindow : Form
     {
+        private enum TransportServiceAction { Start, Stop, Restart };
+
         /**********************************************************/
         /*********************** Variables ************************/
         /**********************************************************/
 
         private Settings oConfig = null;
-
-        private bool bDataUpdated = false;
-        
-        private Thread thDkimSignerInstalled = null;
-        private Thread thDkimSignerAvailable = null;
-        private Thread thTransportServiceOperation = null;
-        private Thread thExchangeInstalled = null;
-        private System.Threading.Timer tiTransportServiceStatus = null;
         private Version dkimSignerInstalled = null;
         private Release dkimSignerAvailable = null;
 
-        delegate void SetDkimSignerInstalledCallback(Version oDkimSignerInstalled);
-        delegate void SetDkimSignerAvailableCallback(Release oDkimSignerAvailable);
-        delegate void SetExchangeTransportServiceStatusCallback(string sStatus);
-        delegate void SetExchangeInstalledCallback(string sStatus);
+        private IDictionary<string, Thread> athRunning = null;
+        private Thread thTransportServiceOperation = null;
+        private System.Threading.Timer tiTransportServiceStatus = null;
+
+        private bool bDataUpdated = false;
 
         /**********************************************************/
         /*********************** Construtor ***********************/
@@ -48,6 +43,8 @@ namespace Configuration.DkimSigner
         public MainWindow()
         {           
             this.InitializeComponent();
+
+            this.athRunning = new Dictionary<string, Thread>();
 
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
@@ -69,23 +66,27 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            // Get Exchange version installed + load the current configuration
-            // Get Exchange.DkimSigner version installed
+            // Get Exchange version installed
             this.txtExchangeInstalled.Text = "Loading ...";
-            this.thExchangeInstalled = new Thread(new ThreadStart(this.CheckExchangeInstalledSafe));
-            
-            // Start the threads that will do lookup
-            try
-            {
-                this.thExchangeInstalled.Start();
-            }
+            Thread oTh1 = new Thread(() => { this.CheckExchangeInstalled(); this.athRunning.Remove("ExchangeInstalled"); });
+            this.athRunning.Add("ExchangeInstalled", oTh1);
+            try { oTh1.Start(); } catch (ThreadAbortException) { }
+
+            // Get Exchange.DkimSigner version available
+            this.txtDkimSignerAvailable.Text = "Loading ...";
+            Thread oTh3 = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove("DkimSignerAvailable"); });
+            this.athRunning.Add("DkimSignerAvailable", oTh3);
+            try { oTh3.Start(); }
             catch (ThreadAbortException) { }
 
-            // update transport service status each second
-            this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatusSafe), null, 0, 1000);
+            // Get Exchange.DkimSigner version installed
+            this.txtDkimSignerInstalled.Text = "Loading ...";
+            Thread oTh2 = new Thread(() => { this.CheckDkimSignerInstalled(); this.athRunning.Remove("DkimSignerInstalled"); });
+            this.athRunning.Add("DkimSignerInstalled", oTh2);
+            try { oTh2.Start(); } catch (ThreadAbortException) { }
 
-            // Update Exchange and DKIM Signer version
-            this.UpdateVersions();
+            // Update transport service status each second
+            this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
 
             // Load setting from XML file
             this.LoadDkimSignerConfig();
@@ -105,30 +106,27 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                //stop timer
                 if (this.tiTransportServiceStatus != null)
+                {
                     this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+                }
 
                 // IF any thread running, we stop them before exit
-                if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
+                foreach(KeyValuePair<string,Thread> oTemp in this.athRunning)
                 {
-                    this.thDkimSignerAvailable.Abort();
-                }
+                    Thread oTh = oTemp.Value;
+                    if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
+                    {
+                        oTh.Abort();
+                    }
 
-                if (this.thDkimSignerInstalled != null && this.thDkimSignerInstalled.ThreadState == System.Threading.ThreadState.Running)
-                {
-                    this.thDkimSignerInstalled.Abort();
+                    this.athRunning = null;
                 }
-
-                if (this.thExchangeInstalled != null && this.thExchangeInstalled.ThreadState == System.Threading.ThreadState.Running)
-                {
-                    this.thExchangeInstalled.Abort();
-                }
-
 
                 if (this.thTransportServiceOperation != null && this.thTransportServiceOperation.ThreadState == System.Threading.ThreadState.Running)
                 {
                     this.thTransportServiceOperation.Join();
+                    this.thTransportServiceOperation = null;
                 }
             }
         }
@@ -158,40 +156,21 @@ namespace Configuration.DkimSigner
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
         {
-            this.UpdateVersions();
+            // Kill current running thread
+            Thread oTemp;
+            if (this.athRunning.TryGetValue("DkimSignerAvailable", out oTemp))
+            {
+                oTemp.Abort();
+            }
+
+            // Get Exchange.DkimSigner version available
+            this.txtDkimSignerAvailable.Text = "Loading ...";
+            Thread oTh = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove("DkimSignerAvailable"); });
+            this.athRunning.Add("DkimSignerAvailable", oTh);
+            try { oTh.Start(); } catch (ThreadAbortException) { }
         }
 
-        private void rbRsaSha1_CheckedChanged(object sender, System.EventArgs e)
-        {
-            this.bDataUpdated = true;
-        }
-
-        private void rbRsaSha256_CheckedChanged(object sender, System.EventArgs e)
-        {
-            this.bDataUpdated = true;
-        }
-
-        private void rbSimpleHeaderCanonicalization_CheckedChanged(object sender, System.EventArgs e)
-        {
-            this.bDataUpdated = true;
-        }
-
-        private void rbRelaxedHeaderCanonicalization_CheckedChanged(object sender, System.EventArgs e)
-        {
-            this.bDataUpdated = true;
-        }
-
-        private void rbSimpleBodyCanonicalization_CheckedChanged(object sender, System.EventArgs e)
-        {
-            this.bDataUpdated = true;
-        }
-
-        private void rbRelaxedBodyCanonicalization_CheckedChanged(object sender, System.EventArgs e)
-        {
-            this.bDataUpdated = true;
-        }
-
-        private void cbLogLevel_TextChanged(object sender, System.EventArgs e)
+        private void generic_ValueChanged(object sender, System.EventArgs e)
         {
             this.bDataUpdated = true;
         }
@@ -278,67 +257,10 @@ namespace Configuration.DkimSigner
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        private void SetExchangeTransportServiceStatus(string sStatus)
-        {
-            this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown");
-        }
-
-        /// <summary>
-        /// Set the value of txtDkimSignerInstalled from CheckDkimSignerInstalledSafe (use by thread DkimSignerInstalled)
-        /// </summary>
-        /// <param name="dkimSignerInstalled"></param>
-        private void SetDkimSignerInstalled(Version oDkimSignerInstalled)
-        {
-            this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed");
-            this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null);
-            dkimSignerInstalled = oDkimSignerInstalled;
-            setUpgradeButton();
-        }
-
-        /// <summary>
-        ///  Set the value of txtDkimSignerAvailable from CheckDkimSignerAvailableSafe (use by thread DkimSignerAvailable)
-        /// </summary>
-        /// <param name="dkimSignerAvailable"></param>
-        private void SetDkimSignerAvailable(Release oDkimSignerAvailable)
-        {
-            dkimSignerAvailable = oDkimSignerAvailable;
-            if (oDkimSignerAvailable != null)
-            {
-                string version = oDkimSignerAvailable.Version.ToString();
-
-                Match match = Regex.Match(oDkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta|rc)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
-
-                if (match.Success)
-                {
-                    if (match.Groups.Count > 2 && match.Groups[2].Value.Length > 0)
-                    {
-                        version += " (" + match.Groups[2].Value;
-                        if (match.Groups.Count > 3 && match.Groups[3].Value.Length > 0)
-                        {
-                            version += "." + match.Groups[3].Value; 
-                        }
-                        version += ")";
-                    }
-                }
-
-                this.txtDkimSignerAvailable.Text = version;
-                this.txtChangelog.Text = oDkimSignerAvailable.Body;
-            }
-            else
-            {
-                this.txtDkimSignerAvailable.Text = "Unknown";
-                this.txtChangelog.Text = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
-            }
-            setUpgradeButton();
-        }
-
-        /// <summary>
         /// Check the Microsoft Exchange Transport Service Status
         /// </summary>
         /// <param name="state"></param>
-        private void CheckExchangeTransportServiceStatusSafe(object state)
+        private void CheckExchangeTransportServiceStatus(object state)
         {
             string sStatus = null;
 
@@ -348,73 +270,46 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException)
             {
-                // stop timer if we couldn't get service status
                 this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
             }
-            
-            if (this.txtExchangeStatus.InvokeRequired)
-            {
-                SetExchangeTransportServiceStatusCallback d = new SetExchangeTransportServiceStatusCallback(this.SetExchangeTransportServiceStatus);
-                this.Invoke(d, sStatus);
-            }
-            else
-            {
-                this.SetExchangeTransportServiceStatus(sStatus);
-            }
-        }
 
-        /// <summary>
-        /// Set the value of txtExchangeInstalled from CheckExchangeInstalledSafe (use by thread in Load)
-        /// </summary>
-        /// <param name="dkimSignerInstalled"></param>
-        private void SetExchangeInstalled(string exchangeInstalled)
-        {
-            this.txtExchangeInstalled.Text = exchangeInstalled;
-
-            // Uptade Microsft Exchange Transport Service stuatus
-            if (exchangeInstalled != null && exchangeInstalled != "Not installed")
-            {
-                this.btConfigureTransportService.Enabled = true;
-            }
-            else
-            {
-                this.SetExchangeTransportServiceStatus("Unavailable");
-                this.btConfigureTransportService.Enabled = false;
-            }
+            this.txtExchangeStatus.Invoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
         }
 
         /// <summary>
         /// Check the Microsoft Exchange Transport Service Status
         /// </summary>
         /// <param name="state"></param>
-        private void CheckExchangeInstalledSafe()
+        private void CheckExchangeInstalled()
         {
             string version = "Unknown";
 
             try
             {
                 version = ExchangeServer.GetInstalledVersion();
+                this.txtExchangeInstalled.Invoke(new Action(() => this.txtExchangeInstalled.Text = version));
             }
-            catch (Exception e)
+            catch (ExchangeServerException e)
             {
                 MessageBox.Show("Couldn't determine installed Exchange Version: " + e.Message, "Exchange Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            if (this.txtExchangeStatus.InvokeRequired)
+            // Uptade Microsft Exchange Transport Service stuatus
+            if (version != null && version != "Not installed")
             {
-                SetExchangeInstalledCallback d = new SetExchangeInstalledCallback(this.SetExchangeInstalled);
-                this.Invoke(d, version);
+                this.btConfigureTransportService.Invoke(new Action(() => this.btConfigureTransportService.Enabled = true));
             }
             else
             {
-                this.SetExchangeInstalled(version);
+                this.txtExchangeStatus.Invoke(new Action(() => this.txtExchangeStatus.Text = "Unavailable"));
+                this.btConfigureTransportService.Invoke(new Action(() => this.btConfigureTransportService.Enabled = false));
             }
         }
 
         /// <summary>
         /// Thread safe function for the thread DkimSignerInstalled
         /// </summary>
-        private void CheckDkimSignerInstalledSafe()
+        private void CheckDkimSignerInstalled()
         {
             Version oDkimSignerInstalled = null;
             
@@ -438,24 +333,22 @@ namespace Configuration.DkimSigner
                 catch (Exception) { }
             }
 
-            // Set the result in the textbox
-            if (this.txtDkimSignerInstalled.InvokeRequired)
-            {
-                SetDkimSignerInstalledCallback d = new SetDkimSignerInstalledCallback(SetDkimSignerInstalled);
-                this.Invoke(d, oDkimSignerInstalled);
-            }
-            else
-            {
-                this.SetDkimSignerInstalled(oDkimSignerInstalled);
-            }
+            this.txtDkimSignerInstalled.Invoke(new Action(() => this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed")));
+            this.btConfigureTransportService.Invoke(new Action(() => this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null)));
+            
+            this.dkimSignerInstalled = oDkimSignerInstalled;
+
+            this.SetUpgradeButton();
         }
 
         /// <summary>
         /// Thread safe function for the thread DkimSignerAvailable
         /// </summary>
-        private void CheckDkimSignerAvailableSafe()
+        private void CheckDkimSignerAvailable()
         {
             Release oDkimSignerAvailable = null;
+            string version = "Unknown";
+            string changelog = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
 
             // Check the lastest Release
             try
@@ -464,89 +357,111 @@ namespace Configuration.DkimSigner
             }
             catch (Exception) {}
 
-            // Set the result in the textbox
-            if (this.txtDkimSignerInstalled.InvokeRequired)
+            if (oDkimSignerAvailable != null)
             {
-                SetDkimSignerAvailableCallback d = new SetDkimSignerAvailableCallback(SetDkimSignerAvailable);
-                this.Invoke(d, oDkimSignerAvailable);
+                version = oDkimSignerAvailable.Version.ToString();
+
+                Match match = Regex.Match(oDkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta|rc)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
+
+                if (match.Success)
+                {
+                    if (match.Groups.Count > 2 && match.Groups[2].Value.Length > 0)
+                    {
+                        version += " (" + match.Groups[2].Value;
+                        if (match.Groups.Count > 3 && match.Groups[3].Value.Length > 0)
+                        {
+                            version += "." + match.Groups[3].Value;
+                        }
+                        version += ")";
+                    }
+                }
+
+               changelog = oDkimSignerAvailable.Body;
             }
-            else
-            {
-                this.SetDkimSignerAvailable(oDkimSignerAvailable);
-            }
+
+            this.txtDkimSignerAvailable.Invoke(new Action(() => this.txtDkimSignerAvailable.Text = version));
+            this.txtChangelog.Invoke(new Action(() => this.txtChangelog.Text = changelog));
+
+            this.dkimSignerAvailable = oDkimSignerAvailable;
+
+            this.SetUpgradeButton();
         }
 
-        /// <summary>
-        /// Thread safe function for the thread to start Microsoft Exchange Transport Service
-        /// </summary>
-        private void StartTransportServiceSafe()
+        private void SetUpgradeButton()
         {
+            string texte = string.Empty;
+            bool status = false;
+
+            // A version of DkimSigner is available online
+            if (this.dkimSignerAvailable != null)
+            {
+                // A version of DkimSigner is installed 
+                if (this.dkimSignerInstalled != null)
+                {
+                    if (this.dkimSignerInstalled < this.dkimSignerAvailable.Version)
+                    {
+                        texte = "&Upgrade";
+                    }
+                    else
+                    {
+                        texte = "&Reinstall";
+                    }
+                }
+                // A version of DkimSigner isn't installed
+                else
+                {
+                    texte = "&Install";
+                }
+
+                status = true;
+            }
+            // TODO : Correct implementation
+            //else
+            //{
+            //    // A version of DkimSigner is installed
+            //    if (this.dkimSignerInstalled != null)
+            //    {
+            //        texte = "Upgrade from ZIP";
+            //    }
+            //    // A version of DkimSigner isn't installed
+            //    else
+            //    {
+            //        texte = "Install from ZIP";
+            //    }
+            //}
+
+            this.btUpgrade.Invoke(new Action(() => this.btUpgrade.Text = texte));
+            this.btUpgrade.Invoke(new Action(() => this.btUpgrade.Enabled = status));
+        }
+
+        private void DoTransportServiceAction(TransportServiceAction oAction)
+        {
+            string sSuccessMessage = string.Empty;
+
             try
             {
-                ExchangeServer.StartTransportService();
+                switch (oAction)
+                {
+                    case TransportServiceAction.Start:
+                        sSuccessMessage = "MSExchangeTransport service successfully started.\n";
+                        ExchangeServer.StartTransportService();
+                        break;
+                    case TransportServiceAction.Stop:
+                        sSuccessMessage = "MSExchangeTransport service successfully stopped.\n";
+                        ExchangeServer.StopTransportService();
+                        break;
+                    case TransportServiceAction.Restart:
+                        sSuccessMessage = "MSExchangeTransport service successfully restarted.\n";
+                        ExchangeServer.RestartTransportService();
+                        break;
+                }
 
-                MessageBox.Show("MSExchangeTransport service successfully started.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(sSuccessMessage, "Service", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ExchangeServerException)
             {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }
-
-        /// <summary>
-        /// Thread safe function for the thread to stop Microsoft Exchange Transport Service
-        /// </summary>
-        private void StopTransportServiceSafe()
-        {
-            try
-            {
-                ExchangeServer.StopTransportService();
-
-                MessageBox.Show("MSExchangeTransport service successfully stopped.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (ExchangeServerException)
-            {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Thread safe function for the thread to restart Microsoft Exchange Transport Service
-        /// </summary>
-        private void RestartTransportServiceSafe()
-        {
-            try
-            {
-                ExchangeServer.RestartTransportService();
-
-                MessageBox.Show("MSExchangeTransport service successfully restarted.\n", "Service information", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (ExchangeServerException)
-            {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        /// <summary>
-        /// Update the current available and installed version info
-        /// </summary>
-        private void UpdateVersions()
-        {
-            // Get Exchange.DkimSigner version installed
-            this.txtDkimSignerInstalled.Text = "Loading ...";
-            this.thDkimSignerInstalled = new Thread(new ThreadStart(this.CheckDkimSignerInstalledSafe));
-
-            // Get Exchange.DkimSigner version available
-            this.txtDkimSignerAvailable.Text = "Loading ...";
-            this.thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
-
-            // Start the threads that will do lookup
-            try
-            {
-                this.thDkimSignerInstalled.Start();
-                this.thDkimSignerAvailable.Start();
-            }
-            catch (ThreadAbortException) { }
         }
 
         /// <summary>
@@ -769,88 +684,6 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
-        /// <summary>
-        /// Reloads all the entries from event log and shows them on the EventLog Tab page.
-        /// </summary>
-        private void refreshEventLog()
-        {
-            int count = 0;
-            dgEventLog.Rows.Clear();
-            if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
-            {
-
-                EventLog logger = new EventLog();
-                logger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
-                var reversed = logger.Entries.Cast<EventLogEntry>().Reverse<EventLogEntry>();
-
-                foreach (System.Diagnostics.EventLogEntry entry in reversed)
-                {
-                    if (entry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
-                        continue;
-                    count++;
-                    if (count > 100)
-                    {
-                        dgEventLog.Rows.Add(SystemIcons.Information.ToBitmap(), "-----", "Maximum number of 100 Log entries shown");
-                        break;
-                    }
-                    Image img = null;
-                    switch (entry.EntryType)
-                    {
-                        case EventLogEntryType.Information:
-                            img = SystemIcons.Information.ToBitmap();
-                            break;
-                        case EventLogEntryType.Warning:
-                            img = SystemIcons.Warning.ToBitmap();
-                            break;
-                        case EventLogEntryType.Error:
-                            img = SystemIcons.Error.ToBitmap();
-                            break;
-                        case EventLogEntryType.FailureAudit:
-                            img = SystemIcons.Error.ToBitmap();
-                            break;
-                        case EventLogEntryType.SuccessAudit:
-                            img = SystemIcons.Question.ToBitmap();
-                            break;
-                    }
-                    dgEventLog.Rows.Add(img, entry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), entry.Message);
-                }
-            }
-        }
-
-        private void setUpgradeButton()
-        {
-            if (dkimSignerAvailable == null)
-            {
-                btUpgrade.Text = "Install from .zip";
-                btUpgrade.Enabled = true;
-                return;
-            }
-            if (dkimSignerInstalled == null)
-            {
-                btUpgrade.Text = "Install";
-                btUpgrade.Enabled = true;
-            }
-            else
-            {
-                if (dkimSignerInstalled < dkimSignerAvailable.Version)
-                {
-                    btUpgrade.Text = "Upgrade";
-                    btUpgrade.Enabled = true;
-                }
-                else if (dkimSignerInstalled == dkimSignerAvailable.Version)
-                {
-                    btUpgrade.Text = "Reinstall";
-                    btUpgrade.Enabled = true;
-                }
-                else
-                {
-                    btUpgrade.Text = "Upgrade";
-                    btUpgrade.Enabled = false;
-                }
-            }
-
-        }
-
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
@@ -860,47 +693,42 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btStartTransportService_Click(object sender, EventArgs e)
+        private void genericTransportService_Click(object sender, EventArgs e)
         {
-            this.thTransportServiceOperation = new Thread(new ThreadStart(this.StartTransportServiceSafe));
-
-            try
+            switch(((Button)sender).Name)
             {
-                this.thTransportServiceOperation.Start();
+                case "btStartTransportService":
+                    this.thTransportServiceOperation = new Thread(() => this.DoTransportServiceAction(TransportServiceAction.Start));
+                    break;
+                case "btStopTransportService":
+                    this.thTransportServiceOperation = new Thread(() => this.DoTransportServiceAction(TransportServiceAction.Stop));
+                    break;
+                case "btRestartTransportService":
+                    this.thTransportServiceOperation = new Thread(() => this.DoTransportServiceAction(TransportServiceAction.Restart));
+                    break;
             }
-            catch (ThreadAbortException) { }
+
+            if (this.thTransportServiceOperation != null)
+            {
+                try { this.thTransportServiceOperation.Start(); } catch (ThreadAbortException) { }
+            }
         }
 
-        /// <summary>
-        /// Button "stop" Microsoft Exchange Transport Service have been click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btStopTransportService_Click(object sender, EventArgs e)
+        private void btUpgrade_Click(object sender, EventArgs e)
         {
-            this.thTransportServiceOperation = new Thread(new ThreadStart(this.StopTransportServiceSafe));
-
-            try
+            if (this.btUpgrade.Text == "Upgrade" || this.btUpgrade.Text == "Reinstall" ? MessageBox.Show("Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
-                this.thTransportServiceOperation.Start();
-            }
-            catch (ThreadAbortException) { }
-        }
+                try
+                {
+                    System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, this.btUpgrade.Text == "Install" ? "--install" : ("--upgrade \"" + dkimSignerAvailable.ZipballUrl + "\""));
 
-        /// <summary>
-        /// Button "restart" Microsoft Exchange Transport Service have been click
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btRestartTransportService_Click(object sender, EventArgs e)
-        {
-            this.thTransportServiceOperation = new Thread(new ThreadStart(this.RestartTransportServiceSafe));
-
-            try
-            {
-                this.thTransportServiceOperation.Start();
+                    this.Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            catch (ThreadAbortException) { }
         }
 
         /// <summary>
@@ -1185,7 +1013,6 @@ namespace Configuration.DkimSigner
             }
         }
 
-
         /// <summary>
         /// Button "Refresh" on EventLog TabPage
         /// </summary>
@@ -1193,22 +1020,51 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btEventLogRefresh_Click(object sender, EventArgs e)
         {
-            refreshEventLog();
-        }
-
-        private void btUpgrade_Click(object sender, EventArgs e)
-        {
-            if (this.btUpgrade.Text == "Upgrade" || this.btUpgrade.Text == "Reinstall" ? MessageBox.Show("Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
+            int iCount = 0;
+            
+            dgEventLog.Rows.Clear();
+            
+            if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
             {
-                try
-                {
-                    System.Diagnostics.Process.Start(System.Reflection.Assembly.GetExecutingAssembly().Location, this.btUpgrade.Text == "Install" ? "--install" : ("--upgrade \"" + dkimSignerAvailable.ZipballUrl + "\""));
+                EventLog oLogger = new EventLog();
+                oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
+                
+                IEnumerable<EventLogEntry> oReversed = oLogger.Entries.Cast<EventLogEntry>().Reverse<EventLogEntry>();
 
-                    this.Close();
-                }
-                catch (Exception ex)
+                foreach (EventLogEntry oEntry in oReversed)
                 {
-                    MessageBox.Show("Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (oEntry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
+                        continue;
+                    
+                    iCount++;
+                    
+                    if (iCount > 100)
+                    {
+                        dgEventLog.Rows.Add(SystemIcons.Information.ToBitmap(), "-----", "Maximum number of 100 Log entries shown");
+                        break;
+                    }
+                    
+                    Image oImg = null;
+                    switch (oEntry.EntryType)
+                    {
+                        case EventLogEntryType.Information:
+                            oImg = SystemIcons.Information.ToBitmap();
+                            break;
+                        case EventLogEntryType.Warning:
+                            oImg = SystemIcons.Warning.ToBitmap();
+                            break;
+                        case EventLogEntryType.Error:
+                            oImg = SystemIcons.Error.ToBitmap();
+                            break;
+                        case EventLogEntryType.FailureAudit:
+                            oImg = SystemIcons.Error.ToBitmap();
+                            break;
+                        case EventLogEntryType.SuccessAudit:
+                            oImg = SystemIcons.Question.ToBitmap();
+                            break;
+                    }
+
+                    dgEventLog.Rows.Add(oImg, oEntry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), oEntry.Message);
                 }
             }
         }
