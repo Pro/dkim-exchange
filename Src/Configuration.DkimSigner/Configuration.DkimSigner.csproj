@@ -213,6 +213,8 @@
     <Compile Include="RSA\AsnKeyParser.cs" />
     <Compile Include="RSA\BerDecodeError.cs" />
     <Compile Include="RSA\BigInteger.cs" />
+    <Compile Include="RSA\RSACryptoFormat.cs" />
+    <Compile Include="RSA\RSACryptoHelper.cs" />
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>

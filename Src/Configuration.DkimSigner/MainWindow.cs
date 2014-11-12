@@ -21,6 +21,7 @@ namespace Configuration.DkimSigner
     public partial class MainWindow : Form
     {
         private enum TransportServiceAction { Start, Stop, Restart };
+        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled };
 
         /**********************************************************/
         /*********************** Variables ************************/
@@ -30,7 +31,7 @@ namespace Configuration.DkimSigner
         private Version dkimSignerInstalled = null;
         private Release dkimSignerAvailable = null;
 
-        private IDictionary<string, Thread> athRunning = null;
+        private IDictionary<ThreadIdentifier, Thread> athRunning = null;
         private Thread thTransportServiceOperation = null;
         private System.Threading.Timer tiTransportServiceStatus = null;
 
@@ -44,7 +45,7 @@ namespace Configuration.DkimSigner
         {           
             this.InitializeComponent();
 
-            this.athRunning = new Dictionary<string, Thread>();
+            this.athRunning = new Dictionary<ThreadIdentifier, Thread>();
 
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
@@ -68,21 +69,21 @@ namespace Configuration.DkimSigner
         {
             // Get Exchange version installed
             this.txtExchangeInstalled.Text = "Loading ...";
-            Thread oTh1 = new Thread(() => { this.CheckExchangeInstalled(); this.athRunning.Remove("ExchangeInstalled"); });
-            this.athRunning.Add("ExchangeInstalled", oTh1);
+            Thread oTh1 = new Thread(() => { this.CheckExchangeInstalled(); this.athRunning.Remove(ThreadIdentifier.ExchangeInstalled); });
+            this.athRunning.Add(ThreadIdentifier.ExchangeInstalled, oTh1);
             try { oTh1.Start(); } catch (ThreadAbortException) { }
 
             // Get Exchange.DkimSigner version available
             this.txtDkimSignerAvailable.Text = "Loading ...";
-            Thread oTh3 = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove("DkimSignerAvailable"); });
-            this.athRunning.Add("DkimSignerAvailable", oTh3);
+            Thread oTh3 = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); });
+            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh3);
             try { oTh3.Start(); }
             catch (ThreadAbortException) { }
 
             // Get Exchange.DkimSigner version installed
             this.txtDkimSignerInstalled.Text = "Loading ...";
-            Thread oTh2 = new Thread(() => { this.CheckDkimSignerInstalled(); this.athRunning.Remove("DkimSignerInstalled"); });
-            this.athRunning.Add("DkimSignerInstalled", oTh2);
+            Thread oTh2 = new Thread(() => { this.CheckDkimSignerInstalled(); this.athRunning.Remove(ThreadIdentifier.DkimSignerInstalled); });
+            this.athRunning.Add(ThreadIdentifier.DkimSignerInstalled, oTh2);
             try { oTh2.Start(); } catch (ThreadAbortException) { }
 
             // Update transport service status each second
@@ -112,7 +113,7 @@ namespace Configuration.DkimSigner
                 }
 
                 // IF any thread running, we stop them before exit
-                foreach(KeyValuePair<string,Thread> oTemp in this.athRunning)
+                foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
                 {
                     Thread oTh = oTemp.Value;
                     if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
@@ -158,15 +159,15 @@ namespace Configuration.DkimSigner
         {
             // Kill current running thread
             Thread oTemp;
-            if (this.athRunning.TryGetValue("DkimSignerAvailable", out oTemp))
+            if (this.athRunning.TryGetValue(ThreadIdentifier.DkimSignerAvailable, out oTemp))
             {
                 oTemp.Abort();
             }
 
             // Get Exchange.DkimSigner version available
             this.txtDkimSignerAvailable.Text = "Loading ...";
-            Thread oTh = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove("DkimSignerAvailable"); });
-            this.athRunning.Add("DkimSignerAvailable", oTh);
+            Thread oTh = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); });
+            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh);
             try { oTh.Start(); } catch (ThreadAbortException) { }
         }
 
@@ -892,8 +893,8 @@ namespace Configuration.DkimSigner
                 CSInteropKeys.AsnKeyBuilder.AsnMessage oPrivateEncoded = CSInteropKeys.AsnKeyBuilder.PrivateKeyToPKCS8(oProvider.ExportParameters(true));
 
                 File.WriteAllBytes(oFileDialog.FileName, Encoding.ASCII.GetBytes(oProvider.ToXmlString(true)));
-                File.WriteAllText(Path.GetFileNameWithoutExtension(oFileDialog.FileName) + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
-                File.WriteAllText(Path.GetFileNameWithoutExtension(oFileDialog.FileName) + ".pem", "-----BEGIN RSA PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END RSA PRIVATE KEY-----");
+                File.WriteAllText(oFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
+                File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN RSA PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END RSA PRIVATE KEY-----");
 
                 this.UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
                 this.SetDomainKeyPath(oFileDialog.FileName);

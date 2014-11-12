@@ -48,7 +48,7 @@ namespace ConfigurationSettings
 
             if (String.IsNullOrEmpty(path) || !File.Exists(path))
             {
-                throw new FileNotFoundException("The private key for domain " + Domain + " not found: " + path);
+                throw new FileNotFoundException("The private key for domain " + Domain + " wasn't found: " + path);
             }
 
             try
