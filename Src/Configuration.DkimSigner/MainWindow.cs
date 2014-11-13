@@ -502,6 +502,7 @@ namespace Configuration.DkimSigner
         private void LoadDkimSignerConfig()
         {
             this.oConfig = new Settings();
+            this.oConfig.InitHeadersToSign();
 
             if (!this.oConfig.Load(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
             {

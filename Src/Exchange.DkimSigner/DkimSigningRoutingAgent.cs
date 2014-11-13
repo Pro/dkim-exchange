@@ -25,7 +25,10 @@ namespace Exchange.DkimSigner
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
         public DkimSigningRoutingAgent()
         {
-            this.dkimSigner = new DkimSigner(new Settings());
+            Settings config = new Settings();
+            config.InitHeadersToSign();
+
+            this.dkimSigner = new DkimSigner(config);
 
             this.LoadSettings();
             this.WatchSettings();
@@ -36,6 +39,7 @@ namespace Exchange.DkimSigner
         private void LoadSettings()
         {
             Settings config = new Settings();
+            config.InitHeadersToSign();
 
             if(config.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
             {
