@@ -612,8 +612,12 @@ namespace Configuration.DkimSigner
                 {
                     sPubKeyPath = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys", sPubKeyPath);
                 }
+                
+                if (File.Exists(Path.ChangeExtension(sPubKeyPath, ".pub")))
+                    sPubKeyPath = Path.ChangeExtension(sPubKeyPath, ".pub");
+                else
+                    sPubKeyPath += ".pub";
 
-                sPubKeyPath += ".pub";
                 if (File.Exists(sPubKeyPath))
                 {
                     string[] asContents = File.ReadAllLines(sPubKeyPath);
