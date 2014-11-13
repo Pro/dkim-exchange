@@ -26,7 +26,15 @@ namespace Configuration.DkimSigner.Exchange
         {
             string sReturn = "Not installed";
 
-            string sResult = PowerShellHelper.ExecPowerShellCommand("Get-ExchangeServer -Identity " + Dns.GetHostName() + " | fl AdminDisplayVersion", true);
+            string sResult;
+            try
+            {
+                sResult = PowerShellHelper.ExecPowerShellCommand("Get-ExchangeServer -Identity " + Dns.GetHostName() + " | fl AdminDisplayVersion", true);
+            }
+            catch (Exception ex)
+            {
+                throw new ExchangeServerException(ex.Message);
+            }
 
             if (sResult != null)
             {
