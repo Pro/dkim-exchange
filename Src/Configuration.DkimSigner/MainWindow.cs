@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -21,7 +21,7 @@ namespace Configuration.DkimSigner
     public partial class MainWindow : Form
     {
         private enum TransportServiceAction { Start, Stop, Restart };
-        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled };
+        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled, TransportServiceAction };
 
         /**********************************************************/
         /*********************** Variables ************************/
@@ -32,7 +32,6 @@ namespace Configuration.DkimSigner
         private Release dkimSignerAvailable = null;
 
         private IDictionary<ThreadIdentifier, Thread> athRunning = null;
-        private Thread thTransportServiceOperation = null;
         private System.Threading.Timer tiTransportServiceStatus = null;
 
         private bool bDataUpdated = false;
@@ -75,16 +74,16 @@ namespace Configuration.DkimSigner
 
             // Get Exchange.DkimSigner version available
             this.txtDkimSignerAvailable.Text = "Loading ...";
-            Thread oTh3 = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); });
-            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh3);
-            try { oTh3.Start(); }
+            Thread oTh2 = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); });
+            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh2);
+            try { oTh2.Start(); }
             catch (ThreadAbortException) { }
 
             // Get Exchange.DkimSigner version installed
             this.txtDkimSignerInstalled.Text = "Loading ...";
-            Thread oTh2 = new Thread(() => { this.CheckDkimSignerInstalled(); this.athRunning.Remove(ThreadIdentifier.DkimSignerInstalled); });
-            this.athRunning.Add(ThreadIdentifier.DkimSignerInstalled, oTh2);
-            try { oTh2.Start(); } catch (ThreadAbortException) { }
+            Thread oTh3 = new Thread(() => { this.CheckDkimSignerInstalled(); this.athRunning.Remove(ThreadIdentifier.DkimSignerInstalled); });
+            this.athRunning.Add(ThreadIdentifier.DkimSignerInstalled, oTh3);
+            try { oTh3.Start(); } catch (ThreadAbortException) { }
 
             // Update transport service status each second
             this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
@@ -107,6 +106,8 @@ namespace Configuration.DkimSigner
             }
             else
             {
+		this.Hide();
+
                 if (this.tiTransportServiceStatus != null)
                 {
                     this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
@@ -118,17 +119,12 @@ namespace Configuration.DkimSigner
                     Thread oTh = oTemp.Value;
                     if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
                     {
-                        oTh.Abort();
+			// Thread Abort generate exception so we should use Join
+                        oTh.Join();
                     }
-
-                    this.athRunning = null;
                 }
 
-                if (this.thTransportServiceOperation != null && this.thTransportServiceOperation.ThreadState == System.Threading.ThreadState.Running)
-                {
-                    this.thTransportServiceOperation.Join();
-                    this.thTransportServiceOperation = null;
-                }
+		this.athRunning = null;
             }
         }
 
@@ -161,7 +157,7 @@ namespace Configuration.DkimSigner
             Thread oTemp;
             if (this.athRunning.TryGetValue(ThreadIdentifier.DkimSignerAvailable, out oTemp))
             {
-                oTemp.Abort();
+                oTemp.Join();
             }
 
             // Get Exchange.DkimSigner version available
@@ -298,12 +294,12 @@ namespace Configuration.DkimSigner
             // Uptade Microsft Exchange Transport Service stuatus
             if (version != null && version != "Not installed")
             {
-                this.btConfigureTransportService.Invoke(new Action(() => this.btConfigureTransportService.Enabled = true));
+                this.btConfigureTransportService.BeginInvoke(new Action(() => this.btConfigureTransportService.Enabled = true));
             }
             else
             {
-                this.txtExchangeStatus.Invoke(new Action(() => this.txtExchangeStatus.Text = "Unavailable"));
-                this.btConfigureTransportService.Invoke(new Action(() => this.btConfigureTransportService.Enabled = false));
+                this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = "Unavailable"));
+                this.btConfigureTransportService.BeginInvoke(new Action(() => this.btConfigureTransportService.Enabled = false));
             }
         }
 
@@ -334,8 +330,8 @@ namespace Configuration.DkimSigner
                 catch (Exception) { }
             }
 
-            this.txtDkimSignerInstalled.Invoke(new Action(() => this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed")));
-            this.btConfigureTransportService.Invoke(new Action(() => this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null)));
+            this.txtDkimSignerInstalled.BeginInvoke(new Action(() => this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed")));
+            this.btConfigureTransportService.BeginInvoke(new Action(() => this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null)));
             
             this.dkimSignerInstalled = oDkimSignerInstalled;
 
@@ -380,8 +376,8 @@ namespace Configuration.DkimSigner
                changelog = oDkimSignerAvailable.Body;
             }
 
-            this.txtDkimSignerAvailable.Invoke(new Action(() => this.txtDkimSignerAvailable.Text = version));
-            this.txtChangelog.Invoke(new Action(() => this.txtChangelog.Text = changelog));
+            this.txtDkimSignerAvailable.BeginInvoke(new Action(() => this.txtDkimSignerAvailable.Text = version));
+            this.txtChangelog.BeginInvoke(new Action(() => this.txtChangelog.Text = changelog));
 
             this.dkimSignerAvailable = oDkimSignerAvailable;
 
@@ -431,8 +427,8 @@ namespace Configuration.DkimSigner
             //    }
             //}
 
-            this.btUpgrade.Invoke(new Action(() => this.btUpgrade.Text = texte));
-            this.btUpgrade.Invoke(new Action(() => this.btUpgrade.Enabled = status));
+            this.btUpgrade.BeginInvoke(new Action(() => this.btUpgrade.Text = texte));
+            this.btUpgrade.BeginInvoke(new Action(() => this.btUpgrade.Enabled = status));
         }
 
         private void DoTransportServiceAction(TransportServiceAction oAction)
@@ -696,22 +692,25 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void genericTransportService_Click(object sender, EventArgs e)
         {
+            Thread oTh = null;
+
             switch(((Button)sender).Name)
             {
                 case "btStartTransportService":
-                    this.thTransportServiceOperation = new Thread(() => this.DoTransportServiceAction(TransportServiceAction.Start));
+                    oTh = new Thread(() => { this.DoTransportServiceAction(TransportServiceAction.Start); this.athRunning.Remove(ThreadIdentifier.TransportServiceAction); });
                     break;
                 case "btStopTransportService":
-                    this.thTransportServiceOperation = new Thread(() => this.DoTransportServiceAction(TransportServiceAction.Stop));
+                    oTh = new Thread(() => { this.DoTransportServiceAction(TransportServiceAction.Stop); this.athRunning.Remove(ThreadIdentifier.TransportServiceAction); });
                     break;
                 case "btRestartTransportService":
-                    this.thTransportServiceOperation = new Thread(() => this.DoTransportServiceAction(TransportServiceAction.Restart));
+                    oTh = new Thread(() => { this.DoTransportServiceAction(TransportServiceAction.Restart); this.athRunning.Remove(ThreadIdentifier.TransportServiceAction); });
                     break;
             }
 
-            if (this.thTransportServiceOperation != null)
+            if (oTh != null)
             {
-                try { this.thTransportServiceOperation.Start(); } catch (ThreadAbortException) { }
+                this.athRunning.Add(ThreadIdentifier.TransportServiceAction, oTh);
+                try { oTh.Start(); } catch (ThreadAbortException) { }
             }
         }
 
