@@ -116,16 +116,17 @@ namespace Exchange.DkimSigner
             // which means we shouldn't bother signing it.
             if (!mailItem.Message.IsSystemMessage && mailItem.Message.TnefPart == null)
             {
+                /* Check if we have a valid From address */
+                if (mailItem.FromAddress == null || mailItem.FromAddress.DomainPart == null)
+                {
+                    Logger.LogWarning("Invalid from address: '" + mailItem.FromAddress + "'. Not signing email.");
+                    return;
+                }
+
                  /* Check if DKIM is defined for the current domain */
                 DomainElement domain = null;
                 foreach (DomainElement e in this.dkimSigner.GetDomains())
-                {
-                    if (mailItem.FromAddress == null || mailItem.FromAddress.DomainPart == null)
-                    {
-                        Logger.LogWarning("Invalid from address: '" + mailItem.FromAddress + "'. Not signing email.");
-                        continue;
-                    }
-                    
+                {                  
                     if (mailItem.FromAddress.DomainPart
                                             .ToUpperInvariant()
                                             .Equals(e.Domain.ToUpperInvariant()))
