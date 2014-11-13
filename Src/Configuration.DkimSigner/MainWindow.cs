@@ -270,7 +270,7 @@ namespace Configuration.DkimSigner
                 this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
             }
 
-            this.txtExchangeStatus.Invoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
+            this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
         }
 
         /// <summary>
@@ -284,7 +284,7 @@ namespace Configuration.DkimSigner
             try
             {
                 version = ExchangeServer.GetInstalledVersion();
-                this.txtExchangeInstalled.Invoke(new Action(() => this.txtExchangeInstalled.Text = version));
+                this.txtExchangeInstalled.BeginInvoke(new Action(() => this.txtExchangeInstalled.Text = version));
             }
             catch (ExchangeServerException e)
             {
