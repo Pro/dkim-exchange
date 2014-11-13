@@ -20,17 +20,15 @@ namespace ConfigurationSettings
 
         public Settings()
         {
-            Loglevel = 3;
-            
-            SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
-            HeaderCanonicalization = DkimCanonicalizationKind.Simple;
-            BodyCanonicalization = DkimCanonicalizationKind.Simple;
-            
-            // Don't change because of serializer problem
-            // this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
-            HeadersToSign = new List<string>();
-            
-            Domains = new List<DomainElement>();
+            this.Loglevel = 3;
+
+            this.SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
+            this.HeaderCanonicalization = DkimCanonicalizationKind.Simple;
+            this.BodyCanonicalization = DkimCanonicalizationKind.Simple;
+
+            this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
+
+            this.Domains = new List<DomainElement>();
         }
 
         /// <summary>
@@ -51,7 +49,11 @@ namespace ConfigurationSettings
                     this.SigningAlgorithm = settings.SigningAlgorithm;
                     this.HeaderCanonicalization = settings.HeaderCanonicalization;
                     this.BodyCanonicalization = settings.BodyCanonicalization;
+
+                    this.HeadersToSign.Clear();
                     this.HeadersToSign = settings.HeadersToSign;
+
+                    this.Domains.Clear();
                     this.Domains = settings.Domains;
 
                     return true;
