@@ -9,11 +9,6 @@ namespace Exchange.DkimSigner
     public sealed class DkimSigningRoutingAgentFactory : RoutingAgentFactory
     {
         /// <summary>
-        /// The object that knows how to sign messages.
-        /// </summary>
-        private DkimSigner dkimSigner;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgentFactory"/> class.
         /// </summary>
         public DkimSigningRoutingAgentFactory() {}
