@@ -272,6 +272,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RSA\RSACryptoFormat.cs" />
+    <Compile Include="RSA\RSACryptoHelper.cs" />
+    <Compile Include="RSA\RSACryptoHelperException.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">

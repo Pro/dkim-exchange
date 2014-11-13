@@ -2,6 +2,7 @@
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using DkimSigner.RSA;
 
 namespace ConfigurationSettings
 {
@@ -44,7 +45,7 @@ namespace ConfigurationSettings
         /// <returns></returns>
         public bool InitElement(string basePath)
         {
-            string path = Path.IsPathRooted(PrivateKeyFile) ? @"keys\" + PrivateKeyFile : Path.Combine(basePath, @"keys\" + PrivateKeyFile);
+            string path = Path.IsPathRooted(PrivateKeyFile) ? PrivateKeyFile : Path.Combine(basePath, @"keys\" + PrivateKeyFile);
 
             if (String.IsNullOrEmpty(path) || !File.Exists(path))
             {
@@ -53,13 +54,15 @@ namespace ConfigurationSettings
 
             try
             {
-                string xmlkey = File.ReadAllText(path, Encoding.ASCII).Trim();
-                cryptoProvider = new RSACryptoServiceProvider();
-                cryptoProvider.FromXmlString(xmlkey);                    
+                cryptoProvider = RSACryptoHelper.GetProviderFromKeyFile(path);
             }
-            catch(Exception)
+            catch (Exception e)
             {
-                throw new CryptographicException("The format of the private key for domain " + Domain + " isn't valid. The private key should be in a XML format.");
+                throw new CryptographicException("Couldn't load the key '" + path + "' for domain " + Domain + ". Error message: " + e.Message);
+            }
+            if (cryptoProvider == null)
+            {
+                throw new RSACryptoHelperException("Couldn't load the key '" + path + "' for domain " + Domain + ". Invalid key format or broken file");
             }
 
             return true;

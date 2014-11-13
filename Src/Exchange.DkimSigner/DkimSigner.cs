@@ -75,9 +75,16 @@ namespace Exchange.DkimSigner
             {
                 try
                 {
-                    if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                    try
                     {
-                        this.domains.Add(domainElement);
+                        if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                        {
+                            this.domains.Add(domainElement);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogError(e.Message);
                     }
                 }
                 catch (FileNotFoundException e)

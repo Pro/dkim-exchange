@@ -12,15 +12,32 @@ namespace DkimSigner.RSA
     public static class RSACryptoHelper
     {
         /// <summary>
-        /// The header for an RSA private key in PEM format.
+        /// The header for an RSA private key in OpenSSL PEM format.
         /// </summary>
-        private const string PemRsaPrivateKeyHeader = "-----BEGIN RSA PRIVATE KEY-----";
+        private const string PemSSLPrivateKeyHeader = "-----BEGIN RSA PRIVATE KEY-----";
 
         /// <summary>
-        /// The footer for an RSA private key in PEM format.
+        /// The footer for an RSA private key in OpenSSL PEM format.
         /// </summary>
-        private const string PemRsaPrivateKeyFooter = "-----END RSA PRIVATE KEY-----";
+        private const string PemSSLPrivateKeyFooter = "-----END RSA PRIVATE KEY-----";
 
+
+        /// <summary>
+        /// The header for an RSA private key in PKCS #8 PEM format.
+        /// </summary>
+        private const string PemP8PrivateKeyHeader = "-----BEGIN PRIVATE KEY-----";
+
+        /// <summary>
+        /// The footer for an RSA private key in PKCS #8 PEM format.
+        /// </summary>
+        private const string PemP8PrivateKeyFooter = "-----END PRIVATE KEY-----";
+
+
+        /// <summary>
+        /// Detects the RSACryptoFormat from the given byte encoded private key.
+        /// </summary>
+        /// <param name="encodedKey"></param>
+        /// <returns></returns>
         public static RSACryptoFormat GetFormatFromEncodedRsaPrivateKey(byte[] encodedKey)
         {
             RSACryptoFormat format;
@@ -54,7 +71,7 @@ namespace DkimSigner.RSA
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException("Unknown key format. (" + ex.Message + ")", "encodedKey", ex);
+                        throw new RSACryptoHelperException("Unknown key format. (" + ex.Message + ")", "encodedKey", ex);
                     }
                 }
             }
@@ -87,18 +104,122 @@ namespace DkimSigner.RSA
         public static RSACryptoServiceProvider GetProviderFromPemEncodedRsaPrivateKey(string encodedKey)
         {
             encodedKey = encodedKey.Trim();
-
-            if (!encodedKey.StartsWith(PemRsaPrivateKeyHeader, StringComparison.Ordinal) ||
-                !encodedKey.EndsWith(PemRsaPrivateKeyFooter, StringComparison.Ordinal))
+            
+            if (encodedKey.StartsWith(PemSSLPrivateKeyHeader, StringComparison.Ordinal) &&
+                encodedKey.EndsWith(PemSSLPrivateKeyFooter, StringComparison.Ordinal))
             {
-                throw new ArgumentException("Invalid PEM format for key. The key needs to start with '" + PemRsaPrivateKeyHeader + "' and end with '" + PemRsaPrivateKeyFooter + "'", "encodedKey");
+                encodedKey = encodedKey.Substring(PemSSLPrivateKeyHeader.Length, encodedKey.Length - PemSSLPrivateKeyFooter.Length - PemSSLPrivateKeyHeader.Length);
+                //remove any newlines
+                encodedKey = encodedKey.Replace("\r", "").Replace("\n", "");
+
+                //the encodedKey is now in base64 encoded DER format
+                return GetProviderFromDerEncodedRsaPrivateKey(Convert.FromBase64String(encodedKey.Trim()));
+            } else if (encodedKey.StartsWith(PemP8PrivateKeyHeader, StringComparison.Ordinal) &&
+             encodedKey.EndsWith(PemP8PrivateKeyFooter, StringComparison.Ordinal))
+            {
+                encodedKey = encodedKey.Substring(PemP8PrivateKeyHeader.Length, encodedKey.Length - PemP8PrivateKeyFooter.Length - PemP8PrivateKeyHeader.Length);
+                //remove any newlines
+                encodedKey = encodedKey.Replace("\r", "").Replace("\n", "");
+
+                //the encodedKey is now in base64 encoded PKCS8 format
+                return GetProviderFromPKCS8PrivateKey(Convert.FromBase64String(encodedKey.Trim()));
+            }
+            else 
+                throw new RSACryptoHelperException("Invalid PEM format for key. The key needs to start with '" + PemSSLPrivateKeyHeader + "' and end with '" + PemSSLPrivateKeyFooter + "' or start with '" + PemP8PrivateKeyHeader + "' and end with '" + PemP8PrivateKeyFooter + "'", "encodedKey");
+
+        }
+
+        /// <summary>
+        /// Attempts to get an instance of an RSACryptoServiceProvider from a DER-encoded
+        /// RSA private key in PKCS #8 format. It's ripped pretty shamelessly from
+        /// http://www.jensign.com/opensslkey/opensslkey.cs.
+        /// </summary>
+        /// <param name="encodedKey">The DER-encoded key.</param>
+        /// <returns>The RSACryptoServiceProvider instance, which the caller is
+        /// responsible for disposing.</returns>
+        public static RSACryptoServiceProvider GetProviderFromPKCS8PrivateKey(byte[] pkcs8)
+        {
+            // encoded OID sequence for  PKCS #1 rsaEncryption szOID_RSA_RSA = "1.2.840.113549.1.1.1"
+            // this byte[] includes the sequence byte and terminal encoded null 
+            byte[] SeqOID = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
+            byte[] seq = new byte[15];
+            // ---------  Set up stream to read the asn.1 encoded SubjectPublicKeyInfo blob  ------
+            MemoryStream mem = new MemoryStream(pkcs8);
+            int lenstream = (int)mem.Length;
+            BinaryReader binr = new BinaryReader(mem);    //wrap Memory Stream with BinaryReader for easy reading
+            byte bt = 0;
+            ushort twobytes = 0;
+
+            try
+            {
+
+                twobytes = binr.ReadUInt16();
+                if (twobytes == 0x8130)	//data read as little endian order (actual data order for Sequence is 30 81)
+                    binr.ReadByte();	//advance 1 byte
+                else if (twobytes == 0x8230)
+                    binr.ReadInt16();	//advance 2 bytes
+                else
+                    return null;
+
+
+                bt = binr.ReadByte();
+                if (bt != 0x02)
+                    return null;
+
+                twobytes = binr.ReadUInt16();
+
+                if (twobytes != 0x0001)
+                    return null;
+
+                seq = binr.ReadBytes(15);		//read the Sequence OID
+                if (!CompareBytearrays(seq, SeqOID))	//make sure Sequence for OID is correct
+                    return null;
+
+                bt = binr.ReadByte();
+                if (bt != 0x04)	//expect an Octet string 
+                    return null;
+
+                bt = binr.ReadByte();		//read next byte, or next 2 bytes is  0x81 or 0x82; otherwise bt is the byte count
+                if (bt == 0x81)
+                    binr.ReadByte();
+                else
+                    if (bt == 0x82)
+                        binr.ReadUInt16();
+                //------ at this stage, the remaining sequence should be the RSA private key
+
+                byte[] rsaprivkey = binr.ReadBytes((int)(lenstream - mem.Position));
+                return GetProviderFromDerEncodedRsaPrivateKey(rsaprivkey);
             }
 
-            encodedKey = encodedKey.Substring(
-                PemRsaPrivateKeyHeader.Length,
-                encodedKey.Length - PemRsaPrivateKeyFooter.Length - PemRsaPrivateKeyHeader.Length);
+            catch (Exception ex)
+            {
+                throw new RSACryptoHelperException("Invalid PEM PKCS #8 format for key. (" + ex.Message + ")", "encodedKey", ex);
+            }
 
-            return GetProviderFromDerEncodedRsaPrivateKey(Convert.FromBase64String(encodedKey.Trim()));
+            finally { binr.Close(); }
+
+        }
+
+        /// <summary>
+        /// Compares two byte arrays and checks if they are equal
+        /// It's ripped pretty shamelessly from
+        /// http://www.jensign.com/opensslkey/opensslkey.cs.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private static bool CompareBytearrays(byte[] a, byte[] b)
+        {
+            if (a.Length != b.Length)
+                return false;
+            int i = 0;
+            foreach (byte c in a)
+            {
+                if (c != b[i])
+                    return false;
+                i++;
+            }
+            return true;
         }
 
         /// <summary>
@@ -187,12 +308,37 @@ namespace DkimSigner.RSA
                     }
                     catch (Exception ex)
                     {
-                        throw new ArgumentException("Invalid DER format for key. (" + ex.Message + ")", "encodedKey", ex);
+                        throw new RSACryptoHelperException("Invalid DER format for key. (" + ex.Message + ")", "encodedKey", ex);
                     }
                 }
             }
 
             return provider;
+        }
+
+        /// <summary>
+        /// Reads the given private key file and parses the containing key into a RSACryptoServiceProvider.
+        /// Supported formats are XML, PEM, DER.
+        /// 
+        /// Throws a RSACryptoHelperException if the key couldn't be loaded.
+        /// </summary>
+        /// <param name="pathToFile">Path to the key file</param>
+        /// <returns>the parsed key</returns>
+        public static RSACryptoServiceProvider GetProviderFromKeyFile(string pathToFile)
+        {
+            byte[] fileBytes = File.ReadAllBytes(pathToFile);
+            switch (GetFormatFromEncodedRsaPrivateKey(fileBytes))
+            {
+                case RSACryptoFormat.DER:
+                    return GetProviderFromDerEncodedRsaPrivateKey(fileBytes);
+                case RSACryptoFormat.PEM:
+                    return GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                case RSACryptoFormat.XML:
+                    return GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                case RSACryptoFormat.UNKNOWN:
+                default:
+                    throw new RSACryptoHelperException("Couldn't identify key format for '" + pathToFile + "'. It should be one of the following RSA formats: XML, PEM, DER");
+            }
         }
 
         /// <summary>
@@ -216,7 +362,7 @@ namespace DkimSigner.RSA
             }
             catch (Exception ex)
             {
-                throw new ArgumentException("Invalid XML format for key. (" + ex.Message + ")", "encodedKey", ex);
+                throw new RSACryptoHelperException("Invalid XML format for key. (" + ex.Message + ")", "encodedKey", ex);
             }
 
             return provider;

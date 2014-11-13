@@ -93,6 +93,15 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
       <Link>Configuration\Settings.cs</Link>
     </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
+      <Link>RSA\RSACryptoFormat.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
+      <Link>RSA\RSACryptoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelperException.cs">
+      <Link>RSA\RSACryptoHelperException.cs</Link>
+    </Compile>
     <Compile Include="ExchangeTransportServiceWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,8 +222,6 @@
     <Compile Include="RSA\AsnKeyParser.cs" />
     <Compile Include="RSA\BerDecodeError.cs" />
     <Compile Include="RSA\BigInteger.cs" />
-    <Compile Include="RSA\RSACryptoFormat.cs" />
-    <Compile Include="RSA\RSACryptoHelper.cs" />
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>

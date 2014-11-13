@@ -894,7 +894,7 @@ namespace Configuration.DkimSigner
 
                 File.WriteAllBytes(oFileDialog.FileName, Encoding.ASCII.GetBytes(oProvider.ToXmlString(true)));
                 File.WriteAllText(oFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
-                File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN RSA PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END RSA PRIVATE KEY-----");
+                File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END PRIVATE KEY-----");
 
                 this.UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
                 this.SetDomainKeyPath(oFileDialog.FileName);
@@ -990,6 +990,7 @@ namespace Configuration.DkimSigner
                     oCurrentDomain = new DomainElement();
                     bAddToList = true;
                 }
+
 
                 oCurrentDomain.Domain = this.txtDomainName.Text;
                 oCurrentDomain.Selector = this.txtDomainSelector.Text;
