@@ -27,7 +27,6 @@ namespace Configuration.DkimSigner
             // *******************************************************************
             // Load correct Windows form
             // *******************************************************************
-            ExchangeServer oExchange = new ExchangeServer();
             Form oForm = null;
 
             if (Array.IndexOf(asArgv, "--install") >= 0)

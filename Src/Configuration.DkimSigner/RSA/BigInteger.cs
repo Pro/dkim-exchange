@@ -2416,7 +2416,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
     BigInteger t = p_sub1 >> s;
 
-    int bits = thisVal.bitCount();
+    //int bits = thisVal.bitCount();
     BigInteger a = 2;
 
     // b = a^t mod p

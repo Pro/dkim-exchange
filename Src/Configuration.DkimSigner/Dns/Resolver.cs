@@ -384,7 +384,7 @@ namespace Heijden.DNS
 			//System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
 			//sw.Start();
 
-			byte[] responseMessage = new byte[512];
+			//byte[] responseMessage = new byte[512];
 
 			for (int intAttempts = 0; intAttempts < m_Retries; intAttempts++)
 			{
@@ -940,11 +940,11 @@ namespace Heijden.DNS
 				if (strLine.Length == 0)
 					continue;
 				RRRecordStatus status = RRRecordStatus.NAME;
-				string Name="";
+				/*string Name="";
 				string Ttl="";
 				string Class="";
 				string Type="";
-				string Value="";
+				string Value="";*/
 				string strW = "";
 				for (intI = 0; intI < strLine.Length; intI++)
 				{
@@ -955,23 +955,23 @@ namespace Heijden.DNS
 						switch (status)
 						{
 							case RRRecordStatus.NAME:
-								Name = strW;
+								//Name = strW;
 								status = RRRecordStatus.TTL;
 								break;
 							case RRRecordStatus.TTL:
-								Ttl = strW;
+								//Ttl = strW;
 								status = RRRecordStatus.CLASS;
 								break;
 							case RRRecordStatus.CLASS:
-								Class = strW;
+								//Class = strW;
 								status = RRRecordStatus.TYPE;
 								break;
 							case RRRecordStatus.TYPE:
-								Type = strW;
+								//Type = strW;
 								status = RRRecordStatus.VALUE;
 								break;
 							case RRRecordStatus.VALUE:
-								Value = strW;
+								//Value = strW;
 								status = RRRecordStatus.UNKNOWN;
 								break;
 							default:

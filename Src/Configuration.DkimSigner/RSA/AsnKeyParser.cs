@@ -493,7 +493,8 @@ namespace CSInteropKeys
 
       try
       {
-        byte b = GetNextOctet();
+          GetNextOctet();
+          //byte b = GetNextOctet();
 
         int length = GetLength();
         if (length > RemainingBytes())
