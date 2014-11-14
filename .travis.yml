@@ -1,8 +1,12 @@
 language: objective-c
 
 env:
-  global:
-    - EnableNuGetPackageRestore=true
+ global:
+   - EnableNuGetPackageRestore=true
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "kC7O0CWm9h4g+tzCwhIZEGwcdiLrb1/1PijeOKGbIWGuWS7cIksAkj2tRNMgtxxcE9CFQr8W7xDv2YzflCIlqN1nGkFjbyD4CrNg6+V1j0fZjPOQ6ssdBBVPrfrvecsAUJ0/48Tqa9VTkEpZSlwOF/VS1sO2ob36FVyWjtxvG9s="
+
   matrix:
     - MONO_VERSION="3.10.0"
 
@@ -12,3 +16,13 @@ install:
 
 script:
   - xbuild travis.proj
+
+addons:
+  coverity_scan:
+    project:
+      name: "Pro/dkim-exchange"
+      description: "Build submitted via Travis CI"
+    notification_email: git@s.profanter.me
+    build_command_prepend: "msbuild /t:CleanAll travis.proj"
+    build_command:   "msbuild /t:Build travis.proj"
+    branch_pattern: coverity_scan
