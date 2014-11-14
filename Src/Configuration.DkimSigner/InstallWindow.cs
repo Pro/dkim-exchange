@@ -235,7 +235,9 @@ namespace Configuration.DkimSigner
         private bool DownloadFile(string url, string dest)
         {
             DownloadProgressWindow oDpw = new DownloadProgressWindow(url, dest);
-            return (oDpw.ShowDialog() == DialogResult.OK);
+            bool success = (oDpw.ShowDialog() == DialogResult.OK);
+            oDpw.Dispose();
+            return success;
         }
 
         /// <summary>
@@ -647,6 +649,7 @@ namespace Configuration.DkimSigner
                 this.txtVersionFile.Text = oFileDialog.FileName;
                 RefreshInstallButton();
             }
+            oFileDialog.Dispose();
         }
 
         private void btInstall_Click(object sender, EventArgs e)

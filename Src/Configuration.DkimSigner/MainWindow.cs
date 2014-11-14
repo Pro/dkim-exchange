@@ -746,6 +746,7 @@ namespace Configuration.DkimSigner
             ExchangeTransportServiceWindow oEtsw = new ExchangeTransportServiceWindow();
 
             oEtsw.ShowDialog();
+            oEtsw.Dispose();
         }
 
         /// <summary>
@@ -764,6 +765,7 @@ namespace Configuration.DkimSigner
 
                 this.bDataUpdated = true;
             }
+            oHiw.Dispose();
         }
 
         /// <summary>
@@ -902,7 +904,9 @@ namespace Configuration.DkimSigner
 
                 this.UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
                 this.SetDomainKeyPath(oFileDialog.FileName);
+                oProvider.Dispose();
             }
+            oFileDialog.Dispose();
         }
 
         /// <summary>
@@ -924,6 +928,7 @@ namespace Configuration.DkimSigner
                 this.SetDomainKeyPath(oFileDialog.FileName);
                 this.UpdateSuggestedDNS();
             }
+            oFileDialog.Dispose();
         }
 
         /// <summary>

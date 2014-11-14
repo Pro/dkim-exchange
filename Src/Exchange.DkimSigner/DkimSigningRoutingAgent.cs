@@ -20,6 +20,11 @@ namespace Exchange.DkimSigner
         private DkimSigner dkimSigner;
 
         /// <summary>
+        /// Watcher for changes on the settings file causing a reload of the settings when changed
+        /// </summary>
+        private FileSystemWatcher watcher;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
@@ -57,7 +62,7 @@ namespace Exchange.DkimSigner
             string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
 
             // Create a new FileSystemWatcher and set its properties.
-            FileSystemWatcher watcher = new FileSystemWatcher();
+            watcher = new FileSystemWatcher();
             watcher.Path = Path.GetDirectoryName(filename);
 
             // Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
