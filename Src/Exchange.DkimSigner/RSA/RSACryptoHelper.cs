@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -77,20 +77,6 @@ namespace DkimSigner.RSA
             }
 
             return format;
-        }
-
-        public static RSAParameters GenerateRsaParameters()
-        {
-            return new RSACryptoServiceProvider().ExportParameters(true);
-        }
-
-        /// <summary>
-        /// Generate a RSA Private Key in XML format
-        /// </summary>
-        /// <returns>RSA Private Key in a byte array</returns>
-        public static byte[] GenerateXMLEncodedRsaPrivateKey()
-        {
-            return Encoding.ASCII.GetBytes(new RSACryptoServiceProvider().ToXmlString(true));
         }
 
         /// <summary>
