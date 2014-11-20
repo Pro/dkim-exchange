@@ -9,10 +9,15 @@ env:
 
   matrix:
     - MONO_VERSION="3.10.0"
+    - NUNIT_VERSION="2.6.3"
 
 install:
+  # Fetch Mono
   - wget "http://download.mono-project.com/archive/${MONO_VERSION}/macos-10-x86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
   - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
+  # Fetch NUnit
+  - wget -nv --no-check-certificate "https://launchpad.net/nunitv2/trunk/${NUNIT_VERSION}/+download/NUnit-${NUNIT_VERSION}.zip"
+  - unzip -qq "NUnit-${NUNIT_VERSION}.zip"
 
 script:
   - xbuild travis.proj
