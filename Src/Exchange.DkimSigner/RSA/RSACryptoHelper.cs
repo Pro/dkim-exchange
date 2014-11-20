@@ -32,7 +32,6 @@ namespace DkimSigner.RSA
         /// </summary>
         private const string PemP8PrivateKeyFooter = "-----END PRIVATE KEY-----";
 
-
         /// <summary>
         /// Detects the RSACryptoFormat from the given byte encoded private key.
         /// </summary>
@@ -77,6 +76,58 @@ namespace DkimSigner.RSA
             }
 
             return format;
+        }
+
+        /// <summary>
+        /// Reads the given private key file and parses the containing key into a RSACryptoServiceProvider.
+        /// Supported formats are XML, PEM, DER.
+        /// 
+        /// Throws a RSACryptoHelperException if the key couldn't be loaded.
+        /// </summary>
+        /// <param name="pathToFile">Path to the key file</param>
+        /// <returns>the parsed key</returns>
+        public static RSACryptoServiceProvider GetProviderFromKeyFile(string pathToFile)
+        {
+            byte[] fileBytes = File.ReadAllBytes(pathToFile);
+            switch (GetFormatFromEncodedRsaPrivateKey(fileBytes))
+            {
+                case RSACryptoFormat.DER:
+                    return GetProviderFromDerEncodedRsaPrivateKey(fileBytes);
+                case RSACryptoFormat.PEM:
+                    return GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                case RSACryptoFormat.XML:
+                    return GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                case RSACryptoFormat.UNKNOWN:
+                default:
+                    throw new RSACryptoHelperException("Couldn't identify key format for '" + pathToFile + "'. It should be one of the following RSA formats: XML, PEM, DER");
+            }
+        }
+
+        /// <summary>
+        /// Attempts to get an instance of an RSACryptoServiceProvider from a 
+        /// XML-encoded RSA private key, commonly used by OpenSSL. You would think
+        /// that this would be built into the .NET framework, but oh well.
+        /// </summary>
+        /// <param name="encodedKey">The XML-encoded key.</param>
+        /// <returns>The RSACryptoServiceProvider instance, which the caller is
+        /// responsible for disposing.</returns>
+        public static RSACryptoServiceProvider GetProviderFromXmlEncodedRsaPrivateKey(string encodedKey)
+        {
+            encodedKey = encodedKey.Trim();
+
+            RSACryptoServiceProvider provider;
+
+            try
+            {
+                provider = new RSACryptoServiceProvider();
+                provider.FromXmlString(encodedKey);
+            }
+            catch (Exception ex)
+            {
+                throw new RSACryptoHelperException("Invalid XML format for key. (" + ex.Message + ")", "encodedKey", ex);
+            }
+
+            return provider;
         }
 
         /// <summary>
@@ -297,58 +348,6 @@ namespace DkimSigner.RSA
                         throw new RSACryptoHelperException("Invalid DER format for key. (" + ex.Message + ")", "encodedKey", ex);
                     }
                 }
-            }
-
-            return provider;
-        }
-
-        /// <summary>
-        /// Reads the given private key file and parses the containing key into a RSACryptoServiceProvider.
-        /// Supported formats are XML, PEM, DER.
-        /// 
-        /// Throws a RSACryptoHelperException if the key couldn't be loaded.
-        /// </summary>
-        /// <param name="pathToFile">Path to the key file</param>
-        /// <returns>the parsed key</returns>
-        public static RSACryptoServiceProvider GetProviderFromKeyFile(string pathToFile)
-        {
-            byte[] fileBytes = File.ReadAllBytes(pathToFile);
-            switch (GetFormatFromEncodedRsaPrivateKey(fileBytes))
-            {
-                case RSACryptoFormat.DER:
-                    return GetProviderFromDerEncodedRsaPrivateKey(fileBytes);
-                case RSACryptoFormat.PEM:
-                    return GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
-                case RSACryptoFormat.XML:
-                    return GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
-                case RSACryptoFormat.UNKNOWN:
-                default:
-                    throw new RSACryptoHelperException("Couldn't identify key format for '" + pathToFile + "'. It should be one of the following RSA formats: XML, PEM, DER");
-            }
-        }
-
-        /// <summary>
-        /// Attempts to get an instance of an RSACryptoServiceProvider from a 
-        /// XML-encoded RSA private key, commonly used by OpenSSL. You would think
-        /// that this would be built into the .NET framework, but oh well.
-        /// </summary>
-        /// <param name="encodedKey">The XML-encoded key.</param>
-        /// <returns>The RSACryptoServiceProvider instance, which the caller is
-        /// responsible for disposing.</returns>
-        public static RSACryptoServiceProvider GetProviderFromXmlEncodedRsaPrivateKey(string encodedKey)
-        {
-            encodedKey = encodedKey.Trim();
-
-            RSACryptoServiceProvider provider;
-
-            try
-            {
-                provider = new RSACryptoServiceProvider();
-                provider.FromXmlString(encodedKey);
-            }
-            catch (Exception ex)
-            {
-                throw new RSACryptoHelperException("Invalid XML format for key. (" + ex.Message + ")", "encodedKey", ex);
             }
 
             return provider;
