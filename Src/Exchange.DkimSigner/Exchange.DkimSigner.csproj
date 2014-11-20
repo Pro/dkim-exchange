@@ -251,6 +251,9 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU6'">
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU6\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -275,6 +278,10 @@
     <Compile Include="RSA\RSACryptoFormat.cs" />
     <Compile Include="RSA\RSACryptoHelper.cs" />
     <Compile Include="RSA\RSACryptoHelperException.cs" />
+    <Compile Include="Tests\TestRSACryptoHelper.cs" />
+    <Compile Include="Tests\TestDkimSigner.cs" />
+    <Compile Include="Tests\TestDomainKey.cs" />
+    <Compile Include="Tests\TestSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -285,6 +292,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tests\Ressources\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
