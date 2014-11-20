@@ -3,13 +3,13 @@ language: objective-c
 env:
   global:
     - EnableNuGetPackageRestore=true
+    - NUNIT_VERSION="2.6.3"
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
     #   via the "travis encrypt" command using the project repo's public key
     - secure: "kC7O0CWm9h4g+tzCwhIZEGwcdiLrb1/1PijeOKGbIWGuWS7cIksAkj2tRNMgtxxcE9CFQr8W7xDv2YzflCIlqN1nGkFjbyD4CrNg6+V1j0fZjPOQ6ssdBBVPrfrvecsAUJ0/48Tqa9VTkEpZSlwOF/VS1sO2ob36FVyWjtxvG9s="
 
   matrix:
     - MONO_VERSION="3.10.0"
-    - NUNIT_VERSION="2.6.3"
 
 install:
   # Fetch Mono
