@@ -16,9 +16,9 @@ namespace Exchange.DkimSigner.Tests
             Assert.AreEqual(new string[] { "From", "Subject", "To", "Date", "Message-ID" }, config.HeadersToSign);
         }
 
-        [Test]
-        public void TestLoad()
-        {
+        //[Test]
+        //public void TestLoad()
+        //{
             //Settings configExpected = new Settings();
             //configExpected.Loglevel = 3;
             //configExpected.SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
@@ -30,14 +30,14 @@ namespace Exchange.DkimSigner.Tests
             //Settings configActual = new Settings();
             //configActual.Load();
             //Assert.AreEqual(configExpected, configActual);
-        }
+        //}
 
-        [Test]
-        public void TestSave()
-        {
+        //[Test]
+        //public void TestSave()
+        //{
             //Settings config = new Settings();
             //config.Load();
             //Assert.AreEqual();
-        }        
+        //}        
     }
 }

@@ -89,14 +89,14 @@ namespace DkimSigner.RSA
         public static RSACryptoServiceProvider GetProviderFromKeyFile(string pathToFile)
         {
             byte[] fileBytes = File.ReadAllBytes(pathToFile);
-            switch (GetFormatFromEncodedRsaPrivateKey(fileBytes))
+            switch (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(fileBytes))
             {
                 case RSACryptoFormat.DER:
-                    return GetProviderFromDerEncodedRsaPrivateKey(fileBytes);
+                    return RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes);
                 case RSACryptoFormat.PEM:
-                    return GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                    return RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
                 case RSACryptoFormat.XML:
-                    return GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                    return RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
                 case RSACryptoFormat.UNKNOWN:
                 default:
                     throw new RSACryptoHelperException("Couldn't identify key format for '" + pathToFile + "'. It should be one of the following RSA formats: XML, PEM, DER");
