@@ -24,6 +24,6 @@ addons:
       name: "Pro/dkim-exchange"
       description: "Build submitted via Travis CI"
     notification_email: git@s.profanter.me
-    build_command_prepend: "msbuild /t:CleanAll travis.proj"
-    build_command:   "msbuild /t:Build travis.proj"
+    build_command_prepend: "xbuild /t:CleanAll travis.proj"
+    build_command:   "xbuild /t:Build travis.proj"
     branch_pattern: coverity_scan
