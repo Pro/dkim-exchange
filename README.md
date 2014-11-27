@@ -197,6 +197,9 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
+* 27.11.2014 [2.1.1]:  
+	New: GUI shows now full changelog, including previous versions  
+	Fix: Performance improvement for big attachments (#68)  
 * 27.11.2014 [2.1.0]:  
 	New: Support for PEM and DER encoded private keys  
 	New: Added Debug log level  
