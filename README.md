@@ -197,6 +197,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
+* 27.11.2014 [2.1.2]:  
+	Fix: update/install from GUI not working (ZIP extraction failed). Introduced in 2.1.0  
 * 27.11.2014 [2.1.1]:  
 	New: GUI shows now full changelog, including previous versions  
 	Fix: Performance improvement for big attachments (#68)  
