@@ -192,8 +192,12 @@ namespace Exchange.DkimSigner
                 return false;
 
             for (int i = 0; i < candidate.Length; ++i)
+            {
                 if (stream.ReadByte() != candidate[i])
+                {
                     return false;
+                }
+            }
 
             return true;
         }
@@ -238,6 +242,7 @@ namespace Exchange.DkimSigner
                 // Ignores all whitespace at the end of lines.
                 // Implementation MUST NOT remove the CRLF at the end of the line.
                 StringBuilder sb = new StringBuilder();
+                
                 foreach (string line in Regex.Split(bodyText, @"\r?\n|\r"))
                 {
                     if (line == string.Empty)
@@ -245,14 +250,15 @@ namespace Exchange.DkimSigner
                         sb.AppendLine();
                         continue;
                     }
+
                     sb.AppendLine(CompactWhitespaces(line));
                 }
+
                 bodyText = sb.ToString();
             }
 
             // We have to ignore all empty lines at the end of the message body.
-            bodyText = Regex.Replace(bodyText, "(\r?\n)*$", string.Empty);
-            bodyText += "\r\n";
+            bodyText = Regex.Replace(bodyText, "(\r?\n)*$", string.Empty) + "\r\n";
 
             bodyBytes = Encoding.ASCII.GetBytes(bodyText);
             hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
@@ -331,8 +337,7 @@ namespace Exchange.DkimSigner
                             // character.  WSP characters here include those before and after a
                             // line folding boundary.
 
-                            header = CompactWhitespaces(header);
-                            header += "\r\n";
+                            header = CompactWhitespaces(header) + "\r\n";
 
                             // Delete any WSP characters remaining before and after the colon
                             // separating the header field name from the header field value.  The
@@ -415,7 +420,9 @@ namespace Exchange.DkimSigner
                 using (var writer = new StreamWriter(stream))
                 {
                     foreach (var canonicalizedHeader in canonicalizedHeaders)
+                    {
                         writer.Write(canonicalizedHeader);
+                    }
 
                     if (this.headerCanonicalization == DkimCanonicalizationKind.Relaxed)
                     {
