@@ -137,7 +137,7 @@
             this.tcConfiguration.Location = new System.Drawing.Point(12, 12);
             this.tcConfiguration.Name = "tcConfiguration";
             this.tcConfiguration.SelectedIndex = 0;
-            this.tcConfiguration.Size = new System.Drawing.Size(715, 317);
+            this.tcConfiguration.Size = new System.Drawing.Size(715, 476);
             this.tcConfiguration.TabIndex = 0;
             // 
             // tbInformation
@@ -362,16 +362,17 @@
             this.tpDKIM.Location = new System.Drawing.Point(4, 29);
             this.tpDKIM.Name = "tpDKIM";
             this.tpDKIM.Padding = new System.Windows.Forms.Padding(3);
-            this.tpDKIM.Size = new System.Drawing.Size(707, 284);
+            this.tpDKIM.Size = new System.Drawing.Size(707, 443);
             this.tpDKIM.TabIndex = 0;
             this.tpDKIM.Text = "DKIM";
             this.tpDKIM.UseVisualStyleBackColor = true;
             // 
             // btSaveConfiguration
             // 
-            this.btSaveConfiguration.Location = new System.Drawing.Point(393, 249);
+            this.btSaveConfiguration.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btSaveConfiguration.Location = new System.Drawing.Point(243, 408);
             this.btSaveConfiguration.Name = "btSaveConfiguration";
-            this.btSaveConfiguration.Size = new System.Drawing.Size(125, 23);
+            this.btSaveConfiguration.Size = new System.Drawing.Size(426, 23);
             this.btSaveConfiguration.TabIndex = 5;
             this.btSaveConfiguration.Text = "&Save configuration";
             this.btSaveConfiguration.UseVisualStyleBackColor = true;
@@ -386,7 +387,7 @@
             this.gbHeaderToSign.Controls.Add(this.lbxHeadersToSign);
             this.gbHeaderToSign.Location = new System.Drawing.Point(6, 6);
             this.gbHeaderToSign.Name = "gbHeaderToSign";
-            this.gbHeaderToSign.Size = new System.Drawing.Size(216, 272);
+            this.gbHeaderToSign.Size = new System.Drawing.Size(216, 431);
             this.gbHeaderToSign.TabIndex = 0;
             this.gbHeaderToSign.TabStop = false;
             this.gbHeaderToSign.Text = "Header to sign";
@@ -394,7 +395,7 @@
             // btHeaderAdd
             // 
             this.btHeaderAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btHeaderAdd.Location = new System.Drawing.Point(39, 243);
+            this.btHeaderAdd.Location = new System.Drawing.Point(39, 402);
             this.btHeaderAdd.Name = "btHeaderAdd";
             this.btHeaderAdd.Size = new System.Drawing.Size(65, 23);
             this.btHeaderAdd.TabIndex = 1;
@@ -405,7 +406,7 @@
             // btHeaderDelete
             // 
             this.btHeaderDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btHeaderDelete.Location = new System.Drawing.Point(110, 243);
+            this.btHeaderDelete.Location = new System.Drawing.Point(110, 402);
             this.btHeaderDelete.Name = "btHeaderDelete";
             this.btHeaderDelete.Size = new System.Drawing.Size(65, 23);
             this.btHeaderDelete.TabIndex = 2;
@@ -421,7 +422,7 @@
             this.lbxHeadersToSign.IntegralHeight = false;
             this.lbxHeadersToSign.Location = new System.Drawing.Point(6, 19);
             this.lbxHeadersToSign.Name = "lbxHeadersToSign";
-            this.lbxHeadersToSign.Size = new System.Drawing.Size(202, 218);
+            this.lbxHeadersToSign.Size = new System.Drawing.Size(202, 377);
             this.lbxHeadersToSign.TabIndex = 0;
             this.lbxHeadersToSign.SelectedIndexChanged += new System.EventHandler(this.lbxHeadersToSign_SelectedIndexChanged);
             // 
@@ -562,7 +563,7 @@
             this.tpDomain.Location = new System.Drawing.Point(4, 29);
             this.tpDomain.Name = "tpDomain";
             this.tpDomain.Padding = new System.Windows.Forms.Padding(3);
-            this.tpDomain.Size = new System.Drawing.Size(707, 284);
+            this.tpDomain.Size = new System.Drawing.Size(707, 443);
             this.tpDomain.TabIndex = 1;
             this.tpDomain.Text = "Domains";
             this.tpDomain.UseVisualStyleBackColor = true;
@@ -576,7 +577,7 @@
             this.gbDomain.Controls.Add(this.btDomainDelete);
             this.gbDomain.Location = new System.Drawing.Point(6, 9);
             this.gbDomain.Name = "gbDomain";
-            this.gbDomain.Size = new System.Drawing.Size(151, 272);
+            this.gbDomain.Size = new System.Drawing.Size(151, 431);
             this.gbDomain.TabIndex = 0;
             this.gbDomain.TabStop = false;
             this.gbDomain.Text = "Domains";
@@ -589,14 +590,14 @@
             this.lbxDomains.IntegralHeight = false;
             this.lbxDomains.Location = new System.Drawing.Point(6, 19);
             this.lbxDomains.Name = "lbxDomains";
-            this.lbxDomains.Size = new System.Drawing.Size(139, 218);
+            this.lbxDomains.Size = new System.Drawing.Size(139, 377);
             this.lbxDomains.TabIndex = 0;
             this.lbxDomains.SelectedIndexChanged += new System.EventHandler(this.lbxDomains_SelectedIndexChanged);
             // 
             // btAddDomain
             // 
             this.btAddDomain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btAddDomain.Location = new System.Drawing.Point(6, 243);
+            this.btAddDomain.Location = new System.Drawing.Point(6, 402);
             this.btAddDomain.Name = "btAddDomain";
             this.btAddDomain.Size = new System.Drawing.Size(65, 23);
             this.btAddDomain.TabIndex = 1;
@@ -607,7 +608,7 @@
             // btDomainDelete
             // 
             this.btDomainDelete.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btDomainDelete.Location = new System.Drawing.Point(80, 243);
+            this.btDomainDelete.Location = new System.Drawing.Point(80, 402);
             this.btDomainDelete.Name = "btDomainDelete";
             this.btDomainDelete.Size = new System.Drawing.Size(65, 23);
             this.btDomainDelete.TabIndex = 2;
@@ -641,7 +642,7 @@
             this.gbxDomainDetails.Enabled = false;
             this.gbxDomainDetails.Location = new System.Drawing.Point(163, 9);
             this.gbxDomainDetails.Name = "gbxDomainDetails";
-            this.gbxDomainDetails.Size = new System.Drawing.Size(538, 272);
+            this.gbxDomainDetails.Size = new System.Drawing.Size(538, 431);
             this.gbxDomainDetails.TabIndex = 1;
             this.gbxDomainDetails.TabStop = false;
             this.gbxDomainDetails.Text = "Domain details";
@@ -739,11 +740,11 @@
             // btDomainSave
             // 
             this.btDomainSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btDomainSave.Location = new System.Drawing.Point(447, 240);
+            this.btDomainSave.Location = new System.Drawing.Point(9, 399);
             this.btDomainSave.Name = "btDomainSave";
-            this.btDomainSave.Size = new System.Drawing.Size(75, 23);
+            this.btDomainSave.Size = new System.Drawing.Size(513, 23);
             this.btDomainSave.TabIndex = 17;
-            this.btDomainSave.Text = "&Save";
+            this.btDomainSave.Text = "&Save domain";
             this.btDomainSave.UseVisualStyleBackColor = true;
             this.btDomainSave.Click += new System.EventHandler(this.btDomainSave_Click);
             // 
@@ -912,7 +913,7 @@
             this.tpAbout.Controls.Add(this.picLogo);
             this.tpAbout.Location = new System.Drawing.Point(4, 29);
             this.tpAbout.Name = "tpAbout";
-            this.tpAbout.Size = new System.Drawing.Size(707, 284);
+            this.tpAbout.Size = new System.Drawing.Size(707, 443);
             this.tpAbout.TabIndex = 3;
             this.tpAbout.Text = "About";
             this.tpAbout.UseVisualStyleBackColor = true;
@@ -929,6 +930,7 @@
             // 
             // txtAbout
             // 
+            this.txtAbout.BackColor = System.Drawing.SystemColors.Control;
             this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtAbout.Location = new System.Drawing.Point(158, 59);
             this.txtAbout.Multiline = true;
@@ -953,7 +955,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(739, 353);
+            this.ClientSize = new System.Drawing.Size(739, 512);
             this.Controls.Add(this.tcConfiguration);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(730, 380);
