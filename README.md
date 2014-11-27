@@ -129,6 +129,9 @@ Possible values:
 * 1 = Error only
 * 2 = Warn+Error
 * 3 = Info+Warn+Error
+* 4 = Debug+Info+Warn+Error
+
+The debug level should only be enabled if you need to debug functionality. Otherwise it will fill up your EventLog unnecessarily. Debug messages are shown with the information icon but will begin with the keyword 'DEBUG:'
 
 ## Creating the keys
 
@@ -196,6 +199,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 # Changelog
 * 27.11.2014 [2.1.0]:  
 	New: Support for PEM and DER encoded private keys  
+	New: Added Debug log level  
 	Fix: If subdomain and domain defined, uses wrong key (#67)  
 	Fix: Other small bugfixes  
 * 17.09.2014 [2.0.3]:  
