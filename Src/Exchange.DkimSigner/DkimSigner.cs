@@ -170,7 +170,7 @@ namespace Exchange.DkimSigner
         public void Sign(byte[] inputBytes, Stream outputStream, string signedDkimHeader)
         {
             if (this.disposed)
-                throw new ObjectDisposedException("DomainKeysSigner");
+                throw new ObjectDisposedException("DkimSigner");
 
             if (outputStream == null)
                 throw new ArgumentNullException("outputStream");
@@ -234,20 +234,20 @@ namespace Exchange.DkimSigner
 
             if (this.bodyCanonicalization == DkimCanonicalizationKind.Relaxed)
             {
-                string tempText = bodyText;
-                bodyText = "";
-
-                // Reduces all sequences of WSP within a line to a single SP
-                // character.
-                // Ignores all whitespace at the end of lines.  Implementations MUST
-                // NOT remove the CRLF at the end of the line.
-
-                foreach (string line in Regex.Split(tempText, @"\r?\n|\r"))
+                // Reduces all sequences of WSP within a line to a single SP character.
+                // Ignores all whitespace at the end of lines.
+                // Implementation MUST NOT remove the CRLF at the end of the line.
+                StringBuilder sb = new StringBuilder();
+                foreach (string line in Regex.Split(bodyText, @"\r?\n|\r"))
                 {
-                    string temp = CompactWhitespaces(line);
-                    temp += "\r\n";
-                    bodyText += temp;
+                    if (line == string.Empty)
+                    {
+                        sb.AppendLine();
+                        continue;
+                    }
+                    sb.AppendLine(CompactWhitespaces(line));
                 }
+                bodyText = sb.ToString();
             }
 
             // We have to ignore all empty lines at the end of the message body.
