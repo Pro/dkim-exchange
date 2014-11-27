@@ -113,3 +113,4 @@ UpgradeLog*.XML
 /Src/Configuration.DkimSigner/bin/Debug *
 /Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe*
 /Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe
+/Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe.manifest

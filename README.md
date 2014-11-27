@@ -194,6 +194,10 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
+* 27.11.2014 [2.1.0]:  
+	New: Support for PEM and DER encoded private keys  
+	Fix: If subdomain and domain defined, uses wrong key (#67)  
+	Fix: Other small bugfixes  
 * 17.09.2014 [2.0.3]:  
 	Fix: Wrong signature if subject contained colon and spaces. See issue #62  
 * 11.09.2014 [2.0.2]:  
