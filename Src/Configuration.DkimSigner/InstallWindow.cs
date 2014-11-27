@@ -248,16 +248,11 @@ namespace Configuration.DkimSigner
         private bool ExtractFiles(string sZipPath, string sExtractPath)
         {
             bool bStatus = true;
-
+            if (!Directory.Exists(sExtractPath))
+                Directory.CreateDirectory(sExtractPath);
             try
             {
-                using (ZipArchive oArchive = ZipFile.OpenRead(sZipPath))
-                {
-                    foreach (ZipArchiveEntry oEntry in oArchive.Entries)
-                    {
-                        oEntry.ExtractToFile(Path.Combine(sExtractPath, oEntry.FullName),true);
-                    }
-                }
+                ZipFile.ExtractToDirectory(sZipPath, sExtractPath);
             }
             catch (Exception ex)
             {

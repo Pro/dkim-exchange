@@ -146,7 +146,7 @@
             this.tbInformation.Controls.Add(this.gbExchange);
             this.tbInformation.Location = new System.Drawing.Point(4, 29);
             this.tbInformation.Name = "tbInformation";
-            this.tbInformation.Size = new System.Drawing.Size(707, 284);
+            this.tbInformation.Size = new System.Drawing.Size(707, 443);
             this.tbInformation.TabIndex = 2;
             this.tbInformation.Text = "Information";
             this.tbInformation.UseVisualStyleBackColor = true;
@@ -167,7 +167,7 @@
             this.gbDkimSigner.Controls.Add(this.lbDkimSignerInstalled);
             this.gbDkimSigner.Location = new System.Drawing.Point(3, 93);
             this.gbDkimSigner.Name = "gbDkimSigner";
-            this.gbDkimSigner.Size = new System.Drawing.Size(695, 188);
+            this.gbDkimSigner.Size = new System.Drawing.Size(695, 347);
             this.gbDkimSigner.TabIndex = 1;
             this.gbDkimSigner.TabStop = false;
             this.gbDkimSigner.Text = "DKIM Signer";
@@ -213,7 +213,7 @@
             this.txtChangelog.Name = "txtChangelog";
             this.txtChangelog.ReadOnly = true;
             this.txtChangelog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.txtChangelog.Size = new System.Drawing.Size(680, 90);
+            this.txtChangelog.Size = new System.Drawing.Size(680, 249);
             this.txtChangelog.TabIndex = 7;
             // 
             // txtDkimSignerAvailable
