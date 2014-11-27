@@ -930,7 +930,7 @@
             // 
             // txtAbout
             // 
-            this.txtAbout.BackColor = System.Drawing.SystemColors.Control;
+            this.txtAbout.BackColor = System.Drawing.SystemColors.Window;
             this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtAbout.Location = new System.Drawing.Point(158, 59);
             this.txtAbout.Multiline = true;
