@@ -523,9 +523,12 @@ namespace Configuration.DkimSigner
                 case 3:
                     this.cbLogLevel.Text = "Information";
                     break;
+                case 4:
+                    this.cbLogLevel.Text = "Debug";
+                    break;
                 default:
                     this.cbLogLevel.Text = "Information";
-                    MessageBox.Show("The log level is invalid. The log level have been set to Information.");
+                    MessageBox.Show("The log level is invalid. Set to default: Information.");
                     break;
             }
 

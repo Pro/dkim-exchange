@@ -442,7 +442,8 @@
             this.cbLogLevel.Items.AddRange(new object[] {
             "Error",
             "Warning",
-            "Information"});
+            "Information",
+            "Debug"});
             this.cbLogLevel.Location = new System.Drawing.Point(6, 22);
             this.cbLogLevel.Name = "cbLogLevel";
             this.cbLogLevel.Size = new System.Drawing.Size(191, 21);

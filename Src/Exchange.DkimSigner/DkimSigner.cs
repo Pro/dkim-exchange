@@ -147,12 +147,16 @@ namespace Exchange.DkimSigner
             inputStream.Seek(0, SeekOrigin.Begin);
 
             // Generate the hash for the body
-            var bodyHash = this.GetBodyHash(inputStream);
-            var unsignedDkimHeader = this.GetUnsignedDkimHeader(domain, bodyHash);
+            Logger.LogDebug("Creating body hash");
+            string bodyHash = this.GetBodyHash(inputStream);
+            Logger.LogDebug("Got body hash: " + bodyHash);
+            string unsignedDkimHeader = this.GetUnsignedDkimHeader(domain, bodyHash);
 
             // Generate the hash for the header
+            Logger.LogDebug("Creating signing header");
             var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
-            var signedDkimHeader = this.GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
+            string signedDkimHeader = this.GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
+            Logger.LogDebug("Got signing header: " + signedDkimHeader);
 
             return signedDkimHeader;
         }

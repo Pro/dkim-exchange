@@ -16,6 +16,19 @@ namespace Exchange.DkimSigner
 
         private static EventLog logger = null;
 
+        public static void LogDebug(string message)
+        {
+            LogDebug(message, 0);
+        }
+
+        public static void LogDebug(string message, int id)
+        {
+            if (logLevel >= 4)
+            {
+                LogEntry("DEBUG: " + message, id, EventLogEntryType.Information);
+            }
+        }
+
         public static void LogInformation(string message)
         {
             LogInformation(message, 0);

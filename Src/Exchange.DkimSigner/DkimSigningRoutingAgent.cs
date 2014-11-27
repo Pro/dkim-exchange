@@ -30,6 +30,7 @@ namespace Exchange.DkimSigner
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
         public DkimSigningRoutingAgent()
         {
+            Logger.LogDebug("Initializing DkimSigner");
             Settings config = new Settings();
             config.InitHeadersToSign();
 
@@ -39,6 +40,7 @@ namespace Exchange.DkimSigner
             this.WatchSettings();
 
             this.OnCategorizedMessage += this.WhenMessageCategorized;
+            Logger.LogDebug("DkimSigner initiallized");
         }
 
         private void LoadSettings()
@@ -100,6 +102,7 @@ namespace Exchange.DkimSigner
         [SuppressMessage("Microsoft.Design", "CA1031", Justification = "If an exception is thrown, then the message is eaten by Exchange. Better to catch the exception and write it to a log than to end up with a non-functioning MTA.")]
         private void WhenMessageCategorized(CategorizedMessageEventSource source, QueuedMessageEventArgs e)
         {
+            Logger.LogDebug("Got new message, checking if I can sign it...");
             try
             {
                 this.SignMailItem(e.MailItem);
@@ -129,17 +132,17 @@ namespace Exchange.DkimSigner
                     return;
                 }
 
-                 /* Check if DKIM is defined for the current domain */
+                /* Check if DKIM is defined for the current domain */
                 DomainElement domain = null;
                 foreach (DomainElement e in this.dkimSigner.GetDomains())
-                {                  
+                {
                     if (mailItem.FromAddress.DomainPart
                                             .ToUpperInvariant()
                                             .Equals(e.Domain.ToUpperInvariant()))
                     {
                         domain = e;
                         break;
-                    }  
+                    }
                 }
 
                 /* If domain was found in define domain configuration, we just do nothing */
@@ -147,6 +150,7 @@ namespace Exchange.DkimSigner
                 {
                     using (var inputStream = mailItem.GetMimeReadStream())
                     {
+                        Logger.LogDebug("Domain found: '"+domain.Domain+"'. I'll sign the message.");
                         string dkim = this.dkimSigner.CanSign(domain, inputStream);
 
                         if (dkim.Length != 0)
@@ -170,10 +174,17 @@ namespace Exchange.DkimSigner
 
                                 outputStream.Close();
                             }
+                        } else {
+                            Logger.LogDebug("Got empty signing header. Something went wrong...");
                         }
+
                     }
+                } else {
+                    Logger.LogDebug("No entry found in config for domain '" + mailItem.FromAddress.DomainPart + "'");
                 }
             }
+            else
+                Logger.LogDebug("Message is a System message or of TNEF format. Not signing.");
         }
 
         /// <summary>
