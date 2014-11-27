@@ -33,7 +33,7 @@ namespace Exchange.DkimSigner
             Settings config = new Settings();
             config.InitHeadersToSign();
 
-            this.dkimSigner = new DkimSigner(config);
+            this.dkimSigner = new DkimSigner();
 
             this.LoadSettings();
             this.WatchSettings();
@@ -48,6 +48,7 @@ namespace Exchange.DkimSigner
 
             if(config.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
             {
+                this.dkimSigner.UpdateSettings(config);
                 Logger.logLevel = config.Loglevel;
                 Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + this.dkimSigner.GetDomains().Count);
             }

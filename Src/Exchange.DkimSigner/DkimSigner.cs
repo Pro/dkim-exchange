@@ -62,15 +62,15 @@ namespace Exchange.DkimSigner
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigner"/> class.
         /// </summary>
-        public DkimSigner(Settings config)
+        public DkimSigner()
         {
-            this.UpdateSettings(config);
+            this.domains = new List<DomainElement>();
         }
 
         public void UpdateSettings(Settings config)
         {
             // Load the list of domains
-            this.domains = new List<DomainElement>();
+            this.domains.Clear();
             foreach (DomainElement domainElement in config.Domains)
             {
                 try
