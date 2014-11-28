@@ -48,7 +48,9 @@ namespace Configuration.DkimSigner
 
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = "1024";
-            this.txtAbout.Text =    Constants.DKIM_SIGNER_VERSION + "\r\n\r\n" +
+
+            string version = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
+            this.txtAbout.Text = Constants.DKIM_SIGNER_VERSION + version + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_AUTHOR + "\r\n\r\n" +
