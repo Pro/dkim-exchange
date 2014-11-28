@@ -364,7 +364,7 @@
             this.tpDKIM.Padding = new System.Windows.Forms.Padding(3);
             this.tpDKIM.Size = new System.Drawing.Size(707, 443);
             this.tpDKIM.TabIndex = 0;
-            this.tpDKIM.Text = "DKIM";
+            this.tpDKIM.Text = "DKIM Settings";
             this.tpDKIM.UseVisualStyleBackColor = true;
             // 
             // btSaveConfiguration
@@ -565,7 +565,7 @@
             this.tpDomain.Padding = new System.Windows.Forms.Padding(3);
             this.tpDomain.Size = new System.Drawing.Size(707, 443);
             this.tpDomain.TabIndex = 1;
-            this.tpDomain.Text = "Domains";
+            this.tpDomain.Text = "Domain Settings";
             this.tpDomain.UseVisualStyleBackColor = true;
             // 
             // gbDomain
@@ -829,9 +829,9 @@
             this.tpLog.Location = new System.Drawing.Point(4, 29);
             this.tpLog.Name = "tpLog";
             this.tpLog.Padding = new System.Windows.Forms.Padding(3);
-            this.tpLog.Size = new System.Drawing.Size(707, 284);
+            this.tpLog.Size = new System.Drawing.Size(707, 443);
             this.tpLog.TabIndex = 4;
-            this.tpLog.Text = "EventLog";
+            this.tpLog.Text = "EventLog Viewer";
             this.tpLog.UseVisualStyleBackColor = true;
             // 
             // btEventLogRefresh

@@ -215,7 +215,7 @@ namespace CSInteropKeys
       else
       {
         // Gracefully skip the optional data
-        value = parser.Next();
+        parser.Next();
       }
 
       // Checkpoint

@@ -60,6 +60,8 @@ namespace Configuration.DkimSigner.GitHub
         public static Release GetNewestRelease(bool bIncludePrerelease = false, Version oMinimalVersion = null)
         {
             List<Release> aoRelease = ApiWrapper.GetAllRelease(bIncludePrerelease, oMinimalVersion);
+            if (aoRelease == null)
+                return null;
             Release oNewestRelease = null;
 
             foreach (Release oRelease in aoRelease)

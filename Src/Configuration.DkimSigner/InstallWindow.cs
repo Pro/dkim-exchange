@@ -408,7 +408,7 @@ namespace Configuration.DkimSigner
         private void onButtonInstall()
         {
             lblWait.Hide();
-            if (this.sExchangeVersion != "Not installed")
+            if (this.sExchangeVersion != null && this.sExchangeVersion != "Not installed")
             {
                 if (this.txtVersionFile.Text != string.Empty || this.cbVersionWeb.SelectedIndex > -1 || upgradeZipUrl != null)
                 {
@@ -631,20 +631,21 @@ namespace Configuration.DkimSigner
 
         private void btBrowse_Click(object sender, EventArgs e)
         {
-            OpenFileDialog oFileDialog = new OpenFileDialog();
-
-            oFileDialog.FileName = "dkim-exchange.zip";
-            oFileDialog.Filter = "ZIP files|*.zip";
-            oFileDialog.Title = "Select the .zip file downloaded from github.com";
-
-            if (oFileDialog.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog oFileDialog = new OpenFileDialog())
             {
-                this.cbVersionWeb.SelectedIndex = -1;
 
-                this.txtVersionFile.Text = oFileDialog.FileName;
-                RefreshInstallButton();
+                oFileDialog.FileName = "dkim-exchange.zip";
+                oFileDialog.Filter = "ZIP files|*.zip";
+                oFileDialog.Title = "Select the .zip file downloaded from github.com";
+
+                if (oFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    this.cbVersionWeb.SelectedIndex = -1;
+
+                    this.txtVersionFile.Text = oFileDialog.FileName;
+                    RefreshInstallButton();
+                }
             }
-            oFileDialog.Dispose();
         }
 
         private void btInstall_Click(object sender, EventArgs e)

@@ -50,7 +50,7 @@ namespace Configuration.DkimSigner
             this.cbKeyLength.SelectedItem = "1024";
 
             string version = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
-            this.txtAbout.Text = Constants.DKIM_SIGNER_VERSION + version + "\r\n\r\n" +
+            this.txtAbout.Text = "Version " + version + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_AUTHOR + "\r\n\r\n" +
@@ -346,7 +346,6 @@ namespace Configuration.DkimSigner
         private void CheckDkimSignerAvailable()
         {
             Release oDkimSignerAvailable = null;
-            StringBuilder fullChangelog = new StringBuilder();
             string version = "Unknown";
             string changelog = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
 
@@ -355,15 +354,20 @@ namespace Configuration.DkimSigner
             {
                 List<Release> aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked);
 
-                foreach (Release oRelease in aoRelease)
+                if (aoRelease != null)
                 {
-                    if (oDkimSignerAvailable == null || oDkimSignerAvailable.Version < oRelease.Version)
+                    StringBuilder fullChangelog = new StringBuilder();
+                    foreach (Release oRelease in aoRelease)
                     {
-                        oDkimSignerAvailable = oRelease;
-                    }
+                        if (oDkimSignerAvailable == null || oDkimSignerAvailable.Version < oRelease.Version)
+                        {
+                            oDkimSignerAvailable = oRelease;
+                        }
 
-                    // TAG (DATE)\r\nIndented Text
-                    fullChangelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t") + "\r\n");
+                        // TAG (DATE)\r\nIndented Text
+                        fullChangelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t") + "\r\n");
+                    }
+                    changelog = fullChangelog.ToString();
                 }
             }
             catch (Exception e) {
@@ -389,7 +393,6 @@ namespace Configuration.DkimSigner
                     }
                 }
 
-                changelog = fullChangelog.ToString();
             }
 
             this.txtDkimSignerAvailable.BeginInvoke(new Action(() => this.txtDkimSignerAvailable.Text = version));
@@ -893,39 +896,40 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btDomainKeyGenerate_Click(object sender, EventArgs e)
         {
-            SaveFileDialog oFileDialog = new SaveFileDialog();
-
-            oFileDialog.DefaultExt = "xml";
-            oFileDialog.Filter = "All files|*.*";
-            oFileDialog.Title = "Select a location for the new key file";
-
-            oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
-
-            if (!Directory.Exists(oFileDialog.InitialDirectory))
+            using (SaveFileDialog oFileDialog = new SaveFileDialog())
             {
-                Directory.CreateDirectory(oFileDialog.InitialDirectory);
+
+                oFileDialog.DefaultExt = "xml";
+                oFileDialog.Filter = "All files|*.*";
+                oFileDialog.Title = "Select a location for the new key file";
+
+                oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
+
+                if (!Directory.Exists(oFileDialog.InitialDirectory))
+                {
+                    Directory.CreateDirectory(oFileDialog.InitialDirectory);
+                }
+
+                if (this.txtDomainName.Text.Length > 0)
+                {
+                    oFileDialog.FileName = this.txtDomainName.Text + ".xml";
+                }
+
+                if (oFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    using (RSACryptoServiceProvider oProvider = new RSACryptoServiceProvider(Convert.ToInt32(this.cbKeyLength.Text, 10))) {
+                        CSInteropKeys.AsnKeyBuilder.AsnMessage oPublicEncoded = CSInteropKeys.AsnKeyBuilder.PublicKeyToX509(oProvider.ExportParameters(true));
+                        CSInteropKeys.AsnKeyBuilder.AsnMessage oPrivateEncoded = CSInteropKeys.AsnKeyBuilder.PrivateKeyToPKCS8(oProvider.ExportParameters(true));
+
+                        File.WriteAllBytes(oFileDialog.FileName, Encoding.ASCII.GetBytes(oProvider.ToXmlString(true)));
+                        File.WriteAllText(oFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
+                        File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END PRIVATE KEY-----");
+
+                        this.UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
+                        this.SetDomainKeyPath(oFileDialog.FileName);
+                    }
+                }
             }
-
-            if (this.txtDomainName.Text.Length > 0)
-            {
-                oFileDialog.FileName = this.txtDomainName.Text + ".xml";
-            }
-
-            if (oFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                RSACryptoServiceProvider oProvider = new RSACryptoServiceProvider(Convert.ToInt32(this.cbKeyLength.Text, 10));
-                CSInteropKeys.AsnKeyBuilder.AsnMessage oPublicEncoded = CSInteropKeys.AsnKeyBuilder.PublicKeyToX509(oProvider.ExportParameters(true));
-                CSInteropKeys.AsnKeyBuilder.AsnMessage oPrivateEncoded = CSInteropKeys.AsnKeyBuilder.PrivateKeyToPKCS8(oProvider.ExportParameters(true));
-
-                File.WriteAllBytes(oFileDialog.FileName, Encoding.ASCII.GetBytes(oProvider.ToXmlString(true)));
-                File.WriteAllText(oFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
-                File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END PRIVATE KEY-----");
-
-                this.UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
-                this.SetDomainKeyPath(oFileDialog.FileName);
-                oProvider.Dispose();
-            }
-            oFileDialog.Dispose();
         }
 
         /// <summary>
@@ -935,19 +939,19 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btDomainKeySelect_Click(object sender, EventArgs e)
         {
-            OpenFileDialog oFileDialog = new OpenFileDialog();
-
-            oFileDialog.FileName = "key";
-            oFileDialog.Filter = "Key files|*.xml;*.pem|All files|*.*";
-            oFileDialog.Title = "Select a private key for signing";
-            oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
-
-            if (oFileDialog.ShowDialog() == DialogResult.OK)
+            using (OpenFileDialog oFileDialog = new OpenFileDialog())
             {
-                this.SetDomainKeyPath(oFileDialog.FileName);
-                this.UpdateSuggestedDNS();
+                oFileDialog.FileName = "key";
+                oFileDialog.Filter = "Key files|*.xml;*.pem|All files|*.*";
+                oFileDialog.Title = "Select a private key for signing";
+                oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
+
+                if (oFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    this.SetDomainKeyPath(oFileDialog.FileName);
+                    this.UpdateSuggestedDNS();
+                }
             }
-            oFileDialog.Dispose();
         }
 
         /// <summary>

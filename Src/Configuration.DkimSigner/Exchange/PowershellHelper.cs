@@ -59,7 +59,8 @@ namespace Configuration.DkimSigner.Exchange
                 catch (Exception exc)
                 {
                     except = exc;
-                    runspace.Dispose();
+                    if (runspace != null)
+                        runspace.Dispose();
                     runspace = null;
                 }
                 if (except != null)
@@ -132,7 +133,8 @@ namespace Configuration.DkimSigner.Exchange
             }
             finally
             {
-                pipeline.Dispose();
+                if (pipeline != null)
+                    pipeline.Dispose();
             }
             if (except != null)
                 throw except;
