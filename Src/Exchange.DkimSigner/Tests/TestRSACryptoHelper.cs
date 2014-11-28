@@ -26,9 +26,9 @@ namespace Exchange.DkimSigner.Tests.Ressources
         public void GetProviderFromKeyFile()
         {
             string keyValid;
-            string keyDER;
-            string keyPEM;
-            string keyXML;
+            string keyDER = null;
+            string keyPEM = null;
+            string keyXML = null;
 
             RSAParameters parameters = new RSAParameters();
             parameters.D = Convert.FromBase64String(@"pRgiRK2tfvFdYcGbiqyJ+rgi/HTAPEnR/dtr87I5ctDwOzBG0qOaB3oiUW7qEU0G0iy4hNc1zaHsjhSZYgKZEHP+Xgs7RJZYOTPI9sqbymrDJDLur7h2pMvsqLhcJjEn6qz+hnLMT046D9uSMg9Tpr0Z6FUiOoAwnUZcSK50gj0=");
@@ -48,17 +48,20 @@ namespace Exchange.DkimSigner.Tests.Ressources
 
             using (RSACryptoServiceProvider providerDER = RSACryptoHelper.GetProviderFromKeyFile(@"..\..\..\..\Resources\Tests\private.der"))
             {
-                keyDER = providerDER.ToXmlString(true);
+                if (providerDER != null)
+                    keyDER = providerDER.ToXmlString(true);
             }
 
             using (RSACryptoServiceProvider providerPEM = RSACryptoHelper.GetProviderFromKeyFile(@"..\..\..\..\Resources\Tests\private.pem"))
             {
-                keyPEM = providerPEM.ToXmlString(true);
+                if (providerPEM != null)
+                    keyPEM = providerPEM.ToXmlString(true);
             }
 
             using (RSACryptoServiceProvider providerXML = RSACryptoHelper.GetProviderFromKeyFile(@"..\..\..\..\Resources\Tests\private.xml"))
             {
-                keyXML = providerXML.ToXmlString(true);
+                if (providerXML != null)
+                    keyXML = providerXML.ToXmlString(true);
             }
 
             Assert.AreEqual(keyValid, keyDER);
@@ -70,7 +73,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
         public void GetProviderFromXmlEncodedRsaPrivateKey()
         {
             string keyValid;
-            string keyXML;
+            string keyXML = null;
             
             RSAParameters parameters = new RSAParameters();
             parameters.D = Convert.FromBase64String(@"pRgiRK2tfvFdYcGbiqyJ+rgi/HTAPEnR/dtr87I5ctDwOzBG0qOaB3oiUW7qEU0G0iy4hNc1zaHsjhSZYgKZEHP+Xgs7RJZYOTPI9sqbymrDJDLur7h2pMvsqLhcJjEn6qz+hnLMT046D9uSMg9Tpr0Z6FUiOoAwnUZcSK50gj0=");
@@ -91,7 +94,8 @@ namespace Exchange.DkimSigner.Tests.Ressources
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.xml");
             using (RSACryptoServiceProvider providerXML = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim()))
             {
-                keyXML = providerXML.ToXmlString(true);
+                if (providerXML != null)
+                    keyXML = providerXML.ToXmlString(true);
             }
 
             Assert.AreEqual(keyValid, keyXML);
@@ -133,7 +137,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
         public void GetProviderFromDerEncodedRsaPrivateKey()
         {
             string keyValid;
-            string keyDER;
+            string keyDER = null;
 
             RSAParameters parameters = new RSAParameters();
             parameters.D = Convert.FromBase64String(@"pRgiRK2tfvFdYcGbiqyJ+rgi/HTAPEnR/dtr87I5ctDwOzBG0qOaB3oiUW7qEU0G0iy4hNc1zaHsjhSZYgKZEHP+Xgs7RJZYOTPI9sqbymrDJDLur7h2pMvsqLhcJjEn6qz+hnLMT046D9uSMg9Tpr0Z6FUiOoAwnUZcSK50gj0=");
@@ -154,7 +158,8 @@ namespace Exchange.DkimSigner.Tests.Ressources
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.der");
             using (RSACryptoServiceProvider providerDER = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes))
             {
-                keyDER = providerDER.ToXmlString(true);
+                if (providerDER != null)
+                    keyDER = providerDER.ToXmlString(true);
             }
 
             Assert.AreEqual(keyValid, keyDER);
