@@ -344,14 +344,25 @@ namespace Configuration.DkimSigner
         private void CheckDkimSignerAvailable()
         {
             Release oDkimSignerAvailable = null;
+            StringBuilder fullChangelog = new StringBuilder();
             string version = "Unknown";
             string changelog = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
 
-            string fullChangelog = null;
             // Check the lastest Release
             try
             {
-                oDkimSignerAvailable = ApiWrapper.GetNewestRelease(out fullChangelog, cbxPrereleases.Checked);
+                List<Release> aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked);
+
+                foreach (Release oRelease in aoRelease)
+                {
+                    if (oDkimSignerAvailable == null || oDkimSignerAvailable.Version < oRelease.Version)
+                    {
+                        oDkimSignerAvailable = oRelease;
+                    }
+
+                    // TAG (DATE)\r\nIndented Text
+                    fullChangelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t") + "\r\n");
+                }
             }
             catch (Exception e) {
                 changelog += "\r\nError: " + e.Message;
@@ -376,7 +387,7 @@ namespace Configuration.DkimSigner
                     }
                 }
 
-                changelog = fullChangelog;
+                changelog = fullChangelog.ToString();
             }
 
             this.txtDkimSignerAvailable.BeginInvoke(new Action(() => this.txtDkimSignerAvailable.Text = version));

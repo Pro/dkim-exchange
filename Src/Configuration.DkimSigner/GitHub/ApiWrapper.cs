@@ -57,24 +57,18 @@ namespace Configuration.DkimSigner.GitHub
             return aoRelease;
         }
 
-        public static Release GetNewestRelease(out string fullChangelog, bool bIncludePrerelease = false, Version oMinimalVersion = null)
+        public static Release GetNewestRelease(bool bIncludePrerelease = false, Version oMinimalVersion = null)
         {
             List<Release> aoRelease = ApiWrapper.GetAllRelease(bIncludePrerelease, oMinimalVersion);
             Release oNewestRelease = null;
 
-            StringBuilder changelog = new StringBuilder();
             foreach (Release oRelease in aoRelease)
             {
                 if (oNewestRelease == null || oNewestRelease.Version < oRelease.Version)
                 {
                     oNewestRelease = oRelease;
                 }
-                if (changelog.Length > 0)
-                    changelog.AppendLine();
-                // TAG (DATE)\r\nIndented Text
-                changelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t"));
             }
-            fullChangelog = changelog.ToString();
 
             return oNewestRelease;
         }
