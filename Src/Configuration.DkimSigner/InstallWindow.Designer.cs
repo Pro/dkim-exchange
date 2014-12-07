@@ -234,9 +234,9 @@
             this.lbSelectVersion.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbSelectVersion.Location = new System.Drawing.Point(11, 9);
             this.lbSelectVersion.Name = "lbSelectVersion";
-            this.lbSelectVersion.Size = new System.Drawing.Size(165, 13);
+            this.lbSelectVersion.Size = new System.Drawing.Size(148, 13);
             this.lbSelectVersion.TabIndex = 9;
-            this.lbSelectVersion.Text = "Selection version to install :";
+            this.lbSelectVersion.Text = "Select version to install :";
             // 
             // cbxPrereleases
             // 
