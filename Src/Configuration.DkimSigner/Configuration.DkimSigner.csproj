@@ -222,6 +222,11 @@
     <Compile Include="RSA\AsnKeyParser.cs" />
     <Compile Include="RSA\BerDecodeError.cs" />
     <Compile Include="RSA\BigInteger.cs" />
+    <Compile Include="UserPreferences.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>UserPreferences.settings</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -245,6 +250,10 @@
     <None Include="App.config" />
     <None Include="app.manifest">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="UserPreferences.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

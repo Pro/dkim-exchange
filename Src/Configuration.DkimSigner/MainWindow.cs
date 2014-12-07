@@ -47,7 +47,7 @@ namespace Configuration.DkimSigner
             this.athRunning = new Dictionary<ThreadIdentifier, Thread>();
 
             this.cbLogLevel.SelectedItem = "Information";
-            this.cbKeyLength.SelectedItem = "1024";
+            this.cbKeyLength.SelectedItem = UserPreferences.Default.KeyLength.ToString();
 
             string version = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
             this.txtAbout.Text = "Version " + version + "\r\n\r\n" +
@@ -187,6 +187,7 @@ namespace Configuration.DkimSigner
                 this.txtDomainPrivateKeyFilename.Text = "";
                 this.txtDomainDNS.Text = "";
                 this.gbxDomainDetails.Enabled = false;
+                this.cbKeyLength.Text = UserPreferences.Default.KeyLength.ToString();
             }
             else
             {
@@ -194,6 +195,10 @@ namespace Configuration.DkimSigner
                 this.txtDomainName.Text = oSelected.Domain;
                 this.txtDomainSelector.Text = oSelected.Selector;
                 this.txtDomainPrivateKeyFilename.Text = oSelected.PrivateKeyFile;
+                if (oSelected.CryptoProvider == null)
+                    oSelected.InitElement(Constants.DKIM_SIGNER_PATH);
+                if (oSelected.CryptoProvider != null)
+                    this.cbKeyLength.Text = oSelected.CryptoProvider.KeySize.ToString();
 
                 this.UpdateSuggestedDNS();
                 this.txtDomainDNS.Text = "";
@@ -619,9 +624,6 @@ namespace Configuration.DkimSigner
             return true;
         }
 
-                //
-                // TODO : Problem when sRsaPublicKeyBase64 is empty
-                //
         private void UpdateSuggestedDNS(string sRsaPublicKeyBase64 = "")
         {
             string sDNSRecord = "";
@@ -952,6 +954,10 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void btDomainKeyGenerate_Click(object sender, EventArgs e)
         {
+            UserPreferences.Default.KeyLength = Convert.ToInt32(this.cbKeyLength.Text, 10);
+
+            UserPreferences.Default.Save(); 
+            
             using (SaveFileDialog oFileDialog = new SaveFileDialog())
             {
 
