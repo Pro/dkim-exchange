@@ -31,7 +31,11 @@ namespace Configuration.DkimSigner
 
             if (Array.IndexOf(asArgv, "--install") >= 0)
             {
-                oForm = new InstallWindow(null);
+                int parIdx = Array.IndexOf(asArgv, "--install");
+                string installZipUrl = null;
+                if (asArgv.Length > parIdx + 1)
+                    installZipUrl = asArgv[parIdx + 1];
+                oForm = new InstallWindow(true, installZipUrl);
             }
             else if(Array.IndexOf(asArgv, "--upgrade") >= 0)
             {
@@ -39,7 +43,7 @@ namespace Configuration.DkimSigner
                 string updateZipUrl = null;
                 if (asArgv.Length > parIdx + 1)
                     updateZipUrl = asArgv[parIdx + 1];
-                oForm = new InstallWindow(updateZipUrl);
+                oForm = new InstallWindow(false, updateZipUrl);
             }
             //else if (Array.IndexOf(asArgv, "--uninstall") >= 0)
             //{

@@ -23,29 +23,33 @@ namespace Configuration.DkimSigner
 
         private string sExchangeVersion = null;
 
-        private Thread thDkimSignerAvailable = null;
-        private Thread thInstallProcess = null;
-        private Thread thExchangeInstalled = null;
+
+        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable };
+        private IDictionary<ThreadIdentifier, Thread> athRunning = null;
 
         delegate void EnablePrereleasesCallback(bool sStatus);
         delegate void RefreshVersionWebItemsCallback();
         delegate void RefreshInstallButtonCallback();
 
         private string upgradeZipUrl = null;
+        private bool isInstall;
 
         /**********************************************************/
         /*********************** Construtor ***********************/
         /**********************************************************/
 
-        public InstallWindow(string upgradeZipUrl)
+        public InstallWindow(bool isInstall, string upgradeZipUrl)
         {
             this.InitializeComponent();
+
+            this.athRunning = new Dictionary<ThreadIdentifier, Thread>();
 
             this.picStopService.Image = null;
             this.picCopyFiles.Image = null;
             this.picInstallAgent.Image = null;
             this.picStartService.Image = null;
             this.upgradeZipUrl = upgradeZipUrl;
+            this.isInstall = isInstall;
         }
 
         /**********************************************************/
@@ -54,9 +58,13 @@ namespace Configuration.DkimSigner
 
         private void InstallWindow_Load(object sender, EventArgs e)
         {
-            if (upgradeZipUrl != null)
+            if (!isInstall)
             {
                 this.Text = "Exchange DkimSigner - Upgrade";
+                pnlInstall.Hide();
+            } else if (isInstall && upgradeZipUrl != null)
+            {
+                this.Text = "Exchange DkimSigner - Install";
                 pnlInstall.Hide();
             }
             else
@@ -71,15 +79,15 @@ namespace Configuration.DkimSigner
         private void InstallWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             // IF any thread running, we stop them before exit
-            if (this.thDkimSignerAvailable != null && this.thDkimSignerAvailable.ThreadState == System.Threading.ThreadState.Running)
+            foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
             {
-                this.thDkimSignerAvailable.Abort();
+                Thread oTh = oTemp.Value;
+                if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
+                {
+                    oTh.Join();
+                }
             }
-
-            if (this.thInstallProcess != null && this.thInstallProcess.ThreadState == System.Threading.ThreadState.Running)
-            {
-                this.thInstallProcess.Abort();
-            }
+            this.athRunning.Clear();
         }
 
         private void cbVersionWeb_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -142,64 +150,42 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// 
         /// </summary>
-        private void CheckDkimSignerAvailableSafe()
-        {
-            this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked, new Version("2.0.0"));
-
-            if (this.cbVersionWeb.InvokeRequired)
-            {
-                RefreshVersionWebItemsCallback d = new RefreshVersionWebItemsCallback(this.RefreshVersionWebItems);
-                this.Invoke(d);
-            }
-            else
-            {
-                this.RefreshVersionWebItems();
-            }
-
-            if (this.cbxPrereleases.InvokeRequired)
-            {
-                EnablePrereleasesCallback d = new EnablePrereleasesCallback(this.EnablePrereleases);
-                this.Invoke(d, true);
-            }
-            else
-            {
-                this.EnablePrereleases(true);
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         private void UpdateDkimSignerAvailable()
         {
-            // Get Exchange.DkimSigner version available
-            this.thDkimSignerAvailable = new Thread(new ThreadStart(this.CheckDkimSignerAvailableSafe));
+            if (this.athRunning.ContainsKey(ThreadIdentifier.DkimSignerAvailable))
+                return; // thread already started
 
-            // Start the threads that will do lookup
-            try
-            {
-                this.thDkimSignerAvailable.Start();
-            }
+            Thread oTh3 = new Thread(() => {
+                this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked, new Version("2.0.0"));
+
+                if (this.cbVersionWeb.InvokeRequired)
+                {
+                    RefreshVersionWebItemsCallback d = new RefreshVersionWebItemsCallback(this.RefreshVersionWebItems);
+                    this.Invoke(d);
+                }
+                else
+                {
+                    this.RefreshVersionWebItems();
+                }
+
+                if (this.cbxPrereleases.InvokeRequired)
+                {
+                    EnablePrereleasesCallback d = new EnablePrereleasesCallback(this.EnablePrereleases);
+                    this.Invoke(d, true);
+                }
+                else
+                {
+                    this.EnablePrereleases(true);
+                }                
+                
+                this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); 
+            
+            });
+            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh3);
+            try { oTh3.Start(); }
             catch (ThreadAbortException) { }
-        }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void CheckExchangeInstalledSafe()
-        {
-            this.sExchangeVersion = ExchangeServer.GetInstalledVersion();
-
-            if (this.btInstall.InvokeRequired)
-            {
-                RefreshInstallButtonCallback d = new RefreshInstallButtonCallback(this.RefreshInstallButton);
-                this.Invoke(d);
-            }
-            else
-            {
-                this.RefreshInstallButton();
-            }
+            
         }
 
         /// <summary>
@@ -207,21 +193,33 @@ namespace Configuration.DkimSigner
         /// </summary>
         private void UpdateExchangeInstalled()
         {
-            // Get Exchange.DkimSigner version available
-            this.thExchangeInstalled = new Thread(new ThreadStart(this.CheckExchangeInstalledSafe));
 
-            // Start the threads that will do lookup
-            try
-            {
-                this.thExchangeInstalled.Start();
-            }
+            if (this.athRunning.ContainsKey(ThreadIdentifier.ExchangeInstalled))
+                return; // thread already started
+            Thread oTh3 = new Thread(() => {
+                this.sExchangeVersion = ExchangeServer.GetInstalledVersion();
+
+                if (this.btInstall.InvokeRequired)
+                {
+                    RefreshInstallButtonCallback d = new RefreshInstallButtonCallback(this.RefreshInstallButton);
+                    this.Invoke(d);
+                }
+                else
+                {
+                    this.RefreshInstallButton();
+                }
+                this.athRunning.Remove(ThreadIdentifier.ExchangeInstalled);
+            });
+            this.athRunning.Add(ThreadIdentifier.ExchangeInstalled, oTh3);
+            try { oTh3.Start(); }
             catch (ThreadAbortException) { }
+
         }
 
         private void RefreshInstallButton()
         {
             btInstall.Enabled = (this.sExchangeVersion != null && (this.aoVersionAvailable != null || txtVersionFile.Text.Length > 0));
-            if (upgradeZipUrl != null)
+            if (upgradeZipUrl != null || !isInstall)
             {
                 onButtonInstall();
             }
@@ -232,7 +230,7 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="sZipPath"></param>
         /// <returns></returns>
-        private bool DownloadFile(string url, string dest)
+        public static bool DownloadFile(string url, string dest)
         {
             DownloadProgressWindow oDpw = new DownloadProgressWindow(url, dest);
             bool success = (oDpw.ShowDialog() == DialogResult.OK);
@@ -245,7 +243,7 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="sZipPath"></param>
         /// <returns></returns>
-        private bool ExtractFiles(string sZipPath, string sExtractPath)
+        public static bool ExtractFiles(string sZipPath, string sExtractPath)
         {
             bool bStatus = true;
             if (!Directory.Exists(sExtractPath))
@@ -268,7 +266,7 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="asSourcePath"></param>
         /// <returns></returns>
-        private bool CopyFiles(List<string> asSourcePath)
+        public bool CopyFiles(List<string> asSourcePath)
         {
             bool bReturn = false;
             bool bAnyOperationsAborted = false;
@@ -305,7 +303,7 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// 
         /// </summary>
-        private bool StopService()
+        private static bool StopService()
         {
             try
             {
@@ -322,7 +320,7 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// 
         /// </summary>
-        private bool InstallAgent()
+        private static bool InstallAgent()
         {
             if (ExchangeServer.IsTransportServiceInstalled())
             {
@@ -392,7 +390,7 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// 
         /// </summary>
-        private bool StartService()
+        private static bool StartService()
         {
             try
             {
@@ -405,17 +403,72 @@ namespace Configuration.DkimSigner
             }
         }
 
+        public static string getSourceDirectoryForVersion(string exchangeVersion)
+        {
+            if (exchangeVersion.StartsWith("8.3."))
+            {
+                return "Exchange 2007 SP3";
+            }
+            else if (exchangeVersion.StartsWith("14.0."))
+            {
+                return "Exchange 2010";
+            }
+            else if (exchangeVersion.StartsWith("14.1."))
+            {
+                return "Exchange 2010 SP1";
+            }
+            else if (exchangeVersion.StartsWith("14.2."))
+            {
+                return "Exchange 2010 SP2";
+            }
+            else if (exchangeVersion.StartsWith("14.3."))
+            {
+                return "Exchange 2010 SP3";
+            }
+            else if (exchangeVersion.StartsWith("15.0.516.32"))
+            {
+                return "Exchange 2013";
+            }
+            else if (exchangeVersion.StartsWith("15.0.620.29"))
+            {
+                return "Exchange 2013 CU1";
+            }
+            else if (exchangeVersion.StartsWith("15.0.712.24"))
+            {
+                return "Exchange 2013 CU2";
+            }
+            else if (exchangeVersion.StartsWith("15.0.775.38"))
+            {
+                return "Exchange 2013 CU3";
+            }
+            else if (exchangeVersion.StartsWith("15.0.847.32"))
+            {
+                return "Exchange 2013 SP1 CU4";
+            }
+            else if (exchangeVersion.StartsWith("15.0.913.22"))
+            {
+                return "Exchange 2013 SP1 CU5";
+            }
+            else if (exchangeVersion.StartsWith("15.0.995.29"))
+            {
+                return "Exchange 2013 SP1 CU6";
+            }
+            else
+            {
+                MessageBox.Show("Your Microsoft Exchange version isn't supported by the DKIM agent: " + exchangeVersion, "Version not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+        }
+
+
         private void onButtonInstall()
         {
             lblWait.Hide();
             if (this.sExchangeVersion != null && this.sExchangeVersion != "Not installed")
             {
-                if (this.txtVersionFile.Text != string.Empty || this.cbVersionWeb.SelectedIndex > -1 || upgradeZipUrl != null)
+                if (this.txtVersionFile.Text != string.Empty || this.cbVersionWeb.SelectedIndex > -1 || !isInstall || (isInstall && upgradeZipUrl != null))
                 {
                     bool bStatus = true;
-                    string sZipPath = string.Empty;
-
-                    string extractPath = null;
 
                     this.cbVersionWeb.Enabled = false;
                     this.cbxPrereleases.Enabled = false;
@@ -423,125 +476,102 @@ namespace Configuration.DkimSigner
                     this.btInstall.Enabled = false;
                     this.btClose.Enabled = false;
 
-                    //
-                    // Download required files
-                    //
+                    string downloadRootDir = null;
 
-                    this.lbDownloadFiles.Enabled = true;
-
-                    if (upgradeZipUrl != null)
+                    if (isInstall || (!isInstall && upgradeZipUrl != null))
                     {
-                        sZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
-                        extractPath = Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath));
+                        // either the user selected a specific version to install or the .exe was called with '--upgrade http://url_to_download.zip'
+                        // thus we first need to download and extract the files.
 
-                        bStatus = this.DownloadFile(upgradeZipUrl, sZipPath);
-                    }
-                    else if (this.cbVersionWeb.SelectedIndex > -1)
-                    {
-                        sZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
-                        extractPath = Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath));
-                        string sZipballUrl = string.Empty;
+                        string sZipPath = string.Empty;
 
-                        foreach (Release oRelease in aoVersionAvailable)
+                        string extractPath = null;
+                        //
+                        // Download required files
+                        //
+
+                        this.lbDownloadFiles.Enabled = true;
+
+                        if (upgradeZipUrl != null)
                         {
-                            if (oRelease.TagName == cbVersionWeb.Text)
+                            //check if the provided zip url is a local file or if it first needs to be downloaded.
+                            if (!Uri.IsWellFormedUriString(upgradeZipUrl, UriKind.RelativeOrAbsolute))
                             {
-                                sZipballUrl = oRelease.ZipballUrl;
-                                break;
+                                //upgradeZipUrl contains a local path, thus no download needed
+                                sZipPath = upgradeZipUrl;
+                                extractPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                            }
+                            else
+                            {
+                                sZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
+                                extractPath = Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath));
+
+                                bStatus = DownloadFile(upgradeZipUrl, sZipPath);
                             }
                         }
-                        bStatus = this.DownloadFile(sZipballUrl, sZipPath);
+                        else if (this.cbVersionWeb.SelectedIndex > -1)
+                        {
+                            sZipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
+                            extractPath = Path.Combine(Path.GetDirectoryName(sZipPath), Path.GetFileNameWithoutExtension(sZipPath));
+                            string sZipballUrl = string.Empty;
+
+                            foreach (Release oRelease in aoVersionAvailable)
+                            {
+                                if (oRelease.TagName == cbVersionWeb.Text)
+                                {
+                                    sZipballUrl = oRelease.ZipballUrl;
+                                    break;
+                                }
+                            }
+                            bStatus = DownloadFile(sZipballUrl, sZipPath);
+                        }
+                        else
+                        {
+                            sZipPath = this.txtVersionFile.Text;
+                            extractPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                        }
+
+                        this.picDownloadFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                        this.Refresh();
+
+
+                        if (bStatus)
+                        {
+                            bStatus = ExtractFiles(sZipPath, extractPath);
+                        }
+
+                        // copy root directory is one directory below extracted zip:
+                        if (bStatus)
+                        {
+                            string[] contents = Directory.GetDirectories(extractPath);
+                            if (contents.Length == 0)
+                            {
+                                MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                bStatus = false;
+                            }
+                            downloadRootDir = contents[0];
+                        }
+
                     }
                     else
                     {
-                        sZipPath = this.txtVersionFile.Text;
-                        extractPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+                        // the download root dir is one of the parent folders of this executable.
+                        // we are currently in Src\Configuration.DkimSigner\bin\Release\ thus go up 4 folders
+                        downloadRootDir = Path.GetFullPath(Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location), @"..\..\..\..\"));
                     }
-
-                    this.picDownloadFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-                    this.Refresh();
 
                     //
                     // Copy required files
                     //
 
-                    string sTemp = string.Empty;
-                    if (bStatus)
-                    {
-                        if (this.sExchangeVersion.StartsWith("8.3."))
-                        {
-                            sTemp = "Exchange 2007 SP3";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("14.0."))
-                        {
-                            sTemp = "Exchange 2010";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("14.1."))
-                        {
-                            sTemp = "Exchange 2010 SP1";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("14.2."))
-                        {
-                            sTemp = "Exchange 2010 SP2";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("14.3."))
-                        {
-                            sTemp = "Exchange 2010 SP3";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.516.32"))
-                        {
-                            sTemp = "Exchange 2013";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.620.29"))
-                        {
-                            sTemp = "Exchange 2013 CU1";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.712.24"))
-                        {
-                            sTemp = "Exchange 2013 CU2";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.775.38"))
-                        {
-                            sTemp = "Exchange 2013 CU3";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.847.32"))
-                        {
-                            sTemp = "Exchange 2013 SP1 CU4";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.913.22"))
-                        {
-                            sTemp = "Exchange 2013 SP1 CU5";
-                        }
-                        else if (this.sExchangeVersion.StartsWith("15.0.995.29"))
-                        {
-                            sTemp = "Exchange 2013 SP1 CU6";
-                        }
-                        else
-                        {
-                            MessageBox.Show("The current Microsoft Exchange version isn't supported by DKIM agent: " + this.sExchangeVersion, "Version not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            bStatus = false;
-                        }
+                    string exchangeSourceDir = null;
+                    if (bStatus){
+                        exchangeSourceDir = getSourceDirectoryForVersion(this.sExchangeVersion);
+                        bStatus = (exchangeSourceDir != null);
                     }
 
 
-                    if (bStatus)
-                    {
-                        bStatus = this.ExtractFiles(sZipPath, extractPath);
-                    }
 
-
-                    // copy root directory is one directory below extracted zip:
-                    string rootDir = null;
-                    if (bStatus)
-                    {
-                        string[] contents = Directory.GetDirectories(extractPath);
-                        if (contents.Length == 0)
-                        {
-                            MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            bStatus = false;
-                        }
-                        rootDir = contents[0];
-                    }
 
                     //
                     // Stop Microsoft Exchange Transport Service
@@ -551,7 +581,7 @@ namespace Configuration.DkimSigner
 
                     if (bStatus)
                     {
-                        bStatus = this.StopService();
+                        bStatus = StopService();
                     }
 
                     this.picStopService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
@@ -561,16 +591,10 @@ namespace Configuration.DkimSigner
                     if (bStatus)
                     {
                         List<string> asCopyFilePath = new List<string>();
-                        asCopyFilePath.Add(Path.Combine(rootDir, @"Src\Configuration.DkimSigner\bin\Release"));
-                        asCopyFilePath.Add(Path.Combine(rootDir, Path.Combine(@"Src\Exchange.DkimSigner\bin\" + sTemp)));
+                        asCopyFilePath.Add(Path.Combine(downloadRootDir, @"Src\Configuration.DkimSigner\bin\Release"));
+                        asCopyFilePath.Add(Path.Combine(downloadRootDir, Path.Combine(@"Src\Exchange.DkimSigner\bin\" + exchangeSourceDir)));
                         bStatus = this.CopyFiles(asCopyFilePath);
 
-                        /*try
-                        {
-                            Directory.Delete(extractPath, true);
-                            Directory.Delete(sZipPath, true);
-                        }
-                        catch (IOException) { }*/
                     }
 
                     this.picCopyFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
@@ -584,7 +608,7 @@ namespace Configuration.DkimSigner
 
                     if (bStatus)
                     {
-                        bStatus = this.InstallAgent();
+                        bStatus = InstallAgent();
                     }
 
                     this.picInstallAgent.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
@@ -598,7 +622,7 @@ namespace Configuration.DkimSigner
 
                     if (bStatus)
                     {
-                        bStatus = this.StartService();
+                        bStatus = StartService();
                     }
 
                     this.picStartService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
