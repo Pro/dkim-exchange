@@ -837,7 +837,7 @@
             // btEventLogRefresh
             // 
             this.btEventLogRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btEventLogRefresh.Location = new System.Drawing.Point(618, 258);
+            this.btEventLogRefresh.Location = new System.Drawing.Point(618, 414);
             this.btEventLogRefresh.Name = "btEventLogRefresh";
             this.btEventLogRefresh.Size = new System.Drawing.Size(75, 23);
             this.btEventLogRefresh.TabIndex = 2;
@@ -867,7 +867,7 @@
             this.dgEventLog.RowHeadersVisible = false;
             this.dgEventLog.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
             this.dgEventLog.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgEventLog.Size = new System.Drawing.Size(682, 212);
+            this.dgEventLog.Size = new System.Drawing.Size(682, 371);
             this.dgEventLog.TabIndex = 1;
             // 
             // icon
@@ -930,12 +930,15 @@
             // 
             // txtAbout
             // 
+            this.txtAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAbout.BackColor = System.Drawing.SystemColors.Window;
             this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtAbout.Location = new System.Drawing.Point(158, 59);
             this.txtAbout.Multiline = true;
             this.txtAbout.Name = "txtAbout";
-            this.txtAbout.Size = new System.Drawing.Size(531, 207);
+            this.txtAbout.Size = new System.Drawing.Size(531, 369);
             this.txtAbout.TabIndex = 1;
             // 
             // picLogo

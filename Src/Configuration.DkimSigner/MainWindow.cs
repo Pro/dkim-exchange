@@ -68,6 +68,8 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
+            txtAbout.BackColor = tpAbout.BackColor;
+            
             // Get Exchange version installed
             this.txtExchangeInstalled.Text = "Loading ...";
             Thread oTh1 = new Thread(() => { this.CheckExchangeInstalled(); this.athRunning.Remove(ThreadIdentifier.ExchangeInstalled); });
