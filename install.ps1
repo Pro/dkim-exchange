@@ -41,6 +41,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2013 SP1 CU5"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 995) {
 	$EXVER="Exchange 2013 SP1 CU6"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1044) {
+	$EXVER="Exchange 2013 SP1 CU7"
 }
 else {
 	throw "The exchange version is not yet supported: $exchserver.admindisplayversion"

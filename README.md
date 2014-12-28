@@ -23,6 +23,7 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 * Exchange 2013 SP1 (15.0.847.32)
 * Exchange 2013 CU5 (15.0.913.22)
 * Exchange 2013 CU6 (15.0.995.29)
+* Exchange 2013 CU7 (15.0.1044.25)
 
 # Installing the Transport Agent
 
@@ -197,6 +198,10 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
+* 28.12.2014 [2.1.3]:  
+    Fix: Update aborted with error that file can't be overwritten (#73)  
+	New: Remember KeySize and show correct key size for existing keys  
+	New: Support for Exchange 2013 SP1 CU7
 * 27.11.2014 [2.1.2]:  
 	Fix: update/install from GUI not working (ZIP extraction failed). Introduced in 2.1.0  
 * 27.11.2014 [2.1.1]:  

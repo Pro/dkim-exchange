@@ -156,6 +156,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU7|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU7\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
@@ -250,6 +259,12 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU6'">
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU6\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU7'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU7\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU7'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU7\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\Lib\NUnit\nunit.framework.dll</HintPath>
