@@ -231,7 +231,7 @@ namespace Configuration.DkimSigner
 
         private void txtDomainSelector_TextChanged(object sender, EventArgs e)
         {
-            if (!Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-zA-Z0-9_]+$", RegexOptions.None))
+            if (!Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-z0-9_]{1,63}(?:\.[a-z0-9_]{1,63})?$", RegexOptions.None))
             {
                 this.epvDomainSelector.SetError(this.txtDomainSelector, "The selector should only contain characters, numbers and underscores.");
             }
