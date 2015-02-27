@@ -7,6 +7,10 @@ The code for the signing agent is based on the work from  http://nicholas.piasec
 
 We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
 
+We are also happy for any donations to keep new versions flowing :) Especially if you think our DKIM signing agent helped you or your company preventing email spam.
+
+<a href='https://pledgie.com/campaigns/28487'><img alt='Click here to lend your support to: DKIM Exchange Signer and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28487.png?skin_name=chrome' border='0' ></a>
+
 ## Supported versions
 
 The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013)
