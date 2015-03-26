@@ -276,10 +276,10 @@
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU7\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
 	<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU8'">
-      <HintPath>..\..\Lib\Exchange 2013 SP1 CU7\Microsoft.Exchange.Data.Common.dll</HintPath>
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU8\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU8'">
-      <HintPath>..\..\Lib\Exchange 2013 SP1 CU7\Microsoft.Exchange.Data.Transport.dll</HintPath>
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU8\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\Lib\NUnit\nunit.framework.dll</HintPath>
