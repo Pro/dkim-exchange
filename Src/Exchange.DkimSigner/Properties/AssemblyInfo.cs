@@ -24,4 +24,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("2.1.3")]
 [assembly: CLSCompliant(true)]
 [assembly: NeutralResourcesLanguage("en-US")]
-[assembly: AssemblyFileVersionAttribute("2.1.3")]
+[assembly: AssemblyFileVersionAttribute("2.1.4")]

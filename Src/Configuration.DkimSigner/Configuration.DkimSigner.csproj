@@ -102,6 +102,12 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelperException.cs">
       <Link>RSA\RSACryptoHelperException.cs</Link>
     </Compile>
+    <Compile Include="CustomTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="CustomTextBox.Designer.cs">
+      <DependentUpon>CustomTextBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="ExchangeTransportServiceWindow.cs">
       <SubType>Form</SubType>
     </Compile>

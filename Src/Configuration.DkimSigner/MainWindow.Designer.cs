@@ -100,7 +100,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tpAbout = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
-            this.txtAbout = new System.Windows.Forms.TextBox();
+            this.txtAbout = new Configuration.DkimSigner.CustomTextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
             this.tcConfiguration.SuspendLayout();
@@ -911,6 +911,7 @@
             this.tpAbout.Controls.Add(this.label1);
             this.tpAbout.Controls.Add(this.txtAbout);
             this.tpAbout.Controls.Add(this.picLogo);
+            this.tpAbout.BackColor = System.Drawing.Color.Transparent;
             this.tpAbout.Location = new System.Drawing.Point(4, 29);
             this.tpAbout.Name = "tpAbout";
             this.tpAbout.Size = new System.Drawing.Size(707, 443);
@@ -933,7 +934,7 @@
             this.txtAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAbout.BackColor = System.Drawing.SystemColors.Window;
+            this.txtAbout.BackColor = System.Drawing.Color.Transparent;
             this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtAbout.Location = new System.Drawing.Point(158, 59);
             this.txtAbout.Multiline = true;
@@ -1062,7 +1063,7 @@
         private System.Windows.Forms.Button btStartTransportService;
         private System.Windows.Forms.TabPage tpAbout;
         private System.Windows.Forms.PictureBox picLogo;
-        private System.Windows.Forms.TextBox txtAbout;
+        private Configuration.DkimSigner.CustomTextBox txtAbout;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tpLog;
         private System.Windows.Forms.Button btEventLogRefresh;
