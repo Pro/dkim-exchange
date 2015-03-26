@@ -28,6 +28,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2013 CU5 (15.0.913.22)
 * Exchange 2013 CU6 (15.0.995.29)
 * Exchange 2013 CU7 (15.0.1044.25)
+* Exchange 2013 CU8 (15.0.1076.9)
 
 ## Requirements
 
@@ -209,6 +210,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
+* 26.03.2015 [2.1.4]:  
+	New: Support for Exchange 2013 SP1 CU7
 * 28.12.2014 [2.1.3]:  
     Fix: Update aborted with error that file can't be overwritten (#73)  
 	New: Remember KeySize and show correct key size for existing keys  
