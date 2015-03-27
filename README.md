@@ -211,7 +211,8 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 
 # Changelog
 * 26.03.2015 [2.1.4]:  
-	New: Support for Exchange 2013 SP1 CU7
+	New: Support for Exchange 2013 SP1 CU8  
+        Fix: Transparent background colors exception  
 * 28.12.2014 [2.1.3]:  
     Fix: Update aborted with error that file can't be overwritten (#73)  
 	New: Remember KeySize and show correct key size for existing keys  
