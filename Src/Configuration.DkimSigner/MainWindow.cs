@@ -1162,6 +1162,8 @@ namespace Configuration.DkimSigner
 
                     dgEventLog.Rows.Add(oImg, oEntry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), oEntry.Message);
                 }
+
+                oLogger.Dispose();
             }
         }
     }
