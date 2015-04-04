@@ -41,7 +41,7 @@ namespace Configuration.DkimSigner
         /**********************************************************/
 
         public MainWindow()
-        {           
+        {
             this.InitializeComponent();
 
             this.athRunning = new Dictionary<ThreadIdentifier, Thread>();
@@ -68,8 +68,6 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            txtAbout.BackColor = tpAbout.BackColor;
-            
             // Get Exchange version installed
             this.txtExchangeInstalled.Text = "Loading ...";
             Thread oTh1 = new Thread(() => { this.CheckExchangeInstalled(); this.athRunning.Remove(ThreadIdentifier.ExchangeInstalled); });
@@ -231,7 +229,7 @@ namespace Configuration.DkimSigner
 
         private void txtDomainSelector_TextChanged(object sender, EventArgs e)
         {
-            if (!Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-zA-Z0-9_]+$", RegexOptions.None))
+            if (!Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-z0-9_]{1,63}(?:\.[a-z0-9_]{1,63})?$", RegexOptions.None))
             {
                 this.epvDomainSelector.SetError(this.txtDomainSelector, "The selector should only contain characters, numbers and underscores.");
             }
@@ -1050,7 +1048,7 @@ namespace Configuration.DkimSigner
                 if (oResponse.RecordsTXT.GetLength(0) > 0)
                 {
                     RecordTXT oTxtRecord = oResponse.RecordsTXT[0];
-                    this.txtDomainDNS.Text = oTxtRecord.TXT.Count > 0 ? oTxtRecord.TXT[0] : "No record found for " + sFullDomain;
+                    this.txtDomainDNS.Text = oTxtRecord.TXT.Count > 0 ? string.Join(string.Empty, oTxtRecord.TXT) : "No record found for " + sFullDomain;
                 }
                 else
                 {
@@ -1164,6 +1162,8 @@ namespace Configuration.DkimSigner
 
                     dgEventLog.Rows.Add(oImg, oEntry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), oEntry.Message);
                 }
+
+                oLogger.Dispose();
             }
         }
     }

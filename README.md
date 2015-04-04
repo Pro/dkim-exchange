@@ -7,9 +7,13 @@ The code for the signing agent is based on the work from  http://nicholas.piasec
 
 We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
 
+We are also happy for any donations to keep new versions flowing :) Especially if you think our DKIM signing agent helped you or your company preventing email spam.
+
+<a href='https://pledgie.com/campaigns/28487'><img alt='Click here to lend your support to: DKIM Exchange Signer and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28487.png?skin_name=chrome' border='0' ></a>
+
 ## Supported versions
 
-The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013)
+The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013)
 
 * Exchange 2007 SP3 (8.3.*)
 * Exchange 2010     (14.0.*)
@@ -24,6 +28,14 @@ The .dll is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2
 * Exchange 2013 CU5 (15.0.913.22)
 * Exchange 2013 CU6 (15.0.995.29)
 * Exchange 2013 CU7 (15.0.1044.25)
+* Exchange 2013 CU8 (15.0.1076.9)
+
+## Requirements
+
+* .NET 3.5 (Exchange 2007 or Exchange 2010) or .NET 4.0 (Exchange 2013)
+* .NET 4.5 (optional - Configuration tool [Configuration.DkimSigner.exe])
+
+Note : Manual install is required is .NET 4.5 isn't installed
 
 # Installing the Transport Agent
 
@@ -76,7 +88,19 @@ If you have any problems installing, please check out the [troubleshooting guide
 
 # Configuring the agent
 
-After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see next section).
+After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see section below).
+
+## Configuration tool
+
+<img alt='Information' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/Information.png' border='0' >
+
+<img alt='DKIM Settings' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/DKIMSettings.png' border='0' >
+
+<img alt='Domain Settings' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/DomainSettings.png' border='0' >
+
+<img alt='EventLogViewer' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/EventLogViewer.png' border='0' >
+
+<img alt='About' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/About.png' border='0' >
 
 ## Manual configuration
 
@@ -198,6 +222,9 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
+* 26.03.2015 [2.1.4]:  
+	New: Support for Exchange 2013 SP1 CU8  
+        Fix: Transparent background colors exception  
 * 28.12.2014 [2.1.3]:  
     Fix: Update aborted with error that file can't be overwritten (#73)  
 	New: Remember KeySize and show correct key size for existing keys  

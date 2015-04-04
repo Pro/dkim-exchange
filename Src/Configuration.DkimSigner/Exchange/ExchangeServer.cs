@@ -82,16 +82,23 @@ namespace Configuration.DkimSigner.Exchange
                 return;
             }
 
+            ServiceController oService = null;
+
             try
             {
                 TimeSpan oTimeout = TimeSpan.FromMilliseconds(60000);
-                ServiceController oService = new ServiceController("MSExchangeTransport");
+                oService = new ServiceController("MSExchangeTransport");
                 oService.Start();
                 oService.WaitForStatus(ServiceControllerStatus.Running, oTimeout);
             }
             catch (Exception e)
             {
                 throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message, e);
+            }
+
+            if (oService != null)
+            {
+                oService.Dispose();
             }
         }
 
@@ -103,16 +110,23 @@ namespace Configuration.DkimSigner.Exchange
                 return;
             }
 
+            ServiceController oService = null;
+
             try
             {
                 TimeSpan oTimeout = TimeSpan.FromMilliseconds(60000);
-                ServiceController oService = new ServiceController("MSExchangeTransport");
+                oService = new ServiceController("MSExchangeTransport");
                 oService.Stop();
                 oService.WaitForStatus(ServiceControllerStatus.Stopped, oTimeout);
             }
             catch (Exception e)
             {
                 throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message, e);
+            }
+
+            if (oService != null)
+            {
+                oService.Dispose();
             }
         }
 
