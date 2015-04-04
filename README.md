@@ -88,7 +88,19 @@ If you have any problems installing, please check out the [troubleshooting guide
 
 # Configuring the agent
 
-After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see next section).
+After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see section below).
+
+## Configuration tool
+
+<img alt='Information' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/Information.png' border='0' >
+
+<img alt='DKIM Settings' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/DKIMSettings.png' border='0' >
+
+<img alt='Domain Settings' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/DomainSettings.png' border='0' >
+
+<img alt='EventLogViewer' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/EventLogViewer.png' border='0' >
+
+<img alt='About' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/About.png' border='0' >
 
 ## Manual configuration
 
