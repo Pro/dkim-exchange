@@ -1048,7 +1048,7 @@ namespace Configuration.DkimSigner
                 if (oResponse.RecordsTXT.GetLength(0) > 0)
                 {
                     RecordTXT oTxtRecord = oResponse.RecordsTXT[0];
-                    this.txtDomainDNS.Text = oTxtRecord.TXT.Count > 0 ? oTxtRecord.TXT[0] : "No record found for " + sFullDomain;
+                    this.txtDomainDNS.Text = oTxtRecord.TXT.Count > 0 ? string.Join(string.Empty, oTxtRecord.TXT) : "No record found for " + sFullDomain;
                 }
                 else
                 {
