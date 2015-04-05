@@ -116,7 +116,7 @@ namespace Configuration.DkimSigner
                 }
 
                 // IF any thread running, we stop them before exit
-                foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
+                foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning.ToList())
                 {
                     Thread oTh = oTemp.Value;
                     if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
@@ -294,7 +294,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException e)
             {
-                MessageBox.Show("Couldn't determine installed Exchange Version: " + e.Message, "Exchange Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Couldn't determine installed Exchange Version: " + e.Message, "Exchange Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             // Uptade Microsft Exchange Transport Service stuatus
@@ -476,11 +476,11 @@ namespace Configuration.DkimSigner
                         break;
                 }
 
-                MessageBox.Show(sSuccessMessage, "Service", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, sSuccessMessage, "Service", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ExchangeServerException)
             {
-                MessageBox.Show("Couldn't change MSExchangeTransport service status.\n", "Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Couldn't change MSExchangeTransport service status.\n", "Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -495,7 +495,7 @@ namespace Configuration.DkimSigner
             // IF the configuration have changed
             if (this.bDataUpdated)
             {
-                DialogResult result = MessageBox.Show("Do you want to save your changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show(this, "Do you want to save your changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
                 // IF we want to save the change
                 if (result == DialogResult.Yes)
@@ -503,7 +503,7 @@ namespace Configuration.DkimSigner
                     // IF we can't save the changes
                     if (!this.SaveDkimSignerConfig())
                     {
-                        if (MessageBox.Show("Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        if (MessageBox.Show(this, "Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                         {
                             bStatus = false;
                         }
@@ -529,7 +529,7 @@ namespace Configuration.DkimSigner
 
             if (!this.oConfig.Load(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
             {
-                MessageBox.Show("Couldn't load the settings file.\n Setting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Couldn't load the settings file.\n Setting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             //
@@ -551,7 +551,7 @@ namespace Configuration.DkimSigner
                     break;
                 default:
                     this.cbLogLevel.Text = "Information";
-                    MessageBox.Show("The log level is invalid. Set to default: Information.");
+                    MessageBox.Show(this, "The log level is invalid. Set to default: Information.");
                     break;
             }
 
@@ -677,7 +677,7 @@ namespace Configuration.DkimSigner
             {
                 sPath = sPath.Substring(sKeyDir.Length + 1);
             }
-            else if (MessageBox.Show("It is strongly recommended to store all the keys in the directory\n" + sKeyDir + "\nDo you want me to move the key into this directory?", "Move key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            else if (MessageBox.Show(this, "It is strongly recommended to store all the keys in the directory\n" + sKeyDir + "\nDo you want me to move the key into this directory?", "Move key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 List<string> asFile = new List<string>();
                 asFile.Add(sPath);
@@ -697,7 +697,7 @@ namespace Configuration.DkimSigner
                         }
                         catch (IOException ex)
                         {
-                            MessageBox.Show("Couldn't move file:\n" + sFile + "\nto\n" + sNewPath + "\n" + ex.Message, "Error moving file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show(this, "Couldn't move file:\n" + sFile + "\nto\n" + sNewPath + "\n" + ex.Message, "Error moving file", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -750,7 +750,7 @@ namespace Configuration.DkimSigner
                 if (contents.Length == 0)
                 {
                     this.Cursor = Cursors.Default;
-                    MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, "Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 rootDir = contents[0];
@@ -767,7 +767,7 @@ namespace Configuration.DkimSigner
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -807,7 +807,7 @@ namespace Configuration.DkimSigner
 
         private void btUpgrade_Click(object sender, EventArgs e)
         {
-            if (this.btUpgrade.Text == "Upgrade" || this.btUpgrade.Text == "Reinstall" ? MessageBox.Show("Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
+            if (this.btUpgrade.Text == "Upgrade" || this.btUpgrade.Text == "Reinstall" ? MessageBox.Show(this, "Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
                 string zipUrl = null;
                 if (this.dkimSignerAvailable != null)
@@ -882,7 +882,7 @@ namespace Configuration.DkimSigner
         {
             if (this.bDataUpdated)
             {
-                DialogResult result = MessageBox.Show("Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult result = MessageBox.Show(this, "Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
@@ -931,7 +931,7 @@ namespace Configuration.DkimSigner
 
             foreach (string sFile in asFile)
             {
-                if (File.Exists(sFile) && MessageBox.Show("Do you want me to delete the key file?\n" + sFile, "Delete key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (File.Exists(sFile) && MessageBox.Show(this, "Do you want me to delete the key file?\n" + sFile, "Delete key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try
                     {
@@ -939,7 +939,7 @@ namespace Configuration.DkimSigner
                     }
                     catch (IOException ex)
                     {
-                        MessageBox.Show("Couldn't delete file:\n" + sFile + "\n" + ex.Message, "Error deleting file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "Couldn't delete file:\n" + sFile + "\n" + ex.Message, "Error deleting file", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -1058,7 +1058,7 @@ namespace Configuration.DkimSigner
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Coldn't get DNS record:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "Coldn't get DNS record:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.txtDomainDNS.Text = "Error getting record.";
             }
         }
@@ -1105,7 +1105,7 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                MessageBox.Show("You first need to fix the errors in your domain configuration before saving.", "Config error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "You first need to fix the errors in your domain configuration before saving.", "Config error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

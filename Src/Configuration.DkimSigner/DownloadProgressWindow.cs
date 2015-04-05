@@ -60,7 +60,7 @@ namespace Configuration.DkimSigner
             }
             else if (e.Error != null)
             {
-                MessageBox.Show("Error downloading file: " + sUrl + "\n" + e.Error.Message);
+                MessageBox.Show(this, "Error downloading file: " + sUrl + "\n" + e.Error.Message);
                 
                 this.pgFile.Value = 0;
                 this.lbFile.Text = "Error: " + e.Error.Message;

@@ -134,14 +134,14 @@ namespace Configuration.DkimSigner
                 }
                 else
                 {
-                    MessageBox.Show("No release information from the Web available.", "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this, "No release information from the Web available.", "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     this.cbVersionWeb.Enabled = false;
                 }
             }
             else
             {
-                MessageBox.Show("Could not obtain release information from the Web. Check your Internet connection or retry later.", "Error fetching version", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Could not obtain release information from the Web. Check your Internet connection or retry later.", "Error fetching version", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 this.cbVersionWeb.Enabled = false;
             }
@@ -554,7 +554,7 @@ namespace Configuration.DkimSigner
                             string[] contents = Directory.GetDirectories(extractPath);
                             if (contents.Length == 0)
                             {
-                                MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show(this, "Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 bStatus = false;
                             }
                             downloadRootDir = contents[0];
@@ -643,17 +643,17 @@ namespace Configuration.DkimSigner
                     this.btClose.Enabled = true;
                     if (bStatus)
                     {
-                        MessageBox.Show("Successfully installed/upgraded DKIM Signer. You can now close this window.", "Installed/Upgraded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(this, "Successfully installed/upgraded DKIM Signer. You can now close this window.", "Installed/Upgraded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("You have to select a version to install from the Web or a ZIP file.", "Select version", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this, "You have to select a version to install from the Web or a ZIP file.", "Select version", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             else
             {
-                MessageBox.Show("Microsoft Exchange server must be installed before attempt to install DKIM agent.", "Exchange not installed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Microsoft Exchange server must be installed before attempt to install DKIM agent.", "Exchange not installed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -695,7 +695,7 @@ namespace Configuration.DkimSigner
             // Start new installed DKIM Signer Configuration GUI
             if (this.btInstall.Enabled == false && this.picStopService.Image == this.statusImageList.Images[0])
             {
-                if (MessageBox.Show("Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(this, "Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
                     if (File.Exists(sPathExec))
@@ -704,7 +704,7 @@ namespace Configuration.DkimSigner
                     }
                     else
                     {
-                        MessageBox.Show("Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

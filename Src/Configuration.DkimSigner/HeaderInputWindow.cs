@@ -27,7 +27,7 @@ namespace Configuration.DkimSigner
         {
             if (this.DialogResult == DialogResult.OK && this.txtHeader.Text == string.Empty)
             {
-                MessageBox.Show("You must enter a header!", "Value missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "You must enter a header!", "Value missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
         }
