@@ -116,7 +116,7 @@ namespace Configuration.DkimSigner
                 }
 
                 // IF any thread running, we stop them before exit
-                foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning.ToList())
+                foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
                 {
                     Thread oTh = oTemp.Value;
                     if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
