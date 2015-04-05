@@ -27,6 +27,8 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
+        private delegate void ShowMessageBoxCallback(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon);
+
         private Settings oConfig = null;
         private Version dkimSignerInstalled = null;
         private Release dkimSignerAvailable = null;
@@ -248,6 +250,19 @@ namespace Configuration.DkimSigner
         /******************* Internal functions *******************/
         /**********************************************************/
 
+        private void ShowMessageBox(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon)
+        {
+            if (this.InvokeRequired)
+            {
+                ShowMessageBoxCallback c = new ShowMessageBoxCallback(this.ShowMessageBox);
+                this.Invoke(c, new object[] { title, message, buttons, icon });
+            }
+            else
+            {
+                MessageBox.Show(this, message, title, buttons, icon);
+            }
+        }
+
         /// <summary>
         /// Check if a string is in base64
         /// </summary>
@@ -294,7 +309,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException e)
             {
-                MessageBox.Show(this, "Couldn't determine installed Exchange Version: " + e.Message, "Exchange Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Exchange Version Error", "Couldn't determine installed Exchange Version: " + e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             // Uptade Microsft Exchange Transport Service stuatus
