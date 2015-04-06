@@ -3,76 +3,20 @@ using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Security;
 using System.Text;
 
 namespace Configuration.DkimSigner.Exchange
 {
     public class PowerShellHelper
-	{
+    {
         private static Runspace runspace = null;
 
-        /// <summary>
-        /// Ensure singleton runspace creation.
-        /// </summary>
-        /// <returns>A singleton instance of a runspace which supports Exchange PowerShell Management commands.</returns>
-        [MethodImpl(MethodImplOptions.Synchronized)]
-        private static Runspace getRunspace()
+        public static readonly string[] EXCHANGE_PSSNAPIN =
         {
-            if (runspace != null)
-                return runspace;
-            RunspaceConfiguration runspaceConfiguration = RunspaceConfiguration.Create();
-	        PSSnapInException ex = null;
-	        PSSnapInInfo pSSnapInInfo = null;
-
-            // Exchange 2007
-	        try
-	        {
-		        pSSnapInInfo = runspaceConfiguration.AddPSSnapIn("Microsoft.Exchange.Management.PowerShell.Admin", out ex);
-	        }
-	        catch {}
-
-            // Exchange 2010 
-	        try
-	        {
-		        pSSnapInInfo = runspaceConfiguration.AddPSSnapIn("Microsoft.Exchange.Management.PowerShell.E2010", out ex);
-	        }
-	        catch {}
-
-            // Exchange 2013
-    	    try
-	        {
-		        pSSnapInInfo = runspaceConfiguration.AddPSSnapIn("Microsoft.Exchange.Management.PowerShell.SnapIn", out ex);
-	        }
-	        catch {}
-    
-            if (pSSnapInInfo != null)
-            {
-                Exception except = null;
-
-                try
-                {
-                    runspace = RunspaceFactory.CreateRunspace(runspaceConfiguration);
-                    runspace.Open();
-                }
-                catch (Exception exc)
-                {
-                    except = exc;
-                    if (runspace != null)
-                        runspace.Dispose();
-                    runspace = null;
-                }
-                if (except != null)
-                    throw except;
-            }
-            else
-            {
-                throw new ExchangeServerException("Couldn't initialize PowerShell Runspace");
-            }
-
-            return runspace;
-        }
+            "Microsoft.Exchange.Management.PowerShell.Admin",   // Exchange 2007
+            "Microsoft.Exchange.Management.PowerShell.E2010",   // Exchange 2010 
+            "Microsoft.Exchange.Management.PowerShell.SnapIn"   // Exchange 2013
+        };
 
         /// <summary>
         /// Execute a specific command within the PowerShell and return its output.
@@ -84,32 +28,64 @@ namespace Configuration.DkimSigner.Exchange
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static string ExecPowerShellCommand(string sCommand, bool bRemoveEmptyLines)
         {
-            Runspace runspace = getRunspace();
+            if (PowerShellHelper.runspace == null)
+            {
+                PSSnapInInfo info = null;
+                PSSnapInException ex = null;
+                bool error = false;
 
+                try
+                {
+                    PowerShellHelper.runspace = RunspaceFactory.CreateRunspace(RunspaceConfiguration.Create());
+                    PowerShellHelper.runspace.Open();
+
+                    foreach (string pssnapin in PowerShellHelper.EXCHANGE_PSSNAPIN)
+                    {
+                        if (PowerShellHelper.Execute("$(Get-PSSnapin | Select-String " + pssnapin + ") -ne $null", true).Trim() == "True")
+                        {
+                            info = PowerShellHelper.runspace.RunspaceConfiguration.AddPSSnapIn(pssnapin, out ex);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    error = true;
+                }
+
+                if (ex != null || info == null || error)
+                {
+                    PowerShellHelper.runspace = null;
+                    PowerShellHelper.runspace.Dispose();
+                    throw new ExchangeServerException("Couldn't initialize PowerShell runspace.");
+                }
+            }
+
+            return PowerShellHelper.Execute(sCommand, bRemoveEmptyLines);
+        }
+
+        private static string Execute(string sCommand, bool bRemoveEmptyLines)
+        {
+            StringBuilder sb = new StringBuilder();
             Pipeline pipeline = null;
             Exception except = null;
 
-            string result = null;
             try
             {
-                pipeline = runspace.CreatePipeline();
+                pipeline = PowerShellHelper.runspace.CreatePipeline();
                 pipeline.Commands.Clear();
                 pipeline.Commands.AddScript(sCommand);
                 pipeline.Commands.Add("Out-String");
                 Collection<PSObject> collection = pipeline.Invoke();
 
-                StringBuilder stringBuilder = new StringBuilder();
-
                 foreach (PSObject current in collection)
                 {
-                    stringBuilder.AppendLine(current.ToString());
+                    sb.AppendLine(current.ToString());
                 }
 
-                string text = stringBuilder.ToString();
                 if (bRemoveEmptyLines)
                 {
-                    stringBuilder = new StringBuilder();
-                    string[] array = text.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    string[] array = sb.ToString().Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                    sb = new StringBuilder();
 
                     for (int i = 0; i < array.Length; i++)
                     {
@@ -117,29 +93,29 @@ namespace Configuration.DkimSigner.Exchange
 
                         if (!string.IsNullOrEmpty(value))
                         {
-                            stringBuilder.AppendLine(value);
+                            sb.AppendLine(value);
                         }
                     }
-
-                    text = stringBuilder.ToString();
                 }
-
-                result = text;
             }
-            catch (Exception exc)
+            catch (Exception ex)
             {
-                except = exc;
-                runspace = null;
+                except = ex;
             }
             finally
             {
                 if (pipeline != null)
+                {
                     pipeline.Dispose();
+                }
             }
+
             if (except != null)
+            {
                 throw except;
-            return result;
+            }
+
+            return sb.ToString();
         }
     }
-
 }
