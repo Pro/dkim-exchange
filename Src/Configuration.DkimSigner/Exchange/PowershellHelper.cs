@@ -41,7 +41,7 @@ namespace Configuration.DkimSigner.Exchange
 
                     foreach (string pssnapin in PowerShellHelper.EXCHANGE_PSSNAPIN)
                     {
-                        if (PowerShellHelper.Execute("$(Get-PSSnapin | Select-String " + pssnapin + ") -ne $null", true).Trim() == "True")
+                        if (PowerShellHelper.Execute("$(Get-PSSnapin -Registered | Select-String " + pssnapin + ") -ne $null", true).Trim() == "True")
                         {
                             info = PowerShellHelper.runspace.RunspaceConfiguration.AddPSSnapIn(pssnapin, out ex);
                         }
