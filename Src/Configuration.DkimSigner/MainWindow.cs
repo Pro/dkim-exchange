@@ -18,7 +18,7 @@ using Heijden.DNS;
 
 namespace Configuration.DkimSigner
 {
-    public partial class MainWindow : Form
+    public partial class MainWindow : Form, TransportServiceStatusObserver
     {
         private enum TransportServiceAction { Start, Stop, Restart };
         private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled, TransportServiceAction };
@@ -27,14 +27,13 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
-        private delegate void ShowMessageBoxCallback(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon);
+        private delegate DialogResult ShowMessageBoxCallback(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon);
 
         private Settings oConfig = null;
         private Version dkimSignerInstalled = null;
         private Release dkimSignerAvailable = null;
-
+        private TransportServiceStatus transportServiceStatus = null;
         private IDictionary<ThreadIdentifier, Thread> athRunning = null;
-        private System.Threading.Timer tiTransportServiceStatus = null;
 
         private bool bDataUpdated = false;
 
@@ -89,8 +88,9 @@ namespace Configuration.DkimSigner
             this.athRunning.Add(ThreadIdentifier.DkimSignerInstalled, oTh3);
             try { oTh3.Start(); } catch (ThreadAbortException) { }
 
-            // Update transport service status each second
-            this.tiTransportServiceStatus = new System.Threading.Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
+            // Check transport service status each second
+            this.transportServiceStatus = new TransportServiceStatus();
+            this.transportServiceStatus.Subscribe(this);
 
             // Load setting from XML file
             this.LoadDkimSignerConfig();
@@ -112,10 +112,8 @@ namespace Configuration.DkimSigner
             {
 		        this.Hide();
 
-                if (this.tiTransportServiceStatus != null)
-                {
-                    this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
-                }
+                this.transportServiceStatus.Dispose();
+                this.transportServiceStatus = null;
 
                 // IF any thread running, we stop them before exit
                 foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
@@ -197,10 +195,16 @@ namespace Configuration.DkimSigner
                 this.txtDomainName.Text = oSelected.Domain;
                 this.txtDomainSelector.Text = oSelected.Selector;
                 this.txtDomainPrivateKeyFilename.Text = oSelected.PrivateKeyFile;
+
                 if (oSelected.CryptoProvider == null)
+                {
                     oSelected.InitElement(Constants.DKIM_SIGNER_PATH);
+                }
+
                 if (oSelected.CryptoProvider != null)
+                {
                     this.cbKeyLength.Text = oSelected.CryptoProvider.KeySize.ToString();
+                }
 
                 this.UpdateSuggestedDNS();
                 this.txtDomainDNS.Text = "";
@@ -250,19 +254,6 @@ namespace Configuration.DkimSigner
         /******************* Internal functions *******************/
         /**********************************************************/
 
-        private void ShowMessageBox(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon)
-        {
-            if (this.InvokeRequired)
-            {
-                ShowMessageBoxCallback c = new ShowMessageBoxCallback(this.ShowMessageBox);
-                this.Invoke(c, new object[] { title, message, buttons, icon });
-            }
-            else
-            {
-                MessageBox.Show(this, message, title, buttons, icon);
-            }
-        }
-
         /// <summary>
         /// Check if a string is in base64
         /// </summary>
@@ -274,24 +265,26 @@ namespace Configuration.DkimSigner
             return (s.Length % 4 == 0) && Regex.IsMatch(s, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
         }
 
-        /// <summary>
-        /// Check the Microsoft Exchange Transport Service Status
-        /// </summary>
-        /// <param name="state"></param>
-        private void CheckExchangeTransportServiceStatus(object state)
+        private DialogResult ShowMessageBox(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
-            string sStatus = null;
+            DialogResult? result = null;
 
-            try
+            if (this.InvokeRequired)
             {
-                sStatus = ExchangeServer.GetTransportServiceStatus().ToString();
+                ShowMessageBoxCallback c = new ShowMessageBoxCallback(this.ShowMessageBox);
+                result = this.Invoke(c, new object[] { title, message, buttons, icon }) as DialogResult?;
             }
-            catch (ExchangeServerException)
+            else
             {
-                this.tiTransportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+                result = MessageBox.Show(this, message, title, buttons, icon);
             }
 
-            this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
+            if (result == null)
+            {
+                throw new Exception("Unexpected error from MessageBox.");
+            }
+
+            return (DialogResult) result;
         }
 
         /// <summary>
@@ -422,6 +415,12 @@ namespace Configuration.DkimSigner
             this.SetUpgradeButton();
         }
 
+        public void UpdateTransportStatus()
+        {
+            string sStatus = this.transportServiceStatus.GetStatus();
+            this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
+        }
+
         private void SetUpgradeButton()
         {
             string texte = string.Empty;
@@ -491,11 +490,11 @@ namespace Configuration.DkimSigner
                         break;
                 }
 
-                MessageBox.Show(this, sSuccessMessage, "Service", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.ShowMessageBox("Service", sSuccessMessage, MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (ExchangeServerException)
             {
-                MessageBox.Show(this, "Couldn't change MSExchangeTransport service status.\n", "Service", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Service", "Couldn't change MSExchangeTransport service status.\n", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -510,15 +509,15 @@ namespace Configuration.DkimSigner
             // IF the configuration have changed
             if (this.bDataUpdated)
             {
-                DialogResult result = MessageBox.Show(this, "Do you want to save your changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult result = this.ShowMessageBox("Save changes?", "Do you want to save your changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
                 // IF we want to save the change
                 if (result == DialogResult.Yes)
                 {
                     // IF we can't save the changes
                     if (!this.SaveDkimSignerConfig())
-                    {
-                        if (MessageBox.Show(this, "Error saving config. Do you wan to close anyways? This will discard all the changes!", "Discard changes?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                    {      
+                        if (this.ShowMessageBox("Discard changes?", "Error saving config. Do you wan to close anyways? This will discard all the changes!", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                         {
                             bStatus = false;
                         }
@@ -544,7 +543,7 @@ namespace Configuration.DkimSigner
 
             if (!this.oConfig.Load(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
             {
-                MessageBox.Show(this, "Couldn't load the settings file.\n Setting it to default values.", "Settings error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Settings error", "Couldn't load the settings file.\n Setting it to default values.", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             //
@@ -566,7 +565,7 @@ namespace Configuration.DkimSigner
                     break;
                 default:
                     this.cbLogLevel.Text = "Information";
-                    MessageBox.Show(this, "The log level is invalid. Set to default: Information.");
+                    this.ShowMessageBox("Information", "The log level is invalid. Set to default: Information.", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     break;
             }
 
@@ -692,7 +691,7 @@ namespace Configuration.DkimSigner
             {
                 sPath = sPath.Substring(sKeyDir.Length + 1);
             }
-            else if (MessageBox.Show(this, "It is strongly recommended to store all the keys in the directory\n" + sKeyDir + "\nDo you want me to move the key into this directory?", "Move key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            else if (this.ShowMessageBox("Move key?", "It is strongly recommended to store all the keys in the directory\n" + sKeyDir + "\nDo you want me to move the key into this directory?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 List<string> asFile = new List<string>();
                 asFile.Add(sPath);
@@ -712,7 +711,7 @@ namespace Configuration.DkimSigner
                         }
                         catch (IOException ex)
                         {
-                            MessageBox.Show(this, "Couldn't move file:\n" + sFile + "\nto\n" + sNewPath + "\n" + ex.Message, "Error moving file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            this.ShowMessageBox("Error moving file", "Couldn't move file:\n" + sFile + "\nto\n" + sNewPath + "\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
                     }
                 }
@@ -765,7 +764,7 @@ namespace Configuration.DkimSigner
                 if (contents.Length == 0)
                 {
                     this.Cursor = Cursors.Default;
-                    MessageBox.Show(this, "Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    this.ShowMessageBox("Empty download", "Downloaded .zip is empty. Please try again.", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 rootDir = contents[0];
@@ -782,7 +781,7 @@ namespace Configuration.DkimSigner
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "Couldn't start the process :\n" + ex.Message, "Updater error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Updater error", "Couldn't start the process :\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -897,7 +896,7 @@ namespace Configuration.DkimSigner
         {
             if (this.bDataUpdated)
             {
-                DialogResult result = MessageBox.Show(this, "Do you want to save the current changes?", "Save changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+                DialogResult result = this.ShowMessageBox("Save changes?", "Do you want to save the current changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
                 if (result == DialogResult.Yes)
                 {
@@ -946,7 +945,7 @@ namespace Configuration.DkimSigner
 
             foreach (string sFile in asFile)
             {
-                if (File.Exists(sFile) && MessageBox.Show(this, "Do you want me to delete the key file?\n" + sFile, "Delete key?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (File.Exists(sFile) && this.ShowMessageBox("Delete key?", "Do you want me to delete the key file?\n" + sFile, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try
                     {
@@ -954,7 +953,7 @@ namespace Configuration.DkimSigner
                     }
                     catch (IOException ex)
                     {
-                        MessageBox.Show(this, "Couldn't delete file:\n" + sFile + "\n" + ex.Message, "Error deleting file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        this.ShowMessageBox("Error deleting file", "Couldn't delete file:\n" + sFile + "\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -1073,7 +1072,7 @@ namespace Configuration.DkimSigner
             }
             catch (Exception ex)
             {
-                MessageBox.Show(this, "Coldn't get DNS record:\n" + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Error", "Coldn't get DNS record:\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 this.txtDomainDNS.Text = "Error getting record.";
             }
         }
@@ -1120,7 +1119,7 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                MessageBox.Show(this, "You first need to fix the errors in your domain configuration before saving.", "Config error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Config error", "You first need to fix the errors in your domain configuration before saving.", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

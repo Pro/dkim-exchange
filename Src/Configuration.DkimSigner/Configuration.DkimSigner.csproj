@@ -118,6 +118,8 @@
     <Compile Include="Exchange\ExchangeServerException.cs" />
     <Compile Include="Exchange\TransportServiceAgent.cs" />
     <Compile Include="Exchange\PowershellHelper.cs" />
+    <Compile Include="Exchange\TransportServiceStatus.cs" />
+    <Compile Include="Exchange\TransportServiceStatusObserver.cs" />
     <Compile Include="FileIO\FileOperation.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
