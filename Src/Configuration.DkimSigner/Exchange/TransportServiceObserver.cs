@@ -1,6 +1,6 @@
 ﻿namespace Configuration.DkimSigner.Exchange
 {
-    public interface TransportServiceStatusObserver
+    public interface TransportServiceObserver
     {
         void UpdateTransportStatus();
     }

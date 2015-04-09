@@ -18,10 +18,9 @@ using Heijden.DNS;
 
 namespace Configuration.DkimSigner
 {
-    public partial class MainWindow : Form, TransportServiceStatusObserver
+    public partial class MainWindow : Form, TransportServiceObserver
     {
-        private enum TransportServiceAction { Start, Stop, Restart };
-        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled, TransportServiceAction };
+        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled };
 
         /**********************************************************/
         /*********************** Variables ************************/
@@ -32,7 +31,7 @@ namespace Configuration.DkimSigner
         private Settings oConfig = null;
         private Version dkimSignerInstalled = null;
         private Release dkimSignerAvailable = null;
-        private TransportServiceStatus transportServiceStatus = null;
+        private TransportService transportService = null;
         private IDictionary<ThreadIdentifier, Thread> athRunning = null;
 
         private bool bDataUpdated = false;
@@ -89,8 +88,8 @@ namespace Configuration.DkimSigner
             try { oTh3.Start(); } catch (ThreadAbortException) { }
 
             // Check transport service status each second
-            this.transportServiceStatus = new TransportServiceStatus();
-            this.transportServiceStatus.Subscribe(this);
+            this.transportService = new TransportService();
+            this.transportService.Subscribe(this);
 
             // Load setting from XML file
             this.LoadDkimSignerConfig();
@@ -112,8 +111,8 @@ namespace Configuration.DkimSigner
             {
 		        this.Hide();
 
-                this.transportServiceStatus.Dispose();
-                this.transportServiceStatus = null;
+                this.transportService.Dispose();
+                this.transportService = null;
 
                 // IF any thread running, we stop them before exit
                 foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
@@ -417,7 +416,7 @@ namespace Configuration.DkimSigner
 
         public void UpdateTransportStatus()
         {
-            string sStatus = this.transportServiceStatus.GetStatus();
+            string sStatus = this.transportService.GetStatus();
             this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
         }
 
@@ -466,36 +465,6 @@ namespace Configuration.DkimSigner
 
             this.btUpgrade.BeginInvoke(new Action(() => this.btUpgrade.Text = texte));
             this.btUpgrade.BeginInvoke(new Action(() => this.btUpgrade.Enabled = status));
-        }
-
-        private void DoTransportServiceAction(TransportServiceAction oAction)
-        {
-            string sSuccessMessage = string.Empty;
-
-            try
-            {
-                switch (oAction)
-                {
-                    case TransportServiceAction.Start:
-                        sSuccessMessage = "MSExchangeTransport service successfully started.\n";
-                        ExchangeServer.StartTransportService();
-                        break;
-                    case TransportServiceAction.Stop:
-                        sSuccessMessage = "MSExchangeTransport service successfully stopped.\n";
-                        ExchangeServer.StopTransportService();
-                        break;
-                    case TransportServiceAction.Restart:
-                        sSuccessMessage = "MSExchangeTransport service successfully restarted.\n";
-                        ExchangeServer.RestartTransportService();
-                        break;
-                }
-
-                this.ShowMessageBox("Service", sSuccessMessage, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            catch (ExchangeServerException)
-            {
-                this.ShowMessageBox("Service", "Couldn't change MSExchangeTransport service status.\n", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         /// <summary>
@@ -797,25 +766,17 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void genericTransportService_Click(object sender, EventArgs e)
         {
-            Thread oTh = null;
-
             switch(((Button)sender).Name)
             {
                 case "btStartTransportService":
-                    oTh = new Thread(() => { this.DoTransportServiceAction(TransportServiceAction.Start); this.athRunning.Remove(ThreadIdentifier.TransportServiceAction); });
+                    this.transportService.Do(TransportServiceAction.Start);
                     break;
                 case "btStopTransportService":
-                    oTh = new Thread(() => { this.DoTransportServiceAction(TransportServiceAction.Stop); this.athRunning.Remove(ThreadIdentifier.TransportServiceAction); });
+                    this.transportService.Do(TransportServiceAction.Stop);
                     break;
                 case "btRestartTransportService":
-                    oTh = new Thread(() => { this.DoTransportServiceAction(TransportServiceAction.Restart); this.athRunning.Remove(ThreadIdentifier.TransportServiceAction); });
+                    this.transportService.Do(TransportServiceAction.Restart);
                     break;
-            }
-
-            if (oTh != null)
-            {
-                this.athRunning.Add(ThreadIdentifier.TransportServiceAction, oTh);
-                try { oTh.Start(); } catch (ThreadAbortException) { }
             }
         }
 
