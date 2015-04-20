@@ -35,7 +35,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * .NET 3.5 (Exchange 2007 or Exchange 2010) or .NET 4.0 (Exchange 2013)
 * .NET 4.5 (optional - Configuration tool [Configuration.DkimSigner.exe])
 
-Note : Manual install is required is .NET 4.5 isn't installed
+Note : Manual install (see section below) is required if .NET 4.5 isn't installed
 
 # Installing the Transport Agent
 

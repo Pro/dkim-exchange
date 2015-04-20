@@ -57,13 +57,13 @@ namespace Configuration.DkimSigner
             {
                 ExchangeServer.UninstallDkimTransportAgent();
                 this.RefreshTransportServiceAgents();
-                MessageBox.Show("Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DKIM_SIGNER_PATH + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!","Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                /*if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                MessageBox.Show(this, "Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DKIM_SIGNER_PATH + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!","Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                /*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     if (File.Exists(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
                         File.Delete(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
                 }*/
-                /*if (MessageBox.Show("Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all its content?\nWARNING: All your settings and keys will be deleted too!", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
+                /*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all its content?\nWARNING: All your settings and keys will be deleted too!", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     var dir = new DirectoryInfo(Constants.DKIM_SIGNER_PATH);
                     dir.Delete(true);
@@ -71,7 +71,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException e)
             {
-                MessageBox.Show(e.Message, "Uninstall error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, e.Message, "Uninstall error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -138,7 +138,7 @@ namespace Configuration.DkimSigner
 
         private void btUninstall_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you really want to UNINSTALL the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show(this, "Do you really want to UNINSTALL the DKIM Exchange Agent?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 this.performUninstall();
             }
@@ -167,7 +167,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -180,7 +180,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -193,7 +193,7 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException ex)
             {
-                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 

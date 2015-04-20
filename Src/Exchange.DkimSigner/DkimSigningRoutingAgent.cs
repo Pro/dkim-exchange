@@ -24,6 +24,11 @@ namespace Exchange.DkimSigner
         /// </summary>
         private FileSystemWatcher watcher;
 
+        /// <summary>  
+        /// This context to allow Exchange to continue processing a message  
+        /// </summary>  
+        private AgentAsyncContext agentAsyncContext; 
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
@@ -105,11 +110,17 @@ namespace Exchange.DkimSigner
             Logger.LogDebug("Got new message, checking if I can sign it...");
             try
             {
+                this.agentAsyncContext = this.GetAgentAsyncContext();
+
                 this.SignMailItem(e.MailItem);
             }
             catch (Exception ex)
             {
                 Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex.ToString());
+            }
+            finally
+            {
+                this.agentAsyncContext.Complete();
             }
         }
 

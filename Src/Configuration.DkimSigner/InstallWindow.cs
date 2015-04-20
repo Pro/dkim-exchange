@@ -20,9 +20,7 @@ namespace Configuration.DkimSigner
         /**********************************************************/
 
         private List<Release> aoVersionAvailable = null;
-
         private string sExchangeVersion = null;
-
 
         private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable };
         private IDictionary<ThreadIdentifier, Thread> athRunning = null;
@@ -134,14 +132,14 @@ namespace Configuration.DkimSigner
                 }
                 else
                 {
-                    MessageBox.Show("No release information from the Web available.", "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this, "No release information from the Web available.", "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     this.cbVersionWeb.Enabled = false;
                 }
             }
             else
             {
-                MessageBox.Show("Could not obtain release information from the Web. Check your Internet connection or retry later.", "Error fetching version", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Could not obtain release information from the Web. Check your Internet connection or retry later.", "Error fetching version", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
                 this.cbVersionWeb.Enabled = false;
             }
@@ -405,67 +403,16 @@ namespace Configuration.DkimSigner
 
         public static string getSourceDirectoryForVersion(string exchangeVersion)
         {
-            if (exchangeVersion.StartsWith("8.3."))
+            foreach(KeyValuePair<string, string> entry in Constants.DKIM_SIGNER_VERSION_DIRECTORY)
             {
-                return "Exchange 2007 SP3";
+                if (exchangeVersion.StartsWith(entry.Key))
+                {
+                    return entry.Value;
+                }
             }
-            else if (exchangeVersion.StartsWith("14.0."))
-            {
-                return "Exchange 2010";
-            }
-            else if (exchangeVersion.StartsWith("14.1."))
-            {
-                return "Exchange 2010 SP1";
-            }
-            else if (exchangeVersion.StartsWith("14.2."))
-            {
-                return "Exchange 2010 SP2";
-            }
-            else if (exchangeVersion.StartsWith("14.3."))
-            {
-                return "Exchange 2010 SP3";
-            }
-            else if (exchangeVersion.StartsWith("15.0.516.32"))
-            {
-                return "Exchange 2013";
-            }
-            else if (exchangeVersion.StartsWith("15.0.620.29"))
-            {
-                return "Exchange 2013 CU1";
-            }
-            else if (exchangeVersion.StartsWith("15.0.712.24"))
-            {
-                return "Exchange 2013 CU2";
-            }
-            else if (exchangeVersion.StartsWith("15.0.775.38"))
-            {
-                return "Exchange 2013 CU3";
-            }
-            else if (exchangeVersion.StartsWith("15.0.847.32"))
-            {
-                return "Exchange 2013 SP1 CU4";
-            }
-            else if (exchangeVersion.StartsWith("15.0.913.22"))
-            {
-                return "Exchange 2013 SP1 CU5";
-            }
-            else if (exchangeVersion.StartsWith("15.0.995.29"))
-            {
-                return "Exchange 2013 SP1 CU6";
-            }
-			else if (exchangeVersion.StartsWith("15.0.1044.25"))
-            {
-                return "Exchange 2013 SP1 CU7";
-            }
-			else if (exchangeVersion.StartsWith("15.0.1076.9"))
-            {
-                return "Exchange 2013 SP1 CU8";
-            }
-            else
-            {
-                MessageBox.Show("Your Microsoft Exchange version isn't supported by the DKIM agent: " + exchangeVersion, "Version not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return null;
-            }
+
+            MessageBox.Show("Your Microsoft Exchange version isn't supported by the DKIM agent: " + exchangeVersion, "Version not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return null;
         }
 
 
@@ -554,7 +501,7 @@ namespace Configuration.DkimSigner
                             string[] contents = Directory.GetDirectories(extractPath);
                             if (contents.Length == 0)
                             {
-                                MessageBox.Show("Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                MessageBox.Show(this, "Downloaded .zip is empty. Please try again.", "Empty download", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 bStatus = false;
                             }
                             downloadRootDir = contents[0];
@@ -643,17 +590,17 @@ namespace Configuration.DkimSigner
                     this.btClose.Enabled = true;
                     if (bStatus)
                     {
-                        MessageBox.Show("Successfully installed/upgraded DKIM Signer. You can now close this window.", "Installed/Upgraded", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBox.Show(this, "Successfully installed/upgraded DKIM Signer. You can now close this window.", "Installed/Upgraded", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("You have to select a version to install from the Web or a ZIP file.", "Select version", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this, "You have to select a version to install from the Web or a ZIP file.", "Select version", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             else
             {
-                MessageBox.Show("Microsoft Exchange server must be installed before attempt to install DKIM agent.", "Exchange not installed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(this, "Microsoft Exchange server must be installed before attempt to install DKIM agent.", "Exchange not installed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -695,7 +642,7 @@ namespace Configuration.DkimSigner
             // Start new installed DKIM Signer Configuration GUI
             if (this.btInstall.Enabled == false && this.picStopService.Image == this.statusImageList.Images[0])
             {
-                if (MessageBox.Show("Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show(this, "Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
                     if (File.Exists(sPathExec))
@@ -704,7 +651,7 @@ namespace Configuration.DkimSigner
                     }
                     else
                     {
-                        MessageBox.Show("Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
