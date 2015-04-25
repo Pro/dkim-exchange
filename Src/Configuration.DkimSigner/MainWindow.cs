@@ -1,3 +1,7 @@
+using ConfigurationSettings;
+using Configuration.DkimSigner.Exchange;
+using Configuration.DkimSigner.GitHub;
+using Heijden.DNS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,19 +13,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using ConfigurationSettings;
-using Configuration.DkimSigner.Exchange;
-using Configuration.DkimSigner.GitHub;
-using Heijden.DNS;
 
 namespace Configuration.DkimSigner
 {
     public partial class MainWindow : Form, TransportServiceObserver
     {
-        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable, DkimSignerInstalled };
-
         /**********************************************************/
         /*********************** Variables ************************/
         /**********************************************************/
@@ -32,8 +30,6 @@ namespace Configuration.DkimSigner
         private Version dkimSignerInstalled = null;
         private Release dkimSignerAvailable = null;
         private TransportService transportService = null;
-        private IDictionary<ThreadIdentifier, Thread> athRunning = null;
-
         private bool bDataUpdated = false;
 
         /**********************************************************/
@@ -44,12 +40,10 @@ namespace Configuration.DkimSigner
         {
             this.InitializeComponent();
 
-            this.athRunning = new Dictionary<ThreadIdentifier, Thread>();
-
             this.cbLogLevel.SelectedItem = "Information";
             this.cbKeyLength.SelectedItem = UserPreferences.Default.KeyLength.ToString();
 
-            string version = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
+            string version = Version.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
             this.txtAbout.Text = "Version " + version + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
@@ -69,23 +63,13 @@ namespace Configuration.DkimSigner
         private void MainWindow_Load(object sender, EventArgs e)
         {
             // Get Exchange version installed
-            this.txtExchangeInstalled.Text = "Loading ...";
-            Thread oTh1 = new Thread(() => { this.CheckExchangeInstalled(); this.athRunning.Remove(ThreadIdentifier.ExchangeInstalled); });
-            this.athRunning.Add(ThreadIdentifier.ExchangeInstalled, oTh1);
-            try { oTh1.Start(); } catch (ThreadAbortException) { }
+            this.CheckExchangeInstalled();
 
             // Get Exchange.DkimSigner version available
-            this.txtDkimSignerAvailable.Text = "Loading ...";
-            Thread oTh2 = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); });
-            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh2);
-            try { oTh2.Start(); }
-            catch (ThreadAbortException) { }
+            this.CheckDkimSignerAvailable();
 
             // Get Exchange.DkimSigner version installed
-            this.txtDkimSignerInstalled.Text = "Loading ...";
-            Thread oTh3 = new Thread(() => { this.CheckDkimSignerInstalled(); this.athRunning.Remove(ThreadIdentifier.DkimSignerInstalled); });
-            this.athRunning.Add(ThreadIdentifier.DkimSignerInstalled, oTh3);
-            try { oTh3.Start(); } catch (ThreadAbortException) { }
+            this.CheckDkimSignerInstalled();
 
             // Check transport service status each second
             this.transportService = new TransportService();
@@ -113,18 +97,6 @@ namespace Configuration.DkimSigner
 
                 this.transportService.Dispose();
                 this.transportService = null;
-
-                // IF any thread running, we stop them before exit
-                foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
-                {
-                    Thread oTh = oTemp.Value;
-                    if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
-                    {
-                        oTh.Join();
-                    }
-                }
-
-                this.athRunning.Clear();
             }
         }
 
@@ -153,18 +125,11 @@ namespace Configuration.DkimSigner
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
         {
-            // Kill current running thread
-            Thread oTemp;
-            if (this.athRunning.TryGetValue(ThreadIdentifier.DkimSignerAvailable, out oTemp))
-            {
-                oTemp.Join();
-            }
+            // TODO : Check conflict thread
 
             // Get Exchange.DkimSigner version available
             this.txtDkimSignerAvailable.Text = "Loading ...";
-            Thread oTh = new Thread(() => { this.CheckDkimSignerAvailable(); this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); });
-            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh);
-            try { oTh.Start(); } catch (ThreadAbortException) { }
+            this.CheckDkimSignerAvailable();
         }
 
         private void generic_ValueChanged(object sender, System.EventArgs e)
@@ -289,63 +254,55 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// Check the Microsoft Exchange Transport Service Status
         /// </summary>
-        /// <param name="state"></param>
-        private void CheckExchangeInstalled()
+        private async void CheckExchangeInstalled()
         {
             string version = "Unknown";
 
             try
             {
-                version = ExchangeServer.GetInstalledVersion();
-                this.txtExchangeInstalled.BeginInvoke(new Action(() => this.txtExchangeInstalled.Text = version));
+                await Task.Run(() => version = ExchangeServer.GetInstalledVersion());
+                
             }
             catch (ExchangeServerException e)
             {
                 this.ShowMessageBox("Exchange Version Error", "Couldn't determine installed Exchange Version: " + e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+            this.txtExchangeInstalled.Text = version;
+
             // Uptade Microsft Exchange Transport Service stuatus
-            if (version != null && version != "Not installed")
+            this.btConfigureTransportService.Enabled = (version != null && version != "Not installed");
+            if (!this.btConfigureTransportService.Enabled)
             {
-                this.btConfigureTransportService.BeginInvoke(new Action(() => this.btConfigureTransportService.Enabled = true));
-            }
-            else
-            {
-                this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = "Unavailable"));
-                this.btConfigureTransportService.BeginInvoke(new Action(() => this.btConfigureTransportService.Enabled = false));
+                this.txtExchangeStatus.Text = "Unavailable";
             }
         }
 
         /// <summary>
         /// Thread safe function for the thread DkimSignerInstalled
         /// </summary>
-        private void CheckDkimSignerInstalled()
+        private async void CheckDkimSignerInstalled()
         {
             Version oDkimSignerInstalled = null;
-            
-            // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
+
             try
             {
-                oDkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion);
-            }
-            catch (Exception) {}
+                // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
+                await Task.Run(() => oDkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion));
 
-            // Check if DKIM agent have been load in Exchange
-            if (oDkimSignerInstalled != null)
-            {
-                try
+                // Check if DKIM agent have been load in Exchange
+                if (oDkimSignerInstalled != null)
                 {
-                    if (!ExchangeServer.IsDkimAgentTransportInstalled())
+                    if (await Task.Run(() => !ExchangeServer.IsDkimAgentTransportInstalled()))
                     {
                         oDkimSignerInstalled = null;
                     }
                 }
-                catch (Exception) { }
             }
+            catch (Exception) { }
 
-            this.txtDkimSignerInstalled.BeginInvoke(new Action(() => this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed")));
-            this.btConfigureTransportService.BeginInvoke(new Action(() => this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null)));
-            
+            this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed");
+            this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null);
             this.dkimSignerInstalled = oDkimSignerInstalled;
 
             this.SetUpgradeButton();
@@ -354,7 +311,7 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// Thread safe function for the thread DkimSignerAvailable
         /// </summary>
-        private void CheckDkimSignerAvailable()
+        private async void CheckDkimSignerAvailable()
         {
             Release oDkimSignerAvailable = null;
             string version = "Unknown";
@@ -363,7 +320,9 @@ namespace Configuration.DkimSigner
             // Check the lastest Release
             try
             {
-                List<Release> aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked);
+                List<Release> aoRelease = null;
+
+                await Task.Run(() => aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked));
 
                 if (aoRelease != null)
                 {
@@ -406,8 +365,8 @@ namespace Configuration.DkimSigner
 
             }
 
-            this.txtDkimSignerAvailable.BeginInvoke(new Action(() => this.txtDkimSignerAvailable.Text = version));
-            this.txtChangelog.BeginInvoke(new Action(() => this.txtChangelog.Text = changelog));
+            this.txtDkimSignerAvailable.Text = version;
+            this.txtChangelog.Text = changelog;
 
             this.dkimSignerAvailable = oDkimSignerAvailable;
 
@@ -859,13 +818,7 @@ namespace Configuration.DkimSigner
             {
                 DialogResult result = this.ShowMessageBox("Save changes?", "Do you want to save the current changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 
-                if (result == DialogResult.Yes)
-                {
-                    if (!SaveDkimSignerConfig())
-                        return;
-                }
-
-                if (result == DialogResult.Cancel)
+                if ((result == DialogResult.Yes && !SaveDkimSignerConfig()) || result == DialogResult.Cancel)
                 {
                     return;
                 }
@@ -930,12 +883,10 @@ namespace Configuration.DkimSigner
         private void btDomainKeyGenerate_Click(object sender, EventArgs e)
         {
             UserPreferences.Default.KeyLength = Convert.ToInt32(this.cbKeyLength.Text, 10);
-
             UserPreferences.Default.Save(); 
             
             using (SaveFileDialog oFileDialog = new SaveFileDialog())
             {
-
                 oFileDialog.DefaultExt = "xml";
                 oFileDialog.Filter = "All files|*.*";
                 oFileDialog.Title = "Select a location for the new key file";
@@ -1059,7 +1010,6 @@ namespace Configuration.DkimSigner
                     oCurrentDomain = new DomainElement();
                     bAddToList = true;
                 }
-
 
                 oCurrentDomain.Domain = this.txtDomainName.Text;
                 oCurrentDomain.Selector = this.txtDomainSelector.Text;
