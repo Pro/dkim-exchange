@@ -948,57 +948,55 @@ namespace Configuration.DkimSigner
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btEventLogRefresh_Click(object sender, EventArgs e)
+        private async void btEventLogRefresh_Click(object sender, EventArgs e)
         {
-            int iCount = 0;
+            this.btEventLogRefresh.Enabled = false;
             
-            dgEventLog.Rows.Clear();
-            if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
+            await Task.Run(() =>
             {
-                EventLog oLogger = new EventLog();
-                oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
-                
-                IEnumerable<EventLogEntry> oReversed = oLogger.Entries.Cast<EventLogEntry>().Reverse<EventLogEntry>();
-                foreach (EventLogEntry oEntry in oReversed)
+                dgEventLog.Rows.Clear();
+                if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
                 {
-                    if (oEntry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
+                    EventLog oLogger = new EventLog();
+                    oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
+
+                    for (int i = oLogger.Entries.Count - 1; i > 0; i--)
                     {
-                        continue;
-                    }
-                    
-                    iCount++;
-                    
-                    if (iCount > 100)
-                    {
-                        dgEventLog.Rows.Add(SystemIcons.Information.ToBitmap(), "-----", "Maximum number of 100 Log entries shown");
-                        break;
-                    }
-                    
-                    Image oImg = null;
-                    switch (oEntry.EntryType)
-                    {
-                        case EventLogEntryType.Information:
-                            oImg = SystemIcons.Information.ToBitmap();
-                            break;
-                        case EventLogEntryType.Warning:
-                            oImg = SystemIcons.Warning.ToBitmap();
-                            break;
-                        case EventLogEntryType.Error:
-                            oImg = SystemIcons.Error.ToBitmap();
-                            break;
-                        case EventLogEntryType.FailureAudit:
-                            oImg = SystemIcons.Error.ToBitmap();
-                            break;
-                        case EventLogEntryType.SuccessAudit:
-                            oImg = SystemIcons.Question.ToBitmap();
-                            break;
+                        EventLogEntry oEntry = oLogger.Entries[i];
+
+                        if (oEntry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
+                        {
+                            continue;
+                        }
+
+                        Image oImg = null;
+                        switch (oEntry.EntryType)
+                        {
+                            case EventLogEntryType.Information:
+                                oImg = SystemIcons.Information.ToBitmap();
+                                break;
+                            case EventLogEntryType.Warning:
+                                oImg = SystemIcons.Warning.ToBitmap();
+                                break;
+                            case EventLogEntryType.Error:
+                                oImg = SystemIcons.Error.ToBitmap();
+                                break;
+                            case EventLogEntryType.FailureAudit:
+                                oImg = SystemIcons.Error.ToBitmap();
+                                break;
+                            case EventLogEntryType.SuccessAudit:
+                                oImg = SystemIcons.Question.ToBitmap();
+                                break;
+                        }
+
+                        this.dgEventLog.BeginInvoke(new Action(() => dgEventLog.Rows.Add(oImg, oEntry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), oEntry.Message)));
                     }
 
-                    dgEventLog.Rows.Add(oImg, oEntry.TimeGenerated.ToString("yyyy-MM-ddTHH:mm:ss.fff"), oEntry.Message);
+                    oLogger.Dispose();
                 }
+            });
 
-                oLogger.Dispose();
-            }
+            this.btEventLogRefresh.Enabled = true;
         }
     }
 }
