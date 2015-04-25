@@ -227,13 +227,12 @@ namespace Configuration.DkimSigner
         {
             string version = "Unknown";
 
-            try
+            ExchangeServerException ex = null;
+            await Task.Run(() => { try { version = ExchangeServer.GetInstalledVersion(); } catch (ExchangeServerException e) { ex = e; } });
+            
+            if (ex != null)
             {
-                await Task.Run(() => version = ExchangeServer.GetInstalledVersion());
-            }
-            catch (ExchangeServerException e)
-            {
-                this.ShowMessageBox("Exchange Version Error", "Couldn't determine installed Exchange Version: " + e.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                this.ShowMessageBox("Exchange Version Error", "Couldn't determine installed Exchange Version: " + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             this.txtExchangeInstalled.Text = version;
@@ -253,21 +252,21 @@ namespace Configuration.DkimSigner
         {
             Version oDkimSignerInstalled = null;
 
-            try
-            {
-                // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
-                await Task.Run(() => oDkimSignerInstalled = Version.Parse(System.Diagnostics.FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion));
+            // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
+            await Task.Run(() => { try { oDkimSignerInstalled = Version.Parse(FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion); } catch (Exception) { } });
 
-                // Check if DKIM agent have been load in Exchange
-                if (oDkimSignerInstalled != null)
+            // Check if DKIM agent have been load in Exchange
+            if (oDkimSignerInstalled != null)
+            {
+                bool IsDkimAgentTransportInstalled = false;
+
+                await Task.Run(() => { try { IsDkimAgentTransportInstalled = !ExchangeServer.IsDkimAgentTransportInstalled(); } catch (Exception) { } });
+
+                if (IsDkimAgentTransportInstalled)
                 {
-                    if (await Task.Run(() => !ExchangeServer.IsDkimAgentTransportInstalled()))
-                    {
-                        oDkimSignerInstalled = null;
-                    }
+                    oDkimSignerInstalled = null;
                 }
             }
-            catch (Exception) { }
 
             this.txtDkimSignerInstalled.Text = (oDkimSignerInstalled != null ? oDkimSignerInstalled.ToString() : "Not installed");
             this.btConfigureTransportService.Enabled = (oDkimSignerInstalled != null);
@@ -287,13 +286,12 @@ namespace Configuration.DkimSigner
             StringBuilder changelog = new StringBuilder("Couldn't get current version.\r\nCheck your Internet connection or restart the application.");
 
             // Check the lastest Release
-            try
+            Exception ex = null;
+            await Task.Run(() => { try { aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked); } catch (Exception e) { ex = e; } });
+
+            if(ex != null)
             {
-                await Task.Run(() => aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked));
-            }
-            catch (Exception e)
-            {
-                changelog.Append("\r\nError: " + e.Message);
+                changelog.Append("\r\nError: " + ex.Message);
             }
 
             this.dkimSignerAvailable = null;
