@@ -111,8 +111,6 @@ namespace Configuration.DkimSigner
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
         {
-            // TODO : Check conflict thread
-
             // Get Exchange.DkimSigner version available
             this.txtDkimSignerAvailable.Text = "Loading ...";
             this.CheckDkimSignerAvailable();
@@ -278,6 +276,8 @@ namespace Configuration.DkimSigner
         /// </summary>
         private async void CheckDkimSignerAvailable()
         {
+            // TODO : Check conflict thread
+
             List<Release> aoRelease = null;
             Release oDkimSignerAvailable = null;
             string version = "Unknown";

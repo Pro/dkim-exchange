@@ -345,7 +345,6 @@
             this.Name = "InstallWindow";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Exchange DkimSigner - Install";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InstallWindow_FormClosing);
             this.Load += new System.EventHandler(this.InstallWindow_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picStopService)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCopyFiles)).EndInit();

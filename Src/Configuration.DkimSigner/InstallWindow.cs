@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Threading;
-using System.Windows.Forms;
-
 using Configuration.DkimSigner.GitHub;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.FileIO;
-using System.Diagnostics;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
 {
@@ -22,11 +22,6 @@ namespace Configuration.DkimSigner
         private List<Release> aoVersionAvailable = null;
         private string sExchangeVersion = null;
 
-        private enum ThreadIdentifier { ExchangeInstalled, DkimSignerAvailable };
-        private IDictionary<ThreadIdentifier, Thread> athRunning = null;
-
-        delegate void EnablePrereleasesCallback(bool sStatus);
-        delegate void RefreshVersionWebItemsCallback();
         delegate void RefreshInstallButtonCallback();
 
         private string upgradeZipUrl = null;
@@ -39,8 +34,6 @@ namespace Configuration.DkimSigner
         public InstallWindow(bool isInstall, string upgradeZipUrl)
         {
             this.InitializeComponent();
-
-            this.athRunning = new Dictionary<ThreadIdentifier, Thread>();
 
             this.picStopService.Image = null;
             this.picCopyFiles.Image = null;
@@ -60,32 +53,19 @@ namespace Configuration.DkimSigner
             {
                 this.Text = "Exchange DkimSigner - Upgrade";
                 pnlInstall.Hide();
-            } else if (isInstall && upgradeZipUrl != null)
+            }
+            else if (isInstall && upgradeZipUrl != null)
             {
                 this.Text = "Exchange DkimSigner - Install";
                 pnlInstall.Hide();
             }
             else
             {
-                this.UpdateDkimSignerAvailable();
+                this.CheckDkimSignerAvailable();
                 lblWait.Hide();
             }
 
-            this.UpdateExchangeInstalled();
-        }
-
-        private void InstallWindow_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // IF any thread running, we stop them before exit
-            foreach (KeyValuePair<ThreadIdentifier, Thread> oTemp in this.athRunning)
-            {
-                Thread oTh = oTemp.Value;
-                if (oTh != null && oTh.ThreadState == System.Threading.ThreadState.Running)
-                {
-                    oTh.Join();
-                }
-            }
-            this.athRunning.Clear();
+            this.CheckExchangeInstalled();
         }
 
         private void cbVersionWeb_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -95,8 +75,8 @@ namespace Configuration.DkimSigner
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
         {
-            this.EnablePrereleases(false);            
-            this.UpdateDkimSignerAvailable();
+            this.cbxPrereleases.Enabled = false;
+            this.CheckDkimSignerAvailable();
         }
 
         /**********************************************************/
@@ -104,21 +84,17 @@ namespace Configuration.DkimSigner
         /**********************************************************/
 
         /// <summary>
-        /// 
+        /// Thread safe function for the thread DkimSignerAvailable
         /// </summary>
-        /// <param name="sStatus"></param>
-        private void EnablePrereleases(bool sStatus)
+        private async void CheckDkimSignerAvailable()
         {
-            this.cbxPrereleases.Enabled = sStatus;
-        }
+            // TODO : Check conflict thread
+            
+            await Task.Run(() => this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked, new Version("2.0.0")));
+            
+            this.cbxPrereleases.Enabled = true;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private void RefreshVersionWebItems()
-        {
             this.cbVersionWeb.Items.Clear();
-            RefreshInstallButton();
             if (this.aoVersionAvailable != null)
             {
                 if (this.aoVersionAvailable.Count > 0)
@@ -127,96 +103,36 @@ namespace Configuration.DkimSigner
                     {
                         this.cbVersionWeb.Items.Add(oVersionAvailable.TagName);
                     }
-                    
+
                     this.cbVersionWeb.Enabled = true;
                 }
                 else
                 {
                     MessageBox.Show(this, "No release information from the Web available.", "Version", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
                     this.cbVersionWeb.Enabled = false;
                 }
             }
             else
             {
                 MessageBox.Show(this, "Could not obtain release information from the Web. Check your Internet connection or retry later.", "Error fetching version", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
                 this.cbVersionWeb.Enabled = false;
             }
+
+            this.RefreshInstallButton();
         }
 
         /// <summary>
-        /// 
+        /// Check the Microsoft Exchange Transport Service Status
         /// </summary>
-        private void UpdateDkimSignerAvailable()
+        private async void CheckExchangeInstalled()
         {
-            if (this.athRunning.ContainsKey(ThreadIdentifier.DkimSignerAvailable))
-                return; // thread already started
-
-            Thread oTh3 = new Thread(() => {
-                this.aoVersionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked, new Version("2.0.0"));
-
-                if (this.cbVersionWeb.InvokeRequired)
-                {
-                    RefreshVersionWebItemsCallback d = new RefreshVersionWebItemsCallback(this.RefreshVersionWebItems);
-                    this.Invoke(d);
-                }
-                else
-                {
-                    this.RefreshVersionWebItems();
-                }
-
-                if (this.cbxPrereleases.InvokeRequired)
-                {
-                    EnablePrereleasesCallback d = new EnablePrereleasesCallback(this.EnablePrereleases);
-                    this.Invoke(d, true);
-                }
-                else
-                {
-                    this.EnablePrereleases(true);
-                }                
-                
-                this.athRunning.Remove(ThreadIdentifier.DkimSignerAvailable); 
-            
-            });
-            this.athRunning.Add(ThreadIdentifier.DkimSignerAvailable, oTh3);
-            try { oTh3.Start(); }
-            catch (ThreadAbortException) { }
-
-            
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void UpdateExchangeInstalled()
-        {
-
-            if (this.athRunning.ContainsKey(ThreadIdentifier.ExchangeInstalled))
-                return; // thread already started
-            Thread oTh3 = new Thread(() => {
-                this.sExchangeVersion = ExchangeServer.GetInstalledVersion();
-
-                if (this.btInstall.InvokeRequired)
-                {
-                    RefreshInstallButtonCallback d = new RefreshInstallButtonCallback(this.RefreshInstallButton);
-                    this.Invoke(d);
-                }
-                else
-                {
-                    this.RefreshInstallButton();
-                }
-                this.athRunning.Remove(ThreadIdentifier.ExchangeInstalled);
-            });
-            this.athRunning.Add(ThreadIdentifier.ExchangeInstalled, oTh3);
-            try { oTh3.Start(); }
-            catch (ThreadAbortException) { }
-
+            await Task.Run(() => this.sExchangeVersion = ExchangeServer.GetInstalledVersion());
+            this.RefreshInstallButton();
         }
 
         private void RefreshInstallButton()
         {
-            btInstall.Enabled = (this.sExchangeVersion != null && (this.aoVersionAvailable != null || txtVersionFile.Text.Length > 0));
+            this.btInstall.Enabled = (this.sExchangeVersion != null && (this.aoVersionAvailable != null || txtVersionFile.Text.Length > 0));
             if (upgradeZipUrl != null || !isInstall)
             {
                 onButtonInstall();
@@ -525,9 +441,6 @@ namespace Configuration.DkimSigner
                         bStatus = (exchangeSourceDir != null);
                     }
 
-
-
-
                     //
                     // Stop Microsoft Exchange Transport Service
                     //
@@ -549,7 +462,6 @@ namespace Configuration.DkimSigner
                         asCopyFilePath.Add(Path.Combine(downloadRootDir, @"Src\Configuration.DkimSigner\bin\Release"));
                         asCopyFilePath.Add(Path.Combine(downloadRootDir, Path.Combine(@"Src\Exchange.DkimSigner\bin\" + exchangeSourceDir)));
                         bStatus = this.CopyFiles(asCopyFilePath);
-
                     }
 
                     this.picCopyFiles.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
@@ -612,7 +524,6 @@ namespace Configuration.DkimSigner
         {
             using (OpenFileDialog oFileDialog = new OpenFileDialog())
             {
-
                 oFileDialog.FileName = "dkim-exchange.zip";
                 oFileDialog.Filter = "ZIP files|*.zip";
                 oFileDialog.Title = "Select the .zip file downloaded from github.com";
@@ -620,9 +531,8 @@ namespace Configuration.DkimSigner
                 if (oFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     this.cbVersionWeb.SelectedIndex = -1;
-
                     this.txtVersionFile.Text = oFileDialog.FileName;
-                    RefreshInstallButton();
+                    this.RefreshInstallButton();
                 }
             }
         }
@@ -647,7 +557,7 @@ namespace Configuration.DkimSigner
                     string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
                     if (File.Exists(sPathExec))
                     {
-                        System.Diagnostics.Process.Start(sPathExec);
+                        Process.Start(sPathExec);
                     }
                     else
                     {
