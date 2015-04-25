@@ -102,25 +102,12 @@ namespace Configuration.DkimSigner
 
         private void txtExchangeStatus_TextChanged(object sender, System.EventArgs e)
         {
-            switch (this.txtExchangeStatus.Text)
-            {
-                case "Running":
-                    this.btStartTransportService.Enabled = false;
-                    this.btStopTransportService.Enabled = true;
-                    this.btRestartTransportService.Enabled = true;
-                    break;
+            bool IsRunning = this.txtExchangeStatus.Text == "Running";
+            bool IsStopped = this.txtExchangeStatus.Text == "Stopped";
 
-                case "Stopped":
-                    this.btStartTransportService.Enabled = true;
-                    this.btStopTransportService.Enabled = false;
-                    this.btRestartTransportService.Enabled = false;
-                    break;
-                default:
-                    this.btStartTransportService.Enabled = false;
-                    this.btStopTransportService.Enabled = false;
-                    this.btRestartTransportService.Enabled = false;
-                    break;
-            }
+            this.btStartTransportService.Enabled = IsStopped;
+            this.btStopTransportService.Enabled = IsRunning;
+            this.btRestartTransportService.Enabled = IsRunning;
         }
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
