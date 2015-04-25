@@ -178,16 +178,8 @@ namespace Configuration.DkimSigner
 
         private void txtDomainSelector_TextChanged(object sender, EventArgs e)
         {
-            if (!Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-z0-9_]{1,63}(?:\.[a-z0-9_]{1,63})?$", RegexOptions.None))
-            {
-                this.epvDomainSelector.SetError(this.txtDomainSelector, "The selector should only contain characters, numbers and underscores.");
-            }
-            else
-            {
-                this.epvDomainSelector.SetError(this.txtDomainSelector, null);
-            }
-
             this.btDomainSave.Enabled = true;
+            this.epvDomainSelector.SetError(this.txtDomainSelector, !Regex.IsMatch(this.txtDomainSelector.Text, @"^[a-z0-9_]{1,63}(?:\.[a-z0-9_]{1,63})?$", RegexOptions.None) ? "The selector should only contain characters, numbers and underscores." : null);
             this.txtDNSName.Text = this.txtDomainSelector.Text + "._domainkey." + this.txtDomainName.Text + ".";
 
             this.bDataUpdated = true;
