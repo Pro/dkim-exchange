@@ -19,6 +19,10 @@ namespace Configuration.DkimSigner
         /*********************** Variables ************************/
         /**********************************************************/
 
+        private TransportService transportService = null;
+        private AutoResetEvent transportServiceActionCompleted = null;
+        private string transportServiceSuccessStatus = null;
+
         private List<Release> aoVersionAvailable = null;
         private string sExchangeVersion = null;
 
@@ -48,7 +52,7 @@ namespace Configuration.DkimSigner
         /**********************************************************/
 
         private void InstallWindow_Load(object sender, EventArgs e)
-        {
+        {   
             if (!isInstall)
             {
                 this.Text = "Exchange DkimSigner - Upgrade";
@@ -66,6 +70,24 @@ namespace Configuration.DkimSigner
             }
 
             this.CheckExchangeInstalled();
+
+            // Check transport service status each second
+            try
+            {
+                this.transportServiceActionCompleted = new AutoResetEvent(false);
+                this.transportService = new TransportService();
+                this.transportService.StatusChanged += new EventHandler(this.transportService_StatusUptated);
+            }
+            catch (ExchangeServerException) { }
+        }
+
+        private void transportService_StatusUptated(object sender, EventArgs e)
+        {
+            if (this.transportServiceSuccessStatus != null && this.transportServiceSuccessStatus == this.transportService.GetStatus())
+            {
+                this.transportServiceActionCompleted.Set();
+                this.transportServiceSuccessStatus = null;
+            }
         }
 
         private void cbVersionWeb_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -217,27 +239,10 @@ namespace Configuration.DkimSigner
         /// <summary>
         /// 
         /// </summary>
-        private static bool StopService()
-        {
-            try
-            {
-                ExchangeServer.StopTransportService();
-                return true;
-            }
-            catch (ExchangeServerException ex)
-            {
-                MessageBox.Show("Could not stop MSExchangeTransport Service:\n" + ex.Message, "Error stopping service", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
         private static bool InstallAgent()
         {
-            if (ExchangeServer.IsTransportServiceInstalled())
-            {
+            //if (ExchangeServer.IsTransportServiceInstalled())
+            //{
                 // First make sure the following Registry key exists
                 // HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
 
@@ -293,28 +298,12 @@ namespace Configuration.DkimSigner
                     MessageBox.Show("Could not install DKIM Agent:\n" + ex.Message, "Error installing agent", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
-            }
-            else
-            {
-                MessageBox.Show("MSExchangeTransport Service not found on this machine. Couldn't install DKIM Agent.", "Error installing agent", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private static bool StartService()
-        {
-            try
-            {
-                ExchangeServer.StartTransportService();
-                return true;
-            }
-            catch (ExchangeServerException ex) {
-                MessageBox.Show("Could not start MSExchangeTransport Service:\n" + ex.Message, "Error starting service", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;            
-            }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("MSExchangeTransport Service not found on this machine. Couldn't install DKIM Agent.", "Error installing agent", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    return false;
+            //}
         }
 
         public static string getSourceDirectoryForVersion(string exchangeVersion)
@@ -449,7 +438,9 @@ namespace Configuration.DkimSigner
 
                     if (bStatus)
                     {
-                        bStatus = StopService();
+                        this.transportServiceSuccessStatus = "Stopped";
+                        this.transportService.Do(TransportServiceAction.Stop);
+                        bStatus = this.transportServiceActionCompleted.WaitOne();
                     }
 
                     this.picStopService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
@@ -489,7 +480,9 @@ namespace Configuration.DkimSigner
 
                     if (bStatus)
                     {
-                        bStatus = StartService();
+                        this.transportServiceSuccessStatus = "Running";
+                        this.transportService.Do(TransportServiceAction.Start);
+                        bStatus = this.transportServiceActionCompleted.WaitOne();
                     }
 
                     this.picStartService.Image = bStatus ? this.statusImageList.Images[0] : this.statusImageList.Images[1];

@@ -33,22 +33,17 @@ namespace Configuration.DkimSigner
         {
             this.RefreshTransportServiceAgents();
 
-            if(ExchangeServer.IsDkimAgentTransportInstalled())
-            {
-                if (ExchangeServer.IsDkimAgentTransportEnabled())
-                {
-                    this.btDisable.Text = "Disable";
-                }
-                else
-                {
-                    this.btDisable.Text = "Enable";
-                }
-            }
-            else
-            {
-                this.btDisable.Text = "Enable";
-            }
+            bool IsDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
+            bool IsDkimAgentTransportEnabled = IsDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
+            this.btDisable.Text = (IsDkimAgentTransportInstalled ? "Disable" : "Enable");
+        }
 
+        private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
+        {
+            bool dkimAgentSelected = dgvTransportServiceAgents.SelectedRows.Count == 1 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
+            this.btUninstall.Enabled = dkimAgentSelected;
+            this.btDisable.Enabled = dkimAgentSelected;
+            this.refreshMoveButtons(dkimAgentSelected);
         }
 
         private void performUninstall()
@@ -58,6 +53,7 @@ namespace Configuration.DkimSigner
                 ExchangeServer.UninstallDkimTransportAgent();
                 this.RefreshTransportServiceAgents();
                 MessageBox.Show(this, "Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DKIM_SIGNER_PATH + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!","Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                
                 /*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                 {
                     if (File.Exists(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
@@ -151,19 +147,17 @@ namespace Configuration.DkimSigner
                 if (this.btDisable.Text == "Disable")
                 {
                     ExchangeServer.DisableDkimTransportAgent();
-                    ExchangeServer.RestartTransportService();
-                    this.RefreshTransportServiceAgents();
                     this.btDisable.Text = "Enable";
-                    refreshMoveButtons(false);
                 }
                 else
                 {
                     ExchangeServer.EnableDkimTransportAgent();
-                    ExchangeServer.RestartTransportService();
-                    this.RefreshTransportServiceAgents();
                     this.btDisable.Text = "Disable";
-                    refreshMoveButtons(true);
                 }
+
+                new TransportService().Do(TransportServiceAction.Restart);
+                this.RefreshTransportServiceAgents();
+                this.refreshMoveButtons(true);
             }
             catch (ExchangeServerException ex)
             {
@@ -200,16 +194,6 @@ namespace Configuration.DkimSigner
         private void btClose_Click(object sender, EventArgs e)
         {
             this.Close();
-        }
-
-        private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
-        {
-            bool dkimAgentSelected = dgvTransportServiceAgents.SelectedRows.Count == 1 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
-
-
-            this.btUninstall.Enabled = dkimAgentSelected;
-            this.btDisable.Enabled = dkimAgentSelected;
-            refreshMoveButtons(dkimAgentSelected);
         }
     }
 }
