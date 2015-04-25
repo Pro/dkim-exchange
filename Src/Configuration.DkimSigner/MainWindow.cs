@@ -284,59 +284,56 @@ namespace Configuration.DkimSigner
             // TODO : Check conflict thread
 
             List<Release> aoRelease = null;
-            Release oDkimSignerAvailable = null;
-            string version = "Unknown";
-            string changelog = "Couldn't get current version.\r\nCheck your Internet connection or restart the application.";
+            StringBuilder version = new StringBuilder("Unknown");
+            StringBuilder changelog = new StringBuilder("Couldn't get current version.\r\nCheck your Internet connection or restart the application.");
 
             // Check the lastest Release
             try
             {
                 await Task.Run(() => aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked));
-
-                if (aoRelease != null)
-                {
-                    StringBuilder fullChangelog = new StringBuilder();
-                    foreach (Release oRelease in aoRelease)
-                    {
-                        if (oDkimSignerAvailable == null || oDkimSignerAvailable.Version < oRelease.Version)
-                        {
-                            oDkimSignerAvailable = oRelease;
-                        }
-
-                        // TAG (DATE)\r\nIndented Text
-                        fullChangelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t") + "\r\n");
-                    }
-                    changelog = fullChangelog.ToString();
-                }
             }
             catch (Exception e)
             {
-                changelog += "\r\nError: " + e.Message;
+                changelog.Append("\r\nError: " + e.Message);
             }
 
-            if (oDkimSignerAvailable != null)
+            if (aoRelease != null)
             {
-                version = oDkimSignerAvailable.Version.ToString();
+                changelog.Clear();
+                foreach (Release oRelease in aoRelease)
+                {
+                    if (this.dkimSignerAvailable == null || this.dkimSignerAvailable.Version < oRelease.Version)
+                    {
+                        this.dkimSignerAvailable = oRelease;
 
-                Match match = Regex.Match(oDkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta|rc)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
+                        version.Clear();
+                        version.Append(this.dkimSignerAvailable.Version.ToString());
+                    }
 
+                    // TAG (DATE)\r\nIndented Text
+                    changelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t") + "\r\n");
+                }
+            }
+
+            if (this.dkimSignerAvailable != null)
+            {
+                Match match = Regex.Match(this.dkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta|rc)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
                 if (match.Success)
                 {
                     if (match.Groups.Count > 2 && match.Groups[2].Value.Length > 0)
                     {
-                        version += " (" + match.Groups[2].Value;
+                        version.Append(" (" + match.Groups[2].Value);
                         if (match.Groups.Count > 3 && match.Groups[3].Value.Length > 0)
                         {
-                            version += "." + match.Groups[3].Value;
+                            version.Append("." + match.Groups[3].Value);
                         }
-                        version += ")";
+                        version.Append(")");
                     }
                 }
             }
 
-            this.dkimSignerAvailable = oDkimSignerAvailable;
-            this.txtDkimSignerAvailable.Text = version;
-            this.txtChangelog.Text = changelog;
+            this.txtDkimSignerAvailable.Text = version.ToString();
+            this.txtChangelog.Text = changelog.ToString();
             this.SetUpgradeButton();
         }
 
