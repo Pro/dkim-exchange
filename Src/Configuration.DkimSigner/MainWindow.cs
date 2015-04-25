@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
 {
-    public partial class MainWindow : Form, TransportServiceObserver
+    public partial class MainWindow : Form
     {
         /**********************************************************/
         /*********************** Variables ************************/
@@ -62,18 +62,13 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void MainWindow_Load(object sender, EventArgs e)
         {
-            // Get Exchange version installed
             this.CheckExchangeInstalled();
-
-            // Get Exchange.DkimSigner version available
             this.CheckDkimSignerAvailable();
-
-            // Get Exchange.DkimSigner version installed
             this.CheckDkimSignerInstalled();
 
             // Check transport service status each second
             this.transportService = new TransportService();
-            this.transportService.Subscribe(this);
+            this.transportService.StatusChanged += new EventHandler(this.transportService_StatusUptated);
 
             // Load setting from XML file
             this.LoadDkimSignerConfig();
@@ -99,7 +94,13 @@ namespace Configuration.DkimSigner
             }
         }
 
-        private void txtExchangeStatus_TextChanged(object sender, System.EventArgs e)
+        private void transportService_StatusUptated(object sender, EventArgs e)
+        {
+            string sStatus = this.transportService.GetStatus();
+            this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
+        }
+
+        private void txtExchangeStatus_TextChanged(object sender, EventArgs e)
         {
             bool IsRunning = this.txtExchangeStatus.Text == "Running";
             bool IsStopped = this.txtExchangeStatus.Text == "Stopped";
@@ -333,12 +334,6 @@ namespace Configuration.DkimSigner
             this.txtDkimSignerAvailable.Text = version;
             this.txtChangelog.Text = changelog;
             this.SetUpgradeButton();
-        }
-
-        public void UpdateTransportStatus()
-        {
-            string sStatus = this.transportService.GetStatus();
-            this.txtExchangeStatus.BeginInvoke(new Action(() => this.txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
         }
 
         private void SetUpgradeButton()

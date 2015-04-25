@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
@@ -8,10 +9,11 @@ namespace Configuration.DkimSigner.Exchange
 {
     public class TransportService : IDisposable
     {
+        public event EventHandler StatusChanged;
+        
         private Thread thread = null;
         private Timer transportServiceStatus = null;
 
-        private List<TransportServiceObserver> observers = null;
         private Queue<TransportServiceAction> actions = null;
         private ServiceController service = null;
         private string status = null;
@@ -26,7 +28,6 @@ namespace Configuration.DkimSigner.Exchange
                 throw new ExchangeServerException("No service 'MSExchangeTransport' available.");
             }
 
-            this.observers = new List<TransportServiceObserver>();
             this.actions = new Queue<TransportServiceAction>();
             this.service = new ServiceController("MSExchangeTransport");
             this.transportServiceStatus = new Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
@@ -81,7 +82,7 @@ namespace Configuration.DkimSigner.Exchange
                 if (this.status != status)
                 {
                     this.status = status;
-                    this.Notify();
+                    this.StatusChanged(this, null);
                 }
             }
             catch (ExchangeServerException)
@@ -144,32 +145,6 @@ namespace Configuration.DkimSigner.Exchange
         public string GetStatus()
         {
             return this.status;
-        }
-
-        /// <summary>
-        /// Subscribe for status changed
-        /// </summary>
-        /// <param name="observer">TransportServiceObserver</param>
-        public void Subscribe(TransportServiceObserver observer)
-        {
-            observers.Add(observer);
-        }
-
-        /// <summary>
-        /// Unsubscribe for status changed
-        /// </summary>
-        /// <param name="observer">TransportServiceObserver</param>
-        public void Unsubscribe(TransportServiceObserver observer)
-        {
-            observers.Remove(observer);
-        }
-
-        /// <summary>
-        /// Notify when a statud changed happen
-        /// </summary>
-        public void Notify()
-        {
-            observers.ForEach(x => x.UpdateTransportStatus());
         }
 
         /// <summary>

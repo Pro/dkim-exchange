@@ -16,7 +16,7 @@ namespace Configuration.DkimSigner
 
         public HeaderInputWindow()
         {
-            InitializeComponent();
+            this.InitializeComponent();
         }
 
         /**********************************************************/
