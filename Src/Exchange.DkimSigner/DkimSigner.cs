@@ -57,14 +57,14 @@ namespace Exchange.DkimSigner
         /// </summary>
         private DkimCanonicalizationKind bodyCanonicalization;
 
-        private List<DomainElement> domains;
+        private Dictionary<string, DomainElement> domains;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigner"/> class.
         /// </summary>
         public DkimSigner()
         {
-            this.domains = new List<DomainElement>();
+            this.domains = new Dictionary<string, DomainElement>(StringComparer.OrdinalIgnoreCase);
         }
 
         public void UpdateSettings(Settings config)
@@ -79,7 +79,7 @@ namespace Exchange.DkimSigner
                     {
                         if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
                         {
-                            this.domains.Add(domainElement);
+                            this.domains.Add(domainElement.Domain, domainElement);
                         }
                     }
                     catch (Exception e)
@@ -126,7 +126,7 @@ namespace Exchange.DkimSigner
             }
         }
 
-        public List<DomainElement> GetDomains()
+        public Dictionary<string, DomainElement> GetDomains()
         {
             return this.domains;
         }

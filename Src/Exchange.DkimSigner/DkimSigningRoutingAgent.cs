@@ -145,15 +145,9 @@ namespace Exchange.DkimSigner
 
                 /* Check if DKIM is defined for the current domain */
                 DomainElement domain = null;
-                foreach (DomainElement e in this.dkimSigner.GetDomains())
+                if (this.dkimSigner.GetDomains().ContainsKey(mailItem.FromAddress.DomainPart))
                 {
-                    if (mailItem.FromAddress.DomainPart
-                                            .ToUpperInvariant()
-                                            .Equals(e.Domain.ToUpperInvariant()))
-                    {
-                        domain = e;
-                        break;
-                    }
+                    domain = this.dkimSigner.GetDomains()[mailItem.FromAddress.DomainPart];
                 }
 
                 /* If domain was found in define domain configuration, we just do nothing */
