@@ -67,8 +67,12 @@ namespace Configuration.DkimSigner
             this.CheckDkimSignerInstalled();
 
             // Check transport service status each second
-            this.transportService = new TransportService();
-            this.transportService.StatusChanged += new EventHandler(this.transportService_StatusUptated);
+            try
+            {
+                this.transportService = new TransportService();
+                this.transportService.StatusChanged += new EventHandler(this.transportService_StatusUptated);
+            }
+            catch (ExchangeServerException) { }
 
             // Load setting from XML file
             this.LoadDkimSignerConfig();
