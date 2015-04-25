@@ -281,10 +281,9 @@ namespace Configuration.DkimSigner
         /// </summary>
         private async void CheckDkimSignerAvailable()
         {
-            // TODO : Check conflict thread
+            this.cbxPrereleases.Enabled = false;
 
             List<Release> aoRelease = null;
-            StringBuilder version = new StringBuilder("Unknown");
             StringBuilder changelog = new StringBuilder("Couldn't get current version.\r\nCheck your Internet connection or restart the application.");
 
             // Check the lastest Release
@@ -297,44 +296,32 @@ namespace Configuration.DkimSigner
                 changelog.Append("\r\nError: " + e.Message);
             }
 
+            this.dkimSignerAvailable = null;
+
             if (aoRelease != null)
             {
                 changelog.Clear();
-                foreach (Release oRelease in aoRelease)
+                
+                this.dkimSignerAvailable = aoRelease[0];
+                changelog.AppendLine(aoRelease[0].TagName + " (" + aoRelease[0].CreatedAt.Substring(0, 10) + ")\r\n\t" + aoRelease[0].Body.Replace("\r\n", "\r\n\t") + "\r\n");
+                
+                for(int i = 1; i < aoRelease.Count; i++)
                 {
-                    if (this.dkimSignerAvailable == null || this.dkimSignerAvailable.Version < oRelease.Version)
+                    if (this.dkimSignerAvailable.Version < aoRelease[i].Version)
                     {
-                        this.dkimSignerAvailable = oRelease;
-
-                        version.Clear();
-                        version.Append(this.dkimSignerAvailable.Version.ToString());
+                        this.dkimSignerAvailable = aoRelease[i];
                     }
 
                     // TAG (DATE)\r\nIndented Text
-                    changelog.AppendLine(oRelease.TagName + " (" + oRelease.CreatedAt.Substring(0, 10) + ")\r\n\t" + oRelease.Body.Replace("\r\n", "\r\n\t") + "\r\n");
+                    changelog.AppendLine(aoRelease[i].TagName + " (" + aoRelease[i].CreatedAt.Substring(0, 10) + ")\r\n\t" + aoRelease[i].Body.Replace("\r\n", "\r\n\t") + "\r\n");
                 }
             }
 
-            if (this.dkimSignerAvailable != null)
-            {
-                Match match = Regex.Match(this.dkimSignerAvailable.TagName, @"v?((?:\d+\.){0,3}\d+)(?:-(alpha|beta|rc)(?:\.(\d+))?)?", RegexOptions.IgnoreCase);
-                if (match.Success)
-                {
-                    if (match.Groups.Count > 2 && match.Groups[2].Value.Length > 0)
-                    {
-                        version.Append(" (" + match.Groups[2].Value);
-                        if (match.Groups.Count > 3 && match.Groups[3].Value.Length > 0)
-                        {
-                            version.Append("." + match.Groups[3].Value);
-                        }
-                        version.Append(")");
-                    }
-                }
-            }
-
-            this.txtDkimSignerAvailable.Text = version.ToString();
+            this.txtDkimSignerAvailable.Text = this.dkimSignerAvailable != null ? this.dkimSignerAvailable.Version.ToString() : "Unknown";
             this.txtChangelog.Text = changelog.ToString();
             this.SetUpgradeButton();
+
+            this.cbxPrereleases.Enabled = true;
         }
 
         private void SetUpgradeButton()
