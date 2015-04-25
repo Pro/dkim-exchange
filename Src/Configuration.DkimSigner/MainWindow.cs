@@ -168,17 +168,9 @@ namespace Configuration.DkimSigner
         }
 
         private void txtDomainName_TextChanged(object sender, EventArgs e)
-        {           
-            if (Uri.CheckHostName(this.txtDomainName.Text) != UriHostNameType.Dns)
-            {
-                this.epvDomainSelector.SetError(this.txtDomainName, "Invalid DNS name. Format: 'example.com'");
-            }
-            else
-            {
-                this.epvDomainSelector.SetError(this.txtDomainName, null);
-            }
-
+        {
             this.btDomainSave.Enabled = true;
+            this.epvDomainSelector.SetError(this.txtDomainName, Uri.CheckHostName(this.txtDomainName.Text) != UriHostNameType.Dns ? "Invalid DNS name. Format: 'example.com'" : null);
             this.txtDNSName.Text = this.txtDomainSelector.Text + "._domainkey." + this.txtDomainName.Text + ".";
 
             this.bDataUpdated = true;
