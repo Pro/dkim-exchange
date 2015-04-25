@@ -352,32 +352,18 @@ namespace Configuration.DkimSigner
 
         private void SetUpgradeButton()
         {
-            string texte = string.Empty;
-            bool status = false;
+            string text = string.Empty;
 
-            // A version of DkimSigner is available online
-            if (this.dkimSignerAvailable != null)
+            bool IsDkimSignerAvailable = this.dkimSignerAvailable != null;
+            bool IsDkimSignerInstalled = this.dkimSignerInstalled != null;
+
+            if (IsDkimSignerAvailable)
             {
-                // A version of DkimSigner is installed 
-                if (this.dkimSignerInstalled != null)
-                {
-                    if (this.dkimSignerInstalled < this.dkimSignerAvailable.Version)
-                    {
-                        texte = "&Upgrade";
-                    }
-                    else
-                    {
-                        texte = "&Reinstall";
-                    }
-                }
-                // A version of DkimSigner isn't installed
-                else
-                {
-                    texte = "&Install";
-                }
-
-                status = true;
+                this.btUpgrade.Text = (IsDkimSignerInstalled ? (this.dkimSignerInstalled < this.dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
             }
+
+            this.btUpgrade.Enabled = IsDkimSignerAvailable;
+
             // TODO : Correct implementation
             //else
             //{
@@ -392,9 +378,6 @@ namespace Configuration.DkimSigner
             //        texte = "Install from ZIP";
             //    }
             //}
-
-            this.btUpgrade.BeginInvoke(new Action(() => this.btUpgrade.Text = texte));
-            this.btUpgrade.BeginInvoke(new Action(() => this.btUpgrade.Enabled = status));
         }
 
         /// <summary>
