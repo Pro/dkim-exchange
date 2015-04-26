@@ -96,7 +96,14 @@ namespace Configuration.DkimSigner.Exchange
         /// </summary>
         private void ExecuteAction()
         {
-            while(this.actions.Count > 0)
+            bool queueIsNotEmpty = false;
+
+            lock (this.actions)
+            {
+                queueIsNotEmpty = this.actions.Count > 0;
+            }
+
+            while (queueIsNotEmpty)
             {
                 TransportServiceAction action;
 
@@ -134,6 +141,11 @@ namespace Configuration.DkimSigner.Exchange
                             //throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message, e);
                         }
                     }
+                }
+
+                lock (this.actions)
+                {
+                    queueIsNotEmpty = this.actions.Count > 0;
                 }
             }
         }
