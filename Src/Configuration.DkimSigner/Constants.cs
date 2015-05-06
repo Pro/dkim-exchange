@@ -16,6 +16,7 @@ namespace Configuration.DkimSigner
         public const string DKIM_SIGNER_WEBSITE = "Website : https://github.com/Pro/dkim-exchange";
 
         public const string DKIM_SIGNER_EVENTLOG_SOURCE = @"Exchange DKIM";
+        public const string DKIM_SIGNER_EVENTLOG_REGISTRY = @"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM";
 
         public static readonly Dictionary<string, string> DKIM_SIGNER_VERSION_DIRECTORY = new Dictionary<string, string>()
         {

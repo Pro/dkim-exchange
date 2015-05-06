@@ -6,9 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -116,7 +115,6 @@ namespace Configuration.DkimSigner
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
         {
-            // Get Exchange.DkimSigner version available
             this.txtDkimSignerAvailable.Text = "Loading ...";
             this.CheckDkimSignerAvailable();
         }
@@ -563,67 +561,6 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
-        /// <summary>
-        /// Performs the installation or update when the user clicks on the install button.
-        /// If isInstall is true, the own executable will be called with the '--install' argument.
-        /// If isInstall is false, it means that an upgrade or reinstall should be performed. Thus the indicated zip file will be downloaded and the
-        /// the DkimSigner.Configuration.exe within this new release is called with the '--upgrade' argument. This allows the upgrade process to overwrite
-        /// the existing executable because it mustn't be opened.
-        /// </summary>
-        /// <param name="isInstall">If true, it is a fresh install, if false the DKIM signer should be upgraded/reinstalled.</param>
-        /// <param name="zipUrl">URL to download the zip file. Only needed if isInstall is false</param>
-        private void performInstall(bool isInstall, string zipUrl )
-        {
-            this.Cursor = Cursors.WaitCursor;
-            string exePath = null;
-            string args = null;
-            if (isInstall)
-            {
-                exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
-                args = "--install";
-            }
-            else
-            {
-                string zipPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
-                string extractPath = Path.Combine(Path.GetDirectoryName(zipPath), Path.GetFileNameWithoutExtension(zipPath));
-
-                if (!InstallWindow.DownloadFile(zipUrl, zipPath))
-                {
-                    this.Cursor = Cursors.Default;
-                    return;
-                }
-                if (!InstallWindow.ExtractFiles(zipPath, extractPath))
-                {
-                    this.Cursor = Cursors.Default;
-                    return;
-                }
-
-                // download root directory is one directory below extracted zip:
-                string rootDir = null;
-                string[] contents = Directory.GetDirectories(extractPath);
-                if (contents.Length == 0)
-                {
-                    this.Cursor = Cursors.Default;
-                    this.ShowMessageBox("Empty download", "Downloaded .zip is empty. Please try again.", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                rootDir = contents[0];
-
-                exePath = Path.Combine(rootDir, @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
-                args = "--upgrade";
-            }
-
-            try
-            {
-                Process.Start(exePath, args);
-                this.Close();
-            }
-            catch (Exception ex)
-            {
-                this.ShowMessageBox("Updater error", "Couldn't start the process :\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
         /**********************************************************/
         /********************** Button click **********************/
         /**********************************************************/
@@ -651,16 +588,17 @@ namespace Configuration.DkimSigner
 
         private void btUpgrade_Click(object sender, EventArgs e)
         {
-            if (this.btUpgrade.Text == "Upgrade" || this.btUpgrade.Text == "Reinstall" ? MessageBox.Show(this, "Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
+            if (this.btUpgrade.Text == "Reinstall" ? MessageBox.Show(this, "Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
-                string zipUrl = null;
-                
-                if (this.dkimSignerAvailable != null)
+                try
                 {
-                    zipUrl = this.dkimSignerAvailable.ZipballUrl;
+                    Process.Start(Assembly.GetExecutingAssembly().Location, this.btUpgrade.Text.Contains("Install") ? "--install" : "--upgrade " + this.dkimSignerAvailable.ZipballUrl);
+                    this.Close();
                 }
-
-                performInstall(this.btUpgrade.Text.Contains("Install"), zipUrl);
+                catch (Exception ex)
+                {
+                    this.ShowMessageBox("Updater error", "Couldn't start the process :\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 

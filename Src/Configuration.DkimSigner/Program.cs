@@ -20,44 +20,33 @@ namespace Configuration.DkimSigner
             Application.SetCompatibleTextRenderingDefault(false);
 
             // *******************************************************************
-            // Variables
-            // *******************************************************************
-            string[] asArgv = Environment.GetCommandLineArgs();
-
-            // *******************************************************************
             // Load correct Windows form
             // *******************************************************************
             Form oForm = null;
-
-            if (Array.IndexOf(asArgv, "--install") >= 0)
+            string[] asArgv = Environment.GetCommandLineArgs();
+            
+            int parIdx = Math.Max(Array.IndexOf(asArgv, "--install"), Array.IndexOf(asArgv, "--upgrade"));
+            if (parIdx >= 0)
             {
-                int parIdx = Array.IndexOf(asArgv, "--install");
+                if (asArgv[parIdx] == "--install") {}
+                else if (asArgv[parIdx] == "--upgrade") {}
+                //else if (asArgv[parIdx] == "--uninstall") { }
+                else
+                {
+                    Application.Exit();
+                }
+
                 string installZipUrl = null;
                 if (asArgv.Length > parIdx + 1)
+                {
                     installZipUrl = asArgv[parIdx + 1];
-                oForm = new InstallWindow(true, installZipUrl);
+                }
+
+                oForm = new InstallWindow(installZipUrl);
             }
-            else if(Array.IndexOf(asArgv, "--upgrade") >= 0)
-            {
-                int parIdx = Array.IndexOf(asArgv, "--upgrade");
-                string updateZipUrl = null;
-                if (asArgv.Length > parIdx + 1)
-                    updateZipUrl = asArgv[parIdx + 1];
-                oForm = new InstallWindow(false, updateZipUrl);
-            }
-            //else if (Array.IndexOf(asArgv, "--uninstall") >= 0)
-            //{
-            //    // Delete Itself
-            //    ProcessStartInfo Info=new ProcessStartInfo();
-            //    Info.Arguments="/C choice /C Y /N /D Y /T 5 & Del "+ Application.ExecutablePath;
-            //    Info.WindowStyle=ProcessWindowStyle.Hidden;
-            //    Info.CreateNoWindow=true;
-            //    Info.FileName="cmd.exe";
-            //    Process.Start(Info); 
-            //}
             else
             {
-                oForm = new MainWindow();    
+                oForm = new MainWindow(); 
             }
 
             Application.Run(oForm);
