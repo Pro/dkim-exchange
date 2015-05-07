@@ -222,8 +222,11 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 8. When reached, the process should stop at the breakpoint
 
 # Changelog
-* Current master branch:  
-        Fix: improved install process and using multithreading  
+* Current master branch:
+	Fix : Check DNS TXT record (support multiline)
+	Fix : Better GUI multithreading
+        Fix : Improved install process
+	Fix : Improved domain lookup in DKIM Signer 
 * 26.03.2015 [2.1.4]:  
 	New: Support for Exchange 2013 SP1 CU8  
         Fix: Transparent background colors exception  
