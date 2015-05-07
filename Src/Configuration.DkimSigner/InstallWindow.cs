@@ -245,7 +245,7 @@ namespace Configuration.DkimSigner
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message, "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, ex.Message, "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
@@ -355,7 +355,7 @@ namespace Configuration.DkimSigner
                 }
                 catch (ExchangeServerException ex)
                 {
-                    MessageBox.Show("Could not install DKIM Agent:\n" + ex.Message, "Error installing agent", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(this, "Could not install DKIM Agent:\n" + ex.Message, "Error installing agent", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
