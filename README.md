@@ -1,4 +1,4 @@
-Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
+﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
 =============
 
 DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications.
@@ -229,7 +229,7 @@ If you want to debug the .dll on your Exchange Server, you need to install [Visu
 	Fix : Improved domain lookup in DKIM Signer
 * 26.03.2015 [2.1.4]:  
 	New: Support for Exchange 2013 SP1 CU8  
-        Fix: Transparent background colors exception  
+    Fix: Transparent background colors exception  
 * 28.12.2014 [2.1.3]:  
     Fix: Update aborted with error that file can't be overwritten (#73)  
 	New: Remember KeySize and show correct key size for existing keys  
