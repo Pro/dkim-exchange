@@ -326,13 +326,14 @@ namespace Configuration.DkimSigner
 
             bool IsDkimSignerAvailable = this.dkimSignerAvailable != null;
             bool IsDkimSignerInstalled = this.dkimSignerInstalled != null;
+            bool IsExchangeInstalled = (this.txtExchangeInstalled.Text != "" && this.txtExchangeInstalled.Text != "Unknown" && this.txtExchangeInstalled.Text != "Loading...");
 
             if (IsDkimSignerAvailable)
             {
                 this.btUpgrade.Text = (IsDkimSignerInstalled ? (this.dkimSignerInstalled < this.dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
             }
 
-            this.btUpgrade.Enabled = IsDkimSignerAvailable;
+            this.btUpgrade.Enabled = IsDkimSignerAvailable && IsExchangeInstalled;
         }
 
         /// <summary>
