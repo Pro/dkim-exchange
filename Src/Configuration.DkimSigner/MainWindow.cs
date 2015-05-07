@@ -19,9 +19,9 @@ namespace Configuration.DkimSigner
 {
     public partial class MainWindow : Form
     {
-        /**********************************************************/
-        /*********************** Variables ************************/
-        /**********************************************************/
+        // ##########################################################
+        // ##################### Variables ##########################
+        // ##########################################################
 
         private delegate DialogResult ShowMessageBoxCallback(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon);
 
@@ -31,9 +31,9 @@ namespace Configuration.DkimSigner
         private TransportService transportService = null;
         private bool bDataUpdated = false;
 
-        /**********************************************************/
-        /*********************** Construtor ***********************/
-        /**********************************************************/
+        // ##########################################################
+        // ##################### Construtor #########################
+        // ##########################################################
 
         public MainWindow()
         {
@@ -50,9 +50,9 @@ namespace Configuration.DkimSigner
                                     Constants.DKIM_SIGNER_WEBSITE;
         }
 
-        /**********************************************************/
-        /************************* Events *************************/
-        /**********************************************************/
+        // ##########################################################
+        // ####################### Events ###########################
+        // ##########################################################
 
         /// <summary>
         /// Load information in the Windowform
@@ -181,9 +181,9 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
-        /**********************************************************/
-        /******************* Internal functions *******************/
-        /**********************************************************/
+        // ##########################################################
+        // ################# Internal functions #####################
+        // ##########################################################
 
         /// <summary>
         /// Check if a string is in base64
@@ -333,21 +333,6 @@ namespace Configuration.DkimSigner
             }
 
             this.btUpgrade.Enabled = IsDkimSignerAvailable;
-
-            // TODO : Correct implementation
-            //else
-            //{
-            //    // A version of DkimSigner is installed
-            //    if (this.dkimSignerInstalled != null)
-            //    {
-            //        texte = "Upgrade from ZIP";
-            //    }
-            //    // A version of DkimSigner isn't installed
-            //    else
-            //    {
-            //        texte = "Install from ZIP";
-            //    }
-            //}
         }
 
         /// <summary>
@@ -561,9 +546,9 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
-        /**********************************************************/
-        /********************** Button click **********************/
-        /**********************************************************/
+        // ###########################################################
+        // ###################### Button click #######################
+        // ###########################################################
 
         /// <summary>
         /// Button "start" Microsoft Exchange Transport Service have been click
