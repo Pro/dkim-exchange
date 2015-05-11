@@ -1,11 +1,12 @@
 ﻿using ConfigurationSettings;
+using Microsoft.Exchange.Data.Mime;
+using Microsoft.Exchange.Data.Transport;
+using Microsoft.Exchange.Data.Transport.Routing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.IO;
-using Microsoft.Exchange.Data.Transport;
-using Microsoft.Exchange.Data.Transport.Routing;
 
 namespace Exchange.DkimSigner
 {
@@ -153,7 +154,7 @@ namespace Exchange.DkimSigner
                 /* If domain was found in define domain configuration, we just do nothing */
                 if (domain != null)
                 {
-                    using (var inputStream = mailItem.GetMimeReadStream())
+                    using (Stream inputStream = mailItem.GetMimeReadStream())
                     {
                         Logger.LogDebug("Domain found: '"+domain.Domain+"'. I'll sign the message.");
                         string dkim = this.dkimSigner.CanSign(domain, inputStream);
@@ -166,7 +167,7 @@ namespace Exchange.DkimSigner
                             byte[] inputBuffer = ReadFully(inputStream);
                             inputStream.Close();
 
-                            using (var outputStream = mailItem.GetMimeWriteStream())
+                            using (Stream outputStream = mailItem.GetMimeWriteStream())
                             {
                                 try
                                 {

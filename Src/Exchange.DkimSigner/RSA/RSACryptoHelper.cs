@@ -41,9 +41,9 @@ namespace DkimSigner.RSA
         {
             RSACryptoFormat format;
 
-            using (var stream = new MemoryStream(encodedKey))
+            using (MemoryStream stream = new MemoryStream(encodedKey))
             {
-                using (var reader = new BinaryReader(stream))
+                using (BinaryReader reader = new BinaryReader(stream))
                 {
                     try
                     {
@@ -279,11 +279,11 @@ namespace DkimSigner.RSA
         {
             RSACryptoServiceProvider provider;
 
-            using (var stream = new MemoryStream(encodedKey))
+            using (MemoryStream stream = new MemoryStream(encodedKey))
             {
-                using (var reader = new BinaryReader(stream))
+                using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    var count = 0;
+                    int count = 0;
 
                     try
                     {
@@ -315,30 +315,30 @@ namespace DkimSigner.RSA
                         }
 
                         count = ReadFieldLength(reader);
-                        var modulus = reader.ReadBytes(count);
+                        byte[] modulus = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var exponent = reader.ReadBytes(count);
+                        byte[] exponent = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var d = reader.ReadBytes(count);
+                        byte[] d = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var p = reader.ReadBytes(count);
+                        byte[] p = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var q = reader.ReadBytes(count);
+                        byte[] q = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var dp = reader.ReadBytes(count);
+                        byte[] dp = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var dq = reader.ReadBytes(count);
+                        byte[] dq = reader.ReadBytes(count);
 
                         count = ReadFieldLength(reader);
-                        var inverseQ = reader.ReadBytes(count);
+                        byte[] inverseQ = reader.ReadBytes(count);
 
-                        var parameters = new RSAParameters();
+                        RSAParameters parameters = new RSAParameters();
                         parameters.Modulus = modulus;
                         parameters.Exponent = exponent;
                         parameters.D = d;
@@ -396,8 +396,8 @@ namespace DkimSigner.RSA
                 case 0x82:
                     {
                         // Data size is in the next two bytes.
-                        var high = reader.ReadByte();
-                        var low = reader.ReadByte();
+                        byte high = reader.ReadByte();
+                        byte low = reader.ReadByte();
                         count = BitConverter.ToInt32(
                             new byte[] { low, high, 0, 0 },
                             0);

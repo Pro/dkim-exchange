@@ -75,19 +75,12 @@ namespace Exchange.DkimSigner
             {
                 try
                 {
-                    try
+                    if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
                     {
-                        if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
-                        {
-                            this.domains.Add(domainElement.Domain, domainElement);
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.LogError(e.Message);
+                        this.domains.Add(domainElement.Domain, domainElement);
                     }
                 }
-                catch (FileNotFoundException e)
+                catch (Exception e)
                 {
                     Logger.LogError(e.Message);
                 }
@@ -142,7 +135,9 @@ namespace Exchange.DkimSigner
         public string CanSign(DomainElement domain, Stream inputStream)
         {
             if (this.disposed)
+            {
                 throw new ObjectDisposedException("Exchange DkimSigner disposed.");
+            }
 
             inputStream.Seek(0, SeekOrigin.Begin);
 
@@ -154,7 +149,7 @@ namespace Exchange.DkimSigner
 
             // Generate the hash for the header
             Logger.LogDebug("Creating signing header");
-            var canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
+            IEnumerable<string> canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
             string signedDkimHeader = this.GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
             Logger.LogDebug("Got signing header: " + signedDkimHeader);
 
@@ -415,11 +410,11 @@ namespace Exchange.DkimSigner
             if (domain.CryptoProvider == null)
                 throw new Exception("CryptoProvider for domain " + domain.Domain + " is null.");
 
-            using (var stream = new MemoryStream())
+            using (MemoryStream stream = new MemoryStream())
             {
-                using (var writer = new StreamWriter(stream))
+                using (StreamWriter writer = new StreamWriter(stream))
                 {
-                    foreach (var canonicalizedHeader in canonicalizedHeaders)
+                    foreach (string canonicalizedHeader in canonicalizedHeaders)
                     {
                         writer.Write(canonicalizedHeader);
                     }

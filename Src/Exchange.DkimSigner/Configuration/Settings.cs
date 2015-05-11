@@ -50,7 +50,7 @@ namespace ConfigurationSettings
         {            
             if (File.Exists(filename))
             {
-                using (var stream = File.OpenRead(filename))
+                using (Stream stream = File.OpenRead(filename))
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                     Settings settings = serializer.Deserialize(stream) as Settings;
