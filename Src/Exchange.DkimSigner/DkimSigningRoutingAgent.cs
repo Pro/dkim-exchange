@@ -1,12 +1,11 @@
 ﻿using ConfigurationSettings;
-using Microsoft.Exchange.Data.Mime;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.IO;
+using System.Reflection;
 
 namespace Exchange.DkimSigner
 {
@@ -144,28 +143,23 @@ namespace Exchange.DkimSigner
                     return;
                 }
 
-                /* Check if DKIM is defined for the current domain */
-                DomainElement domain = null;
+                /* If domain was found in define domain configuration */
                 if (this.dkimSigner.GetDomains().ContainsKey(mailItem.FromAddress.DomainPart))
                 {
-                    domain = this.dkimSigner.GetDomains()[mailItem.FromAddress.DomainPart];
-                }
+                    DomainElement domain = this.dkimSigner.GetDomains()[mailItem.FromAddress.DomainPart];
 
-                /* If domain was found in define domain configuration, we just do nothing */
-                if (domain != null)
-                {
-                    using (Stream inputStream = mailItem.GetMimeReadStream())
+                    using (Stream stream = mailItem.GetMimeReadStream())
                     {
                         Logger.LogDebug("Domain found: '"+domain.Domain+"'. I'll sign the message.");
-                        string dkim = this.dkimSigner.CanSign(domain, inputStream);
+                        string dkim = this.dkimSigner.CanSign(domain, stream);
 
                         if (dkim.Length != 0)
                         {
                             Logger.LogInformation("Signing mail with header: " + dkim);
 
-                            inputStream.Seek(0, SeekOrigin.Begin);
-                            byte[] inputBuffer = ReadFully(inputStream);
-                            inputStream.Close();
+                            stream.Seek(0, SeekOrigin.Begin);
+                            byte[] inputBuffer = ReadFully(stream);
+                            stream.Close();
 
                             using (Stream outputStream = mailItem.GetMimeWriteStream())
                             {
