@@ -123,7 +123,7 @@ namespace Configuration.DkimSigner.Exchange
                         }
                         catch (Exception e)
                         {
-                            //throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message, e);
+                            throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message, e);
                         }
                     }
                 }
@@ -138,7 +138,7 @@ namespace Configuration.DkimSigner.Exchange
                         }
                         catch (Exception e)
                         {
-                            //throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message, e);
+                            throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message, e);
                         }
                     }
                 }
