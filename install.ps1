@@ -14,6 +14,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2013 SP1 CU6 (15.0.995.29)
 # Exchange 2013 SP1 CU7 (15.0.1044.25)
 # Exchange 2013 SP1 CU8 (15.0.1076.9)
+# Exchange 2013 SP1 CU9 (15.0.1104.5)
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
 $exchserver = Get-ExchangeServer -Identity $hostname
@@ -47,6 +48,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2013 SP1 CU7"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1076) {
 	$EXVER="Exchange 2013 SP1 CU8"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1104) {
+	$EXVER="Exchange 2013 SP1 CU9"
 }
 else {
 	throw "The exchange version is not yet supported: $exchserver.admindisplayversion"

@@ -2,6 +2,7 @@
 
 ## Current master branch:  
 
+New: Support for Exchange 2013 SP1 CU9
 Fix: Check DNS TXT record (support multiline)  
 Fix: Better GUI multithreading  
 Fix: Improved install process  
