@@ -324,15 +324,14 @@ namespace Configuration.DkimSigner
         {
             string text = string.Empty;
 
-            bool IsDkimSignerAvailable = this.dkimSignerAvailable != null;
             bool IsExchangeInstalled = (this.txtExchangeInstalled.Text != "" && this.txtExchangeInstalled.Text != "Unknown" && this.txtExchangeInstalled.Text != "Loading...");
 
-            if (this.dkimSignerInstalled != null)
+            if (this.dkimSignerInstalled != null && this.dkimSignerAvailable != null)
             {
                 this.btUpgrade.Text = (this.dkimSignerInstalled != null ? (this.dkimSignerInstalled < this.dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
             }
 
-            this.btUpgrade.Enabled = IsDkimSignerAvailable && IsExchangeInstalled;
+            this.btUpgrade.Enabled = this.dkimSignerAvailable != null && IsExchangeInstalled;
         }
 
         /// <summary>
@@ -886,7 +885,7 @@ namespace Configuration.DkimSigner
                         oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
 
                     }
-                    catch (System.ComponentModel.Win32Exception ex)
+                    catch (Exception ex)
                     {
                         MessageBox.Show(this, "Couldn't get EventLog source:\n" + ex.Message, "Error getting EventLog", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         oLogger.Dispose();
@@ -896,7 +895,17 @@ namespace Configuration.DkimSigner
 
                     for (int i = oLogger.Entries.Count - 1; i > 0; i--)
                     {
-                        EventLogEntry oEntry = oLogger.Entries[i];
+                        EventLogEntry oEntry;
+                        try {
+                            oEntry = oLogger.Entries[i];
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(this, "Couldn't get EventLog entry:\n" + ex.Message, "Error getting EventLog", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            oLogger.Dispose();
+                            this.btEventLogRefresh.Enabled = true;
+                            return;
+                        }
 
                         if (oEntry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
                         {

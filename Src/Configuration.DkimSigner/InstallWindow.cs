@@ -197,13 +197,15 @@ namespace Configuration.DkimSigner
                         this.lbExtractFiles.Enabled = true;
                     }
                 }
-                catch (System.ComponentModel.Win32Exception ex)
+                catch (Exception ex)
                 {
                     MessageBox.Show(this, "Couldn't initialize download progress window:\n" + ex.Message, "Error showing download progress", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                finally
+                {
+                    oDpw.Dispose();
+                }
                 
-
-                oDpw.Dispose();
             }
             else
             {
