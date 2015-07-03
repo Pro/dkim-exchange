@@ -54,8 +54,11 @@ namespace Configuration.DkimSigner.Exchange
 
                 if (ex != null || info == null || error)
                 {
-                    PowerShellHelper.runspace.Dispose();
-                    PowerShellHelper.runspace = null;
+                    if (PowerShellHelper.runspace != null)
+                    {
+                        PowerShellHelper.runspace.Dispose();
+                        PowerShellHelper.runspace = null;
+                    }
                     throw new ExchangeServerException("Couldn't initialize PowerShell runspace.");
                 }
             }

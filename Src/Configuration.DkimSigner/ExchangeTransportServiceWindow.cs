@@ -109,7 +109,9 @@ namespace Configuration.DkimSigner
                 {
                     ExchangeServer.UninstallDkimTransportAgent();
                     this.RefreshTransportServiceAgents();
-                    new TransportService().Do(TransportServiceAction.Restart);
+                    TransportService ts = new TransportService();
+                    ts.Do(TransportServiceAction.Restart);
+                    ts.Dispose();
                     MessageBox.Show(this, "Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DKIM_SIGNER_PATH + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!", "Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     /*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
@@ -145,7 +147,9 @@ namespace Configuration.DkimSigner
                     this.btDisable.Text = "Disable";
                 }
 
-                new TransportService().Do(TransportServiceAction.Restart);
+                TransportService ts = new TransportService();
+                ts.Do(TransportServiceAction.Restart);
+                ts.Dispose();
                 this.RefreshTransportServiceAgents();
                 this.refreshMoveButtons(true);
             }

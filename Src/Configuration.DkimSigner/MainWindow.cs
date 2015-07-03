@@ -325,12 +325,11 @@ namespace Configuration.DkimSigner
             string text = string.Empty;
 
             bool IsDkimSignerAvailable = this.dkimSignerAvailable != null;
-            bool IsDkimSignerInstalled = this.dkimSignerInstalled != null;
             bool IsExchangeInstalled = (this.txtExchangeInstalled.Text != "" && this.txtExchangeInstalled.Text != "Unknown" && this.txtExchangeInstalled.Text != "Loading...");
 
-            if (IsDkimSignerAvailable)
+            if (this.dkimSignerInstalled != null)
             {
-                this.btUpgrade.Text = (IsDkimSignerInstalled ? (this.dkimSignerInstalled < this.dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
+                this.btUpgrade.Text = (this.dkimSignerInstalled != null ? (this.dkimSignerInstalled < this.dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
             }
 
             this.btUpgrade.Enabled = IsDkimSignerAvailable && IsExchangeInstalled;
@@ -882,7 +881,18 @@ namespace Configuration.DkimSigner
                 if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
                 {
                     EventLog oLogger = new EventLog();
-                    oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
+
+                    try {
+                        oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
+
+                    }
+                    catch (System.ComponentModel.Win32Exception ex)
+                    {
+                        MessageBox.Show(this, "Couldn't get EventLog source:\n" + ex.Message, "Error getting EventLog", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        oLogger.Dispose();
+                        this.btEventLogRefresh.Enabled = true;
+                        return;
+                    }
 
                     for (int i = oLogger.Entries.Count - 1; i > 0; i--)
                     {

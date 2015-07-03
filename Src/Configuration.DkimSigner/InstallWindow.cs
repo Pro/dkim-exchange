@@ -191,10 +191,17 @@ namespace Configuration.DkimSigner
                 zipFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
 
                 DownloadProgressWindow oDpw = new DownloadProgressWindow(this.zipUrl, zipFile);
-                if (oDpw.ShowDialog(this) == DialogResult.OK)
-                {
-                    this.lbExtractFiles.Enabled = true;
+                try {
+                    if (oDpw.ShowDialog(this) == DialogResult.OK)
+                    {
+                        this.lbExtractFiles.Enabled = true;
+                    }
                 }
+                catch (System.ComponentModel.Win32Exception ex)
+                {
+                    MessageBox.Show(this, "Couldn't initialize download progress window:\n" + ex.Message, "Error showing download progress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                
 
                 oDpw.Dispose();
             }
@@ -412,7 +419,8 @@ namespace Configuration.DkimSigner
         private void btClose_Click(object sender, EventArgs e)
         {
             // Start new installed DKIM Signer Configuration GUI
-            if (this.btInstall.Enabled == false && this.picStopService.Image == this.statusImageList.Images[0])
+            System.Drawing.Image statusImg = this.statusImageList.Images[0];
+            if (this.btInstall.Enabled == false && this.picStopService.Image == statusImg)
             {
                 if (MessageBox.Show(this, "Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
@@ -427,6 +435,7 @@ namespace Configuration.DkimSigner
                     }
                 }
             }
+            statusImg.Dispose();
 
             this.Close();
         }
