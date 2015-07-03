@@ -2,14 +2,16 @@
 
 ## Current master branch:  
 
-New: Support for Exchange 2013 SP1 CU9
-Fix: Check DNS TXT record (support multiline)  
-Fix: Better GUI multithreading  
-Fix: Improved install process  
-Fix: Improved domain lookup in DKIM Signer  
+
 
 ## Releases
 
+* 03.07.2015 [2.1.5]:  
+    New: Support for Exchange 2013 SP1 CU9  
+    Fix: Check DNS TXT record (support multiline)  
+    Fix: Better GUI multithreading  
+    Fix: Improved install process  
+    Fix: Improved domain lookup in DKIM Signer  
 * 26.03.2015 [2.1.4]:  
 	New: Support for Exchange 2013 SP1 CU8  
 	Fix: Transparent background colors exception  
