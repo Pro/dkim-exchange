@@ -887,8 +887,8 @@ namespace Configuration.DkimSigner
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show(this, "Couldn't get EventLog source:\n" + ex.Message, "Error getting EventLog", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         oLogger.Dispose();
+                        MessageBox.Show(this, "Couldn't get EventLog source:\n" + ex.Message, "Error getting EventLog", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         this.btEventLogRefresh.Enabled = true;
                         return;
                     }
