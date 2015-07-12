@@ -179,10 +179,14 @@ If you want to test, if everything is working, simply send a mail to mailtest@un
 
 If you want to update the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Upgrade button. (If no new version is available the button shows 'Reinstall').
 
-## Update from Version 1.* to 2.0.*
+# Updating Exchange Server
 
-We had to change the settings file for the new version.
-The best way to update is to make a backup copy from your `C:\Program Files\Exchange DkimSigner` directory. Then just follow the install and configure instructions. You can then also port the old configuration file (`ExchangeDkimSigner.dll.config`) from your backup by opening the new (`settings.xml`) and the old file in a text editor and manually editing the entries.
+Before you update the Exchange Server, you have to make sure that the DKIM Signer Version is compatible with the new Exchange Version. Thus the following steps are suggested to avoid any Upgrade problems:
+
+1. Disable the DKIM Signer (Open the configuration executable, on the `Information` tab press `Configure`, then disable the DKIM Signer)
+2. Update the Exchange Server
+3. Update the DKIM Signer (using the configuration executable)
+4. Re-enable the DKIM Signer
 
 # Uninstalling the Transport Agent
 
