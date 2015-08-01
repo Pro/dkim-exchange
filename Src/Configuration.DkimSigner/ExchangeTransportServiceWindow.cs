@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Configuration.DkimSigner.Exchange;
-using System.IO;
 
 namespace Configuration.DkimSigner
 {
@@ -32,7 +30,6 @@ namespace Configuration.DkimSigner
         private void ExchangeTransportServiceWindows_Load(object sender, EventArgs e)
         {
             this.RefreshTransportServiceAgents();
-
         }
 
         private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
