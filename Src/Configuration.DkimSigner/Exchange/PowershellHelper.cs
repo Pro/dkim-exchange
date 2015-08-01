@@ -70,7 +70,6 @@ namespace Configuration.DkimSigner.Exchange
         {
             StringBuilder sb = new StringBuilder();
             Pipeline pipeline = null;
-            Exception except = null;
 
             try
             {
@@ -82,28 +81,12 @@ namespace Configuration.DkimSigner.Exchange
 
                 foreach (PSObject current in collection)
                 {
-                    sb.AppendLine(current.ToString());
-                }
-
-                if (bRemoveEmptyLines)
-                {
-                    string[] array = sb.ToString().Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-                    sb = new StringBuilder();
-
-                    for (int i = 0; i < array.Length; i++)
+                    string value = current.ToString();
+                    if (!bRemoveEmptyLines || !string.IsNullOrWhiteSpace(value))
                     {
-                        string value = array[i].Trim();
-
-                        if (!string.IsNullOrEmpty(value))
-                        {
-                            sb.AppendLine(value);
-                        }
+                        sb.AppendLine(value);
                     }
                 }
-            }
-            catch (Exception ex)
-            {
-                except = ex;
             }
             finally
             {
@@ -111,11 +94,6 @@ namespace Configuration.DkimSigner.Exchange
                 {
                     pipeline.Dispose();
                 }
-            }
-
-            if (except != null)
-            {
-                throw except;
             }
 
             return sb.ToString();
