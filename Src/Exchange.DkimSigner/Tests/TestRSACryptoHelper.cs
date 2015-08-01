@@ -92,7 +92,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
             }
 
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.xml");
-            using (RSACryptoServiceProvider providerXML = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim()))
+            using (RSACryptoServiceProvider providerXML = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), "test-private"))
             {
                 if (providerXML != null)
                     keyXML = providerXML.ToXmlString(true);
@@ -124,7 +124,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
             }
 
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.pem");
-            using (RSACryptoServiceProvider providerPEM = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim()))
+            using (RSACryptoServiceProvider providerPEM = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), "test-private"))
             {
                 if (providerPEM != null)
                     keyPEM = providerPEM.ToXmlString(true);
@@ -156,7 +156,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
             }
 
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.der");
-            using (RSACryptoServiceProvider providerDER = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes))
+            using (RSACryptoServiceProvider providerDER = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes, "test-private"))
             {
                 if (providerDER != null)
                     keyDER = providerDER.ToXmlString(true);

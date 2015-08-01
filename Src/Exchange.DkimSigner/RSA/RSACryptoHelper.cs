@@ -90,23 +90,34 @@ namespace DkimSigner.RSA
         {
             byte[] fileBytes = File.ReadAllBytes(pathToFile);
 
+            string keyContainerName = System.IO.Path.GetFileNameWithoutExtension(pathToFile);
+
             RSACryptoServiceProvider provider;
 
             switch (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(fileBytes))
             {
                 case RSACryptoFormat.DER:
-                    provider = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes);
+                    provider = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes, keyContainerName);
                     break;
                 case RSACryptoFormat.PEM:
-                    provider = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                    provider = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), keyContainerName);
                     break;
                 case RSACryptoFormat.XML:
-                    provider = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim());
+                    provider = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), keyContainerName);
                     break;
                 case RSACryptoFormat.UNKNOWN:
                 default:
                     throw new RSACryptoHelperException("Couldn't identify key format for '" + pathToFile + "'. It should be one of the following RSA formats: XML, PEM, DER");
             }
+
+            return provider;
+        }
+
+        private static RSACryptoServiceProvider initializeRSACryptoServiceProvider(string keyContainerName)
+        {
+            CspParameters cspParameters = new CspParameters { KeyContainerName = keyContainerName };
+            RSACryptoServiceProvider provider = new RSACryptoServiceProvider(cspParameters);
+            provider.PersistKeyInCsp = false;
 
             return provider;
         }
@@ -119,7 +130,7 @@ namespace DkimSigner.RSA
         /// <param name="encodedKey">The XML-encoded key.</param>
         /// <returns>The RSACryptoServiceProvider instance, which the caller is
         /// responsible for disposing.</returns>
-        public static RSACryptoServiceProvider GetProviderFromXmlEncodedRsaPrivateKey(string encodedKey)
+        public static RSACryptoServiceProvider GetProviderFromXmlEncodedRsaPrivateKey(string encodedKey, string keyContainerName)
         {
             encodedKey = encodedKey.Trim();
 
@@ -127,7 +138,7 @@ namespace DkimSigner.RSA
 
             try
             {
-                provider = new RSACryptoServiceProvider();
+                provider = initializeRSACryptoServiceProvider(keyContainerName);
                 provider.FromXmlString(encodedKey);
             }
             catch (Exception ex)
@@ -146,7 +157,7 @@ namespace DkimSigner.RSA
         /// <param name="encodedKey">The PEM-encoded key.</param>
         /// <returns>The RSACryptoServiceProvider instance, which the caller is
         /// responsible for disposing.</returns>
-        public static RSACryptoServiceProvider GetProviderFromPemEncodedRsaPrivateKey(string encodedKey)
+        public static RSACryptoServiceProvider GetProviderFromPemEncodedRsaPrivateKey(string encodedKey, string keyContainerName)
         {
             encodedKey = encodedKey.Trim();
             
@@ -158,7 +169,7 @@ namespace DkimSigner.RSA
                 encodedKey = encodedKey.Replace("\r", "").Replace("\n", "");
 
                 //the encodedKey is now in base64 encoded DER format
-                return GetProviderFromDerEncodedRsaPrivateKey(Convert.FromBase64String(encodedKey.Trim()));
+                return GetProviderFromDerEncodedRsaPrivateKey(Convert.FromBase64String(encodedKey.Trim()), keyContainerName);
             } else if (encodedKey.StartsWith(PemP8PrivateKeyHeader, StringComparison.Ordinal) &&
              encodedKey.EndsWith(PemP8PrivateKeyFooter, StringComparison.Ordinal))
             {
@@ -167,7 +178,7 @@ namespace DkimSigner.RSA
                 encodedKey = encodedKey.Replace("\r", "").Replace("\n", "");
 
                 //the encodedKey is now in base64 encoded PKCS8 format
-                return GetProviderFromPKCS8PrivateKey(Convert.FromBase64String(encodedKey.Trim()));
+                return GetProviderFromPKCS8PrivateKey(Convert.FromBase64String(encodedKey.Trim()), keyContainerName);
             }
             else 
                 throw new RSACryptoHelperException("Invalid PEM format for key. The key needs to start with '" + PemSSLPrivateKeyHeader + "' and end with '" + PemSSLPrivateKeyFooter + "' or start with '" + PemP8PrivateKeyHeader + "' and end with '" + PemP8PrivateKeyFooter + "'", "encodedKey");
@@ -182,7 +193,7 @@ namespace DkimSigner.RSA
         /// <param name="encodedKey">The DER-encoded key.</param>
         /// <returns>The RSACryptoServiceProvider instance, which the caller is
         /// responsible for disposing.</returns>
-        public static RSACryptoServiceProvider GetProviderFromPKCS8PrivateKey(byte[] pkcs8)
+        public static RSACryptoServiceProvider GetProviderFromPKCS8PrivateKey(byte[] pkcs8, string keyContainerName)
         {
             // encoded OID sequence for  PKCS #1 rsaEncryption szOID_RSA_RSA = "1.2.840.113549.1.1.1"
             // this byte[] includes the sequence byte and terminal encoded null 
@@ -233,7 +244,7 @@ namespace DkimSigner.RSA
                 //------ at this stage, the remaining sequence should be the RSA private key
 
                 byte[] rsaprivkey = binr.ReadBytes((int)(lenstream - mem.Position));
-                return GetProviderFromDerEncodedRsaPrivateKey(rsaprivkey);
+                return GetProviderFromDerEncodedRsaPrivateKey(rsaprivkey, keyContainerName);
             }
 
             catch (Exception ex)
@@ -275,7 +286,7 @@ namespace DkimSigner.RSA
         /// <param name="encodedKey">The DER-encoded key.</param>
         /// <returns>The RSACryptoServiceProvider instance, which the caller is
         /// responsible for disposing.</returns>
-        public static RSACryptoServiceProvider GetProviderFromDerEncodedRsaPrivateKey(byte[] encodedKey)
+        public static RSACryptoServiceProvider GetProviderFromDerEncodedRsaPrivateKey(byte[] encodedKey, string keyContainerName)
         {
             RSACryptoServiceProvider provider;
 
@@ -348,7 +359,7 @@ namespace DkimSigner.RSA
                         parameters.DQ = dq;
                         parameters.InverseQ = inverseQ;
 
-                        provider = new RSACryptoServiceProvider();
+                        provider = initializeRSACryptoServiceProvider(keyContainerName);
                         provider.ImportParameters(parameters);
                     }
                     catch (Exception ex)
