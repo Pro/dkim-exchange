@@ -33,9 +33,6 @@ namespace Configuration.DkimSigner
         {
             this.RefreshTransportServiceAgents();
 
-            bool IsDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
-            bool IsDkimAgentTransportEnabled = IsDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
-            this.btDisable.Text = (IsDkimAgentTransportEnabled ? "Enable" : "Disable");
         }
 
         private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
@@ -75,6 +72,10 @@ namespace Configuration.DkimSigner
             {
                 row.Selected = row.Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
             }
+            
+            bool IsDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
+            bool IsDkimAgentTransportEnabled = IsDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
+            this.btDisable.Text = (IsDkimAgentTransportEnabled ? "Disable" : "Enable");
         }
 
 
