@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.ServiceProcess;
 using System.Threading;
@@ -82,7 +81,10 @@ namespace Configuration.DkimSigner.Exchange
                 if (this.status != status)
                 {
                     this.status = status;
-                    this.StatusChanged(this, null);
+                    if(this.StatusChanged != null)
+                    {
+                        this.StatusChanged(this, null);
+                    }
                 }
             }
             catch (ExchangeServerException)

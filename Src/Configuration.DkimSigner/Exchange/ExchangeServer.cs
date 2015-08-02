@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.ServiceProcess;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner.Exchange
@@ -134,7 +131,7 @@ namespace Configuration.DkimSigner.Exchange
                 Match oMatch = Regex.Match(sResult, "^Uninstall-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
                 {
-                    throw new ExchangeServerException("Couldn't install 'Exchange DkimSigner' agent :\n");
+                    throw new ExchangeServerException("Couldn't uninstall 'Exchange DkimSigner' agent :\n");
                 }
             }
         }
@@ -148,7 +145,7 @@ namespace Configuration.DkimSigner.Exchange
                 Match oMatch = Regex.Match(sResult, "^Enable-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
                 {
-                    throw new ExchangeServerException("Couldn't install 'Exchange DkimSigner' agent :\n");
+                    throw new ExchangeServerException("Couldn't enable 'Exchange DkimSigner' agent :\n");
                 }
             }
         }
@@ -162,7 +159,7 @@ namespace Configuration.DkimSigner.Exchange
                 Match oMatch = Regex.Match(sResult, "^Disable-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
                 {
-                    throw new ExchangeServerException("Couldn't install 'Exchange DkimSigner' agent :\n");
+                    throw new ExchangeServerException("Couldn't disable 'Exchange DkimSigner' agent :\n");
                 }
             }
         }
@@ -176,7 +173,7 @@ namespace Configuration.DkimSigner.Exchange
                 Match oMatch = Regex.Match(sResult, "^Set-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
                 {
-                    throw new ExchangeServerException("Couldn't install 'Exchange DkimSigner' agent :\n");
+                    throw new ExchangeServerException("Couldn't set priority of 'Exchange DkimSigner' agent :\n");
                 }
             }
         }

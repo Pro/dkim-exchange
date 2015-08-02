@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-
 using Configuration.DkimSigner.Exchange;
-using System.IO;
 
 namespace Configuration.DkimSigner
 {
@@ -32,7 +30,6 @@ namespace Configuration.DkimSigner
         private void ExchangeTransportServiceWindows_Load(object sender, EventArgs e)
         {
             this.RefreshTransportServiceAgents();
-
         }
 
         private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
@@ -151,13 +148,14 @@ namespace Configuration.DkimSigner
                 if (this.btDisable.Text == "Disable")
                 {
                     ExchangeServer.DisableDkimTransportAgent();
-                    this.btDisable.Text = "Enable";
                 }
                 else
                 {
                     ExchangeServer.EnableDkimTransportAgent();
-                    this.btDisable.Text = "Disable";
                 }
+
+                this.RefreshTransportServiceAgents();
+                this.refreshMoveButtons( true );
 
                 TransportService ts = new TransportService();
                 try
@@ -172,8 +170,6 @@ namespace Configuration.DkimSigner
                 {
                     ts.Dispose();
                 }
-                this.RefreshTransportServiceAgents();
-                this.refreshMoveButtons(true);
             }
             catch (ExchangeServerException ex)
             {
