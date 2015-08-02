@@ -81,10 +81,14 @@ namespace Configuration.DkimSigner.Exchange
 
                 foreach (PSObject current in collection)
                 {
-                    string value = current.ToString();
-                    if (!bRemoveEmptyLines || !string.IsNullOrWhiteSpace(value))
+                    string[] array = current.ToString().Split(new[] { '\n' }, (bRemoveEmptyLines ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions .None));
+
+                    foreach(string value in array)
                     {
-                        sb.AppendLine(value);
+                        if(!bRemoveEmptyLines || !string.IsNullOrWhiteSpace(value))
+                        {
+                            sb.AppendLine(value.Trim());
+                        }
                     }
                 }
             }
