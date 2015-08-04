@@ -102,6 +102,12 @@
     <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelperException.cs">
       <Link>RSA\RSACryptoHelperException.cs</Link>
     </Compile>
+    <Compile Include="ConfigureWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigureWindow.Designer.cs">
+      <DependentUpon>ConfigureWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -235,6 +241,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>UserPreferences.settings</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="ConfigureWindow.resx">
+      <DependentUpon>ConfigureWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DownloadProgressWindow.resx">
       <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
     </EmbeddedResource>
