@@ -6,9 +6,11 @@
 
 ## Releases
 
-* 03.07.2015 [2.1.5]:  
+* 21.08.2015 [2.1.5]:  
+    New: Support for Exchange 2016 Preview   
     New: Support for Exchange 2013 SP1 CU9  
-    Fix: Check DNS TXT record (support multiline)  
+    New: `--debug` command line parameter for debug tab  
+	Fix: Check DNS TXT record (support multiline)  
     Fix: Better GUI multithreading  
     Fix: Improved install process  
     Fix: Improved domain lookup in DKIM Signer  

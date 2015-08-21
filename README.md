@@ -11,7 +11,7 @@ We are also happy for any donations to keep new versions flowing :) Especially i
 
 ## Supported versions
 
-The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013)
+The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013 & 2016)
 
 * Exchange 2007 SP3 (8.3.*)
 * Exchange 2010     (14.0.*)
@@ -27,7 +27,8 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2013 CU6 (15.0.995.29)
 * Exchange 2013 CU7 (15.0.1044.25)
 * Exchange 2013 CU8 (15.0.1076.9)
-* Exchange 2013 CU9 (15.0.1104.5) (in beta release)
+* Exchange 2013 CU9 (15.0.1104.5)
+* Exchange 2016 Preview (15.1.225.16)
 
 ## Requirements
 
