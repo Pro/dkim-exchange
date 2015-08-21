@@ -103,6 +103,8 @@
             this.txtAbout = new Configuration.DkimSigner.CustomTextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
+            this.tpDebug = new System.Windows.Forms.TabPage();
+            this.btExchangeVersion = new System.Windows.Forms.Button();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -121,6 +123,7 @@
             this.tpAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).BeginInit();
+            this.tpDebug.SuspendLayout();
             this.SuspendLayout();
             // 
             // tcConfiguration
@@ -133,6 +136,7 @@
             this.tcConfiguration.Controls.Add(this.tpDomain);
             this.tcConfiguration.Controls.Add(this.tpLog);
             this.tcConfiguration.Controls.Add(this.tpAbout);
+            this.tcConfiguration.Controls.Add(this.tpDebug);
             this.tcConfiguration.ItemSize = new System.Drawing.Size(150, 25);
             this.tcConfiguration.Location = new System.Drawing.Point(12, 12);
             this.tcConfiguration.Name = "tcConfiguration";
@@ -908,10 +912,10 @@
             // 
             // tpAbout
             // 
+            this.tpAbout.BackColor = System.Drawing.Color.Transparent;
             this.tpAbout.Controls.Add(this.label1);
             this.tpAbout.Controls.Add(this.txtAbout);
             this.tpAbout.Controls.Add(this.picLogo);
-            this.tpAbout.BackColor = System.Drawing.Color.Transparent;
             this.tpAbout.Location = new System.Drawing.Point(4, 29);
             this.tpAbout.Name = "tpAbout";
             this.tpAbout.Size = new System.Drawing.Size(707, 443);
@@ -955,6 +959,27 @@
             // 
             this.epvDomainSelector.ContainerControl = this;
             // 
+            // tpDebug
+            // 
+            this.tpDebug.Controls.Add(this.btExchangeVersion);
+            this.tpDebug.Location = new System.Drawing.Point(4, 29);
+            this.tpDebug.Name = "tpDebug";
+            this.tpDebug.Padding = new System.Windows.Forms.Padding(3);
+            this.tpDebug.Size = new System.Drawing.Size(707, 443);
+            this.tpDebug.TabIndex = 5;
+            this.tpDebug.Text = "Debug Helper";
+            this.tpDebug.UseVisualStyleBackColor = true;
+            // 
+            // btExchangeVersion
+            // 
+            this.btExchangeVersion.Location = new System.Drawing.Point(6, 6);
+            this.btExchangeVersion.Name = "btExchangeVersion";
+            this.btExchangeVersion.Size = new System.Drawing.Size(199, 23);
+            this.btExchangeVersion.TabIndex = 0;
+            this.btExchangeVersion.Text = "Show Exchange Version as HEX";
+            this.btExchangeVersion.UseVisualStyleBackColor = true;
+            this.btExchangeVersion.Click += new System.EventHandler(this.btExchangeVersion_Click);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -994,6 +1019,7 @@
             this.tpAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).EndInit();
+            this.tpDebug.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1073,6 +1099,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn time;
         private System.Windows.Forms.DataGridViewTextBoxColumn message;
         private System.Windows.Forms.Button btUpgrade;
+        private System.Windows.Forms.TabPage tpDebug;
+        private System.Windows.Forms.Button btExchangeVersion;
     }
 }
 

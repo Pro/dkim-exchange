@@ -35,7 +35,7 @@ namespace Configuration.DkimSigner
         // ##################### Construtor #########################
         // ##########################################################
 
-        public MainWindow()
+        public MainWindow(bool enableDebugTab)
         {
             this.InitializeComponent();
 
@@ -48,6 +48,8 @@ namespace Configuration.DkimSigner
                                     Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_AUTHOR + "\r\n\r\n" +
                                     Constants.DKIM_SIGNER_WEBSITE;
+            if (!enableDebugTab)
+                this.tcConfiguration.TabPages["tpDebug"].Hide();
         }
 
         // ##########################################################
@@ -940,6 +942,40 @@ namespace Configuration.DkimSigner
             });
 
             this.btEventLogRefresh.Enabled = true;
+        }
+
+        private async void btExchangeVersion_Click(object sender, EventArgs e)
+        {
+            string version = "Unknown";
+
+            this.btExchangeVersion.Enabled = false;
+            ExchangeServerException ex = null;
+            await Task.Run(() => { try { version = ExchangeServer.GetInstalledVersion(); } catch (ExchangeServerException exe) { ex = exe; } });
+
+            this.btExchangeVersion.Enabled = true;
+            if (ex != null)
+            {
+                this.ShowMessageBox("Exchange Version Error", "Couldn't determine installed Exchange Version: " + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
+            char[] values = version.ToCharArray();
+            string result = "";
+            foreach (char letter in values)
+            {
+                // Get the integral value of the character. 
+                int value = Convert.ToInt32(letter);
+                // Convert the decimal value to a hexadecimal value in string form. 
+                string hexOutput = String.Format("{0:X}", value);
+                result += "'" + letter + "'" + " -> " + hexOutput + "\n";
+            }
+
+            string ConfigVersion = Version.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
+
+
+            result = "My version: " + ConfigVersion + "\nExchange\n" + result;
+
+            this.ShowMessageBox("Exchange Version Debug", result, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

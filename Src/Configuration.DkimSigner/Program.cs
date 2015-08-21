@@ -50,7 +50,8 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                oForm = new MainWindow(); 
+                int debugIdx = Array.IndexOf(asArgv, "--debug");
+                oForm = new MainWindow(debugIdx >= 0); 
             }
 
             Application.Run(oForm);
