@@ -111,7 +111,9 @@ namespace Exchange.DkimSigner
             try
             {
                 this.agentAsyncContext = this.GetAgentAsyncContext();
-
+#if !EX_2007_SP3 //not supported in Exchange 2007
+                this.agentAsyncContext.Resume();
+#endif
                 this.SignMailItem(e.MailItem);
             }
             catch (Exception ex)
