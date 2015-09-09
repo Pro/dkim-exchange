@@ -5,7 +5,8 @@
 
 
 ## Releases
-
+* master branch:  
+    Fix: Event Log Message `did not call Resume on the new thread` (#97)  
 * 21.08.2015 [2.1.5]:  
     New: Support for Exchange 2016 Preview   
     New: Support for Exchange 2013 SP1 CU9  
