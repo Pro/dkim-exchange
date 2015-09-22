@@ -5,6 +5,8 @@
 
 
 ## Releases
+* 22.09.2015 [2.1.7]:  
+	New: Support for Exchange 2013 SP1 CU10  
 * 11.09.2015 [2.1.6]:  
     Fix: Event Log Message `did not call Resume on the new thread` (#97)  
 * 21.08.2015 [2.1.5]:  
