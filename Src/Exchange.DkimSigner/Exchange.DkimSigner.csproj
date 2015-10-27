@@ -201,6 +201,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 RTM|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 RTM\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_RTM</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
@@ -325,6 +334,9 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 Preview'">
       <HintPath>..\..\Lib\Exchange 2016 Preview\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+	<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 RTM'">
+      <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\..\Lib\NUnit\nunit.framework.dll</HintPath>

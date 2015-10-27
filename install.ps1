@@ -53,8 +53,10 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2013 SP1 CU9"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1130) {
 	$EXVER="Exchange 2013 SP1 CU10"
-} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225) {
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225) -and ($exchserver.admindisplayversion).revision -eq 17) {
 	$EXVER="Exchange 2016 Preview"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225) -and ($exchserver.admindisplayversion).revision -eq 42) {
+	$EXVER="Exchange 2016 RTM"
 }
 else {
 	throw "The exchange version is not yet supported: $exchserver.admindisplayversion"
