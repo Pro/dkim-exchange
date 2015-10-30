@@ -25,22 +25,20 @@ namespace Configuration.DkimSigner
             Form oForm = null;
             string[] asArgv = Environment.GetCommandLineArgs();
 
-            int parIdx = Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"), Array.IndexOf(asArgv, "--upgrade")), Array.IndexOf(asArgv, "--configure"));
+            int parIdx = Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"), Array.IndexOf(asArgv, "--upgrade-inplace")), Array.IndexOf(asArgv, "--configure"));
             if (parIdx >= 0)
             {
                 if (asArgv[parIdx] == "--configure")
                 {
                     oForm = new ConfigureWindow();
                 }
-                else if (asArgv[parIdx] == "--install" || asArgv[parIdx] == "--upgrade")
+                else if (asArgv[parIdx] == "--upgrade-inplace")
                 {
-                    string installZipUrl = null;
-                    if (asArgv.Length > parIdx + 1)
-                    {
-                        installZipUrl = asArgv[parIdx + 1];
-                    }
-
-                    oForm = new InstallWindow(installZipUrl);
+                    oForm = new InstallWindow(true);
+                }
+                else if (asArgv[parIdx] == "--install")
+                {
+                    oForm = new InstallWindow();
                 }
                 //else if (asArgv[parIdx] == "--uninstall") { }
                 else

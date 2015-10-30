@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO.Compression;
 
 namespace Configuration.DkimSigner
 {
@@ -547,6 +548,103 @@ namespace Configuration.DkimSigner
             this.bDataUpdated = true;
         }
 
+        private void downloadAndInstall()
+        {
+
+            string zipFile = null;
+
+            // ###########################################
+            // ### Download files                      ###
+            // ###########################################
+
+            if (Uri.IsWellFormedUriString(this.dkimSignerAvailable.ZipballUrl, UriKind.RelativeOrAbsolute))
+            {
+                zipFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
+
+                DownloadProgressWindow oDpw = new DownloadProgressWindow(this.dkimSignerAvailable.ZipballUrl, zipFile);
+                try
+                {
+                    if (oDpw.ShowDialog(this) != DialogResult.OK)
+                    {
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Couldn't initialize download progress window:\n" + ex.Message, "Error showing download progress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                finally
+                {
+                    oDpw.Dispose();
+                }
+
+            }
+            else
+            {
+                if (File.Exists(this.dkimSignerAvailable.ZipballUrl) && Path.GetExtension(this.dkimSignerAvailable.ZipballUrl) == ".zip")
+                {
+                    zipFile = this.dkimSignerAvailable.ZipballUrl;
+                }
+                else
+                {
+                    MessageBox.Show(this, "The URL or the path to the ZIP file is invalid. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+
+            // ###########################################
+            // ### Extract files                       ###
+            // ###########################################
+
+            string extractPath = Path.Combine(Path.GetDirectoryName(zipFile), Path.GetFileNameWithoutExtension(zipFile));
+
+            if (!Directory.Exists(extractPath))
+            {
+                Directory.CreateDirectory(extractPath);
+            }
+
+            try
+            {
+                ZipFile.ExtractToDirectory(zipFile, extractPath);
+
+                // copy root directory is one directory below extracted zip:
+                string[] contents = Directory.GetDirectories(extractPath);
+                if (contents.Length == 1)
+                {
+                    extractPath = Path.Combine(extractPath, contents[0]);
+                }
+                else
+                {
+                    MessageBox.Show(this, "Downloaded .zip is invalid. Please try again.", "Invalid download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            //now execute the downloaded .exe file
+ 
+            string exePath = Path.Combine(extractPath, @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
+            if (!File.Exists(exePath))
+            {
+                MessageBox.Show(this, "File not found:\n" + exePath, "Update Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            try
+            {
+                Process.Start(exePath, "--upgrade-inplace");
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                this.ShowMessageBox("Updater error", "Couldn't start the process :\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         // ###########################################################
         // ###################### Button click #######################
         // ###########################################################
@@ -576,15 +674,7 @@ namespace Configuration.DkimSigner
         {
             if (this.btUpgrade.Text == "Reinstall" ? MessageBox.Show(this, "Do you really want to " + this.btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
-                try
-                {
-                    Process.Start(Assembly.GetExecutingAssembly().Location, this.btUpgrade.Text.Contains("Install") ? "--install" : "--upgrade " + this.dkimSignerAvailable.ZipballUrl);
-                    this.Close();
-                }
-                catch (Exception ex)
-                {
-                    this.ShowMessageBox("Updater error", "Couldn't start the process :\n" + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                this.downloadAndInstall();
             }
         }
 

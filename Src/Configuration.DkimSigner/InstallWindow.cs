@@ -10,6 +10,7 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace Configuration.DkimSigner
 {
@@ -27,15 +28,20 @@ namespace Configuration.DkimSigner
         private string exchangeVersion = null;
 
         private string zipUrl = null;
+        /// <summary>
+        /// If this member is set to true, the files accomanying this .exe should be installed.
+        /// </summary>
+        private bool performInstall;
 
         // ##########################################################
         // ##################### Construtor #########################
         // ##########################################################
 
-        public InstallWindow(string zipUrl = "")
+        public InstallWindow(bool performInstall = false, string zipUrl = null)
         {
             this.InitializeComponent();
 
+            this.performInstall = performInstall;
             this.zipUrl = zipUrl;
         }
 
@@ -54,12 +60,13 @@ namespace Configuration.DkimSigner
             }
             catch (ExchangeServerException) { }
 
-            if (this.zipUrl == null)
+            if (this.zipUrl == null && !this.performInstall)
             {
                 this.CheckDkimSignerAvailable();
             }
             else
             {
+                // the dkim signer should be installed directly. Disable selection
                 this.gbSelectVersionToInstall.Enabled = false;
             }
         }
@@ -138,7 +145,7 @@ namespace Configuration.DkimSigner
             this.btInstall.Enabled = this.btInstallRefresh();
 
             // If the source for install have been specified in command line
-            if (this.zipUrl != null)
+            if (this.zipUrl != null || this.performInstall)
             {
                 this.Install();
             }
@@ -180,86 +187,129 @@ namespace Configuration.DkimSigner
                 this.lbDownloadFiles.Enabled = true;
             }
 
-            // ###########################################
-            // ### Download files                      ###
-            // ###########################################
+            // path which is the base for copying the files. Should be the root of the downloaded .zip file.
+            string extractPath;
 
-            string zipFile = "";
+            if (this.zipUrl != null) {
+                // ###########################################
+                // ### Download files                      ###
+                // ###########################################
 
-            if (Uri.IsWellFormedUriString(this.zipUrl, UriKind.RelativeOrAbsolute))
-            {
-                zipFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
+                string zipFile = "";
 
-                DownloadProgressWindow oDpw = new DownloadProgressWindow(this.zipUrl, zipFile);
-                try {
-                    if (oDpw.ShowDialog(this) == DialogResult.OK)
-                    {
-                        this.lbExtractFiles.Enabled = true;
+                if (Uri.IsWellFormedUriString(this.zipUrl, UriKind.RelativeOrAbsolute))
+                {
+                    zipFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString() + ".zip");
+
+                    DownloadProgressWindow oDpw = new DownloadProgressWindow(this.zipUrl, zipFile);
+                    try {
+                        if (oDpw.ShowDialog(this) == DialogResult.OK)
+                        {
+                            this.lbExtractFiles.Enabled = true;
+                        }
                     }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, "Couldn't initialize download progress window:\n" + ex.Message, "Error showing download progress", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                finally
-                {
-                    oDpw.Dispose();
-                }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, "Couldn't initialize download progress window:\n" + ex.Message, "Error showing download progress", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
+                        oDpw.Dispose();
+                    }
                 
-            }
-            else
-            {
-                if (File.Exists(this.zipUrl) && Path.GetExtension(this.zipUrl) == ".zip")
-                {
-                    zipFile = this.zipUrl;
-                    this.lbExtractFiles.Enabled = true;
                 }
                 else
                 {
-                    MessageBox.Show(this, "The URL or the path to the ZIP file is invalid. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-
-            this.picDownloadFiles.Image = this.lbExtractFiles.Enabled ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-            this.Refresh();
-
-            // ###########################################
-            // ### Extract files                       ###
-            // ###########################################
-
-            string extractPath = Path.Combine(Path.GetDirectoryName(zipFile), Path.GetFileNameWithoutExtension(zipFile));
-
-            if (this.lbExtractFiles.Enabled)
-            {
-                if (!Directory.Exists(extractPath))
-                {
-                    Directory.CreateDirectory(extractPath);
-                }
-
-                try
-                {
-                    ZipFile.ExtractToDirectory(zipFile, extractPath);
-
-                    // copy root directory is one directory below extracted zip:
-                    string[] contents = Directory.GetDirectories(extractPath);
-                    if (contents.Length == 1)
+                    if (File.Exists(this.zipUrl) && Path.GetExtension(this.zipUrl) == ".zip")
                     {
-                        extractPath = Path.Combine(extractPath, contents[0]);
-                        this.lbStopService.Enabled = true;
+                        zipFile = this.zipUrl;
+                        this.lbExtractFiles.Enabled = true;
                     }
                     else
                     {
-                        MessageBox.Show(this, "Downloaded .zip is invalid. Please try again.", "Invalid download", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }                   
+                        MessageBox.Show(this, "The URL or the path to the ZIP file is invalid. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(this, ex.Message, "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
 
-            this.picExtractFiles.Image = this.lbStopService.Enabled ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
-            this.Refresh();
+                this.picDownloadFiles.Image = this.lbExtractFiles.Enabled ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                this.Refresh();
+
+                // ###########################################
+                // ### Extract files                       ###
+                // ###########################################
+
+                extractPath = Path.Combine(Path.GetDirectoryName(zipFile), Path.GetFileNameWithoutExtension(zipFile));
+
+                if (this.lbExtractFiles.Enabled)
+                {
+                    if (!Directory.Exists(extractPath))
+                    {
+                        Directory.CreateDirectory(extractPath);
+                    }
+
+                    try
+                    {
+                        ZipFile.ExtractToDirectory(zipFile, extractPath);
+
+                        // copy root directory is one directory below extracted zip:
+                        string[] contents = Directory.GetDirectories(extractPath);
+                        if (contents.Length == 1)
+                        {
+                            extractPath = Path.Combine(extractPath, contents[0]);
+                            this.lbStopService.Enabled = true;
+                        }
+                        else
+                        {
+                            MessageBox.Show(this, "Downloaded .zip is invalid. Please try again.", "Invalid download", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }                   
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, ex.Message, "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+
+                this.picExtractFiles.Image = this.lbStopService.Enabled ? this.statusImageList.Images[0] : this.statusImageList.Images[1];
+                this.Refresh();
+            } else {
+                // the files are already downloaded and in the same directory as this .exe file
+
+                // the executable is within: \Src\Configuration.DkimSigner\bin\Release so we need to go up a few directories
+                DirectoryInfo dir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
+                string[] expectedDirs = {"Release", "bin", "Configuration.DkimSigner", "Src"};
+                bool sanityFail = false;
+
+                foreach (string str in expectedDirs) {
+                    if (!dir.Name.Equals(str)) {
+                        sanityFail = true;
+                        break;
+                    } else {
+                        dir = dir.Parent;
+                    }
+                }
+
+                this.lbDownloadFiles.Enabled = !sanityFail;
+                this.lbExtractFiles.Enabled = !sanityFail;
+                this.lbStopService.Enabled = !sanityFail;
+
+                if (sanityFail) {
+                                        
+                    this.picDownloadFiles.Image = this.statusImageList.Images[1];
+                    this.picExtractFiles.Image = this.statusImageList.Images[1];
+
+                    this.Refresh();
+                    MessageBox.Show(this, @"Failed to determine copy root directory.\nThis executable is expected to be in the subpath: \Src\Configuration.DkimSigner\bin\Release", "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                } else {                    
+                    this.picDownloadFiles.Image = this.statusImageList.Images[0];
+                    this.picExtractFiles.Image = this.statusImageList.Images[0];
+                    this.Refresh();
+                }
+
+                extractPath = dir.FullName;
+
+            }
+                        
 
             // ###########################################
             // ### Stop Microsoft Transport service    ###

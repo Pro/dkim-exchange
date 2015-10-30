@@ -45,6 +45,7 @@ namespace Configuration.DkimSigner
         {
             this.pgFile.Value = e.ProgressPercentage;
             this.pgFile.Update();
+            this.Refresh();
         }
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
