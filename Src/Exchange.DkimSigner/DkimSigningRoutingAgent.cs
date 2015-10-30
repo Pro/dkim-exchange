@@ -2,10 +2,8 @@
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Reflection;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Exchange.DkimSigner
 {
@@ -19,11 +17,6 @@ namespace Exchange.DkimSigner
         /// </summary>
         private DkimSigner dkimSigner;
 
-        /// <summary>
-        /// Watcher for changes on the settings file causing a reload of the settings when changed
-        /// </summary>
-        private FileSystemWatcher watcher;
-
         /// <summary>  
         /// This context to allow Exchange to continue processing a message  
         /// </summary>  
@@ -33,65 +26,12 @@ namespace Exchange.DkimSigner
         /// Initializes a new instance of the <see cref="DkimSigningRoutingAgent"/> class.
         /// </summary>
         /// <param name="dkimSigner">The object that knows how to sign messages.</param>
-        public DkimSigningRoutingAgent()
+        /// 
+        public DkimSigningRoutingAgent(DkimSigner dkimSigner)
         {
-            Logger.LogDebug("Initializing DkimSigner");
-            Settings config = new Settings();
-            config.InitHeadersToSign();
-
-            this.dkimSigner = new DkimSigner();
-
-            this.LoadSettings();
-            this.WatchSettings();
+            this.dkimSigner = dkimSigner;
 
             this.OnCategorizedMessage += this.WhenMessageCategorized;
-            Logger.LogDebug("DkimSigner initiallized");
-        }
-
-        private void LoadSettings()
-        {
-            Settings config = new Settings();
-            config.InitHeadersToSign();
-
-            if(config.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
-            {
-                this.dkimSigner.UpdateSettings(config);
-                Logger.logLevel = config.Loglevel;
-                Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + this.dkimSigner.GetDomains().Count);
-            }
-            else
-            {
-                Logger.LogError("Couldn't load the settings file.\n");
-            }
-        }
-
-        public void WatchSettings()
-        {
-            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
-
-            // Create a new FileSystemWatcher and set its properties.
-            watcher = new FileSystemWatcher();
-            watcher.Path = Path.GetDirectoryName(filename);
-
-            // Watch for changes in LastAccess and LastWrite times, and the renaming of files or directories.
-            watcher.NotifyFilter = NotifyFilters.LastWrite;
-
-            // Only watch text files.
-            watcher.Filter = Path.GetFileName(filename);
-
-            // Add event handlers.
-            watcher.Changed += new FileSystemEventHandler(this.OnChanged);
-            watcher.Created += new FileSystemEventHandler(this.OnChanged);
-
-            // Begin watching.
-            watcher.EnableRaisingEvents = true;
-        }
-
-        // Define the event handlers.
-        private void OnChanged(object source, FileSystemEventArgs e)
-        {
-            Logger.LogInformation("Detected settings file change. Reloading...");
-            this.LoadSettings();
         }
 
         /// <summary>
