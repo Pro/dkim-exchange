@@ -4,6 +4,7 @@ using Microsoft.Exchange.Data.Transport.Routing;
 using System;
 using System.IO;
 using System.Diagnostics.CodeAnalysis;
+using System.Net.Mail;
 
 namespace Exchange.DkimSigner
 {
@@ -78,17 +79,40 @@ namespace Exchange.DkimSigner
             // which means we shouldn't bother signing it.
             if (!mailItem.Message.IsSystemMessage && mailItem.Message.TnefPart == null)
             {
+                string domainPart = null;
+                
                 /* Check if we have a valid From address */
                 if (!mailItem.FromAddress.IsValid || mailItem.FromAddress.DomainPart == null)
                 {
-                    Logger.LogWarning("Invalid from address: '" + mailItem.FromAddress + "'. Not signing email.");
-                    return;
+                    // The FromAddress is empty. Try to get the domain from somewhere else (see https://github.com/Pro/dkim-exchange/issues/99)
+                    string smtpAddress = mailItem.Message.Sender.SmtpAddress;
+                    if (smtpAddress != null && smtpAddress.Length > 0)
+                    {
+                        try
+                        {
+                            domainPart = new MailAddress(smtpAddress).Host;
+                        }
+                        catch (System.FormatException)
+                        {
+                            // do nothing
+                        }
+                    }
+                    if (domainPart == null)
+                    {
+                        Logger.LogWarning("Invalid from address '" + mailItem.FromAddress + "' and invalid SmtpAddress '" + smtpAddress + "'. Not signing email.");
+                        return;
+                    }
+                }
+                else
+                {
+                    // from address is valid
+                    domainPart = mailItem.FromAddress.DomainPart;
                 }
 
                 /* If domain was found in define domain configuration */
-                if (this.dkimSigner.GetDomains().ContainsKey(mailItem.FromAddress.DomainPart))
+                if (this.dkimSigner.GetDomains().ContainsKey(domainPart))
                 {
-                    DomainElement domain = this.dkimSigner.GetDomains()[mailItem.FromAddress.DomainPart];
+                    DomainElement domain = this.dkimSigner.GetDomains()[domainPart];
 
                     using (Stream stream = mailItem.GetMimeReadStream())
                     {
@@ -122,7 +146,7 @@ namespace Exchange.DkimSigner
 
                     }
                 } else {
-                    Logger.LogDebug("No entry found in config for domain '" + mailItem.FromAddress.DomainPart + "'");
+                    Logger.LogDebug("No entry found in config for domain '" + domainPart + "'");
                 }
             }
             else
