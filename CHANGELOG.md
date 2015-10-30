@@ -5,6 +5,9 @@
 
 
 ## Releases
+* Current master:  
+	New: Support for Exchange 2016 RTM  
+	Fix: Performance improvement by creating DKIM signer ony once (#103 and #95)  
 * 22.09.2015 [2.1.7]:  
 	New: Support for Exchange 2013 SP1 CU10  
 * 11.09.2015 [2.1.6]:  
