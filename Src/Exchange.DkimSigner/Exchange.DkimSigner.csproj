@@ -335,6 +335,9 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 Preview'">
       <HintPath>..\..\Lib\Exchange 2016 Preview\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 RTM'">
+      <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
 	<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 RTM'">
       <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
