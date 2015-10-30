@@ -5,7 +5,7 @@
 
 
 ## Releases
-* current master:  
+* 30.10.2015 [2.1.8]:  
 	New: Support for Exchange 2016 RTM  
 	Fix: Performance improvement by creating DKIM signer ony once (#103 and #95)  
 	Fix: Empty FromAddress (e.g. in NDR) is now handled correctly (#99)  
