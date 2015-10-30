@@ -225,11 +225,11 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2013'">
       <HintPath>..\..\Lib\Exchange 2013\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2013 SP1 CU10'">
-      <HintPath>..\..\Lib\Exchange 2013 SP1 CU10\Microsoft.Exchange.Data.Common.dll</HintPath>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2013 SP1 CU9'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU9\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2013 SP1 CU10'">
-      <HintPath>..\..\Lib\Exchange 2013 SP1 CU10\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Debug Ex2013 SP1 CU9'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU9\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2007 SP3'">
       <HintPath>..\..\Lib\Exchange 2007 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
