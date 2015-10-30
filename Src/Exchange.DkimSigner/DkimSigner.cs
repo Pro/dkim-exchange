@@ -57,7 +57,15 @@ namespace Exchange.DkimSigner
         /// </summary>
         private DkimCanonicalizationKind bodyCanonicalization;
 
+        /// <summary>
+        /// Map the domain Host part to the corresponding domain settings object
+        /// </summary>
         private Dictionary<string, DomainElement> domains;
+
+        /// <summary>
+        /// Object used as a mutex when settings are updated during execution
+        /// </summary>
+        private object settingsMutex;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DkimSigner"/> class.
@@ -65,63 +73,70 @@ namespace Exchange.DkimSigner
         public DkimSigner()
         {
             this.domains = new Dictionary<string, DomainElement>(StringComparer.OrdinalIgnoreCase);
+            settingsMutex = new object();
         }
 
         public void UpdateSettings(Settings config)
         {
-            // Load the list of domains
-            this.domains.Clear();
-            foreach (DomainElement domainElement in config.Domains)
+            lock (settingsMutex)
             {
-                try
+                // Load the list of domains
+                this.domains.Clear();
+                foreach (DomainElement domainElement in config.Domains)
                 {
-                    if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                    try
                     {
-                        this.domains.Add(domainElement.Domain, domainElement);
+                        if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
+                        {
+                            this.domains.Add(domainElement.Domain, domainElement);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.LogError(e.Message);
                     }
                 }
-                catch (Exception e)
+
+                switch (config.SigningAlgorithm)
                 {
-                    Logger.LogError(e.Message);
+                    case DkimAlgorithmKind.RsaSha1:
+                        this.hashAlgorithm = new SHA1CryptoServiceProvider();
+                        this.hashAlgorithmCryptoCode = "SHA1";
+                        this.hashAlgorithmDkimCode = "rsa-sha1";
+                        break;
+                    case DkimAlgorithmKind.RsaSha256:
+                        this.hashAlgorithm = new SHA256CryptoServiceProvider();
+                        this.hashAlgorithmCryptoCode = "SHA256";
+                        this.hashAlgorithmDkimCode = "rsa-sha256";
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException("signatureKind");
                 }
-            }   
 
-            switch (config.SigningAlgorithm)
-            {
-                case DkimAlgorithmKind.RsaSha1:
-                    this.hashAlgorithm = new SHA1CryptoServiceProvider();
-                    this.hashAlgorithmCryptoCode = "SHA1";
-                    this.hashAlgorithmDkimCode = "rsa-sha1";
-                    break;
-                case DkimAlgorithmKind.RsaSha256:
-                    this.hashAlgorithm = new SHA256CryptoServiceProvider();
-                    this.hashAlgorithmCryptoCode = "SHA256";
-                    this.hashAlgorithmDkimCode = "rsa-sha256";
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException("signatureKind");
-            }
+                this.headerCanonicalization = config.HeaderCanonicalization;
+                this.bodyCanonicalization = config.BodyCanonicalization;
 
-            this.headerCanonicalization = config.HeaderCanonicalization;
-            this.bodyCanonicalization = config.BodyCanonicalization;
+                this.eligibleHeaders = new HashSet<string>();
+                foreach (string headerToSign in config.HeadersToSign)
+                {
+                    this.eligibleHeaders.Add(headerToSign.Trim());
+                }
 
-            this.eligibleHeaders = new HashSet<string>();
-            foreach (string headerToSign in config.HeadersToSign)
-            {
-                this.eligibleHeaders.Add(headerToSign.Trim());
-            }
-
-            // The From header must always be signed according to the 
-            // DKIM specification.
-            if (!this.eligibleHeaders.Contains("From"))
-            {
-                this.eligibleHeaders.Add("From");
+                // The From header must always be signed according to the 
+                // DKIM specification.
+                if (!this.eligibleHeaders.Contains("From"))
+                {
+                    this.eligibleHeaders.Add("From");
+                }
             }
         }
 
         public Dictionary<string, DomainElement> GetDomains()
         {
-            return this.domains;
+            lock (settingsMutex)
+            {
+                return this.domains;
+            }
         }
 
         /// <summary>
@@ -145,12 +160,21 @@ namespace Exchange.DkimSigner
             Logger.LogDebug("Creating body hash");
             string bodyHash = this.GetBodyHash(inputStream);
             Logger.LogDebug("Got body hash: " + bodyHash);
-            string unsignedDkimHeader = this.GetUnsignedDkimHeader(domain, bodyHash);
+            string unsignedDkimHeader;
+            lock (settingsMutex)
+            {
+                unsignedDkimHeader = this.GetUnsignedDkimHeader(domain, bodyHash);
+            }
 
             // Generate the hash for the header
             Logger.LogDebug("Creating signing header");
-            IEnumerable<string> canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
-            string signedDkimHeader = this.GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
+
+            string signedDkimHeader;
+            lock (settingsMutex)
+            {
+                IEnumerable<string> canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
+                signedDkimHeader = this.GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
+            }
             Logger.LogDebug("Got signing header: " + signedDkimHeader);
 
             return signedDkimHeader;
@@ -256,7 +280,11 @@ namespace Exchange.DkimSigner
             bodyText = Regex.Replace(bodyText, "(\r?\n)*$", string.Empty) + "\r\n";
 
             bodyBytes = Encoding.ASCII.GetBytes(bodyText);
-            hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
+
+            lock (settingsMutex)
+            {
+                hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
+            }
             stream.Seek(0, SeekOrigin.Begin);
 
             return hashText;
