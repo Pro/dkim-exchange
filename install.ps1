@@ -15,8 +15,9 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2013 SP1 CU7 (15.0.1044.25)
 # Exchange 2013 SP1 CU8 (15.0.1076.9)
 # Exchange 2013 SP1 CU9 (15.0.1104.5)
-# Exchange 2016 Preview	(15.01.225.017)
-# Exchange 2016 RTM	(15.01.225.042)
+# Exchange 2013 SP1 CU10 (15.0.1130.7)
+# Exchange 2016 Preview	 (15.01.225.017)
+# Exchange 2016 RTM	     (15.01.225.042)
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
 $exchserver = Get-ExchangeServer -Identity $hostname
