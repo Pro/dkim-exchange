@@ -3,7 +3,7 @@
     /// <summary>
     /// Enumeration of the kinds of RSA key format
     /// </summary>
-    public enum RSACryptoFormat : int
+    public enum RSACryptoFormat
     {
         /// <summary>
         /// PEM-encoded RSA key

@@ -1,10 +1,8 @@
-﻿using ConfigurationSettings;
+﻿using System.IO;
+using System.Reflection;
+using ConfigurationSettings;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.IO;
 
 namespace Exchange.DkimSigner
 {
@@ -34,10 +32,10 @@ namespace Exchange.DkimSigner
             Settings config = new Settings();
             config.InitHeadersToSign();
 
-            this.dkimSigner = new DkimSigner();
+            dkimSigner = new DkimSigner();
 
-            this.LoadSettings();
-            this.WatchSettings();
+            LoadSettings();
+            WatchSettings();
         }
 
         /// <summary>
@@ -49,7 +47,7 @@ namespace Exchange.DkimSigner
         /// <returns>The <see cref="DkimSigningRoutingAgent"/> instance.</returns>
         public override RoutingAgent CreateAgent(SmtpServer server)
         {
-            return new DkimSigningRoutingAgent(this.dkimSigner);
+            return new DkimSigningRoutingAgent(dkimSigner);
         }
 
         /// <summary>
@@ -62,9 +60,9 @@ namespace Exchange.DkimSigner
 
             if (config.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
             {
-                this.dkimSigner.UpdateSettings(config);
+                dkimSigner.UpdateSettings(config);
                 Logger.logLevel = config.Loglevel;
-                Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm.ToString() + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization.ToString() + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization.ToString() + ", Number of domains: " + this.dkimSigner.GetDomains().Count);
+                Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization + ", Number of domains: " + dkimSigner.GetDomains().Count);
             }
             else
             {
@@ -90,8 +88,8 @@ namespace Exchange.DkimSigner
             watcher.Filter = Path.GetFileName(filename);
 
             // Add event handlers.
-            watcher.Changed += new FileSystemEventHandler(this.OnChanged);
-            watcher.Created += new FileSystemEventHandler(this.OnChanged);
+            watcher.Changed += OnChanged;
+            watcher.Created += OnChanged;
 
             // Begin watching.
             watcher.EnableRaisingEvents = true;
@@ -105,7 +103,7 @@ namespace Exchange.DkimSigner
         private void OnChanged(object source, FileSystemEventArgs e)
         {
             Logger.LogInformation("Detected settings file change. Reloading...");
-            this.LoadSettings();
+            LoadSettings();
         }
     }
 }

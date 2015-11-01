@@ -1,7 +1,7 @@
 using System;
-using System.Text;
-using System.Security.Permissions;
 using System.Runtime.Serialization;
+using System.Security.Permissions;
+using System.Text;
 
 namespace CSInteropKeys
 {
@@ -26,7 +26,7 @@ namespace CSInteropKeys
     }
 
     public BerDecodeException()
-      : base() { }
+    { }
 
     public BerDecodeException(String message)
       : base(message) { }

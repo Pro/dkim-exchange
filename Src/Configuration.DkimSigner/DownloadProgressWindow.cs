@@ -21,9 +21,9 @@ namespace Configuration.DkimSigner
 
         public DownloadProgressWindow(string sUrl, string sTargetLocation)
         {
-            this.InitializeComponent();
+            InitializeComponent();
 
-            this.oWebClient = new WebClient();
+            oWebClient = new WebClient();
             this.sUrl = sUrl;
             this.sTargetLocation = sTargetLocation;
         }
@@ -34,48 +34,48 @@ namespace Configuration.DkimSigner
 
         private void DownloadProgressWindow_Load(object sender, EventArgs e)
         {
-            this.lbFile.Text = "Downloading " + this.sUrl;
-            this.oWebClient.Headers.Add("User-Agent", ".NET Framework API Client");
-            this.oWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(this.Completed);
-            this.oWebClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(this.ProgressChanged);
-            this.oWebClient.DownloadFileAsync(new Uri(this.sUrl), this.sTargetLocation);
+            lbFile.Text = "Downloading " + sUrl;
+            oWebClient.Headers.Add("User-Agent", ".NET Framework API Client");
+            oWebClient.DownloadFileCompleted += Completed;
+            oWebClient.DownloadProgressChanged += ProgressChanged;
+            oWebClient.DownloadFileAsync(new Uri(sUrl), sTargetLocation);
         }
 
         private void ProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            this.pgFile.Value = e.ProgressPercentage;
-            this.pgFile.Update();
-            this.Refresh();
+            pgFile.Value = e.ProgressPercentage;
+            pgFile.Update();
+            Refresh();
         }
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
-                this.DialogResult = DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
                 
-                this.pgFile.Value = 0;
-                this.lbFile.Text = "Cancelled";
+                pgFile.Value = 0;
+                lbFile.Text = "Cancelled";
 
-                this.DialogResult = DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
             }
             else if (e.Error != null)
             {
                 MessageBox.Show(this, "Error downloading file: " + sUrl + "\n" + e.Error.Message);
                 
-                this.pgFile.Value = 0;
-                this.lbFile.Text = "Error: " + e.Error.Message;
+                pgFile.Value = 0;
+                lbFile.Text = "Error: " + e.Error.Message;
 
-                this.DialogResult = DialogResult.Cancel;
+                DialogResult = DialogResult.Cancel;
             }
             else
             {
-                this.pgFile.Value = 100;
+                pgFile.Value = 100;
 
-                this.DialogResult = DialogResult.OK;
+                DialogResult = DialogResult.OK;
             }
 
-            this.Close();
+            Close();
         }
 
         // ##########################################################
@@ -88,14 +88,14 @@ namespace Configuration.DkimSigner
 
         private void btCancel_Click(object sender, EventArgs e)
         {
-            if (this.oWebClient.IsBusy)
+            if (oWebClient.IsBusy)
             {
-                this.oWebClient.CancelAsync();
+                oWebClient.CancelAsync();
             }
             else
             {
-                this.DialogResult = DialogResult.Cancel;
-                this.Close();
+                DialogResult = DialogResult.Cancel;
+                Close();
             }
         }
     }

@@ -10,9 +10,9 @@
 
         public TransportServiceAgent(string sName, bool bEnabled, int iPriority)
 		{
-			this.Name = sName;
-			this.Enabled = bEnabled;
-			this.Priority = iPriority;
+			Name = sName;
+			Enabled = bEnabled;
+			Priority = iPriority;
 		}
     }
 }

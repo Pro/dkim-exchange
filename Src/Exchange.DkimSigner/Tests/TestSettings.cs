@@ -1,7 +1,5 @@
-﻿using System;
+﻿using ConfigurationSettings;
 using NUnit.Framework;
-
-using ConfigurationSettings;
 
 namespace Exchange.DkimSigner.Tests
 {
@@ -13,7 +11,7 @@ namespace Exchange.DkimSigner.Tests
         {
             Settings config = new Settings();
             config.InitHeadersToSign();
-            Assert.AreEqual(new string[] { "From", "Subject", "To", "Date", "Message-ID" }, config.HeadersToSign);
+            Assert.AreEqual(new[] { "From", "Subject", "To", "Date", "Message-ID" }, config.HeadersToSign);
         }
 
         //[Test]

@@ -4,7 +4,7 @@
     /// Enumeration of the kinds of signature and hashing algorithms 
     /// that can be used with DKIM.
     /// </summary>
-    public enum DkimAlgorithmKind : int
+    public enum DkimAlgorithmKind
     {
         /// <summary>
         /// The RSA SHA-1 hashing algorithm should be used.

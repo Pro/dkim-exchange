@@ -1,8 +1,7 @@
 using System;
-using System.Text;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 
 /// <summary>
@@ -61,21 +60,21 @@ namespace CSInteropKeys
       public AsnType(byte tag, byte octet)
       {
         m_raw = false;
-        m_tag = new byte[] { tag };
-        m_octets = new byte[] { octet };
+        m_tag = new[] { tag };
+        m_octets = new[] { octet };
       }
 
       public AsnType(byte tag, byte[] octets)
       {
         m_raw = false;
-        m_tag = new byte[] { tag };
+        m_tag = new[] { tag };
         m_octets = octets;
       }
 
       public AsnType(byte tag, byte[] length, byte[] octets)
       {
         m_raw = true;
-        m_tag = new byte[] { tag };
+        m_tag = new[] { tag };
         m_length = length;
         m_octets = octets;
       }
@@ -131,10 +130,10 @@ namespace CSInteropKeys
       {
         // Created raw by user
         // return the bytes....
-        if (true == m_raw)
+        if (m_raw)
         {
           return Concatenate(
-            new byte[][] { m_tag, m_length, m_octets }
+            new[] { m_tag, m_length, m_octets }
           );
         }
 
@@ -145,12 +144,12 @@ namespace CSInteropKeys
         if (0x05 == m_tag[0])
         {
           return Concatenate(
-            new byte[][] { m_tag, m_octets }
+            new[] { m_tag, m_octets }
           );
         }
 
         return Concatenate(
-          new byte[][] { m_tag, m_length, m_octets }
+          new[] { m_tag, m_length, m_octets }
         );
       }
 
@@ -250,8 +249,8 @@ namespace CSInteropKeys
       }
     };
 
-    private static byte[] ZERO = new byte[] { 0 };
-    private static byte[] EMPTY = new byte[] { };
+    private static byte[] ZERO = { 0 };
+    private static byte[] EMPTY = { };
 
     // PublicKeyInfo (X.509 compatible) message
     /// <summary>
@@ -286,14 +285,14 @@ namespace CSInteropKeys
       AsnType g = CreateIntegerPos(publicKey.G);
 
       // Sequence - DSA-Params
-      AsnType dssParams = CreateSequence(new AsnType[] { p, q, g });
+      AsnType dssParams = CreateSequence(new[] { p, q, g });
 
       // OID - packed 1.2.840.10040.4.1
       //   { 0x2A, 0x86, 0x48, 0xCE, 0x38, 0x04, 0x01 }
       AsnType oid = CreateOid("1.2.840.10040.4.1");
 
       // Sequence
-      AsnType algorithmID = CreateSequence(new AsnType[] { oid, dssParams });
+      AsnType algorithmID = CreateSequence(new[] { oid, dssParams });
 
       // Public Key Y
       AsnType y = CreateIntegerPos(publicKey.Y);
@@ -301,7 +300,7 @@ namespace CSInteropKeys
 
       // Sequence 'A'
       AsnType publicKeyInfo =
-        CreateSequence(new AsnType[] { algorithmID, key });
+        CreateSequence(new[] { algorithmID, key });
 
       return new AsnMessage(publicKeyInfo.GetBytes(), "X.509");
     }
@@ -336,16 +335,16 @@ namespace CSInteropKeys
       //   { 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01 }
       AsnType oid = CreateOid("1.2.840.113549.1.1.1");
       AsnType algorithmID =
-        CreateSequence(new AsnType[] { oid, CreateNull() });
+        CreateSequence(new[] { oid, CreateNull() });
 
       AsnType n = CreateIntegerPos(publicKey.Modulus);
       AsnType e = CreateIntegerPos(publicKey.Exponent);
       AsnType key = CreateBitString(
-        CreateSequence(new AsnType[] { n, e })
+        CreateSequence(new[] { n, e })
       );
 
       AsnType publicKeyInfo =
-        CreateSequence(new AsnType[] { algorithmID, key });
+        CreateSequence(new[] { algorithmID, key });
 
       return new AsnMessage(publicKeyInfo.GetBytes(), "X.509");
     }
@@ -388,14 +387,14 @@ namespace CSInteropKeys
       AsnType q = CreateIntegerPos(privateKey.Q);
       AsnType g = CreateIntegerPos(privateKey.G);
 
-      AsnType dssParams = CreateSequence(new AsnType[] { p, q, g });
+      AsnType dssParams = CreateSequence(new[] { p, q, g });
 
       // OID - packed 1.2.840.10040.4.1
       //   { 0x2A, 0x86, 0x48, 0xCE, 0x38, 0x04, 0x01 }
       AsnType oid = CreateOid("1.2.840.10040.4.1");
 
       // AlgorithmIdentifier
-      AsnType algorithmID = CreateSequence(new AsnType[] { oid, dssParams });
+      AsnType algorithmID = CreateSequence(new[] { oid, dssParams });
 
       // Private Key X
       AsnType x = CreateIntegerPos(privateKey.X);
@@ -403,7 +402,7 @@ namespace CSInteropKeys
 
       // Sequence
       AsnType privateKeyInfo =
-        CreateSequence(new AsnType[] { version, algorithmID, key });
+        CreateSequence(new[] { version, algorithmID, key });
 
       return new AsnMessage(privateKeyInfo.GetBytes(), "PKCS#8");
     }
@@ -458,17 +457,17 @@ namespace CSInteropKeys
 
       // octstring = OCTETSTRING(SEQUENCE(INTEGER(0)INTEGER(N)...))
       AsnType key = CreateOctetString(
-        CreateSequence(new AsnType[] { version, n, e, d, p, q, dp, dq, iq })
+        CreateSequence(new[] { version, n, e, d, p, q, dp, dq, iq })
       );
 
       // OID - packed 1.2.840.113549.1.1.1
       //   { 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01 }
-      AsnType algorithmID = CreateSequence(new AsnType[] { CreateOid("1.2.840.113549.1.1.1"), CreateNull() }
+      AsnType algorithmID = CreateSequence(new[] { CreateOid("1.2.840.113549.1.1.1"), CreateNull() }
       );
 
       // PrivateKeyInfo
       AsnType privateKeyInfo =
-        CreateSequence(new AsnType[] { version, algorithmID, key });
+        CreateSequence(new[] { version, algorithmID, key });
 
       return new AsnMessage(privateKeyInfo.GetBytes(), "PKCS#8");
     }
@@ -649,7 +648,7 @@ namespace CSInteropKeys
       if (!(unusedBits < 8))
       { throw new ArgumentException("Unused bits must be less than 8."); }
 
-      byte[] b = Concatenate(new byte[] { (byte)unusedBits }, octets);
+      byte[] b = Concatenate(new[] { (byte)unusedBits }, octets);
       // BitString: Tag 0x03 (3, Universal, Primitive)
       return new AsnType(0x03, b);
     }
@@ -1132,7 +1131,7 @@ namespace CSInteropKeys
       if (IsEmpty(value))
         return null;
 
-      String[] tokens = value.Split(new Char[] { ' ', '.' });
+      String[] tokens = value.Split(' ', '.');
 
       // Punt?
       if (IsEmpty(tokens))
@@ -1290,7 +1289,7 @@ namespace CSInteropKeys
         c = new byte[d.Length + 1];
 
         // Sign Extend....
-        c[0] = (byte)0xFF;
+        c[0] = 0xFF;
 
         Array.Copy(d, 0, c, 1, d.Length);
       }
@@ -1334,7 +1333,7 @@ namespace CSInteropKeys
 
     private static byte[] Concatenate(byte[] first, byte[] second)
     {
-      return Concatenate(new byte[][] { first, second });
+      return Concatenate(new[] { first, second });
     }
 
     private static byte[] Concatenate(byte[][] values)

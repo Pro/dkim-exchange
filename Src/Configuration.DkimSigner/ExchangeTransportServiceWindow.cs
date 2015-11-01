@@ -11,8 +11,8 @@ namespace Configuration.DkimSigner
         // ##################### Variables ##########################
         // ##########################################################
 
-        private List<TransportServiceAgent> installedAgentsList = null;
-        private int currentAgentPriority = 0;
+        private List<TransportServiceAgent> installedAgentsList;
+        private int currentAgentPriority;
 
         // ##########################################################
         // ##################### Construtor #########################
@@ -20,7 +20,7 @@ namespace Configuration.DkimSigner
 
         public ExchangeTransportServiceWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         // ##########################################################
@@ -29,15 +29,15 @@ namespace Configuration.DkimSigner
 
         private void ExchangeTransportServiceWindows_Load(object sender, EventArgs e)
         {
-            this.RefreshTransportServiceAgents();
+            RefreshTransportServiceAgents();
         }
 
         private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
         {
             bool dkimAgentSelected = dgvTransportServiceAgents.SelectedRows.Count == 1 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
-            this.btUninstall.Enabled = dkimAgentSelected;
-            this.btDisable.Enabled = dkimAgentSelected;
-            this.refreshMoveButtons(dkimAgentSelected);
+            btUninstall.Enabled = dkimAgentSelected;
+            btDisable.Enabled = dkimAgentSelected;
+            refreshMoveButtons(dkimAgentSelected);
         }
 
         // ##########################################################
@@ -54,25 +54,25 @@ namespace Configuration.DkimSigner
             }
             catch(Exception) { }
 
-            this.dgvTransportServiceAgents.Rows.Clear();
+            dgvTransportServiceAgents.Rows.Clear();
 
             if (installedAgentsList != null)
             {
                 foreach (TransportServiceAgent oAgent in installedAgentsList)
                 {
-                    this.dgvTransportServiceAgents.Rows.Add(oAgent.Priority, oAgent.Name, oAgent.Enabled);
+                    dgvTransportServiceAgents.Rows.Add(oAgent.Priority, oAgent.Name, oAgent.Enabled);
                     if (oAgent.Name == Constants.DKIM_SIGNER_AGENT_NAME)
                         currentAgentPriority = oAgent.Priority;
                 }
             }
-            foreach (DataGridViewRow row in this.dgvTransportServiceAgents.Rows)
+            foreach (DataGridViewRow row in dgvTransportServiceAgents.Rows)
             {
                 row.Selected = row.Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
             }
             
             bool IsDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
             bool IsDkimAgentTransportEnabled = IsDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
-            this.btDisable.Text = (IsDkimAgentTransportEnabled ? "Disable" : "Enable");
+            btDisable.Text = (IsDkimAgentTransportEnabled ? "Disable" : "Enable");
         }
 
 
@@ -80,13 +80,13 @@ namespace Configuration.DkimSigner
         {
             if (!isEnabled)
             {
-                this.btMoveUp.Enabled = false;
-                this.btMoveDown.Enabled = false;
+                btMoveUp.Enabled = false;
+                btMoveDown.Enabled = false;
             }
             else
             {
-                this.btMoveUp.Enabled = currentAgentPriority > 1;
-                this.btMoveDown.Enabled = true;
+                btMoveUp.Enabled = currentAgentPriority > 1;
+                btMoveDown.Enabled = true;
             }
         }
 
@@ -96,7 +96,7 @@ namespace Configuration.DkimSigner
 
         private void btRefresh_Click(object sender, EventArgs e)
         {
-            this.RefreshTransportServiceAgents();
+            RefreshTransportServiceAgents();
         }
 
         private void btUninstall_Click(object sender, EventArgs e)
@@ -106,7 +106,7 @@ namespace Configuration.DkimSigner
                 try
                 {
                     ExchangeServer.UninstallDkimTransportAgent();
-                    this.RefreshTransportServiceAgents();
+                    RefreshTransportServiceAgents();
                     TransportService ts = new TransportService();
                     try
                     {
@@ -145,7 +145,7 @@ namespace Configuration.DkimSigner
         {
             try
             {
-                if (this.btDisable.Text == "Disable")
+                if (btDisable.Text == "Disable")
                 {
                     ExchangeServer.DisableDkimTransportAgent();
                 }
@@ -154,8 +154,8 @@ namespace Configuration.DkimSigner
                     ExchangeServer.EnableDkimTransportAgent();
                 }
 
-                this.RefreshTransportServiceAgents();
-                this.refreshMoveButtons( true );
+                RefreshTransportServiceAgents();
+                refreshMoveButtons( true );
 
                 TransportService ts = new TransportService();
                 try
@@ -182,7 +182,7 @@ namespace Configuration.DkimSigner
             try
             {
                 ExchangeServer.SetPriorityDkimTransportAgent(currentAgentPriority - 1);
-                this.RefreshTransportServiceAgents();
+                RefreshTransportServiceAgents();
             }
             catch (ExchangeServerException ex)
             {
@@ -195,7 +195,7 @@ namespace Configuration.DkimSigner
             try
             {
                 ExchangeServer.SetPriorityDkimTransportAgent(currentAgentPriority + 1);
-                this.RefreshTransportServiceAgents();
+                RefreshTransportServiceAgents();
             }
             catch (ExchangeServerException ex)
             {
@@ -205,7 +205,7 @@ namespace Configuration.DkimSigner
 
         private void btClose_Click(object sender, EventArgs e)
         {
-            this.Close();
+            Close();
         }
     }
 }

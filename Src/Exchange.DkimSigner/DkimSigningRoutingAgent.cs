@@ -1,10 +1,10 @@
-﻿using ConfigurationSettings;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Net.Mail;
+using ConfigurationSettings;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
-using System;
-using System.IO;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Mail;
 
 namespace Exchange.DkimSigner
 {
@@ -32,7 +32,7 @@ namespace Exchange.DkimSigner
         {
             this.dkimSigner = dkimSigner;
 
-            this.OnCategorizedMessage += this.WhenMessageCategorized;
+            OnCategorizedMessage += WhenMessageCategorized;
         }
 
         /// <summary>
@@ -51,19 +51,19 @@ namespace Exchange.DkimSigner
             Logger.LogDebug("Got new message, checking if I can sign it...");
             try
             {
-                this.agentAsyncContext = this.GetAgentAsyncContext();
+                agentAsyncContext = GetAgentAsyncContext();
 #if !EX_2007_SP3 //not supported in Exchange 2007
-                this.agentAsyncContext.Resume();
+                agentAsyncContext.Resume();
 #endif
-                this.SignMailItem(e.MailItem);
+                SignMailItem(e.MailItem);
             }
             catch (Exception ex)
             {
-                Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex.ToString());
+                Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex);
             }
             finally
             {
-                this.agentAsyncContext.Complete();
+                agentAsyncContext.Complete();
             }
         }
 
@@ -92,7 +92,7 @@ namespace Exchange.DkimSigner
                         {
                             domainPart = new MailAddress(smtpAddress).Host;
                         }
-                        catch (System.FormatException)
+                        catch (FormatException)
                         {
                             // do nothing
                         }
@@ -110,14 +110,14 @@ namespace Exchange.DkimSigner
                 }
 
                 /* If domain was found in define domain configuration */
-                if (this.dkimSigner.GetDomains().ContainsKey(domainPart))
+                if (dkimSigner.GetDomains().ContainsKey(domainPart))
                 {
-                    DomainElement domain = this.dkimSigner.GetDomains()[domainPart];
+                    DomainElement domain = dkimSigner.GetDomains()[domainPart];
 
                     using (Stream stream = mailItem.GetMimeReadStream())
                     {
                         Logger.LogDebug("Domain found: '"+domain.Domain+"'. I'll sign the message.");
-                        string dkim = this.dkimSigner.CanSign(domain, stream);
+                        string dkim = dkimSigner.CanSign(domain, stream);
 
                         if (dkim.Length != 0)
                         {
@@ -131,11 +131,11 @@ namespace Exchange.DkimSigner
                             {
                                 try
                                 {
-                                    this.dkimSigner.Sign(inputBuffer, outputStream, dkim);
+                                    dkimSigner.Sign(inputBuffer, outputStream, dkim);
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.LogError("Signing went terribly wrong: " + ex.ToString());
+                                    Logger.LogError("Signing went terribly wrong: " + ex);
                                 }
 
                                 outputStream.Close();

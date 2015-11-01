@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
@@ -20,17 +19,17 @@ namespace ConfigurationSettings
 
         public Settings()
         {
-            this.Loglevel = 3;
+            Loglevel = 3;
 
-            this.SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
-            this.HeaderCanonicalization = DkimCanonicalizationKind.Simple;
-            this.BodyCanonicalization = DkimCanonicalizationKind.Simple;
+            SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
+            HeaderCanonicalization = DkimCanonicalizationKind.Simple;
+            BodyCanonicalization = DkimCanonicalizationKind.Simple;
 
             // Don't change because of serializer problem
             //this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
-            this.HeadersToSign = new List<string>();
+            HeadersToSign = new List<string>();
 
-            this.Domains = new List<DomainElement>();
+            Domains = new List<DomainElement>();
         }
 
         /// <summary>
@@ -38,7 +37,7 @@ namespace ConfigurationSettings
         /// </summary>
         public void InitHeadersToSign()
         {
-            this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
+            HeadersToSign = new List<string>(new[] { "From", "Subject", "To", "Date", "Message-ID" });
         }
 
         /// <summary>
@@ -55,12 +54,12 @@ namespace ConfigurationSettings
                     XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                     Settings settings = serializer.Deserialize(stream) as Settings;
 
-                    this.Loglevel = settings.Loglevel;
-                    this.SigningAlgorithm = settings.SigningAlgorithm;
-                    this.HeaderCanonicalization = settings.HeaderCanonicalization;
-                    this.BodyCanonicalization = settings.BodyCanonicalization;
-                    this.HeadersToSign = settings.HeadersToSign;
-                    this.Domains = settings.Domains;
+                    Loglevel = settings.Loglevel;
+                    SigningAlgorithm = settings.SigningAlgorithm;
+                    HeaderCanonicalization = settings.HeaderCanonicalization;
+                    BodyCanonicalization = settings.BodyCanonicalization;
+                    HeadersToSign = settings.HeadersToSign;
+                    Domains = settings.Domains;
 
                     return true;
                 }
@@ -83,7 +82,7 @@ namespace ConfigurationSettings
 
             using (StreamWriter writer = new StreamWriter(filename))
             {
-                XmlSerializer serializer = new XmlSerializer(this.GetType());
+                XmlSerializer serializer = new XmlSerializer(GetType());
                 serializer.Serialize(writer, this);
                 writer.Flush();
             }

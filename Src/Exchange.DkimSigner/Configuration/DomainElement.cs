@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 using DkimSigner.RSA;
 
 namespace ConfigurationSettings
@@ -15,10 +14,10 @@ namespace ConfigurationSettings
         /// <summary>
         /// RSACryptoServiceProvider to manipulate to encrypt the information
         /// </summary>
-        private RSACryptoServiceProvider cryptoProvider;
+        private RSACryptoServiceProvider _cryptoProvider;
         public RSACryptoServiceProvider CryptoProvider
         {
-            get { return cryptoProvider; }
+            get { return _cryptoProvider; }
         }
 
         /// <summary>
@@ -54,13 +53,13 @@ namespace ConfigurationSettings
 
             try
             {
-                cryptoProvider = RSACryptoHelper.GetProviderFromKeyFile(path);
+                _cryptoProvider = RSACryptoHelper.GetProviderFromKeyFile(path);
             }
             catch (Exception e)
             {
                 throw new CryptographicException("Couldn't load the key '" + path + "' for domain " + Domain + ". Error message: " + e.Message);
             }
-            if (cryptoProvider == null)
+            if (_cryptoProvider == null)
             {
                 throw new RSACryptoHelperException("Couldn't load the key '" + path + "' for domain " + Domain + ". Invalid key format or broken file");
             }
@@ -73,7 +72,7 @@ namespace ConfigurationSettings
         /// </summary>
         ~DomainElement()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -82,7 +81,7 @@ namespace ConfigurationSettings
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -95,10 +94,10 @@ namespace ConfigurationSettings
         {
             if (disposing)
             {
-                if (this.cryptoProvider != null)
+                if (_cryptoProvider != null)
                 {
-                    this.cryptoProvider.Clear();
-                    this.cryptoProvider = null;
+                    _cryptoProvider.Clear();
+                    _cryptoProvider = null;
                 }
             }
         }

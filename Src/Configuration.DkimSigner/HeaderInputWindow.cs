@@ -15,7 +15,7 @@ namespace Configuration.DkimSigner
 
         public HeaderInputWindow()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         // ##########################################################
@@ -24,7 +24,7 @@ namespace Configuration.DkimSigner
 
         private void HeaderInputForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (this.DialogResult == DialogResult.OK && this.txtHeader.Text == string.Empty)
+            if (DialogResult == DialogResult.OK && txtHeader.Text == string.Empty)
             {
                 MessageBox.Show(this, "You must enter a header!", "Value missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
@@ -43,8 +43,8 @@ namespace Configuration.DkimSigner
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter)) //return
             {
-                this.DialogResult = DialogResult.OK;
-                this.Close();
+                DialogResult = DialogResult.OK;
+                Close();
             }
         }
     }

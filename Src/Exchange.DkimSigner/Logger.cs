@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace Exchange.DkimSigner
 {
@@ -14,7 +10,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         public static int logLevel = 99;
 
-        private static EventLog logger = null;
+        private static EventLog logger;
 
         public static void LogDebug(string message)
         {

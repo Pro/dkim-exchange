@@ -10,26 +10,26 @@ namespace Configuration.DkimSigner.Exchange
     {
         public event EventHandler StatusChanged;
         
-        private Thread thread = null;
-        private Timer transportServiceStatus = null;
+        private Thread thread;
+        private Timer transportServiceStatus;
 
-        private Queue<TransportServiceAction> actions = null;
-        private ServiceController service = null;
-        private string status = null;
+        private Queue<TransportServiceAction> actions;
+        private ServiceController service;
+        private string status;
 
         /// <summary>
         /// Constructor
         /// </summary>
         public TransportService()
         {
-            if(!this.IsTransportServiceInstalled())
+            if(!IsTransportServiceInstalled())
             {
                 throw new ExchangeServerException("No service 'MSExchangeTransport' available.");
             }
 
-            this.actions = new Queue<TransportServiceAction>();
-            this.service = new ServiceController("MSExchangeTransport");
-            this.transportServiceStatus = new Timer(new TimerCallback(this.CheckExchangeTransportServiceStatus), null, 0, 1000);
+            actions = new Queue<TransportServiceAction>();
+            service = new ServiceController("MSExchangeTransport");
+            transportServiceStatus = new Timer(CheckExchangeTransportServiceStatus, null, 0, 1000);
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Configuration.DkimSigner.Exchange
         /// <returns>bool</returns>
         private bool IsTransportServiceRunning()
         {
-            return (this.GetTransportServiceStatus() == ServiceControllerStatus.Running);
+            return (GetTransportServiceStatus() == ServiceControllerStatus.Running);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Configuration.DkimSigner.Exchange
         /// <returns>bool</returns>
         private bool IsTransportServiceStopped()
         {
-            return (this.GetTransportServiceStatus() == ServiceControllerStatus.Stopped);
+            return (GetTransportServiceStatus() == ServiceControllerStatus.Stopped);
         }
 
         /// <summary>
@@ -76,20 +76,20 @@ namespace Configuration.DkimSigner.Exchange
         {
             try
             {
-                string status = this.GetTransportServiceStatus().ToString();
+                string status = GetTransportServiceStatus().ToString();
 
                 if (this.status != status)
                 {
                     this.status = status;
-                    if(this.StatusChanged != null)
+                    if(StatusChanged != null)
                     {
-                        this.StatusChanged(this, null);
+                        StatusChanged(this, null);
                     }
                 }
             }
             catch (ExchangeServerException)
             {
-                this.transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+                transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
             }
         }
 
@@ -100,28 +100,28 @@ namespace Configuration.DkimSigner.Exchange
         {
             bool queueIsNotEmpty = false;
 
-            lock (this.actions)
+            lock (actions)
             {
-                queueIsNotEmpty = this.actions.Count > 0;
+                queueIsNotEmpty = actions.Count > 0;
             }
 
             while (queueIsNotEmpty)
             {
                 TransportServiceAction action;
 
-                lock(this.actions)
+                lock(actions)
                 {
-                    action = this.actions.Dequeue();
+                    action = actions.Dequeue();
                 }
             
                 if(action == TransportServiceAction.Start)
                 {
-                    if (this.IsTransportServiceStopped())
+                    if (IsTransportServiceStopped())
                     {
                         try
                         {
-                            this.service.Start();
-                            this.service.WaitForStatus(ServiceControllerStatus.Running);
+                            service.Start();
+                            service.WaitForStatus(ServiceControllerStatus.Running);
                         }
                         catch (Exception e)
                         {
@@ -131,12 +131,12 @@ namespace Configuration.DkimSigner.Exchange
                 }
                 else // action == TransportServiceAction.Stop
                 {
-                    if(this.IsTransportServiceRunning())
+                    if(IsTransportServiceRunning())
                     {
                         try
                         {
-                            this.service.Stop();
-                            this.service.WaitForStatus(ServiceControllerStatus.Stopped);
+                            service.Stop();
+                            service.WaitForStatus(ServiceControllerStatus.Stopped);
                         }
                         catch (Exception e)
                         {
@@ -145,9 +145,9 @@ namespace Configuration.DkimSigner.Exchange
                     }
                 }
 
-                lock (this.actions)
+                lock (actions)
                 {
-                    queueIsNotEmpty = this.actions.Count > 0;
+                    queueIsNotEmpty = actions.Count > 0;
                 }
             }
         }
@@ -158,7 +158,7 @@ namespace Configuration.DkimSigner.Exchange
         /// <returns>string</returns>
         public string GetStatus()
         {
-            return this.status;
+            return status;
         }
 
         /// <summary>
@@ -167,25 +167,25 @@ namespace Configuration.DkimSigner.Exchange
         /// <param name="action">TransportServiceAction</param>
         public void Do(TransportServiceAction action)
         {
-            lock(this.actions)
+            lock(actions)
             {
                 switch (action)
                 {
                     case TransportServiceAction.Start:
                     case TransportServiceAction.Stop:
-                        this.actions.Enqueue(action);
+                        actions.Enqueue(action);
                         break;
                     case TransportServiceAction.Restart:
-                        this.actions.Enqueue(TransportServiceAction.Stop);
-                        this.actions.Enqueue(TransportServiceAction.Start);
+                        actions.Enqueue(TransportServiceAction.Stop);
+                        actions.Enqueue(TransportServiceAction.Start);
                         break;
                 }
             }
 
-            if(this.thread == null || this.thread.ThreadState == ThreadState.Stopped)
+            if(thread == null || thread.ThreadState == ThreadState.Stopped)
             {
-                this.thread = new Thread(this.ExecuteAction);
-                this.thread.Start();
+                thread = new Thread(ExecuteAction);
+                thread.Start();
             }
         }
 
@@ -194,27 +194,27 @@ namespace Configuration.DkimSigner.Exchange
         /// </summary>
         public void Dispose()
         {
-            if (this.thread != null)
+            if (thread != null)
             {
-                if(this.thread.ThreadState != ThreadState.Stopped)
+                if(thread.ThreadState != ThreadState.Stopped)
                 {
-                    this.thread.Join();
+                    thread.Join();
                 }
 
-                this.thread = null;
+                thread = null;
             }
 
-            if (this.transportServiceStatus != null)
+            if (transportServiceStatus != null)
             {
-                this.transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
-                this.transportServiceStatus.Dispose();
-                this.transportServiceStatus = null;
+                transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+                transportServiceStatus.Dispose();
+                transportServiceStatus = null;
             }
 
-            if (this.service != null)
+            if (service != null)
             {
-                this.service.Dispose();
-                this.service = null;
+                service.Dispose();
+                service = null;
             }
         }
     }

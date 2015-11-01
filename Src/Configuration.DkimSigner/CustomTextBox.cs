@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
 {
@@ -9,8 +6,8 @@ namespace Configuration.DkimSigner
     {
         public CustomTextBox()
         {
-            this.InitializeComponent();
-            this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            InitializeComponent();
+            SetStyle(ControlStyles.SupportsTransparentBackColor, true);
         }
     }
 }

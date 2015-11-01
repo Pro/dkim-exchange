@@ -1,14 +1,13 @@
-﻿using ConfigurationSettings;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using ConfigurationSettings;
 
 namespace Exchange.DkimSigner
 {
@@ -72,7 +71,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         public DkimSigner()
         {
-            this.domains = new Dictionary<string, DomainElement>(StringComparer.OrdinalIgnoreCase);
+            domains = new Dictionary<string, DomainElement>(StringComparer.OrdinalIgnoreCase);
             settingsMutex = new object();
         }
 
@@ -81,14 +80,14 @@ namespace Exchange.DkimSigner
             lock (settingsMutex)
             {
                 // Load the list of domains
-                this.domains.Clear();
+                domains.Clear();
                 foreach (DomainElement domainElement in config.Domains)
                 {
                     try
                     {
                         if (domainElement.InitElement(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)))
                         {
-                            this.domains.Add(domainElement.Domain, domainElement);
+                            domains.Add(domainElement.Domain, domainElement);
                         }
                     }
                     catch (Exception e)
@@ -100,33 +99,33 @@ namespace Exchange.DkimSigner
                 switch (config.SigningAlgorithm)
                 {
                     case DkimAlgorithmKind.RsaSha1:
-                        this.hashAlgorithm = new SHA1CryptoServiceProvider();
-                        this.hashAlgorithmCryptoCode = "SHA1";
-                        this.hashAlgorithmDkimCode = "rsa-sha1";
+                        hashAlgorithm = new SHA1CryptoServiceProvider();
+                        hashAlgorithmCryptoCode = "SHA1";
+                        hashAlgorithmDkimCode = "rsa-sha1";
                         break;
                     case DkimAlgorithmKind.RsaSha256:
-                        this.hashAlgorithm = new SHA256CryptoServiceProvider();
-                        this.hashAlgorithmCryptoCode = "SHA256";
-                        this.hashAlgorithmDkimCode = "rsa-sha256";
+                        hashAlgorithm = new SHA256CryptoServiceProvider();
+                        hashAlgorithmCryptoCode = "SHA256";
+                        hashAlgorithmDkimCode = "rsa-sha256";
                         break;
                     default:
                         throw new ArgumentOutOfRangeException("signatureKind");
                 }
 
-                this.headerCanonicalization = config.HeaderCanonicalization;
-                this.bodyCanonicalization = config.BodyCanonicalization;
+                headerCanonicalization = config.HeaderCanonicalization;
+                bodyCanonicalization = config.BodyCanonicalization;
 
-                this.eligibleHeaders = new HashSet<string>();
+                eligibleHeaders = new HashSet<string>();
                 foreach (string headerToSign in config.HeadersToSign)
                 {
-                    this.eligibleHeaders.Add(headerToSign.Trim());
+                    eligibleHeaders.Add(headerToSign.Trim());
                 }
 
                 // The From header must always be signed according to the 
                 // DKIM specification.
-                if (!this.eligibleHeaders.Contains("From"))
+                if (!eligibleHeaders.Contains("From"))
                 {
-                    this.eligibleHeaders.Add("From");
+                    eligibleHeaders.Add("From");
                 }
             }
         }
@@ -135,7 +134,7 @@ namespace Exchange.DkimSigner
         {
             lock (settingsMutex)
             {
-                return this.domains;
+                return domains;
             }
         }
 
@@ -149,7 +148,7 @@ namespace Exchange.DkimSigner
         /// <returns>The output stream.</returns>
         public string CanSign(DomainElement domain, Stream inputStream)
         {
-            if (this.disposed)
+            if (disposed)
             {
                 throw new ObjectDisposedException("Exchange DkimSigner disposed.");
             }
@@ -158,12 +157,12 @@ namespace Exchange.DkimSigner
 
             // Generate the hash for the body
             Logger.LogDebug("Creating body hash");
-            string bodyHash = this.GetBodyHash(inputStream);
+            string bodyHash = GetBodyHash(inputStream);
             Logger.LogDebug("Got body hash: " + bodyHash);
             string unsignedDkimHeader;
             lock (settingsMutex)
             {
-                unsignedDkimHeader = this.GetUnsignedDkimHeader(domain, bodyHash);
+                unsignedDkimHeader = GetUnsignedDkimHeader(domain, bodyHash);
             }
 
             // Generate the hash for the header
@@ -172,8 +171,8 @@ namespace Exchange.DkimSigner
             string signedDkimHeader;
             lock (settingsMutex)
             {
-                IEnumerable<string> canonicalizedHeaders = this.GetCanonicalizedHeaders(inputStream);
-                signedDkimHeader = this.GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
+                IEnumerable<string> canonicalizedHeaders = GetCanonicalizedHeaders(inputStream);
+                signedDkimHeader = GetSignedDkimHeader(domain, unsignedDkimHeader, canonicalizedHeaders);
             }
             Logger.LogDebug("Got signing header: " + signedDkimHeader);
 
@@ -188,7 +187,7 @@ namespace Exchange.DkimSigner
         /// <param name="signedDkimHeader">The signed DKIM-Signature header.</param>
         public void Sign(byte[] inputBytes, Stream outputStream, string signedDkimHeader)
         {
-            if (this.disposed)
+            if (disposed)
                 throw new ObjectDisposedException("DkimSigner");
 
             if (outputStream == null)
@@ -255,7 +254,7 @@ namespace Exchange.DkimSigner
 
             bodyText = new StreamReader(stream).ReadToEnd();
 
-            if (this.bodyCanonicalization == DkimCanonicalizationKind.Relaxed)
+            if (bodyCanonicalization == DkimCanonicalizationKind.Relaxed)
             {
                 // Reduces all sequences of WSP within a line to a single SP character.
                 // Ignores all whitespace at the end of lines.
@@ -283,7 +282,7 @@ namespace Exchange.DkimSigner
 
             lock (settingsMutex)
             {
-                hashText = Convert.ToBase64String(this.hashAlgorithm.ComputeHash(bodyBytes));
+                hashText = Convert.ToBase64String(hashAlgorithm.ComputeHash(bodyBytes));
             }
             stream.Seek(0, SeekOrigin.Begin);
 
@@ -337,7 +336,7 @@ namespace Exchange.DkimSigner
                 // Extract the name of the header. Then store the full header
                 // in the dictionary. We do this because DKIM mandates that we
                 // only sign the LAST instance of any header that occurs.
-                headerParts = header.Split(new char[] { ':' }, 2);
+                headerParts = header.Split(new[] { ':' }, 2);
                 if (headerParts.Length == 2)
                 {
                     string headerName;
@@ -345,9 +344,9 @@ namespace Exchange.DkimSigner
                     headerName = headerParts[0];
 
                     // We only want to sign the header if we were told to sign it!
-                    if (this.eligibleHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
+                    if (eligibleHeaders.Contains(headerName, StringComparer.OrdinalIgnoreCase))
                     {
-                        if (this.headerCanonicalization == DkimCanonicalizationKind.Relaxed)
+                        if (headerCanonicalization == DkimCanonicalizationKind.Relaxed)
                         {
                             // Unfold all header field continuation lines as described in
                             // [RFC5322]; in particular, lines with terminators embedded in
@@ -408,7 +407,7 @@ namespace Exchange.DkimSigner
 
                             // Convert all header field names (not the header field values) to
                             // lowercase.  For example, convert "SUBJect: AbC" to "subject: AbC".
-                            string[] temp = header.Split(new char[] { ':' }, 2);
+                            string[] temp = header.Split(new[] { ':' }, 2);
                             header = temp[0].ToLower() + ":" + temp[1];
                         }
 
@@ -447,10 +446,10 @@ namespace Exchange.DkimSigner
                         writer.Write(canonicalizedHeader);
                     }
 
-                    if (this.headerCanonicalization == DkimCanonicalizationKind.Relaxed)
+                    if (headerCanonicalization == DkimCanonicalizationKind.Relaxed)
                     {
                         unsignedDkimHeader = Regex.Replace(unsignedDkimHeader, @" ?: ?", ":");
-                        string[] temp = unsignedDkimHeader.Split(new char[] { ':' }, 2);
+                        string[] temp = unsignedDkimHeader.Split(new[] { ':' }, 2);
                         unsignedDkimHeader = temp[0].ToLower() + ":" + temp[1];
                     }
 
@@ -465,7 +464,7 @@ namespace Exchange.DkimSigner
                     // by the Crypto .NET classes won't recognize the new SHA256CryptoServiceProvider type.
                     // So, we have to use the string method instead. More details available at
                     // http://blogs.msdn.com/b/shawnfa/archive/2008/08/25/using-rsacryptoserviceprovider-for-rsa-sha256-signatures.aspx
-                    signatureBytes = domain.CryptoProvider.SignData(stream, this.hashAlgorithmCryptoCode);
+                    signatureBytes = domain.CryptoProvider.SignData(stream, hashAlgorithmCryptoCode);
                 }
             }
 
@@ -488,12 +487,12 @@ namespace Exchange.DkimSigner
             return string.Format(
                     CultureInfo.InvariantCulture,
                     "DKIM-Signature: v=1; a={0}; s={1}; d={2}; c={3}/{4}; q=dns/txt; h={5}; bh={6}; b=;",
-                    this.hashAlgorithmDkimCode,
+                    hashAlgorithmDkimCode,
                     domain.Selector,
                     domain.Domain,
-                    this.headerCanonicalization.ToString().ToLower(),
-                    this.bodyCanonicalization.ToString().ToLower(),
-                    string.Join(" : ", this.eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),
+                    headerCanonicalization.ToString().ToLower(),
+                    bodyCanonicalization.ToString().ToLower(),
+                    string.Join(" : ", eligibleHeaders.OrderBy(x => x, StringComparer.Ordinal).ToArray()),
                     bodyHash);
         }
 
@@ -584,7 +583,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         ~DkimSigner()
         {
-            this.Dispose(false);
+            Dispose(false);
         }
 
         /// <summary>
@@ -593,7 +592,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         public void Dispose()
         {
-            this.Dispose(true);
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
@@ -606,14 +605,14 @@ namespace Exchange.DkimSigner
         {
             if (disposing)
             {
-                if (this.hashAlgorithm != null)
+                if (hashAlgorithm != null)
                 {
-                    this.hashAlgorithm.Clear();
-                    this.hashAlgorithm = null;
+                    hashAlgorithm.Clear();
+                    hashAlgorithm = null;
                 }
             }
 
-            this.disposed = true;
+            disposed = true;
         }
     }
 }

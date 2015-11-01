@@ -4,7 +4,7 @@ namespace ConfigurationSettings
     /// Enumeration of the kinds of canonicalization algorithms 
     /// that can be used with DKIM.
     /// </summary>
-    public enum DkimCanonicalizationKind : int
+    public enum DkimCanonicalizationKind
     {
         /// <summary>
         /// The simple canonicalization algorithm should be used.

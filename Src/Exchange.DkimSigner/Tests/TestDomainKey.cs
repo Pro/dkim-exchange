@@ -1,7 +1,4 @@
-﻿using System;
-using NUnit.Framework;
-
-using ConfigurationSettings;
+﻿using NUnit.Framework;
 
 namespace Exchange.DkimSigner.Tests
 {

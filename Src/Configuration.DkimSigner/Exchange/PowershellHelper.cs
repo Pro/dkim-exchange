@@ -9,7 +9,7 @@ namespace Configuration.DkimSigner.Exchange
 {
     public class PowerShellHelper
     {
-        private static Runspace runspace = null;
+        private static Runspace runspace;
 
         public static readonly string[] EXCHANGE_PSSNAPIN =
         {
@@ -28,7 +28,7 @@ namespace Configuration.DkimSigner.Exchange
         [MethodImpl(MethodImplOptions.Synchronized)]
         public static string ExecPowerShellCommand(string sCommand, bool bRemoveEmptyLines)
         {
-            if (PowerShellHelper.runspace == null)
+            if (runspace == null)
             {
                 PSSnapInInfo info = null;
                 PSSnapInException ex = null;
@@ -36,14 +36,14 @@ namespace Configuration.DkimSigner.Exchange
 
                 try
                 {
-                    PowerShellHelper.runspace = RunspaceFactory.CreateRunspace(RunspaceConfiguration.Create());
-                    PowerShellHelper.runspace.Open();
+                    runspace = RunspaceFactory.CreateRunspace(RunspaceConfiguration.Create());
+                    runspace.Open();
 
-                    foreach (string pssnapin in PowerShellHelper.EXCHANGE_PSSNAPIN)
+                    foreach (string pssnapin in EXCHANGE_PSSNAPIN)
                     {
-                        if (PowerShellHelper.Execute("$(Get-PSSnapin -Registered | Select-String " + pssnapin + ") -ne $null", true).Trim() == "True")
+                        if (Execute("$(Get-PSSnapin -Registered | Select-String " + pssnapin + ") -ne $null", true).Trim() == "True")
                         {
-                            info = PowerShellHelper.runspace.RunspaceConfiguration.AddPSSnapIn(pssnapin, out ex);
+                            info = runspace.RunspaceConfiguration.AddPSSnapIn(pssnapin, out ex);
                         }
                     }
                 }
@@ -54,16 +54,16 @@ namespace Configuration.DkimSigner.Exchange
 
                 if (ex != null || info == null || error)
                 {
-                    if (PowerShellHelper.runspace != null)
+                    if (runspace != null)
                     {
-                        PowerShellHelper.runspace.Dispose();
-                        PowerShellHelper.runspace = null;
+                        runspace.Dispose();
+                        runspace = null;
                     }
                     throw new ExchangeServerException("Couldn't initialize PowerShell runspace.");
                 }
             }
 
-            return PowerShellHelper.Execute(sCommand, bRemoveEmptyLines);
+            return Execute(sCommand, bRemoveEmptyLines);
         }
 
         private static string Execute(string sCommand, bool bRemoveEmptyLines)
@@ -73,7 +73,7 @@ namespace Configuration.DkimSigner.Exchange
 
             try
             {
-                pipeline = PowerShellHelper.runspace.CreatePipeline();
+                pipeline = runspace.CreatePipeline();
                 pipeline.Commands.Clear();
                 pipeline.Commands.AddScript(sCommand);
                 pipeline.Commands.Add("Out-String");

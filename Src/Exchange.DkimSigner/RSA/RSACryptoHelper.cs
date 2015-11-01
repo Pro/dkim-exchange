@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace DkimSigner.RSA
 {
@@ -90,20 +89,20 @@ namespace DkimSigner.RSA
         {
             byte[] fileBytes = File.ReadAllBytes(pathToFile);
 
-            string keyContainerName = System.IO.Path.GetFileNameWithoutExtension(pathToFile);
+            string keyContainerName = Path.GetFileNameWithoutExtension(pathToFile);
 
             RSACryptoServiceProvider provider;
 
-            switch (RSACryptoHelper.GetFormatFromEncodedRsaPrivateKey(fileBytes))
+            switch (GetFormatFromEncodedRsaPrivateKey(fileBytes))
             {
                 case RSACryptoFormat.DER:
-                    provider = RSACryptoHelper.GetProviderFromDerEncodedRsaPrivateKey(fileBytes, keyContainerName);
+                    provider = GetProviderFromDerEncodedRsaPrivateKey(fileBytes, keyContainerName);
                     break;
                 case RSACryptoFormat.PEM:
-                    provider = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), keyContainerName);
+                    provider = GetProviderFromPemEncodedRsaPrivateKey(Encoding.ASCII.GetString(fileBytes).Trim(), keyContainerName);
                     break;
                 case RSACryptoFormat.XML:
-                    provider = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), keyContainerName);
+                    provider = GetProviderFromXmlEncodedRsaPrivateKey(Encoding.ASCII.GetString(fileBytes).Trim(), keyContainerName);
                     break;
                 case RSACryptoFormat.UNKNOWN:
                 default:
@@ -170,8 +169,9 @@ namespace DkimSigner.RSA
 
                 //the encodedKey is now in base64 encoded DER format
                 return GetProviderFromDerEncodedRsaPrivateKey(Convert.FromBase64String(encodedKey.Trim()), keyContainerName);
-            } else if (encodedKey.StartsWith(PemP8PrivateKeyHeader, StringComparison.Ordinal) &&
-             encodedKey.EndsWith(PemP8PrivateKeyFooter, StringComparison.Ordinal))
+            }
+            if (encodedKey.StartsWith(PemP8PrivateKeyHeader, StringComparison.Ordinal) &&
+                encodedKey.EndsWith(PemP8PrivateKeyFooter, StringComparison.Ordinal))
             {
                 encodedKey = encodedKey.Substring(PemP8PrivateKeyHeader.Length, encodedKey.Length - PemP8PrivateKeyFooter.Length - PemP8PrivateKeyHeader.Length);
                 //remove any newlines
@@ -180,9 +180,7 @@ namespace DkimSigner.RSA
                 //the encodedKey is now in base64 encoded PKCS8 format
                 return GetProviderFromPKCS8PrivateKey(Convert.FromBase64String(encodedKey.Trim()), keyContainerName);
             }
-            else 
-                throw new RSACryptoHelperException("Invalid PEM format for key. The key needs to start with '" + PemSSLPrivateKeyHeader + "' and end with '" + PemSSLPrivateKeyFooter + "' or start with '" + PemP8PrivateKeyHeader + "' and end with '" + PemP8PrivateKeyFooter + "'", "encodedKey");
-
+            throw new RSACryptoHelperException("Invalid PEM format for key. The key needs to start with '" + PemSSLPrivateKeyHeader + "' and end with '" + PemSSLPrivateKeyFooter + "' or start with '" + PemP8PrivateKeyHeader + "' and end with '" + PemP8PrivateKeyFooter + "'", "encodedKey");
         }
 
         /// <summary>

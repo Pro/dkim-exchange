@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 
-using Configuration.DkimSigner.Exchange;
-
 namespace Configuration.DkimSigner
 {
     static class Program

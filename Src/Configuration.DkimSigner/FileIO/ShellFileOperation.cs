@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace Configuration.DkimSigner.FileIO
 {
@@ -12,7 +10,7 @@ namespace Configuration.DkimSigner.FileIO
             FO_MOVE = 0x0001,
             FO_COPY = 0x0002,
             FO_DELETE = 0x0003,
-            FO_RENAME = 0x0004,
+            FO_RENAME = 0x0004
         }
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
@@ -41,7 +39,7 @@ namespace Configuration.DkimSigner.FileIO
         {
             set
             {
-                this._ShFile.hwnd = value;
+                _ShFile.hwnd = value;
             }
         }
 
@@ -49,7 +47,7 @@ namespace Configuration.DkimSigner.FileIO
         {
             set
             {
-                this._ShFile.wFunc = value;
+                _ShFile.wFunc = value;
             }
         }
 
@@ -57,7 +55,7 @@ namespace Configuration.DkimSigner.FileIO
         {
             set
             {
-                this._ShFile.pFrom = value + '\0' + '\0';
+                _ShFile.pFrom = value + '\0' + '\0';
             }
         }
 
@@ -65,21 +63,21 @@ namespace Configuration.DkimSigner.FileIO
         {
             set
             {
-                this._ShFile.pTo = value + '\0' + '\0';
+                _ShFile.pTo = value + '\0' + '\0';
             }
         }
 
         public bool fAnyOperationsAborted
         {
-            get { return this._ShFile.fAnyOperationsAborted; }
-            set { this._ShFile.fAnyOperationsAborted = value; }
+            get { return _ShFile.fAnyOperationsAborted; }
+            set { _ShFile.fAnyOperationsAborted = value; }
         }
 
         public IntPtr hNameMappings
         {
             set
             {
-                this._ShFile.hNameMappings = value;
+                _ShFile.hNameMappings = value;
             }
         }
 
@@ -87,37 +85,34 @@ namespace Configuration.DkimSigner.FileIO
         {
             set
             {
-                this._ShFile.lpszProgressTitle = value + '\0';
+                _ShFile.lpszProgressTitle = value + '\0';
             }
         }
 
         public ShellFileOperation()
         {
 
-            this.fFlags = new FILEOP_FLAGS();
-            this._ShFile = new SHFILEOPSTRUCT();
-            this._ShFile.hwnd = IntPtr.Zero;
-            this._ShFile.wFunc = FO_Func.FO_COPY;
-            this._ShFile.pFrom = "";
-            this._ShFile.pTo = "";
-            this._ShFile.fAnyOperationsAborted = false;
-            this._ShFile.hNameMappings = IntPtr.Zero;
-            this._ShFile.lpszProgressTitle = "";
+            fFlags = new FILEOP_FLAGS();
+            _ShFile = new SHFILEOPSTRUCT();
+            _ShFile.hwnd = IntPtr.Zero;
+            _ShFile.wFunc = FO_Func.FO_COPY;
+            _ShFile.pFrom = "";
+            _ShFile.pTo = "";
+            _ShFile.fAnyOperationsAborted = false;
+            _ShFile.hNameMappings = IntPtr.Zero;
+            _ShFile.lpszProgressTitle = "";
 
         }
 
         public bool Execute()
         {
-            this._ShFile.fFlags = this.fFlags.Flag;
-            int ReturnValue = SHFileOperation(ref this._ShFile);
+            _ShFile.fFlags = fFlags.Flag;
+            int ReturnValue = SHFileOperation(ref _ShFile);
             if (ReturnValue == 0)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
         public class FILEOP_FLAGS
@@ -141,7 +136,7 @@ namespace Configuration.DkimSigner.FileIO
                 FOF_NORECURSION = 0x1000,             // don't recurse into directories.
                 FOF_NO_CONNECTED_ELEMENTS = 0x2000,   // don't operate on connected elements.
                 FOF_WANTNUKEWARNING = 0x4000,         // during delete operation, warn if nuking instead of recycling (partially overrides FOF_NOCONFIRMATION)
-                FOF_NORECURSEREPARSE = 0x8000,        // treat reparse points as objects, not containers
+                FOF_NORECURSEREPARSE = 0x8000        // treat reparse points as objects, not containers
             }
 
             public bool FOF_MULTIDESTFILES = false;
@@ -167,37 +162,37 @@ namespace Configuration.DkimSigner.FileIO
                 {
                     ushort ReturnValue = 0;
 
-                    if (this.FOF_MULTIDESTFILES == true)
+                    if (FOF_MULTIDESTFILES)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_MULTIDESTFILES;
-                    if (this.FOF_CONFIRMMOUSE == true)
+                    if (FOF_CONFIRMMOUSE)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_CONFIRMMOUSE;
-                    if (this.FOF_SILENT == true)
+                    if (FOF_SILENT)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_SILENT;
-                    if (this.FOF_RENAMEONCOLLISION == true)
+                    if (FOF_RENAMEONCOLLISION)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_RENAMEONCOLLISION;
-                    if (this.FOF_NOCONFIRMATION == true)
+                    if (FOF_NOCONFIRMATION)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NOCONFIRMATION;
-                    if (this.FOF_WANTMAPPINGHANDLE == true)
+                    if (FOF_WANTMAPPINGHANDLE)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_WANTMAPPINGHANDLE;
-                    if (this.FOF_ALLOWUNDO == true)
+                    if (FOF_ALLOWUNDO)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_ALLOWUNDO;
-                    if (this.FOF_FILESONLY == true)
+                    if (FOF_FILESONLY)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_FILESONLY;
-                    if (this.FOF_SIMPLEPROGRESS == true)
+                    if (FOF_SIMPLEPROGRESS)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_SIMPLEPROGRESS;
-                    if (this.FOF_NOCONFIRMMKDIR == true)
+                    if (FOF_NOCONFIRMMKDIR)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NOCONFIRMMKDIR;
-                    if (this.FOF_NOERRORUI == true)
+                    if (FOF_NOERRORUI)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NOERRORUI;
-                    if (this.FOF_NOCOPYSECURITYATTRIBS == true)
+                    if (FOF_NOCOPYSECURITYATTRIBS)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NOCOPYSECURITYATTRIBS;
-                    if (this.FOF_NORECURSION == true)
+                    if (FOF_NORECURSION)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NORECURSION;
-                    if (this.FOF_NO_CONNECTED_ELEMENTS == true)
+                    if (FOF_NO_CONNECTED_ELEMENTS)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NO_CONNECTED_ELEMENTS;
-                    if (this.FOF_WANTNUKEWARNING == true)
+                    if (FOF_WANTNUKEWARNING)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_WANTNUKEWARNING;
-                    if (this.FOF_NORECURSEREPARSE == true)
+                    if (FOF_NORECURSEREPARSE)
                         ReturnValue |= (ushort)FILEOP_FLAGS_ENUM.FOF_NORECURSEREPARSE;
 
                     return ReturnValue;

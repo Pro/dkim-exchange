@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
-using NUnit.Framework;
-
+using System.Text;
 using DkimSigner.RSA;
+using NUnit.Framework;
 
 namespace Exchange.DkimSigner.Tests.Ressources
 {
@@ -92,7 +92,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
             }
 
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.xml");
-            using (RSACryptoServiceProvider providerXML = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), "test-private"))
+            using (RSACryptoServiceProvider providerXML = RSACryptoHelper.GetProviderFromXmlEncodedRsaPrivateKey(Encoding.ASCII.GetString(fileBytes).Trim(), "test-private"))
             {
                 if (providerXML != null)
                     keyXML = providerXML.ToXmlString(true);
@@ -124,7 +124,7 @@ namespace Exchange.DkimSigner.Tests.Ressources
             }
 
             byte[] fileBytes = File.ReadAllBytes(@"..\..\..\..\Resources\Tests\private.pem");
-            using (RSACryptoServiceProvider providerPEM = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(System.Text.Encoding.ASCII.GetString(fileBytes).Trim(), "test-private"))
+            using (RSACryptoServiceProvider providerPEM = RSACryptoHelper.GetProviderFromPemEncodedRsaPrivateKey(Encoding.ASCII.GetString(fileBytes).Trim(), "test-private"))
             {
                 if (providerPEM != null)
                     keyPEM = providerPEM.ToXmlString(true);

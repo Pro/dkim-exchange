@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Configuration.DkimSigner
 {
@@ -18,7 +17,7 @@ namespace Configuration.DkimSigner
         public const string DKIM_SIGNER_EVENTLOG_SOURCE = @"Exchange DKIM";
         public const string DKIM_SIGNER_EVENTLOG_REGISTRY = @"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM";
 
-        public static readonly Dictionary<string, string> DKIM_SIGNER_VERSION_DIRECTORY = new Dictionary<string, string>()
+        public static readonly Dictionary<string, string> DKIM_SIGNER_VERSION_DIRECTORY = new Dictionary<string, string>
         {
             {"8.3.", "Exchange 2007 SP3"},
             {"14.0.", "Exchange 2010"},
