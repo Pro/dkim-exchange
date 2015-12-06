@@ -61,7 +61,7 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2016 RTM"
 }
 else {
-	throw "The exchange version is not yet supported: $exchserver.admindisplayversion"
+	throw "The exchange version is not yet supported: " + $exchserver.admindisplayversion
 }
 
 $SRCDIR="Src\Exchange.DkimSigner\bin\$EXVER"
