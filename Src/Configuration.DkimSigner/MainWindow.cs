@@ -12,8 +12,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.GitHub;
-using ConfigurationSettings;
 using CSInteropKeys;
+using Exchange.DkimSigner.Configuration;
 using Heijden.DNS;
 
 namespace Configuration.DkimSigner
@@ -39,6 +39,12 @@ namespace Configuration.DkimSigner
         public MainWindow(bool enableDebugTab)
         {
             InitializeComponent();
+
+            MimeKit.Cryptography.DkimSigner signer = new MimeKit.Cryptography.DkimSigner(@"D:\test\test.profanter.me.xml.pem", "example.com", "sel123")
+            {
+                SignatureAlgorithm = MimeKit.Cryptography.DkimSignatureAlgorithm.RsaSha256
+            };
+                    
 
             cbLogLevel.SelectedItem = "Information";
             cbKeyLength.SelectedItem = UserPreferences.Default.KeyLength.ToString();
@@ -150,14 +156,14 @@ namespace Configuration.DkimSigner
                 txtDomainSelector.Text = oSelected.Selector;
                 txtDomainPrivateKeyFilename.Text = oSelected.PrivateKeyFile;
 
-                if (oSelected.CryptoProvider == null)
+                /*if (oSelected.CryptoProvider == null)
                 {
                     oSelected.InitElement(Constants.DKIM_SIGNER_PATH);
                 }
                 else
                 {
                     cbKeyLength.Text = oSelected.CryptoProvider.KeySize.ToString();
-                }
+                }*/
 
                 UpdateSuggestedDNS();
                 txtDomainDNS.Text = "";

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using System.Reflection;
-using ConfigurationSettings;
+using Exchange.DkimSigner.Configuration;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
 
@@ -28,6 +28,11 @@ namespace Exchange.DkimSigner
         public DkimSigningRoutingAgentFactory()
         {
             Logger.LogDebug("Initializing DkimSigner Service");
+
+            /*Logger.LogDebug("Waiting for debugger");
+            while (!System.Diagnostics.Debugger.IsAttached)
+                System.Threading.Thread.Sleep(100);
+            Logger.LogDebug("Debugger connected");*/
 
             Settings config = new Settings();
             config.InitHeadersToSign();

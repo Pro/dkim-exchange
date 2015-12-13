@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Net.Mail;
-using ConfigurationSettings;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
 
@@ -112,68 +110,21 @@ namespace Exchange.DkimSigner
                 /* If domain was found in define domain configuration */
                 if (dkimSigner.GetDomains().ContainsKey(domainPart))
                 {
-                    DomainElement domain = dkimSigner.GetDomains()[domainPart];
-
-                    using (Stream stream = mailItem.GetMimeReadStream())
+                    try
                     {
-                        Logger.LogDebug("Domain found: '"+domain.Domain+"'. I'll sign the message.");
-                        string dkim = dkimSigner.CanSign(domain, stream);
-
-                        if (dkim.Length != 0)
-                        {
-                            Logger.LogInformation("Signing mail with header: " + dkim);
-
-                            stream.Seek(0, SeekOrigin.Begin);
-                            byte[] inputBuffer = ReadFully(stream);
-                            stream.Close();
-
-                            using (Stream outputStream = mailItem.GetMimeWriteStream())
-                            {
-                                try
-                                {
-                                    dkimSigner.Sign(inputBuffer, outputStream, dkim);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogError("Signing went terribly wrong: " + ex);
-                                }
-
-                                outputStream.Close();
-                            }
-                        } else {
-                            Logger.LogDebug("Got empty signing header. Something went wrong...");
-                        }
-
+                        dkimSigner.SignMessage(dkimSigner.GetDomains()[domainPart], mailItem);
                     }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("Could not sign message: " + ex.Message);
+                    }
+                    
                 } else {
                     Logger.LogDebug("No entry found in config for domain '" + domainPart + "'");
                 }
             }
             else
                 Logger.LogDebug("Message is a System message or of TNEF format. Not signing.");
-        }
-
-        /// <summary>
-        /// Slurp the stream and convert it to a binary array.
-        /// http://stackoverflow.com/a/221941/869402
-        /// </summary>
-        /// <param name="input">The stream to read</param>
-        /// <returns>All the data from the stream as byte array</returns>
-        private static byte[] ReadFully(Stream input)
-        {
-            byte[] buffer = new byte[16 * 1024];
-            
-            using (MemoryStream ms = new MemoryStream())
-            {
-                int read;
-                
-                while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-                {
-                    ms.Write(buffer, 0, read);
-                }
-                
-                return ms.ToArray();
-            }
         }
     }
 }

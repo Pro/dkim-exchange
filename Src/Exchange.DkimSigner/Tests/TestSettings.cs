@@ -1,4 +1,4 @@
-﻿using ConfigurationSettings;
+﻿using Exchange.DkimSigner.Configuration;
 using NUnit.Framework;
 
 namespace Exchange.DkimSigner.Tests

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace ConfigurationSettings
+namespace Exchange.DkimSigner.Configuration
 {
     public class Settings
     {
