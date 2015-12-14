@@ -83,7 +83,7 @@ namespace Exchange.DkimSigner
                 if (!mailItem.FromAddress.IsValid || mailItem.FromAddress.DomainPart == null)
                 {
                     // The FromAddress is empty. Try to get the domain from somewhere else (see https://github.com/Pro/dkim-exchange/issues/99)
-                    string smtpAddress = mailItem.Message.Sender.SmtpAddress;
+                    string smtpAddress = (mailItem.Message != null && mailItem.Message.Sender != null) ? mailItem.Message.Sender.SmtpAddress : null;
                     if (smtpAddress != null && smtpAddress.Length > 0)
                     {
                         try

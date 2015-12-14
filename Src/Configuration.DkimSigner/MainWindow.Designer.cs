@@ -716,6 +716,7 @@
             this.txtDNSRecord.Multiline = true;
             this.txtDNSRecord.Name = "txtDNSRecord";
             this.txtDNSRecord.ReadOnly = true;
+            this.txtDNSRecord.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDNSRecord.Size = new System.Drawing.Size(385, 52);
             this.txtDNSRecord.TabIndex = 13;
             // 
@@ -738,6 +739,7 @@
             this.txtDomainDNS.Multiline = true;
             this.txtDomainDNS.Name = "txtDomainDNS";
             this.txtDomainDNS.ReadOnly = true;
+            this.txtDomainDNS.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtDomainDNS.Size = new System.Drawing.Size(385, 52);
             this.txtDomainDNS.TabIndex = 15;
             // 
