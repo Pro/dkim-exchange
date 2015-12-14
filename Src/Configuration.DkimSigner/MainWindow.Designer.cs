@@ -51,6 +51,11 @@
             this.lbExchangeInstalled = new System.Windows.Forms.Label();
             this.txtExchangeInstalled = new System.Windows.Forms.TextBox();
             this.tpDKIM = new System.Windows.Forms.TabPage();
+            this.gbAllowedSigners = new System.Windows.Forms.GroupBox();
+            this.lbPermittedSignersNote = new System.Windows.Forms.Label();
+            this.btSignersDel = new System.Windows.Forms.Button();
+            this.btSignersAdd = new System.Windows.Forms.Button();
+            this.lbxPermittedSigners = new System.Windows.Forms.ListBox();
             this.btSaveConfiguration = new System.Windows.Forms.Button();
             this.gbHeaderToSign = new System.Windows.Forms.GroupBox();
             this.btHeaderAdd = new System.Windows.Forms.Button();
@@ -110,6 +115,7 @@
             this.gbDkimSigner.SuspendLayout();
             this.gbExchange.SuspendLayout();
             this.tpDKIM.SuspendLayout();
+            this.gbAllowedSigners.SuspendLayout();
             this.gbHeaderToSign.SuspendLayout();
             this.gbLogLevel.SuspendLayout();
             this.gbBodyCanonicalization.SuspendLayout();
@@ -357,6 +363,7 @@
             // 
             // tpDKIM
             // 
+            this.tpDKIM.Controls.Add(this.gbAllowedSigners);
             this.tpDKIM.Controls.Add(this.btSaveConfiguration);
             this.tpDKIM.Controls.Add(this.gbHeaderToSign);
             this.tpDKIM.Controls.Add(this.gbLogLevel);
@@ -370,6 +377,62 @@
             this.tpDKIM.TabIndex = 0;
             this.tpDKIM.Text = "DKIM Settings";
             this.tpDKIM.UseVisualStyleBackColor = true;
+            // 
+            // gbAllowedSigners
+            // 
+            this.gbAllowedSigners.Controls.Add(this.lbPermittedSignersNote);
+            this.gbAllowedSigners.Controls.Add(this.btSignersDel);
+            this.gbAllowedSigners.Controls.Add(this.btSignersAdd);
+            this.gbAllowedSigners.Controls.Add(this.lbxPermittedSigners);
+            this.gbAllowedSigners.Location = new System.Drawing.Point(243, 132);
+            this.gbAllowedSigners.Name = "gbAllowedSigners";
+            this.gbAllowedSigners.Size = new System.Drawing.Size(426, 258);
+            this.gbAllowedSigners.TabIndex = 6;
+            this.gbAllowedSigners.TabStop = false;
+            this.gbAllowedSigners.Text = "Allowed signers";
+            // 
+            // lbPermittedSignersNote
+            // 
+            this.lbPermittedSignersNote.Location = new System.Drawing.Point(18, 207);
+            this.lbPermittedSignersNote.Name = "lbPermittedSignersNote";
+            this.lbPermittedSignersNote.Size = new System.Drawing.Size(380, 48);
+            this.lbPermittedSignersNote.TabIndex = 4;
+            this.lbPermittedSignersNote.Text = "These is a list of permitted signers allowed to sign email messages with DKIM sig" +
+    "nature. If this list is empty all email messages will be signed no matter of dir" +
+    "ection.";
+            // 
+            // btSignersDel
+            // 
+            this.btSignersDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btSignersDel.Location = new System.Drawing.Point(336, 69);
+            this.btSignersDel.Name = "btSignersDel";
+            this.btSignersDel.Size = new System.Drawing.Size(65, 23);
+            this.btSignersDel.TabIndex = 3;
+            this.btSignersDel.Text = "&Delete";
+            this.btSignersDel.UseVisualStyleBackColor = true;
+            this.btSignersDel.Click += new System.EventHandler(this.btSignersDel_Click);
+            // 
+            // btSignersAdd
+            // 
+            this.btSignersAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btSignersAdd.Location = new System.Drawing.Point(336, 31);
+            this.btSignersAdd.Name = "btSignersAdd";
+            this.btSignersAdd.Size = new System.Drawing.Size(65, 23);
+            this.btSignersAdd.TabIndex = 2;
+            this.btSignersAdd.Text = "&Add";
+            this.btSignersAdd.UseVisualStyleBackColor = true;
+            this.btSignersAdd.Click += new System.EventHandler(this.btSignersAdd_Click);
+            // 
+            // lbxPermittedSigners
+            // 
+            this.lbxPermittedSigners.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.lbxPermittedSigners.FormattingEnabled = true;
+            this.lbxPermittedSigners.IntegralHeight = false;
+            this.lbxPermittedSigners.Location = new System.Drawing.Point(21, 28);
+            this.lbxPermittedSigners.Name = "lbxPermittedSigners";
+            this.lbxPermittedSigners.Size = new System.Drawing.Size(296, 169);
+            this.lbxPermittedSigners.TabIndex = 1;
             // 
             // btSaveConfiguration
             // 
@@ -937,8 +1000,8 @@
             // 
             // txtAbout
             // 
-            this.txtAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtAbout.BackColor = System.Drawing.Color.Transparent;
             this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1002,6 +1065,7 @@
             this.gbExchange.ResumeLayout(false);
             this.gbExchange.PerformLayout();
             this.tpDKIM.ResumeLayout(false);
+            this.gbAllowedSigners.ResumeLayout(false);
             this.gbHeaderToSign.ResumeLayout(false);
             this.gbLogLevel.ResumeLayout(false);
             this.gbBodyCanonicalization.ResumeLayout(false);
@@ -1103,6 +1167,11 @@
         private System.Windows.Forms.Button btUpgrade;
         private System.Windows.Forms.TabPage tpDebug;
         private System.Windows.Forms.Button btExchangeVersion;
+        private System.Windows.Forms.GroupBox gbAllowedSigners;
+        private System.Windows.Forms.Button btSignersDel;
+        private System.Windows.Forms.Button btSignersAdd;
+        private System.Windows.Forms.ListBox lbxPermittedSigners;
+        private System.Windows.Forms.Label lbPermittedSignersNote;
     }
 }
 

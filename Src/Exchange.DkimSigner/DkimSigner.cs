@@ -61,6 +61,8 @@ namespace Exchange.DkimSigner
         /// </summary>
         private Dictionary<string, DomainElement> domains;
 
+        private List<String> permittedSigners;
+
         /// <summary>
         /// Object used as a mutex when settings are updated during execution
         /// </summary>
@@ -73,6 +75,16 @@ namespace Exchange.DkimSigner
         {
             domains = new Dictionary<string, DomainElement>(StringComparer.OrdinalIgnoreCase);
             settingsMutex = new object();
+        }
+
+        public bool IsPermittedSignersEmpty()
+        {
+            return (permittedSigners.Count == 0);
+        }
+
+        public bool IsThisPermittedSigner(string signerAddress)
+        {
+            return permittedSigners.Contains(signerAddress);
         }
 
         public void UpdateSettings(Settings config)
@@ -119,6 +131,13 @@ namespace Exchange.DkimSigner
                 foreach (string headerToSign in config.HeadersToSign)
                 {
                     eligibleHeaders.Add(headerToSign.Trim());
+                }
+
+                permittedSigners = new List<string>();
+                permittedSigners.Clear();
+                foreach (string sItem in config.PermittedSigners)
+                {
+                    permittedSigners.Add(sItem);
                 }
 
                 // The From header must always be signed according to the 

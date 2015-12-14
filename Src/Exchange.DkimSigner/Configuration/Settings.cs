@@ -15,7 +15,10 @@ namespace ConfigurationSettings
         public List<string> HeadersToSign { get; set; }
 
         [XmlArray]
-        public List<DomainElement> Domains { get; set; } 
+        public List<DomainElement> Domains { get; set; }
+
+        [XmlArray]
+        public List<string> PermittedSigners { get; set; }
 
         public Settings()
         {
@@ -30,6 +33,8 @@ namespace ConfigurationSettings
             HeadersToSign = new List<string>();
 
             Domains = new List<DomainElement>();
+
+            PermittedSigners = new List<string>();
         }
 
         /// <summary>
@@ -60,6 +65,7 @@ namespace ConfigurationSettings
                     BodyCanonicalization = settings.BodyCanonicalization;
                     HeadersToSign = settings.HeadersToSign;
                     Domains = settings.Domains;
+                    PermittedSigners = settings.PermittedSigners;
 
                     return true;
                 }

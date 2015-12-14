@@ -72,7 +72,7 @@ namespace Configuration.DkimSigner
             try
             {
                 transportService = new TransportService();
-                transportService.StatusChanged += transportService_StatusUptated;
+                transportService.StatusChanged += transportService_StatusUpdated;
             }
             catch (ExchangeServerException) { }
 
@@ -94,13 +94,16 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                Hide();
-                transportService.Dispose();
-                transportService = null;
+                if (transportService != null)
+                {
+                    Hide();
+                    transportService.Dispose();
+                    transportService = null;
+                }
             }
         }
 
-        private void transportService_StatusUptated(object sender, EventArgs e)
+        private void transportService_StatusUpdated(object sender, EventArgs e)
         {
             string sStatus = transportService.GetStatus();
             txtExchangeStatus.BeginInvoke(new Action(() => txtExchangeStatus.Text = (sStatus != null ? sStatus : "Unknown")));
@@ -416,6 +419,12 @@ namespace Configuration.DkimSigner
                 lbxHeadersToSign.Items.Add(sItem);
             }
 
+            lbxPermittedSigners.Items.Clear();
+            foreach (string sItem in oConfig.PermittedSigners)
+            {
+                lbxPermittedSigners.Items.Add(sItem);
+            }
+
             //
             // Domain
             //
@@ -453,6 +462,12 @@ namespace Configuration.DkimSigner
             foreach (string sItem in lbxHeadersToSign.Items)
             {
                 oConfig.HeadersToSign.Add(sItem);
+            }
+
+            oConfig.PermittedSigners.Clear();
+            foreach (string sItem in lbxPermittedSigners.Items)
+            {
+                oConfig.PermittedSigners.Add(sItem);
             }
 
             oConfig.Save(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
@@ -1067,6 +1082,31 @@ namespace Configuration.DkimSigner
             result = "My version: " + ConfigVersion + "\nExchange\n" + result;
 
             ShowMessageBox("Exchange Version Debug", result, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btSignersAdd_Click(object sender, EventArgs e)
+        {
+            HeaderInputWindow oHiw = new HeaderInputWindow();
+
+            oHiw.Text = "Add a new signer";
+
+            if (oHiw.ShowDialog() == DialogResult.OK)
+            {
+                lbxPermittedSigners.Items.Add(oHiw.txtHeader.Text);
+                lbxPermittedSigners.SelectedItem = oHiw.txtHeader;
+                bDataUpdated = true;
+            }
+
+            oHiw.Dispose();
+        }
+
+        private void btSignersDel_Click(object sender, EventArgs e)
+        {
+            if (lbxPermittedSigners.SelectedItem != null)
+            {
+                lbxPermittedSigners.Items.Remove(lbxPermittedSigners.SelectedItem);
+                bDataUpdated = true;
+            }
         }
     }
 }
