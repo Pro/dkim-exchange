@@ -5,6 +5,8 @@ using System.Net.Mail;
 using ConfigurationSettings;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
+using Microsoft.Exchange.Data.Mime;
+using System.Text.RegularExpressions;
 
 namespace Exchange.DkimSigner
 {
@@ -80,6 +82,39 @@ namespace Exchange.DkimSigner
             if (!mailItem.Message.IsSystemMessage && mailItem.Message.TnefPart == null)
             {
                 string domainPart = null;
+
+                /* Check for permitted signers */
+                if(!dkimSigner.IsPermittedSignersEmpty())
+                {
+                    ReceivedHeader rcvHdr = (ReceivedHeader)mailItem.Message.RootPart.Headers.FindFirst(HeaderId.Received);
+                    if(rcvHdr != null)
+                    {
+                        try
+                        {
+                            Match match = Regex.Match(rcvHdr.FromTcpInfo, @"\(([^)]*)\)");
+
+                            if (match.Groups.Count > 1)
+                            {
+                                string senderIp = match.Groups[1].Value;
+                                if(!dkimSigner.IsThisPermittedSigner(match.Groups[1].Value))
+                                {
+                                    Logger.LogWarning("Not signing email, " + senderIp + " is not permitted signer.");
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                Logger.LogWarning("Not signing email, unable to validate permitted signer.");
+                                return;
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            Logger.LogWarning("Not signing email, unable to validate permitted signer.");
+                            return;
+                        }
+                    }
+                }
                 
                 /* Check if we have a valid From address */
                 if (!mailItem.FromAddress.IsValid || mailItem.FromAddress.DomainPart == null)
