@@ -223,13 +223,6 @@
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="FileIO\ShellFileOperation.cs" />
-    <Compile Include="RSA\AsnKeyBuilder.cs" />
-    <Compile Include="RSA\AsnKeyParser.cs" />
-    <Compile Include="RSA\BerDecodeError.cs" />
-    <Compile Include="RSA\BigInteger.cs" />
-    <Compile Include="RSA\RSACryptoFormat.cs" />
-    <Compile Include="RSA\RSACryptoHelper.cs" />
-    <Compile Include="RSA\RSACryptoHelperException.cs" />
     <Compile Include="UserPreferences.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

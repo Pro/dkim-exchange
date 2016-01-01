@@ -352,27 +352,6 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Configuration.DkimSigner\RSA\AsnKeyBuilder.cs">
-      <Link>RSA\AsnKeyBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\Configuration.DkimSigner\RSA\AsnKeyParser.cs">
-      <Link>RSA\AsnKeyParser.cs</Link>
-    </Compile>
-    <Compile Include="..\Configuration.DkimSigner\RSA\BerDecodeError.cs">
-      <Link>RSA\BerDecodeError.cs</Link>
-    </Compile>
-    <Compile Include="..\Configuration.DkimSigner\RSA\BigInteger.cs">
-      <Link>RSA\BigInteger.cs</Link>
-    </Compile>
-    <Compile Include="..\Configuration.DkimSigner\RSA\RSACryptoFormat.cs">
-      <Link>RSA\RSACryptoFormat.cs</Link>
-    </Compile>
-    <Compile Include="..\Configuration.DkimSigner\RSA\RSACryptoHelper.cs">
-      <Link>RSA\RSACryptoHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Configuration.DkimSigner\RSA\RSACryptoHelperException.cs">
-      <Link>RSA\RSACryptoHelperException.cs</Link>
-    </Compile>
     <Compile Include="Configuration\DkimAlgorithmKind.cs" />
     <Compile Include="Configuration\DkimCanonicalizationKind.cs" />
     <Compile Include="Configuration\DomainElementSigner.cs" />
