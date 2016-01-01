@@ -34,10 +34,10 @@ namespace Configuration.DkimSigner
 
         private void dgvTransportServiceAgents_SelectionChanged(object sender, EventArgs e)
         {
-            bool dkimAgentSelected = dgvTransportServiceAgents.SelectedRows.Count == 1 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
+            bool dkimAgentSelected = dgvTransportServiceAgents.SelectedRows.Count == 1 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].Value.ToString().Equals(Constants.DkimSignerAgentName);
             btUninstall.Enabled = dkimAgentSelected;
             btDisable.Enabled = dkimAgentSelected;
-            refreshMoveButtons(dkimAgentSelected);
+            RefreshMoveButtons(dkimAgentSelected);
         }
 
         // ##########################################################
@@ -52,7 +52,10 @@ namespace Configuration.DkimSigner
             {
                 installedAgentsList = ExchangeServer.GetTransportServiceAgents();
             }
-            catch(Exception) { }
+            catch (Exception)
+            {
+                // ignored
+            }
 
             dgvTransportServiceAgents.Rows.Clear();
 
@@ -61,22 +64,22 @@ namespace Configuration.DkimSigner
                 foreach (TransportServiceAgent oAgent in installedAgentsList)
                 {
                     dgvTransportServiceAgents.Rows.Add(oAgent.Priority, oAgent.Name, oAgent.Enabled);
-                    if (oAgent.Name == Constants.DKIM_SIGNER_AGENT_NAME)
+                    if (oAgent.Name == Constants.DkimSignerAgentName)
                         currentAgentPriority = oAgent.Priority;
                 }
             }
             foreach (DataGridViewRow row in dgvTransportServiceAgents.Rows)
             {
-                row.Selected = row.Cells["dgvcName"].Value.ToString().Equals(Constants.DKIM_SIGNER_AGENT_NAME);
+                row.Selected = row.Cells["dgvcName"].Value.ToString().Equals(Constants.DkimSignerAgentName);
             }
             
-            bool IsDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
-            bool IsDkimAgentTransportEnabled = IsDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
-            btDisable.Text = (IsDkimAgentTransportEnabled ? "Disable" : "Enable");
+            bool isDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
+            bool isDkimAgentTransportEnabled = isDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
+            btDisable.Text = (isDkimAgentTransportEnabled ? "Disable" : "Enable");
         }
 
 
-        private void refreshMoveButtons(bool isEnabled)
+        private void RefreshMoveButtons(bool isEnabled)
         {
             if (!isEnabled)
             {
@@ -121,7 +124,7 @@ namespace Configuration.DkimSigner
                         ts.Dispose();
 
                     }
-                    MessageBox.Show(this, "Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DKIM_SIGNER_PATH + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!", "Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(this, "Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DkimSignerPath + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!", "Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                     /*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
                     {
@@ -155,7 +158,7 @@ namespace Configuration.DkimSigner
                 }
 
                 RefreshTransportServiceAgents();
-                refreshMoveButtons( true );
+                RefreshMoveButtons( true );
 
                 TransportService ts = new TransportService();
                 try

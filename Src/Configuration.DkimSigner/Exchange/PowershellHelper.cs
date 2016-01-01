@@ -11,7 +11,7 @@ namespace Configuration.DkimSigner.Exchange
     {
         private static Runspace runspace;
 
-        public static readonly string[] EXCHANGE_PSSNAPIN =
+        public static readonly string[] ExchangePsSnapin =
         {
             "Microsoft.Exchange.Management.PowerShell.Admin",   // Exchange 2007
             "Microsoft.Exchange.Management.PowerShell.E2010",   // Exchange 2010 
@@ -39,7 +39,7 @@ namespace Configuration.DkimSigner.Exchange
                     runspace = RunspaceFactory.CreateRunspace(RunspaceConfiguration.Create());
                     runspace.Open();
 
-                    foreach (string pssnapin in EXCHANGE_PSSNAPIN)
+                    foreach (string pssnapin in ExchangePsSnapin)
                     {
                         if (Execute("$(Get-PSSnapin -Registered | Select-String " + pssnapin + ") -ne $null", true).Trim() == "True")
                         {

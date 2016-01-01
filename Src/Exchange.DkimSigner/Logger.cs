@@ -8,7 +8,7 @@ namespace Exchange.DkimSigner
         /// The log level defined.
         /// Set to initial default level to log all
         /// </summary>
-        public static int logLevel = 99;
+        public static int LogLevel = 99;
 
         private static EventLog logger;
 
@@ -19,7 +19,7 @@ namespace Exchange.DkimSigner
 
         public static void LogDebug(string message, int id)
         {
-            if (logLevel >= 4)
+            if (LogLevel >= 4)
             {
                 LogEntry("DEBUG: " + message, id, EventLogEntryType.Information);
             }
@@ -32,7 +32,7 @@ namespace Exchange.DkimSigner
 
         public static void LogInformation(string message, int id)
         {
-            if (logLevel >= 3)
+            if (LogLevel >= 3)
             {
                 LogEntry(message, id, EventLogEntryType.Information);
             }
@@ -45,7 +45,7 @@ namespace Exchange.DkimSigner
 
         public static void LogWarning(string message, int id)
         {
-            if (logLevel >= 2)
+            if (LogLevel >= 2)
             {
                 LogEntry(message, id, EventLogEntryType.Warning);
             }
@@ -58,7 +58,7 @@ namespace Exchange.DkimSigner
 
         public static void LogError(string message, int id)
         {
-            if (logLevel >= 1)
+            if (LogLevel >= 1)
             {
                 LogEntry(message, id, EventLogEntryType.Error);
             }

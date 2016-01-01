@@ -338,7 +338,7 @@
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 RTM'">
       <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
-	<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 RTM'">
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 RTM'">
       <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
@@ -352,12 +352,13 @@
     <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\DkimAlgorithmKind.cs" />
+    <Compile Include="Configuration\DkimCanonicalizationKind.cs" />
+    <Compile Include="Configuration\DomainElementSigner.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Configuration\DomainElement.cs" />
-    <Compile Include="Configuration\DkimCanonicalizationKind.cs" />
     <Compile Include="DkimSigningRoutingAgent.cs" />
     <Compile Include="DkimSigningRoutingAgentFactory.cs" />
-    <Compile Include="Configuration\DkimAlgorithmKind.cs" />
     <Compile Include="DkimSigner.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -366,10 +367,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RSA\RSACryptoFormat.cs" />
-    <Compile Include="RSA\RSACryptoHelper.cs" />
-    <Compile Include="RSA\RSACryptoHelperException.cs" />
-    <Compile Include="Tests\TestRSACryptoHelper.cs" />
     <Compile Include="Tests\TestDkimSigner.cs" />
     <Compile Include="Tests\TestDomainKey.cs" />
     <Compile Include="Tests\TestSettings.cs" />
@@ -387,6 +384,32 @@
   <ItemGroup>
     <Folder Include="Tests\Ressources\" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MimeKit\submodules\bc-csharp\crypto\BouncyCastle.csproj">
+      <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
+      <Name>BouncyCastle</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
+  </ItemGroup>
+  <Choose>
+    <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
+      <ItemGroup>
+        <ProjectReference Include="..\MimeKit\MimeKit\MimeKit.Net35.csproj">
+          <Project>{c8c90007-c877-4763-8f3e-5ccf307f7e93}</Project>
+          <Name>MimeKit.Net35</Name>
+        </ProjectReference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <ProjectReference Include="..\MimeKit\MimeKit\MimeKit.Net40.csproj">
+          <Project>{c909fc86-6084-41e5-b99c-dcdf2a5b7f82}</Project>
+          <Name>MimeKit.Net40</Name>
+          <EmbedInteropTypes>False</EmbedInteropTypes>
+        </ProjectReference>
+      </ItemGroup>
+    </Otherwise>
+  </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>

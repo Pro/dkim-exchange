@@ -1,4 +1,4 @@
-﻿namespace ConfigurationSettings
+﻿namespace Exchange.DkimSigner.Configuration
 {
     /// <summary>
     /// Enumeration of the kinds of signature and hashing algorithms 

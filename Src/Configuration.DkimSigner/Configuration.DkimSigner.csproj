@@ -93,15 +93,6 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
       <Link>Configuration\Settings.cs</Link>
     </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoFormat.cs">
-      <Link>RSA\RSACryptoFormat.cs</Link>
-    </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelper.cs">
-      <Link>RSA\RSACryptoHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\Exchange.DkimSigner\RSA\RSACryptoHelperException.cs">
-      <Link>RSA\RSACryptoHelperException.cs</Link>
-    </Compile>
     <Compile Include="ConfigureWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -232,10 +223,6 @@
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="FileIO\ShellFileOperation.cs" />
-    <Compile Include="RSA\AsnKeyBuilder.cs" />
-    <Compile Include="RSA\AsnKeyParser.cs" />
-    <Compile Include="RSA\BerDecodeError.cs" />
-    <Compile Include="RSA\BigInteger.cs" />
     <Compile Include="UserPreferences.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -298,6 +285,16 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MimeKit\MimeKit\MimeKit.Net40.csproj">
+      <Project>{c909fc86-6084-41e5-b99c-dcdf2a5b7f82}</Project>
+      <Name>MimeKit.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MimeKit\submodules\bc-csharp\crypto\BouncyCastle.csproj">
+      <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
+      <Name>BouncyCastle</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

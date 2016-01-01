@@ -13,7 +13,7 @@ namespace Configuration.DkimSigner
 
         private void ConfigureWindow_Load(object sender, EventArgs e)
         {
-            foreach (KeyValuePair<string, string> entry in Constants.DKIM_SIGNER_VERSION_DIRECTORY)
+            foreach (KeyValuePair<string, string> entry in Constants.DkimSignerVersionDirectory)
             {
                 dgvExchangeVersion.Rows.Add(entry.Key, entry.Value);
             }

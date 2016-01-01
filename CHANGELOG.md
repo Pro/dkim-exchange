@@ -5,6 +5,10 @@
 
 
 ## Releases
+* [3.0.0]:  
+	New: Switched to MimeKit implementation for DKIM signer  
+	New: Better handling of private key reading and generation  
+	Fix: Agent 'Exchange DkimSigner' went async (#112)  
 * 30.10.2015 [2.1.8]:  
 	New: Support for Exchange 2016 RTM  
 	Fix: Performance improvement by creating DKIM signer only once (#103 and #95)  

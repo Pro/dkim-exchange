@@ -76,11 +76,11 @@ namespace Configuration.DkimSigner.Exchange
         {
             try
             {
-                string status = GetTransportServiceStatus().ToString();
+                string s = GetTransportServiceStatus().ToString();
 
-                if (this.status != status)
+                if (status != s)
                 {
-                    this.status = status;
+                    status = s;
                     if(StatusChanged != null)
                     {
                         StatusChanged(this, null);
@@ -98,7 +98,7 @@ namespace Configuration.DkimSigner.Exchange
         /// </summary>
         private void ExecuteAction()
         {
-            bool queueIsNotEmpty = false;
+            bool queueIsNotEmpty;
 
             lock (actions)
             {
