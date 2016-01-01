@@ -34,7 +34,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 
 ## Requirements
 
-* .NET 3.5 (Exchange 2007 or Exchange 2010) or .NET 4.0 (Exchange 2013)
+* .NET 3.5 (Exchange 2007 or Exchange 2010) or .NET 4.0 (Exchange 2013, 2016)
 * .NET 4.5 (optional - Configuration tool [Configuration.DkimSigner.exe])
 
 Note : Manual install (see section below) is required if .NET 4.5 isn't installed
@@ -179,6 +179,13 @@ If you want to test, if everything is working, simply send a mail to mailtest@un
 # Updating the Transport Agent
 
 If you want to update the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Upgrade button. (If no new version is available the button shows 'Reinstall').
+
+## Updating from version 2.* to 3.*
+
+If you are updating the agent from version 2.* to 3.* you may need to recreate your private key and update the DNS record correspondingly if you used the .xml key format.
+We now switched to another key library which doesn't support the .xml format anymore.
+
+To recreate your private key just open the Configuration tool and for each domain press the `Generate key` button. Make sure to update the DNS too.
 
 # Updating Exchange Server
 
