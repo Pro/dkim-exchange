@@ -61,6 +61,7 @@
             this.cbxHeader.Name = "cbxHeader";
             this.cbxHeader.Size = new System.Drawing.Size(257, 21);
             this.cbxHeader.TabIndex = 3;
+            this.cbxHeader.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cbxHeader_KeyPress);
             // 
             // HeaderInputWindow
             // 

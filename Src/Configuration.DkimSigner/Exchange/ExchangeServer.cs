@@ -12,8 +12,8 @@ namespace Configuration.DkimSigner.Exchange
         /*********************** Constants ************************/
         /**********************************************************/
 
-        private const string REGEX_INSTALLED_VERSION = "AdminDisplayVersion\\s:\\sVersion\\s(\\d+)\\.(\\d+)\\s\\(Build\\s(\\d+)\\.(\\d+)\\)";
-        private const string REGEX_TRANSPORT_SERVICE_AGENT = "(?<name>.*?)\\s*(?<status>(True|False))\\s*(?<priority>\\d+?)";
+        private const string RegexInstalledVersion = "AdminDisplayVersion\\s:\\sVersion\\s(\\d+)\\.(\\d+)\\s\\(Build\\s(\\d+)\\.(\\d+)\\)";
+        private const string RegexTransportServiceAgent = "(?<name>.*?)\\s*(?<status>(True|False))\\s*(?<priority>\\d+?)";
 
         /**********************************************************/
         /*********************** Methods **************************/
@@ -35,7 +35,7 @@ namespace Configuration.DkimSigner.Exchange
 
             if (sResult != null)
             {
-                Match oMatch = Regex.Match(sResult, REGEX_INSTALLED_VERSION, RegexOptions.IgnoreCase);
+                Match oMatch = Regex.Match(sResult, RegexInstalledVersion, RegexOptions.IgnoreCase);
                 
                 if(oMatch.Success)
                 {
@@ -57,7 +57,7 @@ namespace Configuration.DkimSigner.Exchange
 
                 foreach (string sLine in asLine)
                 {
-                    Match oMatch = Regex.Match(sLine, REGEX_TRANSPORT_SERVICE_AGENT);
+                    Match oMatch = Regex.Match(sLine, RegexTransportServiceAgent);
 
                     if(oMatch.Success)
                     {
@@ -78,7 +78,7 @@ namespace Configuration.DkimSigner.Exchange
 
             foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
             {
-                if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
+                if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
                 {
                     bResult = true;
                     break;
@@ -94,7 +94,7 @@ namespace Configuration.DkimSigner.Exchange
 
             foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
             {
-                if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
+                if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
                 {
                     bResult = oAgent.Enabled;
                     break;
@@ -108,7 +108,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (!IsDkimAgentTransportInstalled())
             {
-                string sResult = PowerShellHelper.ExecPowerShellCommand("Install-TransportAgent -Confirm:$false -Name \"Exchange DkimSigner\" -TransportAgentFactory \"Exchange.DkimSigner.DkimSigningRoutingAgentFactory\" -AssemblyPath \"" + Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL) + "\"", true);
+                string sResult = PowerShellHelper.ExecPowerShellCommand("Install-TransportAgent -Confirm:$false -Name \"Exchange DkimSigner\" -TransportAgentFactory \"Exchange.DkimSigner.DkimSigningRoutingAgentFactory\" -AssemblyPath \"" + Path.Combine(Constants.DkimSignerPath, Constants.DkimSignerAgentDll) + "\"", true);
 
                 Match oMatch = Regex.Match(sResult, "^Install-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
@@ -126,7 +126,7 @@ namespace Configuration.DkimSigner.Exchange
             {
                 DisableDkimTransportAgent();
 
-                string sResult = PowerShellHelper.ExecPowerShellCommand("Uninstall-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
+                string sResult = PowerShellHelper.ExecPowerShellCommand("Uninstall-TransportAgent -Confirm:$false -Identity \"" + Constants.DkimSignerAgentName + "\"", true);
 
                 Match oMatch = Regex.Match(sResult, "^Uninstall-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
@@ -140,7 +140,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (!IsDkimAgentTransportEnabled())
             {
-                string sResult = PowerShellHelper.ExecPowerShellCommand("Enable-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
+                string sResult = PowerShellHelper.ExecPowerShellCommand("Enable-TransportAgent -Confirm:$false -Identity \"" + Constants.DkimSignerAgentName + "\"", true);
 
                 Match oMatch = Regex.Match(sResult, "^Enable-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
@@ -154,7 +154,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (IsDkimAgentTransportEnabled())
             {
-                string sResult = PowerShellHelper.ExecPowerShellCommand("Disable-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\"", true);
+                string sResult = PowerShellHelper.ExecPowerShellCommand("Disable-TransportAgent -Confirm:$false -Identity \"" + Constants.DkimSignerAgentName + "\"", true);
 
                 Match oMatch = Regex.Match(sResult, "^Disable-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
@@ -168,7 +168,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             if (IsDkimAgentTransportEnabled())
             {
-                string sResult = PowerShellHelper.ExecPowerShellCommand("Set-TransportAgent -Confirm:$false -Identity \"" + Constants.DKIM_SIGNER_AGENT_NAME + "\" -Priority " + iPriority, true);
+                string sResult = PowerShellHelper.ExecPowerShellCommand("Set-TransportAgent -Confirm:$false -Identity \"" + Constants.DkimSignerAgentName + "\" -Priority " + iPriority, true);
 
                 Match oMatch = Regex.Match(sResult, "^Set-TransportAgent", RegexOptions.IgnoreCase);
                 if (oMatch.Success)
@@ -182,7 +182,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
             {
-                if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
+                if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
                 {
                     SetPriorityDkimTransportAgent(++oAgent.Priority);
                     break;
@@ -194,7 +194,7 @@ namespace Configuration.DkimSigner.Exchange
         {
             foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
             {
-                if (string.Equals(oAgent.Name, Constants.DKIM_SIGNER_AGENT_NAME, StringComparison.Ordinal))
+                if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
                 {
                     SetPriorityDkimTransportAgent(--oAgent.Priority);
                     break;

@@ -4,20 +4,20 @@ namespace Configuration.DkimSigner
 {
     public static class Constants
     {
-        public const string DKIM_SIGNER_PATH = @"C:\Program Files\Exchange DkimSigner";
-        public const string DKIM_SIGNER_AGENT_NAME = @"Exchange DkimSigner";
-        public const string DKIM_SIGNER_AGENT_DLL = @"ExchangeDkimSigner.dll";
-        public const string DKIM_SIGNER_CONFIGURATION_EXE = @"Configuration.DkimSigner.exe";
+        public const string DkimSignerPath = @"C:\Program Files\Exchange DkimSigner";
+        public const string DkimSignerAgentName = @"Exchange DkimSigner";
+        public const string DkimSignerAgentDll = @"ExchangeDkimSigner.dll";
+        public const string DkimSignerConfigurationExe = @"Configuration.DkimSigner.exe";
 
-        public const string DKIM_SIGNER_NOTICE = "This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
-        public const string DKIM_SIGNER_LICENCE = "This Software is provided under the GNU GPLv3 License.\r\nFuther details can be found here: http://www.gnu.org/licenses";
-        public const string DKIM_SIGNER_AUTHOR = "The code for the signing algorithm is based on the work of Nicholas Piasecki.\r\n\r\nDeveloped and maintained by Stefan Profanter and Alexandre Laroche.";
-        public const string DKIM_SIGNER_WEBSITE = "Website : https://github.com/Pro/dkim-exchange";
+        public const string DkimSignerNotice = "This is free software; see the source for copying conditions. There is NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.";
+        public const string DkimSignerLicence = "This Software is provided under the GNU GPLv3 License.\r\nFuther details can be found here: http://www.gnu.org/licenses";
+        public const string DkimSignerAuthor = "The code for the signing algorithm is based on the work of Nicholas Piasecki.\r\n\r\nDeveloped and maintained by Stefan Profanter and Alexandre Laroche.";
+        public const string DkimSignerWebsite = "Website : https://github.com/Pro/dkim-exchange";
 
-        public const string DKIM_SIGNER_EVENTLOG_SOURCE = @"Exchange DKIM";
-        public const string DKIM_SIGNER_EVENTLOG_REGISTRY = @"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM";
+        public const string DkimSignerEventlogSource = @"Exchange DKIM";
+        public const string DkimSignerEventlogRegistry = @"SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM";
 
-        public static readonly Dictionary<string, string> DKIM_SIGNER_VERSION_DIRECTORY = new Dictionary<string, string>
+        public static readonly Dictionary<string, string> DkimSignerVersionDirectory = new Dictionary<string, string>
         {
             {"8.3.", "Exchange 2007 SP3"},
             {"14.0.", "Exchange 2010"},

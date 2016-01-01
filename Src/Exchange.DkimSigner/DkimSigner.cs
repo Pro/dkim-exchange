@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using Exchange.DkimSigner.Configuration;
 using Microsoft.Exchange.Data.Transport;
 using MimeKit;
 using MimeKit.Cryptography;
-using Org.BouncyCastle.Crypto.Parameters;
 
 namespace Exchange.DkimSigner
 {
@@ -40,12 +34,12 @@ namespace Exchange.DkimSigner
         /// <summary>
         /// The DKIM canonicalization algorithm that is to be employed for the header.
         /// </summary>
-        private MimeKit.Cryptography.DkimCanonicalizationAlgorithm headerCanonicalization;
+        private DkimCanonicalizationAlgorithm headerCanonicalization;
 
         /// <summary>
         /// The DKIM canonicalization algorithm that is to be employed for the header.
         /// </summary>
-        private MimeKit.Cryptography.DkimCanonicalizationAlgorithm bodyCanonicalization;
+        private DkimCanonicalizationAlgorithm bodyCanonicalization;
 
         /// <summary>
         /// Map the domain Host part to the corresponding domain settings object
@@ -92,18 +86,19 @@ namespace Exchange.DkimSigner
                 // Load the list of domains
                 domains.Clear();
 
-                MimeKit.Cryptography.DkimSignatureAlgorithm signatureAlgorithm;
+                DkimSignatureAlgorithm signatureAlgorithm;
                 
                 switch (config.SigningAlgorithm)
                 {
                     case DkimAlgorithmKind.RsaSha1:
-                        signatureAlgorithm = MimeKit.Cryptography.DkimSignatureAlgorithm.RsaSha1;
+                        signatureAlgorithm = DkimSignatureAlgorithm.RsaSha1;
                         break;
                     case DkimAlgorithmKind.RsaSha256:
-                        signatureAlgorithm = MimeKit.Cryptography.DkimSignatureAlgorithm.RsaSha256;
+                        signatureAlgorithm = DkimSignatureAlgorithm.RsaSha256;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException("SigningAlgorithm");
+                        // ReSharper disable once NotResolvedInText
+                        throw new ArgumentOutOfRangeException("config.SigningAlgorithm");
                 }
 
 
@@ -135,7 +130,7 @@ namespace Exchange.DkimSigner
 #if EX_2007_SP3 || EX_2010 || EX_2010_SP1 || EX_2010_SP2 || EX_2010_SP3
                     if (!TryParseHeader(headerToSign, out headerId))
 #else
-                    if (!HeaderId.TryParse(headerToSign, true, out headerId))
+                    if (!Enum.TryParse(headerToSign, true, out headerId))
 #endif
                     {
                         Logger.LogWarning("Invalid value for header to sign: '" + headerToSign + "'. This header will be ignored.");

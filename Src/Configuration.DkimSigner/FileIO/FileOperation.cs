@@ -30,9 +30,11 @@ namespace Configuration.DkimSigner.FileIO
         /// <param name="hwnd">The parent window for progress display etc.</param>
         /// <param name="fromNames">An array of source file names</param>
         /// <param name="toNames">An array of destination file names</param>
+        /// <param name="overwrite">Overwrite already existing files</param>
         /// <param name="title">The title to display</param>
+        /// <param name="anyOperationsAborted">Indicates if any of the operations were aborted</param>
         /// <returns>true on success, false on error</returns>
-        public static bool CopyFiles(IntPtr hwnd, string[] fromNames, string[] toNames, bool overwrite, string title, out bool AnyOperationsAborted)
+        public static bool CopyFiles(IntPtr hwnd, string[] fromNames, string[] toNames, bool overwrite, string title, out bool anyOperationsAborted)
         {
             if (fromNames == null)
                 throw new ArgumentNullException("fromNames");
@@ -52,7 +54,7 @@ namespace Configuration.DkimSigner.FileIO
 
             bool returnValue = sfo.Execute();
 
-            AnyOperationsAborted = sfo.fAnyOperationsAborted;
+            anyOperationsAborted = sfo.fAnyOperationsAborted;
 
             return returnValue;
         }
@@ -63,11 +65,12 @@ namespace Configuration.DkimSigner.FileIO
         /// <param name="hwnd">The parent window for progress display etc.</param>
         /// <param name="names">An array of source file names</param>
         /// <param name="title">The title to display</param>
+        /// <param name="anyOperationsAborted">Indicates if any of the operations were aborted</param>
         /// <returns>true on success, false on error</returns>
-        public static bool DeleteFiles(IntPtr hwnd, string[] names, string title, out bool AnyOperationsAborted)
+        public static bool DeleteFiles(IntPtr hwnd, string[] names, string title, out bool anyOperationsAborted)
         {
             if (names == null)
-                throw new ArgumentNullException("fromNames");
+                throw new ArgumentNullException("names");
 
             ShellFileOperation sfo = new ShellFileOperation();
             sfo.wFunc = ShellFileOperation.FO_Func.FO_DELETE;
@@ -78,7 +81,7 @@ namespace Configuration.DkimSigner.FileIO
 
             bool returnValue = sfo.Execute();
 
-            AnyOperationsAborted = sfo.fAnyOperationsAborted;
+            anyOperationsAborted = sfo.fAnyOperationsAborted;
 
             return returnValue;
         }

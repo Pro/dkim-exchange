@@ -35,7 +35,7 @@ namespace Configuration.DkimSigner
             }
         }
 
-        public string getHeaderName()
+        public string GetHeaderName()
         {
             return cbxHeader.Text;
         }
@@ -48,7 +48,7 @@ namespace Configuration.DkimSigner
         // ###################### Button click #######################
         // ###########################################################
 
-        private void txtHeader_KeyPress(object sender, KeyPressEventArgs e)
+        private void cbxHeader_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == Convert.ToChar(Keys.Enter)) //return
             {

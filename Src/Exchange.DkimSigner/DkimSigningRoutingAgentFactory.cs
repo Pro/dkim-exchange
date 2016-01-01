@@ -63,10 +63,11 @@ namespace Exchange.DkimSigner
             Settings config = new Settings();
             config.InitHeadersToSign();
 
-            if (config.Load(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml")))
+            string assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (assemblyDir != null && config.Load(Path.Combine(assemblyDir, "settings.xml")))
             {
                 dkimSigner.UpdateSettings(config);
-                Logger.logLevel = config.Loglevel;
+                Logger.LogLevel = config.Loglevel;
                 Logger.LogInformation("Exchange DKIM settings loaded: " + config.SigningAlgorithm + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization + ", Number of domains: " + dkimSigner.GetDomains().Count);
             }
             else
@@ -80,7 +81,13 @@ namespace Exchange.DkimSigner
         /// </summary>
         public void WatchSettings()
         {
-            string filename = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "settings.xml");
+            string assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (assemblyDir == null)
+            {
+                Logger.LogWarning("Could not get directory name from path: " + Assembly.GetExecutingAssembly().Location + "\nSettings watcher disabled.");
+                return;
+            }
+            string filename = Path.Combine(assemblyDir, "settings.xml");
 
             // Create a new FileSystemWatcher and set its properties.
             watcher = new FileSystemWatcher();

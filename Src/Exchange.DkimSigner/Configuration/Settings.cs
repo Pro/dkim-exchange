@@ -41,10 +41,10 @@ namespace Exchange.DkimSigner.Configuration
         }
 
         /// <summary>
-        /// Load the config file
+        /// Load the config file into this instance
         /// </summary>
         /// <param name="filename">Xml file name</param>
-        /// <returns>The object created from the xml file</returns>
+        /// <returns>The true if successfully loaded. False otherwise</returns>
         public bool Load(string filename)
         {            
             if (File.Exists(filename))
@@ -53,6 +53,8 @@ namespace Exchange.DkimSigner.Configuration
                 {
                     XmlSerializer serializer = new XmlSerializer(typeof(Settings));
                     Settings settings = serializer.Deserialize(stream) as Settings;
+                    if (settings == null)
+                        return false;
 
                     Loglevel = settings.Loglevel;
                     SigningAlgorithm = settings.SigningAlgorithm;
@@ -72,9 +74,13 @@ namespace Exchange.DkimSigner.Configuration
         /// Saves to an xml file
         /// </summary>
         /// <param name="filename">File path of the new xml file</param>
-        public void Save(string filename)
+        public bool Save(string filename)
         {
             string directory = Path.GetDirectoryName(filename);
+            if (directory == null)
+            {
+                return false;
+            }
             if(!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
@@ -86,6 +92,7 @@ namespace Exchange.DkimSigner.Configuration
                 serializer.Serialize(writer, this);
                 writer.Flush();
             }
+            return true;
         }
     }
 }

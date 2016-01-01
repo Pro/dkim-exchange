@@ -84,7 +84,7 @@ namespace Configuration.DkimSigner
         private void cbVersionWeb_SelectedIndexChanged(object sender, EventArgs e)
         {
             txtVersionFile.Clear();
-            btInstall.Enabled = btInstallRefresh();
+            btInstall.Enabled = IsBtInstallEnabled();
         }
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
@@ -143,7 +143,7 @@ namespace Configuration.DkimSigner
             await Task.Run(() => exchangeVersion = ExchangeServer.GetInstalledVersion());
 
             lblExchangeVersionWait.Hide();
-            btInstall.Enabled = btInstallRefresh();
+            btInstall.Enabled = IsBtInstallEnabled();
 
             // If the source for install have been specified in command line
             if (zipUrl != null || performInstall)
@@ -152,7 +152,7 @@ namespace Configuration.DkimSigner
             }
         }
 
-        private bool btInstallRefresh()
+        private bool IsBtInstallEnabled()
         {
             return exchangeVersion != null && exchangeVersion != "Not installed" && (cbVersionWeb.Text != string.Empty || txtVersionFile.Text != string.Empty);
         }
@@ -170,7 +170,7 @@ namespace Configuration.DkimSigner
 
             string agentExchangeVersionPath = "";
 
-            foreach (KeyValuePair<string, string> entry in Constants.DKIM_SIGNER_VERSION_DIRECTORY)
+            foreach (KeyValuePair<string, string> entry in Constants.DkimSignerVersionDirectory)
             {
                 if (exchangeVersion.StartsWith(entry.Key))
                 {
@@ -239,7 +239,16 @@ namespace Configuration.DkimSigner
                 // ### Extract files                       ###
                 // ###########################################
 
-                extractPath = Path.Combine(Path.GetDirectoryName(zipFile), Path.GetFileNameWithoutExtension(zipFile));
+                string zipDirName = Path.GetDirectoryName(zipFile);
+                if (zipDirName == null)
+                {
+                    MessageBox.Show(this, "Invaild Zip path", "Could not extract directory from zip path: " + zipFile,
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    return;
+                }
+
+                extractPath = Path.Combine(zipDirName, Path.GetFileNameWithoutExtension(zipFile));
 
                 if (lbExtractFiles.Enabled)
                 {
@@ -277,17 +286,24 @@ namespace Configuration.DkimSigner
 
                 // the executable is within: \Src\Configuration.DkimSigner\bin\Release so we need to go up a few directories
                 DirectoryInfo dir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory;
+                if (dir == null)
+                {
+                    MessageBox.Show(this, "Could not get directory info for: " + Assembly.GetExecutingAssembly().Location, "Directory error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
                 string[] expectedDirs = {"Release", "bin", "Configuration.DkimSigner", "Src"};
                 bool sanityFail = false;
 
                 foreach (string str in expectedDirs)
                 {
-                    if (!dir.Name.Equals(str)) {
+                    if (dir == null || !dir.Name.Equals(str)) {
                         sanityFail = true;
                         break;
                     }
                     dir = dir.Parent;
                 }
+                if (dir == null)
+                   sanityFail = true;
 
                 lbDownloadFiles.Enabled = !sanityFail;
                 lbExtractFiles.Enabled = !sanityFail;
@@ -300,6 +316,7 @@ namespace Configuration.DkimSigner
 
                     Refresh();
                     MessageBox.Show(this, @"Failed to determine copy root directory.\nThis executable is expected to be in the subpath: \Src\Configuration.DkimSigner\bin\Release", "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
 
                 } else {                    
                     picDownloadFiles.Image = statusImageList.Images[0];
@@ -344,9 +361,9 @@ namespace Configuration.DkimSigner
                 filesToCopy.Add(Path.Combine(extractPath, Path.Combine(@"Src\Exchange.DkimSigner\bin\" + agentExchangeVersionPath)));
 
                 // IF the directory "C:\Program Files\Exchange DkimSigner" doesn't exist, create it 
-                if (!Directory.Exists(Constants.DKIM_SIGNER_PATH))
+                if (!Directory.Exists(Constants.DkimSignerPath))
                 {
-                    Directory.CreateDirectory(Constants.DKIM_SIGNER_PATH);
+                    Directory.CreateDirectory(Constants.DkimSignerPath);
                 }
 
                 // Generate list of source files
@@ -364,10 +381,10 @@ namespace Configuration.DkimSigner
                 for (int i = 0; i < sourceFiles.Length; i++)
                 {
                     string sFile = Path.GetFileName(sourceFiles[i]);
-                    destinationFiles[i] = Path.Combine(Constants.DKIM_SIGNER_PATH, sFile);
+                    destinationFiles[i] = Path.Combine(Constants.DkimSignerPath, sFile);
                 }
 
-                bool bAnyOperationsAborted = false;
+                bool bAnyOperationsAborted;
                 bool bReturn = FileOperation.CopyFiles(Handle, sourceFiles, destinationFiles, true, "Copy files", out bAnyOperationsAborted);
 
                 lbInstallAgent.Enabled = bReturn && !bAnyOperationsAborted;
@@ -385,17 +402,17 @@ namespace Configuration.DkimSigner
                 try
                 {
                     // First make sure the following Registry key exists HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM
-                    if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
+                    if (EventLog.SourceExists(Constants.DkimSignerEventlogSource))
                     {
                         // Make sure we recreate the event log source to fix messageResourceFile from versions previous to 2.0.0
-                        RegistryKey key = Registry.LocalMachine.OpenSubKey(Constants.DKIM_SIGNER_EVENTLOG_REGISTRY, false);
+                        RegistryKey key = Registry.LocalMachine.OpenSubKey(Constants.DkimSignerEventlogRegistry, false);
                         if (key == null || key.GetValue("EventMessageFile") == null)
                         {
                             // Delete the event source for the custom event log 
-                            EventLog.DeleteEventSource(Constants.DKIM_SIGNER_EVENTLOG_SOURCE);
+                            EventLog.DeleteEventSource(Constants.DkimSignerEventlogSource);
 
                             // Create a new event source for the custom event log 
-                            EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, "Application");
+                            EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DkimSignerEventlogSource, "Application");
                             mySourceData.MessageResourceFile = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll";
                             EventLog.CreateEventSource(mySourceData);
                         }
@@ -403,7 +420,7 @@ namespace Configuration.DkimSigner
                     else
                     {
                         // Create a new event source for the custom event log 
-                        EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, "Application");
+                        EventSourceCreationData mySourceData = new EventSourceCreationData(Constants.DkimSignerEventlogSource, "Application");
                         mySourceData.MessageResourceFile = @"C:\Windows\Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll";
                         EventLog.CreateEventSource(mySourceData);
                     }
@@ -458,7 +475,7 @@ namespace Configuration.DkimSigner
                 {
                     cbVersionWeb.SelectedIndex = -1;
                     txtVersionFile.Text = oFileDialog.FileName;
-                    btInstall.Enabled = btInstallRefresh();
+                    btInstall.Enabled = IsBtInstallEnabled();
                 }
             }
         }
@@ -477,14 +494,14 @@ namespace Configuration.DkimSigner
             {
                 if (MessageBox.Show(this, "Do you want to start DKIM Signer configuration tool?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    string sPathExec = Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_CONFIGURATION_EXE);
+                    string sPathExec = Path.Combine(Constants.DkimSignerPath, Constants.DkimSignerConfigurationExe);
                     if (File.Exists(sPathExec))
                     {
                         Process.Start(sPathExec);
                     }
                     else
                     {
-                        MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DKIM_SIGNER_PATH, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(this, "Couldn't find 'Configuration.DkimSigner.exe' in \n" + Constants.DkimSignerPath, "Exec error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }

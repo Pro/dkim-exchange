@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -14,12 +13,10 @@ using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.GitHub;
 using Exchange.DkimSigner.Configuration;
 using Heijden.DNS;
-using Org.BouncyCastle.Asn1.Pkcs;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.OpenSsl;
-using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 
@@ -52,10 +49,10 @@ namespace Configuration.DkimSigner
 
             string version = Version.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
             txtAbout.Text = "Version " + version + "\r\n\r\n" +
-                                    Constants.DKIM_SIGNER_NOTICE + "\r\n\r\n" +
-                                    Constants.DKIM_SIGNER_LICENCE + "\r\n\r\n" +
-                                    Constants.DKIM_SIGNER_AUTHOR + "\r\n\r\n" +
-                                    Constants.DKIM_SIGNER_WEBSITE;
+                                    Constants.DkimSignerNotice + "\r\n\r\n" +
+                                    Constants.DkimSignerLicence + "\r\n\r\n" +
+                                    Constants.DkimSignerAuthor + "\r\n\r\n" +
+                                    Constants.DkimSignerWebsite;
             if (!enableDebugTab)
                 tcConfiguration.TabPages["tpDebug"].Hide();
         }
@@ -118,12 +115,12 @@ namespace Configuration.DkimSigner
 
         private void txtExchangeStatus_TextChanged(object sender, EventArgs e)
         {
-            bool IsRunning = txtExchangeStatus.Text == "Running";
-            bool IsStopped = txtExchangeStatus.Text == "Stopped";
+            bool isRunning = txtExchangeStatus.Text == "Running";
+            bool isStopped = txtExchangeStatus.Text == "Stopped";
 
-            btStartTransportService.Enabled = IsStopped;
-            btStopTransportService.Enabled = IsRunning;
-            btRestartTransportService.Enabled = IsRunning;
+            btStartTransportService.Enabled = isStopped;
+            btStopTransportService.Enabled = isRunning;
+            btRestartTransportService.Enabled = isRunning;
         }
 
         private void cbxPrereleases_CheckedChanged(object sender, EventArgs e)
@@ -169,7 +166,7 @@ namespace Configuration.DkimSigner
                     cbKeyLength.Text = oSelected.CryptoProvider.KeySize.ToString();
                 }*/
 
-                UpdateSuggestedDNS();
+                UpdateSuggestedDns();
                 txtDomainDNS.Text = "";
                 gbxDomainDetails.Enabled = true;
                 btDomainDelete.Enabled = true;
@@ -209,18 +206,18 @@ namespace Configuration.DkimSigner
             return (s.Length % 4 == 0) && Regex.IsMatch(s, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None);
         }
 
-        private DialogResult ShowMessageBox(string title, string message, MessageBoxButtons buttons, MessageBoxIcon icon)
+        private DialogResult ShowMessageBox(string title, string messageText, MessageBoxButtons buttons, MessageBoxIcon boxIcon)
         {
-            DialogResult? result = null;
+            DialogResult? result;
 
             if (InvokeRequired)
             {
                 ShowMessageBoxCallback c = ShowMessageBox;
-                result = Invoke(c, title, message, buttons, icon) as DialogResult?;
+                result = Invoke(c, title, messageText, buttons, boxIcon) as DialogResult?;
             }
             else
             {
-                result = MessageBox.Show(this, message, title, buttons, icon);
+                result = MessageBox.Show(this, messageText, title, buttons, boxIcon);
             }
 
             if (result == null)
@@ -264,16 +261,34 @@ namespace Configuration.DkimSigner
             Version oDkimSignerInstalled = null;
 
             // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
-            await Task.Run(() => { try { oDkimSignerInstalled = Version.Parse(FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DKIM_SIGNER_PATH, Constants.DKIM_SIGNER_AGENT_DLL)).ProductVersion); } catch (Exception) { } });
+            await Task.Run(() => {
+                try
+                {
+                    oDkimSignerInstalled = Version.Parse(FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DkimSignerPath, Constants.DkimSignerAgentDll)).ProductVersion);
+                }
+                catch (Exception)
+                {
+                // ignored
+                }
+            });
 
             // Check if DKIM agent have been load in Exchange
             if (oDkimSignerInstalled != null)
             {
-                bool IsDkimAgentTransportInstalled = false;
+                bool isDkimAgentTransportInstalled = false;
 
-                await Task.Run(() => { try { IsDkimAgentTransportInstalled = !ExchangeServer.IsDkimAgentTransportInstalled(); } catch (Exception) { } });
+                await Task.Run(() => {
+                    try
+                    {
+                        isDkimAgentTransportInstalled = !ExchangeServer.IsDkimAgentTransportInstalled();
+                    }
+                    catch (Exception)
+                    {
+                    // ignored
+                    }
+                });
 
-                if (IsDkimAgentTransportInstalled)
+                if (isDkimAgentTransportInstalled)
                 {
                     oDkimSignerInstalled = null;
                 }
@@ -335,16 +350,14 @@ namespace Configuration.DkimSigner
 
         private void SetUpgradeButton()
         {
-            string text = string.Empty;
-
-            bool IsExchangeInstalled = (txtExchangeInstalled.Text != "" && txtExchangeInstalled.Text != "Unknown" && txtExchangeInstalled.Text != "Loading...");
+            bool isExchangeInstalled = (txtExchangeInstalled.Text != "" && txtExchangeInstalled.Text != "Unknown" && txtExchangeInstalled.Text != "Loading...");
 
             if (dkimSignerInstalled != null && dkimSignerAvailable != null)
             {
                 btUpgrade.Text = (dkimSignerInstalled != null ? (dkimSignerInstalled < dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
             }
 
-            btUpgrade.Enabled = dkimSignerAvailable != null && IsExchangeInstalled;
+            btUpgrade.Enabled = dkimSignerAvailable != null && isExchangeInstalled;
         }
 
         /// <summary>
@@ -379,7 +392,7 @@ namespace Configuration.DkimSigner
             oConfig = new Settings();
             oConfig.InitHeadersToSign();
 
-            if (!oConfig.Load(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
+            if (!oConfig.Load(Path.Combine(Constants.DkimSignerPath, "settings.xml")))
             {
                 ShowMessageBox("Settings error", "Couldn't load the settings file.\n Setting it to default values.", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -465,22 +478,26 @@ namespace Configuration.DkimSigner
                 oConfig.HeadersToSign.Add(sItem);
             }
 
-            oConfig.Save(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
+            if (!oConfig.Save(Path.Combine(Constants.DkimSignerPath, "settings.xml")))
+            {
+                MessageBox.Show(@"Save error", @"Could not save settings to the path: " + Path.Combine(Constants.DkimSignerPath, "settings.xml"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             bDataUpdated = false;
 
             return true;
         }
 
-        private void UpdateSuggestedDNS(string sRsaPublicKeyBase64 = "")
+        private void UpdateSuggestedDns(string sRsaPublicKeyBase64 = "")
         {
-            string sDNSRecord = "";
+            string sDnsRecord = "";
             if (sRsaPublicKeyBase64 == string.Empty)
             {
                 string sPubKeyPath = txtDomainPrivateKeyFilename.Text;
 
                 if (!Path.IsPathRooted(sPubKeyPath))
                 {
-                    sPubKeyPath = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys", sPubKeyPath);
+                    sPubKeyPath = Path.Combine(Constants.DkimSignerPath, "keys", sPubKeyPath);
                 }
                 
                 if (File.Exists(Path.ChangeExtension(sPubKeyPath, ".pub")))
@@ -516,16 +533,16 @@ namespace Configuration.DkimSigner
                 }
                 else
                 {
-                    sDNSRecord = "No RSA pub key found:\n" + sPubKeyPath;
+                    sDnsRecord = "No RSA pub key found:\n" + sPubKeyPath;
                 }
             }
 
             if (sRsaPublicKeyBase64 != null && sRsaPublicKeyBase64 != string.Empty)
             {
-                sDNSRecord = "v=DKIM1; k=rsa; p=" + sRsaPublicKeyBase64;
+                sDnsRecord = "v=DKIM1; k=rsa; p=" + sRsaPublicKeyBase64;
             }
 
-            txtDNSRecord.Text = sDNSRecord;
+            txtDNSRecord.Text = sDnsRecord;
         }
 
         /// <summary>
@@ -534,7 +551,7 @@ namespace Configuration.DkimSigner
         /// <param name="sPath"></param>
         private void SetDomainKeyPath(string sPath)
         {
-            string sKeyDir = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
+            string sKeyDir = Path.Combine(Constants.DkimSignerPath, "keys");
 
             if (sPath.StartsWith(sKeyDir))
             {
@@ -551,6 +568,12 @@ namespace Configuration.DkimSigner
                     if (File.Exists(sFile))
                     {
                         string sFilename = Path.GetFileName(sFile);
+                        if (sFilename == null)
+                        {
+                            ShowMessageBox("Invalid file name", "Could not extract file name from path: " + sFile,
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
                         string sNewPath = Path.Combine(sKeyDir, sFilename);
 
                         try
@@ -571,10 +594,10 @@ namespace Configuration.DkimSigner
             bDataUpdated = true;
         }
 
-        private void downloadAndInstall()
+        private void DownloadAndInstall()
         {
 
-            string zipFile = null;
+            string zipFile;
 
             // ###########################################
             // ### Download files                      ###
@@ -620,7 +643,15 @@ namespace Configuration.DkimSigner
             // ### Extract files                       ###
             // ###########################################
 
-            string extractPath = Path.Combine(Path.GetDirectoryName(zipFile), Path.GetFileNameWithoutExtension(zipFile));
+            string extractDirName = Path.GetDirectoryName(zipFile);
+
+            if (extractDirName == null)
+            {
+                MessageBox.Show(this, "Could not extract directory name from path: " + zipFile, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string extractPath = Path.Combine(extractDirName, Path.GetFileNameWithoutExtension(zipFile));
 
             if (!Directory.Exists(extractPath))
             {
@@ -697,7 +728,7 @@ namespace Configuration.DkimSigner
         {
             if (btUpgrade.Text == "Reinstall" ? MessageBox.Show(this, "Do you really want to " + btUpgrade.Text.ToUpper() + " the DKIM Exchange Agent (new Version: " + txtDkimSignerAvailable.Text + ")?\n", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes : true)
             {
-                downloadAndInstall();
+                DownloadAndInstall();
             }
         }
 
@@ -725,8 +756,8 @@ namespace Configuration.DkimSigner
 
             if (oHiw.ShowDialog() == DialogResult.OK)
             {
-                lbxHeadersToSign.Items.Add(oHiw.getHeaderName());
-                lbxHeadersToSign.SelectedItem = oHiw.getHeaderName();
+                lbxHeadersToSign.Items.Add(oHiw.GetHeaderName());
+                lbxHeadersToSign.SelectedItem = oHiw.GetHeaderName();
                 bDataUpdated = true;
             }
 
@@ -798,7 +829,7 @@ namespace Configuration.DkimSigner
                 lbxDomains.SelectedItem = null;
             }
 
-            string keyFile = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys", txtDomainPrivateKeyFilename.Text);
+            string keyFile = Path.Combine(Constants.DkimSignerPath, "keys", txtDomainPrivateKeyFilename.Text);
 
             List<string> asFile = new List<string>();
             asFile.Add(keyFile);
@@ -838,7 +869,7 @@ namespace Configuration.DkimSigner
                 oFileDialog.DefaultExt = "pem";
                 oFileDialog.Filter = "All files|*.*";
                 oFileDialog.Title = "Select a location for the new key file";
-                oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
+                oFileDialog.InitialDirectory = Path.Combine(Constants.DkimSignerPath, "keys");
 
                 if (!Directory.Exists(oFileDialog.InitialDirectory))
                 {
@@ -852,12 +883,12 @@ namespace Configuration.DkimSigner
 
                 if (oFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    generateKey(oFileDialog.FileName);
+                    GenerateKey(oFileDialog.FileName);
                 }
             }
         }
 
-        private void generateKey(string fileName)
+        private void GenerateKey(string fileName)
         {
             string fileNamePublic = fileName + ".pub";
 
@@ -905,7 +936,7 @@ namespace Configuration.DkimSigner
             }
 
 
-            UpdateSuggestedDNS(Convert.ToBase64String(serializedPublicBytes));
+            UpdateSuggestedDns(Convert.ToBase64String(serializedPublicBytes));
             SetDomainKeyPath(fileName);
         }
 
@@ -921,7 +952,7 @@ namespace Configuration.DkimSigner
                 oFileDialog.FileName = "key";
                 oFileDialog.Filter = "Key files|*.pem|All files|*.*";
                 oFileDialog.Title = "Select a private key for signing";
-                oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
+                oFileDialog.InitialDirectory = Path.Combine(Constants.DkimSignerPath, "keys");
 
                 if (oFileDialog.ShowDialog() == DialogResult.OK)
                 {
@@ -953,7 +984,7 @@ namespace Configuration.DkimSigner
 
 
                     SetDomainKeyPath(oFileDialog.FileName);
-                    UpdateSuggestedDNS();
+                    UpdateSuggestedDns();
                 }
             }
         }
@@ -1061,12 +1092,12 @@ namespace Configuration.DkimSigner
             await Task.Run(() =>
             {
                 dgEventLog.Rows.Clear();
-                if (EventLog.SourceExists(Constants.DKIM_SIGNER_EVENTLOG_SOURCE))
+                if (EventLog.SourceExists(Constants.DkimSignerEventlogSource))
                 {
                     EventLog oLogger = new EventLog();
 
                     try {
-                        oLogger.Log = EventLog.LogNameFromSourceName(Constants.DKIM_SIGNER_EVENTLOG_SOURCE, ".");
+                        oLogger.Log = EventLog.LogNameFromSourceName(Constants.DkimSignerEventlogSource, ".");
 
                     }
                     catch (Exception ex)
@@ -1091,7 +1122,7 @@ namespace Configuration.DkimSigner
                             return;
                         }
 
-                        if (oEntry.Source != Constants.DKIM_SIGNER_EVENTLOG_SOURCE)
+                        if (oEntry.Source != Constants.DkimSignerEventlogSource)
                         {
                             continue;
                         }
@@ -1152,10 +1183,10 @@ namespace Configuration.DkimSigner
                 result += "'" + letter + "'" + " -> " + hexOutput + "\n";
             }
 
-            string ConfigVersion = Version.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
+            string configVersion = Version.Parse(FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion).ToString().Substring(0, 5);
 
 
-            result = "My version: " + ConfigVersion + "\nExchange\n" + result;
+            result = "My version: " + configVersion + "\nExchange\n" + result;
 
             ShowMessageBox("Exchange Version Debug", result, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }

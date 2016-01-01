@@ -24,7 +24,12 @@ namespace Configuration.DkimSigner.GitHub
 
                 if (oResponse.StatusCode == HttpStatusCode.OK)
                 {
-                    sResult = new StreamReader(oResponse.GetResponseStream()).ReadToEnd();
+                    Stream responseStream = oResponse.GetResponseStream();
+                    if (responseStream == null)
+                    {
+                        return null;
+                    }
+                    sResult = new StreamReader(responseStream).ReadToEnd();
                 }
                 //else
                 //{

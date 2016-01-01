@@ -34,7 +34,7 @@ namespace Configuration.DkimSigner
 
         private void DownloadProgressWindow_Load(object sender, EventArgs e)
         {
-            lbFile.Text = "Downloading " + sUrl;
+            lbFile.Text = @"Downloading " + sUrl;
             oWebClient.Headers.Add("User-Agent", ".NET Framework API Client");
             oWebClient.DownloadFileCompleted += Completed;
             oWebClient.DownloadProgressChanged += ProgressChanged;
@@ -55,16 +55,16 @@ namespace Configuration.DkimSigner
                 DialogResult = DialogResult.Cancel;
                 
                 pgFile.Value = 0;
-                lbFile.Text = "Cancelled";
+                lbFile.Text = @"Cancelled";
 
                 DialogResult = DialogResult.Cancel;
             }
             else if (e.Error != null)
             {
-                MessageBox.Show(this, "Error downloading file: " + sUrl + "\n" + e.Error.Message);
+                MessageBox.Show(this, @"Error downloading file: " + sUrl + "\n" + e.Error.Message);
                 
                 pgFile.Value = 0;
-                lbFile.Text = "Error: " + e.Error.Message;
+                lbFile.Text = @"Error: " + e.Error.Message;
 
                 DialogResult = DialogResult.Cancel;
             }
