@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Mail;
+using System.Threading;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
 
@@ -47,22 +48,29 @@ namespace Exchange.DkimSigner
         private void WhenMessageCategorized(CategorizedMessageEventSource source, QueuedMessageEventArgs e)
         {
             Logger.LogDebug("Got new message, checking if I can sign it...");
-            try
+
+            Thread worker = new Thread(delegate()
             {
-                agentAsyncContext = GetAgentAsyncContext();
+                try
+                {
+                    agentAsyncContext = GetAgentAsyncContext();
 #if !EX_2007_SP3 //not supported in Exchange 2007
-                agentAsyncContext.Resume();
+                    agentAsyncContext.Resume();
 #endif
-                SignMailItem(e.MailItem);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex);
-            }
-            finally
-            {
-                agentAsyncContext.Complete();
-            }
+                    SignMailItem(e.MailItem);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex);
+                }
+                finally
+                {
+                    agentAsyncContext.Complete();
+                }
+            });
+            worker.Start();
+
+
         }
 
         /// <summary>
