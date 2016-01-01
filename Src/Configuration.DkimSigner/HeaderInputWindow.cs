@@ -16,6 +16,9 @@ namespace Configuration.DkimSigner
         public HeaderInputWindow()
         {
             InitializeComponent();
+
+
+            cbxHeader.AutoCompleteCustomSource.AddRange(Enum.GetNames(typeof(MimeKit.HeaderId)));
         }
 
         // ##########################################################
@@ -24,11 +27,17 @@ namespace Configuration.DkimSigner
 
         private void HeaderInputForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (DialogResult == DialogResult.OK && txtHeader.Text == string.Empty)
+
+            if (DialogResult == DialogResult.OK && cbxHeader.Text == string.Empty)
             {
                 MessageBox.Show(this, "You must enter a header!", "Value missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Cancel = true;
             }
+        }
+
+        public string getHeaderName()
+        {
+            return cbxHeader.Text;
         }
 
         // ##########################################################

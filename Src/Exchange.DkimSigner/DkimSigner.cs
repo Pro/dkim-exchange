@@ -8,7 +8,6 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using CSInteropKeys;
 using Exchange.DkimSigner.Configuration;
 using Microsoft.Exchange.Data.Transport;
 using MimeKit;

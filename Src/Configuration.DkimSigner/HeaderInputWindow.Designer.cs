@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.lbHeader = new System.Windows.Forms.Label();
-            this.txtHeader = new System.Windows.Forms.TextBox();
             this.btAdd = new System.Windows.Forms.Button();
+            this.cbxHeader = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // lbHeader
@@ -42,16 +42,6 @@
             this.lbHeader.TabIndex = 0;
             this.lbHeader.Text = "Header name:";
             // 
-            // txtHeader
-            // 
-            this.txtHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtHeader.Location = new System.Drawing.Point(15, 25);
-            this.txtHeader.Name = "txtHeader";
-            this.txtHeader.Size = new System.Drawing.Size(257, 20);
-            this.txtHeader.TabIndex = 1;
-            this.txtHeader.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtHeader_KeyPress);
-            // 
             // btAdd
             // 
             this.btAdd.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -62,19 +52,29 @@
             this.btAdd.Text = "&Add";
             this.btAdd.UseVisualStyleBackColor = true;
             // 
-            // HeaderInputWindows
+            // cbxHeader
+            // 
+            this.cbxHeader.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cbxHeader.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.cbxHeader.FormattingEnabled = true;
+            this.cbxHeader.Location = new System.Drawing.Point(15, 25);
+            this.cbxHeader.Name = "cbxHeader";
+            this.cbxHeader.Size = new System.Drawing.Size(257, 21);
+            this.cbxHeader.TabIndex = 3;
+            // 
+            // HeaderInputWindow
             // 
             this.AcceptButton = this.btAdd;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 87);
+            this.Controls.Add(this.cbxHeader);
             this.Controls.Add(this.btAdd);
-            this.Controls.Add(this.txtHeader);
             this.Controls.Add(this.lbHeader);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "HeaderInputWindows";
+            this.Name = "HeaderInputWindow";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Add a new header";
@@ -88,6 +88,6 @@
 
         private System.Windows.Forms.Label lbHeader;
         private System.Windows.Forms.Button btAdd;
-        public System.Windows.Forms.TextBox txtHeader;
+        private System.Windows.Forms.ComboBox cbxHeader;
     }
 }

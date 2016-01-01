@@ -12,9 +12,16 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.GitHub;
-using CSInteropKeys;
 using Exchange.DkimSigner.Configuration;
 using Heijden.DNS;
+using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.OpenSsl;
+using Org.BouncyCastle.Pkcs;
+using Org.BouncyCastle.Security;
+using Org.BouncyCastle.X509;
 
 namespace Configuration.DkimSigner
 {
@@ -39,12 +46,6 @@ namespace Configuration.DkimSigner
         public MainWindow(bool enableDebugTab)
         {
             InitializeComponent();
-
-            MimeKit.Cryptography.DkimSigner signer = new MimeKit.Cryptography.DkimSigner(@"D:\test\test.profanter.me.xml.pem", "example.com", "sel123")
-            {
-                SignatureAlgorithm = MimeKit.Cryptography.DkimSignatureAlgorithm.RsaSha256
-            };
-                    
 
             cbLogLevel.SelectedItem = "Information";
             cbKeyLength.SelectedItem = UserPreferences.Default.KeyLength.ToString();
@@ -101,8 +102,11 @@ namespace Configuration.DkimSigner
             else
             {
                 Hide();
-                transportService.Dispose();
-                transportService = null;
+                if (transportService != null)
+                {
+                    transportService.Dispose();
+                    transportService = null;
+                }
             }
         }
 
@@ -486,16 +490,29 @@ namespace Configuration.DkimSigner
 
                 if (File.Exists(sPubKeyPath))
                 {
-                    string[] asContents = File.ReadAllLines(sPubKeyPath);
 
-                    if (asContents.Length > 2 && asContents[0].Equals("-----BEGIN PUBLIC KEY-----") && IsBase64String(asContents[1]))
+                    AsymmetricKeyParameter rdKey;
+                    try
                     {
-                        sRsaPublicKeyBase64 = asContents[1];
+                   
+                        using (StreamReader file = new StreamReader(sPubKeyPath))
+                        {
+                            PemReader pRd = new PemReader(file);
+
+                            rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
+                            pRd.Reader.Close();
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        sDNSRecord = "No valid RSA pub key:\n" + sPubKeyPath;
+                        ShowMessageBox("Key file error.", "Couldn't load public key from " + sPubKeyPath + ":\n" + ex.Message, MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
                     }
+
+                    SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(rdKey);
+                    byte[] serializedPublicBytes = publicKeyInfo.ToAsn1Object().GetDerEncoded();
+                    sRsaPublicKeyBase64 = Convert.ToBase64String(serializedPublicBytes); 
                 }
                 else
                 {
@@ -528,7 +545,6 @@ namespace Configuration.DkimSigner
                 List<string> asFile = new List<string>();
                 asFile.Add(sPath);
                 asFile.Add(sPath + ".pub");
-                asFile.Add(sPath + ".pem");
 
                 foreach (string sFile in asFile)
                 {
@@ -709,8 +725,8 @@ namespace Configuration.DkimSigner
 
             if (oHiw.ShowDialog() == DialogResult.OK)
             {
-                lbxHeadersToSign.Items.Add(oHiw.txtHeader.Text);
-                lbxHeadersToSign.SelectedItem = oHiw.txtHeader;
+                lbxHeadersToSign.Items.Add(oHiw.getHeaderName());
+                lbxHeadersToSign.SelectedItem = oHiw.getHeaderName();
                 bDataUpdated = true;
             }
 
@@ -819,7 +835,7 @@ namespace Configuration.DkimSigner
             
             using (SaveFileDialog oFileDialog = new SaveFileDialog())
             {
-                oFileDialog.DefaultExt = "xml";
+                oFileDialog.DefaultExt = "pem";
                 oFileDialog.Filter = "All files|*.*";
                 oFileDialog.Title = "Select a location for the new key file";
                 oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
@@ -831,24 +847,66 @@ namespace Configuration.DkimSigner
 
                 if (txtDomainName.Text.Length > 0)
                 {
-                    oFileDialog.FileName = txtDomainName.Text + ".xml";
+                    oFileDialog.FileName = txtDomainName.Text + ".pem";
                 }
 
                 if (oFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    using (RSACryptoServiceProvider oProvider = new RSACryptoServiceProvider(Convert.ToInt32(cbKeyLength.Text, 10))) {
-                        AsnKeyBuilder.AsnMessage oPublicEncoded = AsnKeyBuilder.PublicKeyToX509(oProvider.ExportParameters(true));
-                        AsnKeyBuilder.AsnMessage oPrivateEncoded = AsnKeyBuilder.PrivateKeyToPKCS8(oProvider.ExportParameters(true));
-
-                        File.WriteAllBytes(oFileDialog.FileName, Encoding.ASCII.GetBytes(oProvider.ToXmlString(true)));
-                        File.WriteAllText(oFileDialog.FileName + ".pub", "-----BEGIN PUBLIC KEY-----\r\n" + Convert.ToBase64String(oPublicEncoded.GetBytes()) + "\r\n-----END PUBLIC KEY-----");
-                        File.WriteAllText(oFileDialog.FileName + ".pem", "-----BEGIN PRIVATE KEY-----\r\n" + Convert.ToBase64String(oPrivateEncoded.GetBytes()) + "\r\n-----END PRIVATE KEY-----");
-
-                        UpdateSuggestedDNS(Convert.ToBase64String(oPublicEncoded.GetBytes()));
-                        SetDomainKeyPath(oFileDialog.FileName);
-                    }
+                    generateKey(oFileDialog.FileName);
                 }
             }
+        }
+
+        private void generateKey(string fileName)
+        {
+            string fileNamePublic = fileName + ".pub";
+
+            if (File.Exists(fileNamePublic) &&
+                 ShowMessageBox("Overwrite", "File " + fileNamePublic + " already exists. Overwrite?", MessageBoxButtons.YesNo,
+                     MessageBoxIcon.Warning) == DialogResult.No)
+            {
+                return;
+            }
+
+            RsaKeyPairGenerator g = new RsaKeyPairGenerator();
+            g.Init(new KeyGenerationParameters(new SecureRandom(), Convert.ToInt32(cbKeyLength.Text, 10)));
+            AsymmetricCipherKeyPair pair = g.GenerateKeyPair();
+
+            //PrivateKeyInfo privateKeyInfo = PrivateKeyInfoFactory.CreatePrivateKeyInfo(pair.Private);
+            //byte [] serializedPrivateBytes = privateKeyInfo.ToAsn1Object().GetDerEncoded();
+
+            SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(pair.Public);
+            byte[] serializedPublicBytes = publicKeyInfo.ToAsn1Object().GetDerEncoded();
+
+            //Save private key to filename
+            try
+            {
+                using (StreamWriter file = new StreamWriter(fileName))
+                {
+                    PemWriter pWrt = new PemWriter(file);
+                    Pkcs8Generator pkcs8 = new Pkcs8Generator(pair.Private);
+                    pWrt.WriteObject(pkcs8);
+                    pWrt.Writer.Close();
+                }
+                
+                //Save public key to filename
+                using (StreamWriter file = new StreamWriter(fileNamePublic))
+                {
+                    PemWriter pWrt = new PemWriter(file);
+                    pWrt.WriteObject(pair.Public);
+                    pWrt.Writer.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowMessageBox("Key file error.", "Couldn't save key pair:\n" + ex.Message, MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
+            }
+
+
+            UpdateSuggestedDNS(Convert.ToBase64String(serializedPublicBytes));
+            SetDomainKeyPath(fileName);
         }
 
         /// <summary>
@@ -861,12 +919,39 @@ namespace Configuration.DkimSigner
             using (OpenFileDialog oFileDialog = new OpenFileDialog())
             {
                 oFileDialog.FileName = "key";
-                oFileDialog.Filter = "Key files|*.xml;*.pem|All files|*.*";
+                oFileDialog.Filter = "Key files|*.pem|All files|*.*";
                 oFileDialog.Title = "Select a private key for signing";
                 oFileDialog.InitialDirectory = Path.Combine(Constants.DKIM_SIGNER_PATH, "keys");
 
                 if (oFileDialog.ShowDialog() == DialogResult.OK)
                 {
+                    //Check if key can be parsed
+                    try
+                    {
+
+                        using (StreamReader file = new StreamReader(oFileDialog.FileName))
+                        {
+                            PemReader pRd = new PemReader(file);
+
+                            AsymmetricKeyParameter rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
+                            pRd.Reader.Close();
+                            if (rdKey == null || !rdKey.IsPrivate)
+                            {
+                                ShowMessageBox("Key file error.", "The selected key is not a valid private key\n\nPlease select a valid PEM RSA private key file.", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                                return;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowMessageBox("Key file error.", "Couldn't load private key from " + oFileDialog.FileName + ":\n" + ex.Message + "\n\nPlease select a valid PEM RSA private key file.", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                        return;
+                    }
+
+
+
                     SetDomainKeyPath(oFileDialog.FileName);
                     UpdateSuggestedDNS();
                 }
