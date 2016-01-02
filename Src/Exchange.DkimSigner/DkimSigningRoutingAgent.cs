@@ -49,28 +49,36 @@ namespace Exchange.DkimSigner
         {
             Logger.LogDebug("Got new message, checking if I can sign it...");
 
-            Thread worker = new Thread(delegate()
+            // get the async context. For an example see: http://www.getcodesamples.com/src/D062E1E9/2552BA7
+            // The agent uses the agentAsyncContext object when the agent uses asynchronous execution.
+            // The AgentAsyncContext.Complete() method must be invoked
+            // before the server will continue processing a message
+            agentAsyncContext = GetAgentAsyncContext();
+
+            ThreadPool.QueueUserWorkItem(new WaitCallback(HandleMessageEvent), e.MailItem);
+
+        }
+
+        private void HandleMessageEvent(Object mailItem)
+        {
+            try
             {
-                try
-                {
-                    agentAsyncContext = GetAgentAsyncContext();
 #if !EX_2007_SP3 //not supported in Exchange 2007
-                    agentAsyncContext.Resume();
+                // This allows Transport poison detection to correclty handle this message
+                // if there is a crash on this thread.
+                agentAsyncContext.Resume();
 #endif
-                    SignMailItem(e.MailItem);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex);
-                }
-                finally
-                {
-                    agentAsyncContext.Complete();
-                }
-            });
-            worker.Start();
-
-
+                SignMailItem((MailItem)mailItem);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError("Signing a mail item according to DKIM failed with an exception. Check the logged exception for details.\n" + ex);
+            }
+            finally
+            {
+                agentAsyncContext.Complete();
+                agentAsyncContext = null;
+            }
         }
 
         /// <summary>
