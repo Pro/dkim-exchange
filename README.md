@@ -187,6 +187,8 @@ We now switched to another key library which doesn't support the .xml format any
 
 To recreate your private key just open the Configuration tool and for each domain press the `Generate key` button. Make sure to update the DNS too.
 
+Additionally, the `Message-ID` header field changed its name. Open the `DKIM Settings` Tab in the configurator, remove the `Message-ID` entry from `Headers to sign` list, and add `MessageId` as the corresponding header.
+
 # Updating Exchange Server
 
 Before you update the Exchange Server, you have to make sure that the DKIM Signer Version is compatible with the new Exchange Version. Thus the following steps are suggested to avoid any Upgrade problems:
