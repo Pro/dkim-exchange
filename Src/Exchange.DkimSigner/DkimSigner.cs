@@ -137,7 +137,7 @@ namespace Exchange.DkimSigner
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError("Could not initialize MimeKit DkimSigner for domain  " + domainElement.Domain + ": " + ex.Message);
+                        Logger.LogError("Could not initialize MimeKit DkimSigner for domain " + domainElement.Domain + ": " + ex.Message);
                         continue;
                     }
                     domains.Add(domainElement.Domain, new DomainElementSigner(domainElement, signer));
