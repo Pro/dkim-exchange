@@ -113,7 +113,10 @@ namespace Configuration.DkimSigner
                     TransportService ts = new TransportService();
                     try
                     {
-                        ts.Do(TransportServiceAction.Restart);
+                        ts.Do(TransportServiceAction.Restart, delegate(string msg)
+                        {
+                            MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        });
                     }
                     catch (Exception ex)
                     {
@@ -163,7 +166,10 @@ namespace Configuration.DkimSigner
                 TransportService ts = new TransportService();
                 try
                 {
-                    ts.Do(TransportServiceAction.Restart);
+                    ts.Do(TransportServiceAction.Restart, delegate(string msg)
+                    {
+                        MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
                 }
                 catch (Exception ex)
                 {

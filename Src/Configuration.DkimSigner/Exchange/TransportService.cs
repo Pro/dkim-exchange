@@ -14,6 +14,7 @@ namespace Configuration.DkimSigner.Exchange
         private Timer transportServiceStatus;
 
         private Queue<TransportServiceAction> actions;
+        private Action<string> errorCallback;
         private ServiceController service;
         private string status;
 
@@ -125,7 +126,10 @@ namespace Configuration.DkimSigner.Exchange
                         }
                         catch (Exception e)
                         {
-                            throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message, e);
+                            if (errorCallback != null)
+                                errorCallback("Couldn't start 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.");
+                            else
+                                throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.", e);
                         }
                     }
                 }
@@ -140,7 +144,10 @@ namespace Configuration.DkimSigner.Exchange
                         }
                         catch (Exception e)
                         {
-                            throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message, e);
+                            if (errorCallback != null)
+                                errorCallback("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.");
+                            else
+                                throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.", e);
                         }
                     }
                 }
@@ -165,8 +172,9 @@ namespace Configuration.DkimSigner.Exchange
         /// Execute a action (start, stop, restart) on Microsoft Exchange Transport service
         /// </summary>
         /// <param name="action">TransportServiceAction</param>
-        public void Do(TransportServiceAction action)
+        public void Do(TransportServiceAction action, Action<string> errorCallback)
         {
+            this.errorCallback = errorCallback;
             lock(actions)
             {
                 switch (action)

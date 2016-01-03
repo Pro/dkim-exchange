@@ -252,6 +252,8 @@ namespace Configuration.DkimSigner
             {
                 txtExchangeStatus.Text = "Unavailable";
             }
+
+            SetUpgradeButton();
         }
 
         /// <summary>
@@ -353,7 +355,7 @@ namespace Configuration.DkimSigner
         {
             bool isExchangeInstalled = (txtExchangeInstalled.Text != "" && txtExchangeInstalled.Text != "Unknown" && txtExchangeInstalled.Text != "Loading...");
 
-            if (dkimSignerInstalled != null && dkimSignerAvailable != null)
+            if (dkimSignerAvailable != null)
             {
                 btUpgrade.Text = (dkimSignerInstalled != null ? (dkimSignerInstalled < dkimSignerAvailable.Version ? "&Upgrade" : "&Reinstall") : "&Install");
             }
@@ -713,16 +715,22 @@ namespace Configuration.DkimSigner
         /// <param name="e"></param>
         private void genericTransportService_Click(object sender, EventArgs e)
         {
+
+            Action<string> errorCallback = delegate(string msg)
+            {
+                MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            };
+
             switch(((Button)sender).Name)
             {
                 case "btStartTransportService":
-                    transportService.Do(TransportServiceAction.Start);
+                    transportService.Do(TransportServiceAction.Start, errorCallback);
                     break;
                 case "btStopTransportService":
-                    transportService.Do(TransportServiceAction.Stop);
+                    transportService.Do(TransportServiceAction.Stop, errorCallback);
                     break;
                 case "btRestartTransportService":
-                    transportService.Do(TransportServiceAction.Restart);
+                    transportService.Do(TransportServiceAction.Restart, errorCallback);
                     break;
             }
         }

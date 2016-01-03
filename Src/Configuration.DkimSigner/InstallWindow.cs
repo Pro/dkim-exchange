@@ -155,7 +155,7 @@ namespace Configuration.DkimSigner
         private bool IsBtInstallEnabled()
         {
             return exchangeVersion != null && exchangeVersion != "Not installed" && (cbVersionWeb.Text != string.Empty || txtVersionFile.Text != string.Empty);
-        }
+        }      
 
         private void Install()
         {
@@ -338,7 +338,10 @@ namespace Configuration.DkimSigner
                 if (transportService.GetStatus() != "Stopped")
                 {
                     transportServiceSuccessStatus = "Stopped";
-                    transportService.Do(TransportServiceAction.Stop);
+                    transportService.Do(TransportServiceAction.Stop, delegate(string msg)
+                        {
+                            MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        });
                     lbCopyFiles.Enabled = transportServiceActionCompleted.WaitOne();
                 }
                 else
@@ -446,7 +449,10 @@ namespace Configuration.DkimSigner
             if (lbStartService.Enabled)
             {
                 transportServiceSuccessStatus = "Running";
-                transportService.Do(TransportServiceAction.Start);
+                transportService.Do(TransportServiceAction.Start, delegate(string msg)
+                {
+                    MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                });
                 picStartService.Image = transportServiceActionCompleted.WaitOne() ? statusImageList.Images[0] : statusImageList.Images[1];
             }
             else
