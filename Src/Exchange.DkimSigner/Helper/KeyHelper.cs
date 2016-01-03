@@ -79,10 +79,6 @@ namespace Exchange.DkimSigner.Helper
             if (obj == null)
                 throw new FormatException("The key file has an invalid PEM format. " + keyFile);
 
-            if (obj is RsaPrivateCrtKeyParameters)
-            {
-                return obj as RsaPrivateCrtKeyParameters;
-            }
             if (obj is AsymmetricKeyParameter)
             {
 
