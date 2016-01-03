@@ -21,7 +21,7 @@ namespace Exchange.DkimSigner.Configuration
         {
             Loglevel = 3;
 
-            SigningAlgorithm = DkimAlgorithmKind.RsaSha1;
+            SigningAlgorithm = DkimAlgorithmKind.RsaSha256;
             HeaderCanonicalization = DkimCanonicalizationKind.Simple;
             BodyCanonicalization = DkimCanonicalizationKind.Simple;
 
