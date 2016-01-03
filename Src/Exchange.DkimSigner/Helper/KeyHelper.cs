@@ -9,7 +9,7 @@ namespace Exchange.DkimSigner.Helper
     public class KeyHelper
     {
         /// <summary>
-        /// Parses the private key from given file name.
+        /// Parses the private key and public key from given file name.
         /// If the key file contains a key pair, it will be returned directly.
         /// If the key file only contains the RSA private key the public key will be created from the modulus and exponent.
         /// </summary>
@@ -64,6 +64,42 @@ namespace Exchange.DkimSigner.Helper
                 }
                 return obj;
             }
+        }
+
+        /// <summary>
+        /// Parses the private key from the given key file.
+        /// If the key file contains a key pair, only its private key will be returned.
+        /// </summary>
+        /// <param name="keyFile">path to the private key file</param>
+        /// <returns>the parsed private key parameters</returns>
+        /// <exception cref="FormatException">Thrown if the key is not in PEM format</exception>
+        public static AsymmetricKeyParameter ParsePrivateKey(string keyFile)
+        {
+            object obj = ReadPem(keyFile);
+            if (obj == null)
+                throw new FormatException("The key file has an invalid PEM format. " + keyFile);
+
+            if (obj is RsaPrivateCrtKeyParameters)
+            {
+                return obj as RsaPrivateCrtKeyParameters;
+            }
+            if (obj is AsymmetricKeyParameter)
+            {
+
+                AsymmetricKeyParameter key = obj as AsymmetricKeyParameter;
+                if (!key.IsPrivate)
+                    throw new FormatException("The given key file is a public key but a private key was expected. " + keyFile);
+                return key;
+            }
+            if (obj is AsymmetricCipherKeyPair)
+            {
+                AsymmetricCipherKeyPair key = obj as AsymmetricCipherKeyPair;
+                if (key.Private == null)
+                    throw new FormatException("The given key file was successfully parsed but didn't contain any private key. " + keyFile);
+                return key.Private;
+            }
+            throw new FormatException("The given key does not have the correct type. It is of type: " +
+                                      obj.GetType());
         }
 
         /// <summary>

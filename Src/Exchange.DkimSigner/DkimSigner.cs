@@ -129,7 +129,7 @@ namespace Exchange.DkimSigner
                     MimeKit.Cryptography.DkimSigner signer;
                     try
                     {
-                        signer = new MimeKit.Cryptography.DkimSigner(privateKey, domainElement.Domain,
+                        signer = new MimeKit.Cryptography.DkimSigner(KeyHelper.ParsePrivateKey(privateKey), domainElement.Domain,
                             domainElement.Selector)
                         {
                             SignatureAlgorithm = signatureAlgorithm

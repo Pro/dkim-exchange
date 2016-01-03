@@ -970,7 +970,7 @@ namespace Configuration.DkimSigner
                     //Check if key can be parsed
                     try
                     {
-                        KeyHelper.ParseKeyPair(oFileDialog.FileName);
+                        KeyHelper.ParsePrivateKey(oFileDialog.FileName);
                     }
                     catch (Exception ex)
                     {
