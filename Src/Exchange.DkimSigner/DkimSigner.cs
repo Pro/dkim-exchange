@@ -8,8 +8,6 @@ using Exchange.DkimSigner.Helper;
 using Microsoft.Exchange.Data.Transport;
 using MimeKit;
 using MimeKit.Cryptography;
-using Org.BouncyCastle.Crypto;
-using Org.BouncyCastle.OpenSsl;
 
 namespace Exchange.DkimSigner
 {
