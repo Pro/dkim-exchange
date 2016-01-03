@@ -52,7 +52,7 @@ namespace Configuration.DkimSigner
 
         private void InstallWindow_Load(object sender, EventArgs e)
         {
-            CheckExchangeInstalled();       
+            CheckExchangeInstalled();
             try
             {
                 transportServiceActionCompleted = new AutoResetEvent(false);
@@ -103,9 +103,9 @@ namespace Configuration.DkimSigner
         private async void CheckDkimSignerAvailable()
         {
             cbxPrereleases.Enabled = false;
-            
+
             await Task.Run(() => versionAvailable = ApiWrapper.GetAllRelease(cbxPrereleases.Checked, new Version("2.0.0")));
-            
+
             cbxPrereleases.Enabled = true;
 
             cbVersionWeb.Items.Clear();
@@ -155,7 +155,7 @@ namespace Configuration.DkimSigner
         private bool IsBtInstallEnabled()
         {
             return exchangeVersion != null && exchangeVersion != "Not installed" && (cbVersionWeb.Text != string.Empty || txtVersionFile.Text != string.Empty);
-        }      
+        }
 
         private void Install()
         {
@@ -191,7 +191,8 @@ namespace Configuration.DkimSigner
             // path which is the base for copying the files. Should be the root of the downloaded .zip file.
             string extractPath;
 
-            if (zipUrl != null) {
+            if (zipUrl != null)
+            {
                 // ###########################################
                 // ### Download files                      ###
                 // ###########################################
@@ -203,7 +204,8 @@ namespace Configuration.DkimSigner
                     zipFile = Path.Combine(Path.GetTempPath(), Guid.NewGuid() + ".zip");
 
                     DownloadProgressWindow oDpw = new DownloadProgressWindow(zipUrl, zipFile);
-                    try {
+                    try
+                    {
                         if (oDpw.ShowDialog(this) == DialogResult.OK)
                         {
                             lbExtractFiles.Enabled = true;
@@ -217,7 +219,7 @@ namespace Configuration.DkimSigner
                     {
                         oDpw.Dispose();
                     }
-                
+
                 }
                 else
                 {
@@ -271,7 +273,7 @@ namespace Configuration.DkimSigner
                         else
                         {
                             MessageBox.Show(this, "Downloaded .zip is invalid. Please try again.", "Invalid download", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }                   
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -281,7 +283,9 @@ namespace Configuration.DkimSigner
 
                 picExtractFiles.Image = lbStopService.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
                 Refresh();
-            } else {
+            }
+            else
+            {
                 // the files are already downloaded and in the same directory as this .exe file
 
                 // the executable is within: \Src\Configuration.DkimSigner\bin\Release so we need to go up a few directories
@@ -291,26 +295,28 @@ namespace Configuration.DkimSigner
                     MessageBox.Show(this, "Could not get directory info for: " + Assembly.GetExecutingAssembly().Location, "Directory error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
-                string[] expectedDirs = {"Release", "bin", "Configuration.DkimSigner", "Src"};
+                string[] expectedDirs = { "Release", "bin", "Configuration.DkimSigner", "Src" };
                 bool sanityFail = false;
 
                 foreach (string str in expectedDirs)
                 {
-                    if (dir == null || !dir.Name.Equals(str)) {
+                    if (dir == null || !dir.Name.Equals(str))
+                    {
                         sanityFail = true;
                         break;
                     }
                     dir = dir.Parent;
                 }
                 if (dir == null)
-                   sanityFail = true;
+                    sanityFail = true;
 
                 lbDownloadFiles.Enabled = !sanityFail;
                 lbExtractFiles.Enabled = !sanityFail;
                 lbStopService.Enabled = !sanityFail;
 
-                if (sanityFail) {
-                                        
+                if (sanityFail)
+                {
+
                     picDownloadFiles.Image = statusImageList.Images[1];
                     picExtractFiles.Image = statusImageList.Images[1];
 
@@ -318,7 +324,9 @@ namespace Configuration.DkimSigner
                     MessageBox.Show(this, @"Failed to determine copy root directory.\nThis executable is expected to be in the subpath: \Src\Configuration.DkimSigner\bin\Release", "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
 
-                } else {                    
+                }
+                else
+                {
                     picDownloadFiles.Image = statusImageList.Images[0];
                     picExtractFiles.Image = statusImageList.Images[0];
                     Refresh();
@@ -327,7 +335,7 @@ namespace Configuration.DkimSigner
                 extractPath = dir.FullName;
 
             }
-                        
+
 
             // ###########################################
             // ### Stop Microsoft Transport service    ###
@@ -339,9 +347,9 @@ namespace Configuration.DkimSigner
                 {
                     transportServiceSuccessStatus = "Stopped";
                     transportService.Do(TransportServiceAction.Stop, delegate(string msg)
-                        {
-                            MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        });
+                    {
+                        MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    });
                     lbCopyFiles.Enabled = transportServiceActionCompleted.WaitOne();
                 }
                 else
@@ -441,7 +449,7 @@ namespace Configuration.DkimSigner
 
             picInstallAgent.Image = lbStartService.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
             Refresh();
-            
+
             // ###########################################
             // ### Start Microsoft Transport service   ###
             // ###########################################
