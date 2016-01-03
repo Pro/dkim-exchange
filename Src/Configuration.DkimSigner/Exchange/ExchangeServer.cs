@@ -12,8 +12,8 @@ namespace Configuration.DkimSigner.Exchange
         /*********************** Constants ************************/
         /**********************************************************/
 
-        private const string RegexInstalledVersion = "AdminDisplayVersion\\s:\\sVersion\\s(\\d+)\\.(\\d+)\\s\\(Build\\s(\\d+)\\.(\\d+)\\)";
-        private const string RegexTransportServiceAgent = "(?<name>.*?)\\s*(?<status>(True|False))\\s*(?<priority>\\d+?)";
+        private const string RegexInstalledVersion = @"AdminDisplayVersion\s:\sVersion\s(\d+)\.(\d+)\s\(Build\s(\d+)\.(\d+)\)";
+        private const string RegexTransportServiceAgent = @"(?<name>.*?)\s*(?<status>(True|False))\s*(?<priority>\d+)";
 
         /**********************************************************/
         /*********************** Methods **************************/

@@ -156,9 +156,9 @@
             this.lbHint.AutoSize = true;
             this.lbHint.Location = new System.Drawing.Point(12, 274);
             this.lbHint.Name = "lbHint";
-            this.lbHint.Size = new System.Drawing.Size(292, 13);
+            this.lbHint.Size = new System.Drawing.Size(373, 13);
             this.lbHint.TabIndex = 9;
-            this.lbHint.Text = "Hint: The DKIM signing agent should have the lowest priority";
+            this.lbHint.Text = "Hint: The DKIM signing agent should have the lowest priority (highest number)";
             // 
             // ExchangeTransportServiceWindow
             // 
