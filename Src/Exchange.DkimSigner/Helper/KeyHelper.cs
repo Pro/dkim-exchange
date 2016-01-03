@@ -31,13 +31,6 @@ namespace Exchange.DkimSigner.Helper
                 RsaPrivateCrtKeyParameters rsaPrivateKey = obj as RsaPrivateCrtKeyParameters;
 
                 var publicParameters = new RsaKeyParameters(false, rsaPrivateKey.Modulus,rsaPrivateKey.PublicExponent);
-
-                using (StreamWriter file = new StreamWriter(@"D:\Desktop\pub_conv.pem"))
-                {
-                    PemWriter pWrt = new PemWriter(file);
-                    pWrt.WriteObject(publicParameters);
-                    pWrt.Writer.Close();
-                }
                 
                 return new AsymmetricCipherKeyPair(publicParameters, rsaPrivateKey);
 
