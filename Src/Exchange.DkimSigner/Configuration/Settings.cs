@@ -26,7 +26,7 @@ namespace Exchange.DkimSigner.Configuration
             BodyCanonicalization = DkimCanonicalizationKind.Simple;
 
             // Don't change because of serializer problem
-            //this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "Message-ID" });
+            //this.HeadersToSign = new List<string>(new string[] { "From", "Subject", "To", "Date", "MessageId" });
             HeadersToSign = new List<string>();
 
             Domains = new List<DomainElement>();
@@ -37,7 +37,7 @@ namespace Exchange.DkimSigner.Configuration
         /// </summary>
         public void InitHeadersToSign()
         {
-            HeadersToSign = new List<string>(new[] { "From", "Subject", "To", "Date", "Message-ID" });
+            HeadersToSign = new List<string>(new[] { "From", "Subject", "To", "Date", "MessageId" });
         }
 
         /// <summary>
