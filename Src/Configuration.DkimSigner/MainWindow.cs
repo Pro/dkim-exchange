@@ -493,37 +493,87 @@ namespace Configuration.DkimSigner
             string sDnsRecord = "";
             if (sRsaPublicKeyBase64 == string.Empty)
             {
-                string sPubKeyPath = txtDomainPrivateKeyFilename.Text;
+                string sPrivateKeyPath = txtDomainPrivateKeyFilename.Text;
 
-                if (!Path.IsPathRooted(sPubKeyPath))
+                if (!Path.IsPathRooted(sPrivateKeyPath))
                 {
-                    sPubKeyPath = Path.Combine(Constants.DkimSignerPath, "keys", sPubKeyPath);
+                    sPrivateKeyPath = Path.Combine(Constants.DkimSignerPath, "keys", sPrivateKeyPath);
                 }
+
+                string sPubKeyPath;
                 
-                if (File.Exists(Path.ChangeExtension(sPubKeyPath, ".pub")))
-                    sPubKeyPath = Path.ChangeExtension(sPubKeyPath, ".pub");
+                if (File.Exists(Path.ChangeExtension(sPrivateKeyPath, ".pub")))
+                    sPubKeyPath = Path.ChangeExtension(sPrivateKeyPath, ".pub");
                 else
-                    sPubKeyPath += ".pub";
+                    sPubKeyPath = sPrivateKeyPath + ".pub";
+
+                bool isPairFile = false;
+                if (!File.Exists(sPubKeyPath))
+                {
+                    //the private key may contain the public key
+                    sPubKeyPath = sPrivateKeyPath;
+                    isPairFile = true;
+                }
 
                 if (File.Exists(sPubKeyPath))
                 {
 
                     AsymmetricKeyParameter rdKey;
-                    try
-                    {
-                   
-                        using (StreamReader file = new StreamReader(sPubKeyPath))
-                        {
-                            PemReader pRd = new PemReader(file);
 
-                            rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
-                            pRd.Reader.Close();
+                    if (isPairFile)
+                    {
+                        try
+                        {
+                            AsymmetricCipherKeyPair rdKeyPair;
+                            using (StreamReader file = new StreamReader(sPubKeyPath))
+                            {
+                                PemReader pRd = new PemReader(file);
+
+                                rdKeyPair = (AsymmetricCipherKeyPair)pRd.ReadObject();
+                                pRd.Reader.Close();
+
+                                if (rdKeyPair == null)
+                                {
+                                    ShowMessageBox("Key file error.", "Couldn't load public key from key pair " + sPubKeyPath + ". The key file is not valid PEM RSA format.", MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                                    return;
+                                }
+                                rdKey = rdKeyPair.Public;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ShowMessageBox("Key file error.", "Couldn't load public key from key pair " + sPubKeyPath + ":\n" + ex.Message, MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                            return;
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        ShowMessageBox("Key file error.", "Couldn't load public key from " + sPubKeyPath + ":\n" + ex.Message, MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                        try
+                        {
+
+                            using (StreamReader file = new StreamReader(sPubKeyPath))
+                            {
+                                PemReader pRd = new PemReader(file);
+
+                                rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
+                                pRd.Reader.Close();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            ShowMessageBox("Key file error.", "Couldn't load public key from " + sPubKeyPath + ":\n" + ex.Message, MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                            return;
+                        }
+                        
+                    }
+
+                    if (rdKey == null)
+                    {
+                        ShowMessageBox("Key file error.", "Couldn't load public key from " + sPubKeyPath + ". The key file is not valid PEM RSA format.", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                         return;
                     }
 
@@ -917,8 +967,7 @@ namespace Configuration.DkimSigner
                 using (StreamWriter file = new StreamWriter(fileName))
                 {
                     PemWriter pWrt = new PemWriter(file);
-                    Pkcs8Generator pkcs8 = new Pkcs8Generator(pair.Private);
-                    pWrt.WriteObject(pkcs8);
+                    pWrt.WriteObject(pair);
                     pWrt.Writer.Close();
                 }
                 
@@ -961,16 +1010,15 @@ namespace Configuration.DkimSigner
                     //Check if key can be parsed
                     try
                     {
-
                         using (StreamReader file = new StreamReader(oFileDialog.FileName))
                         {
                             PemReader pRd = new PemReader(file);
 
-                            AsymmetricKeyParameter rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
+                            AsymmetricCipherKeyPair rdKey = (AsymmetricCipherKeyPair)pRd.ReadObject();
                             pRd.Reader.Close();
-                            if (rdKey == null || !rdKey.IsPrivate)
+                            if (rdKey == null)
                             {
-                                ShowMessageBox("Key file error.", "The selected key is not a valid private key\n\nPlease select a valid PEM RSA private key file.", MessageBoxButtons.OK,
+                                ShowMessageBox("Key file error.", "The selected key is not a valid private key\n\nPlease select a valid PEM RSA private key file. Use 'openssl genrsa -out private.pem'", MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                                 return;
                             }
@@ -1028,9 +1076,9 @@ namespace Configuration.DkimSigner
                     if (oTxtRecord.TXT.Count > 0)
                     {
                         //check if public key matches suggested
-                        var matchesDNS = Regex.Matches(txtDomainDNS.Text, @";\s+p=([^\s]+)");
+                        var matchesDns = Regex.Matches(txtDomainDNS.Text, @";\s+p=([^\s]+)");
                         var matchesSuggested = Regex.Matches(txtDNSRecord.Text, @";\s+p=([^\s]+)");
-                        if (matchesDNS.Count == 0 || matchesDNS[0].Groups.Count <= 1)
+                        if (matchesDns.Count == 0 || matchesDns[0].Groups.Count <= 1)
                         {
                             lblDomainDNSCheckResult.Text = "Could not extract public key from DNS record.";
                             lblDomainDNSCheckResult.ForeColor = Color.Firebrick;
@@ -1040,7 +1088,7 @@ namespace Configuration.DkimSigner
                             lblDomainDNSCheckResult.Text = "Could not extract public key from suggested DNS record.";
                             lblDomainDNSCheckResult.ForeColor = Color.Firebrick;
                         }
-                        else if (String.Compare(matchesDNS[0].Groups[1].ToString(), matchesSuggested[0].Groups[1].ToString(), StringComparison.Ordinal)==0)
+                        else if (String.Compare(matchesDns[0].Groups[1].ToString(), matchesSuggested[0].Groups[1].ToString(), StringComparison.Ordinal)==0)
                         {
                             lblDomainDNSCheckResult.Text = "DNS record public key is correct";
                             lblDomainDNSCheckResult.ForeColor = Color.Green;

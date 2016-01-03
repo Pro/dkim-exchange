@@ -114,6 +114,7 @@ namespace Exchange.DkimSigner
 
                     }
 
+
                     //check if the private key can be parsed
                     try
                     {
@@ -121,11 +122,11 @@ namespace Exchange.DkimSigner
                         {
                             PemReader pRd = new PemReader(file);
 
-                            AsymmetricKeyParameter rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
+                            AsymmetricCipherKeyPair rdKey = (AsymmetricCipherKeyPair)pRd.ReadObject();
                             pRd.Reader.Close();
-                            if (rdKey == null || !rdKey.IsPrivate)
+                            if (rdKey == null)
                             {
-                                Logger.LogError("The key file for domain " + domainElement.Domain + " is not a valid private key: " + privateKey);
+                                Logger.LogError("The key file for domain " + domainElement.Domain + " is not a valid PEM RSA private key: " + privateKey);
                                 continue;
                             }
                         }
