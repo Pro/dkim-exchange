@@ -101,6 +101,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.tpAbout = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
+            this.txtAbout = new Configuration.DkimSigner.CustomTextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.tpDebug = new System.Windows.Forms.TabPage();
             this.btExchangeVersion = new System.Windows.Forms.Button();
@@ -926,6 +927,7 @@
             // 
             this.tpAbout.BackColor = System.Drawing.Color.Transparent;
             this.tpAbout.Controls.Add(this.label1);
+            this.tpAbout.Controls.Add(this.txtAbout);
             this.tpAbout.Controls.Add(this.picLogo);
             this.tpAbout.Location = new System.Drawing.Point(4, 29);
             this.tpAbout.Name = "tpAbout";
@@ -943,6 +945,19 @@
             this.label1.Size = new System.Drawing.Size(441, 26);
             this.label1.TabIndex = 2;
             this.label1.Text = "DKIM Signer for Microsoft Exchanger Server";
+            // 
+            // txtAbout
+            // 
+            this.txtAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAbout.BackColor = System.Drawing.Color.Transparent;
+            this.txtAbout.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtAbout.Location = new System.Drawing.Point(158, 59);
+            this.txtAbout.Multiline = true;
+            this.txtAbout.Name = "txtAbout";
+            this.txtAbout.Size = new System.Drawing.Size(531, 369);
+            this.txtAbout.TabIndex = 1;
             // 
             // picLogo
             // 
@@ -1087,6 +1102,7 @@
         private System.Windows.Forms.Button btStartTransportService;
         private System.Windows.Forms.TabPage tpAbout;
         private System.Windows.Forms.PictureBox picLogo;
+        private Configuration.DkimSigner.CustomTextBox txtAbout;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TabPage tpLog;
         private System.Windows.Forms.Button btEventLogRefresh;
