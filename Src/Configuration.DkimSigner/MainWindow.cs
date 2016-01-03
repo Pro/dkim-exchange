@@ -543,6 +543,7 @@ namespace Configuration.DkimSigner
             }
 
             txtDNSRecord.Text = sDnsRecord;
+            lblDomainDNSCheckResult.Visible = false;
         }
 
         /// <summary>
@@ -809,6 +810,7 @@ namespace Configuration.DkimSigner
             txtDNSRecord.Text = "";
             txtDNSName.Text = "";
             txtDNSRecord.Text = "";
+            lblDomainDNSCheckResult.Visible = false;
             gbxDomainDetails.Enabled = true;
             btDomainDelete.Enabled = false;
             bDataUpdated = false;
@@ -997,6 +999,7 @@ namespace Configuration.DkimSigner
         private void btDomainCheckDNS_Click(object sender, EventArgs e)
         {
             string sFullDomain = txtDomainSelector.Text + "._domainkey." + txtDomainName.Text;
+            lblDomainDNSCheckResult.Visible = false;
 
             try
             {
@@ -1022,6 +1025,34 @@ namespace Configuration.DkimSigner
                 {
                     RecordTXT oTxtRecord = oResponse.RecordsTXT[0];
                     txtDomainDNS.Text = oTxtRecord.TXT.Count > 0 ? string.Join(string.Empty, oTxtRecord.TXT) : "No record found for " + sFullDomain;
+                    if (oTxtRecord.TXT.Count > 0)
+                    {
+                        //check if public key matches suggested
+                        var matchesDNS = Regex.Matches(txtDomainDNS.Text, @";\s+p=([^\s]+)");
+                        var matchesSuggested = Regex.Matches(txtDNSRecord.Text, @";\s+p=([^\s]+)");
+                        if (matchesDNS.Count == 0 || matchesDNS[0].Groups.Count <= 1)
+                        {
+                            lblDomainDNSCheckResult.Text = "Could not extract public key from DNS record.";
+                            lblDomainDNSCheckResult.ForeColor = Color.Firebrick;
+                        }
+                        else if (matchesSuggested.Count == 0 || matchesSuggested[0].Groups.Count <= 1)
+                        {
+                            lblDomainDNSCheckResult.Text = "Could not extract public key from suggested DNS record.";
+                            lblDomainDNSCheckResult.ForeColor = Color.Firebrick;
+                        }
+                        else if (String.Compare(matchesDNS[0].Groups[1].ToString(), matchesSuggested[0].Groups[1].ToString(), StringComparison.Ordinal)==0)
+                        {
+                            lblDomainDNSCheckResult.Text = "DNS record public key is correct";
+                            lblDomainDNSCheckResult.ForeColor = Color.Green;
+                        }
+                        else
+                        {
+                            lblDomainDNSCheckResult.Text = "DNS record public key does not match";
+                            lblDomainDNSCheckResult.ForeColor = Color.Firebrick;
+                        }
+
+                        lblDomainDNSCheckResult.Visible = true;
+                    }
                 }
                 else
                 {

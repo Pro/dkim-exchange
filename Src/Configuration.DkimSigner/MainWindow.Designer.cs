@@ -102,9 +102,10 @@
             this.label1 = new System.Windows.Forms.Label();
             this.txtAbout = new Configuration.DkimSigner.CustomTextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
-            this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
             this.tpDebug = new System.Windows.Forms.TabPage();
             this.btExchangeVersion = new System.Windows.Forms.Button();
+            this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
+            this.lblDomainDNSCheckResult = new System.Windows.Forms.Label();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -122,8 +123,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgEventLog)).BeginInit();
             this.tpAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).BeginInit();
             this.tpDebug.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).BeginInit();
             this.SuspendLayout();
             // 
             // tcConfiguration
@@ -625,6 +626,7 @@
             this.gbxDomainDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbxDomainDetails.Controls.Add(this.lblDomainDNSCheckResult);
             this.gbxDomainDetails.Controls.Add(this.cbKeyLength);
             this.gbxDomainDetails.Controls.Add(this.lbKeyLength);
             this.gbxDomainDetails.Controls.Add(this.txtDNSName);
@@ -957,10 +959,6 @@
             this.picLogo.TabIndex = 0;
             this.picLogo.TabStop = false;
             // 
-            // epvDomainSelector
-            // 
-            this.epvDomainSelector.ContainerControl = this;
-            // 
             // tpDebug
             // 
             this.tpDebug.Controls.Add(this.btExchangeVersion);
@@ -981,6 +979,20 @@
             this.btExchangeVersion.Text = "Show Exchange Version as HEX";
             this.btExchangeVersion.UseVisualStyleBackColor = true;
             this.btExchangeVersion.Click += new System.EventHandler(this.btExchangeVersion_Click);
+            // 
+            // epvDomainSelector
+            // 
+            this.epvDomainSelector.ContainerControl = this;
+            // 
+            // lblDomainDNSCheckResult
+            // 
+            this.lblDomainDNSCheckResult.AutoSize = true;
+            this.lblDomainDNSCheckResult.Location = new System.Drawing.Point(140, 237);
+            this.lblDomainDNSCheckResult.Name = "lblDomainDNSCheckResult";
+            this.lblDomainDNSCheckResult.Size = new System.Drawing.Size(110, 13);
+            this.lblDomainDNSCheckResult.TabIndex = 18;
+            this.lblDomainDNSCheckResult.Text = "Domain Check Result";
+            this.lblDomainDNSCheckResult.Visible = false;
             // 
             // MainWindow
             // 
@@ -1020,8 +1032,8 @@
             this.tpAbout.ResumeLayout(false);
             this.tpAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).EndInit();
             this.tpDebug.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1103,6 +1115,7 @@
         private System.Windows.Forms.Button btUpgrade;
         private System.Windows.Forms.TabPage tpDebug;
         private System.Windows.Forms.Button btExchangeVersion;
+        private System.Windows.Forms.Label lblDomainDNSCheckResult;
     }
 }
 
