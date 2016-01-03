@@ -630,7 +630,7 @@ namespace Configuration.DkimSigner
                         try
                         {
                             File.Move(sFile, sNewPath);
-                            sPath = sNewPath.Substring(sKeyDir.Length - 4);
+                            sPath = sNewPath.Substring(sKeyDir.Length + 1);
                         }
                         catch (IOException ex)
                         {
