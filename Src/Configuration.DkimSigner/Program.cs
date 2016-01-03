@@ -17,6 +17,9 @@ namespace Configuration.DkimSigner
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            /*while (!System.Diagnostics.Debugger.IsAttached)
+                System.Threading.Thread.Sleep(100);*/
+
             // *******************************************************************
             // Load correct Windows form
             // *******************************************************************
