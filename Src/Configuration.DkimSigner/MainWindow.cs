@@ -1021,8 +1021,8 @@ namespace Configuration.DkimSigner
                     if (oTxtRecord.TXT.Count > 0)
                     {
                         //check if public key matches suggested
-                        var matchesDns = Regex.Matches(txtDomainDNS.Text, @";\s+p=([^\s]+)");
-                        var matchesSuggested = Regex.Matches(txtDNSRecord.Text, @";\s+p=([^\s]+)");
+                        var matchesDns = Regex.Matches(txtDomainDNS.Text, @";\s*p=([^\s]+)");
+                        var matchesSuggested = Regex.Matches(txtDNSRecord.Text, @";\s*p=([^\s]+)");
                         if (matchesDns.Count == 0 || matchesDns[0].Groups.Count <= 1)
                         {
                             lblDomainDNSCheckResult.Text = "Could not extract public key from DNS record.";
