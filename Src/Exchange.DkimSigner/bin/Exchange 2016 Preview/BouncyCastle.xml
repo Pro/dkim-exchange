@@ -458,6 +458,27 @@
             Return the time.
             @return The time string as it appeared in the encoded object.
         </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerGraphicString.GetInstance(System.Object)">
+             return a Graphic String from the passed in object
+            
+             @param obj a DerGraphicString or an object that can be converted into one.
+             @exception IllegalArgumentException if the object cannot be converted.
+             @return a DerGraphicString instance, or null.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerGraphicString.GetInstance(Org.BouncyCastle.Asn1.Asn1TaggedObject,System.Boolean)">
+             return a Graphic String from a tagged object.
+            
+             @param obj the tagged object holding the object we want
+             @param explicit true if the object is meant to be explicitly
+                          tagged false otherwise.
+             @exception IllegalArgumentException if the tagged object cannot
+                           be converted.
+             @return a DerGraphicString instance, or null.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerGraphicString.#ctor(System.Byte[])">
+            basic constructor - with bytes.
+            @param string the byte encoding of the characters making up the string.
+        </member>
         <member name="T:Org.BouncyCastle.Asn1.DerIA5String">
             Der IA5String object - this is an ascii string.
         </member>
@@ -736,6 +757,27 @@
         </member>
         <member name="M:Org.BouncyCastle.Asn1.DerUniversalString.#ctor(System.Byte[])">
             basic constructor - byte encoded string.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerVideotexString.GetInstance(System.Object)">
+             return a Videotex String from the passed in object
+            
+             @param obj a DERVideotexString or an object that can be converted into one.
+             @exception IllegalArgumentException if the object cannot be converted.
+             @return a DERVideotexString instance, or null.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerVideotexString.GetInstance(Org.BouncyCastle.Asn1.Asn1TaggedObject,System.Boolean)">
+             return a Videotex String from a tagged object.
+            
+             @param obj the tagged object holding the object we want
+             @param explicit true if the object is meant to be explicitly
+                          tagged false otherwise.
+             @exception IllegalArgumentException if the tagged object cannot
+                           be converted.
+             @return a DERVideotexString instance, or null.
+        </member>
+        <member name="M:Org.BouncyCastle.Asn1.DerVideotexString.#ctor(System.Byte[])">
+            basic constructor - with bytes.
+            @param string the byte encoding of the characters making up the string.
         </member>
         <member name="T:Org.BouncyCastle.Asn1.DerVisibleString">
             Der VisibleString object.
@@ -9223,9 +9265,6 @@
              space in out.
              @throws IllegalStateException if the cipher isn't initialised.
         </member>
-        <member name="M:Org.BouncyCastle.Crypto.Engines.SerpentEngineBase.Sb0(System.Int32,System.Int32,System.Int32,System.Int32)">
-            S0 - { 3, 8,15, 1,10, 6, 5,11,14,13, 4, 2, 7, 0, 9,12 } - 15 terms.
-        </member>
         <member name="M:Org.BouncyCastle.Crypto.Engines.SerpentEngineBase.Ib0(System.Int32,System.Int32,System.Int32,System.Int32)">
             InvSO - {13, 3,11, 0,10, 6, 5,12, 1,14, 4, 7,15, 9, 8, 2 } - 15 terms.
         </member>
@@ -15661,6 +15700,12 @@
             <param name="digest">the digest to use.</param>
             <param name="saltLen">the length of the salt to use (in bytes).</param>
         </member>
+        <member name="M:Org.BouncyCastle.Crypto.Signers.PssSigner.#ctor(Org.BouncyCastle.Crypto.IAsymmetricBlockCipher,Org.BouncyCastle.Crypto.IDigest,System.Byte[])">
+            <summary>Basic constructor</summary>
+            <param name="cipher">the asymmetric cipher to use.</param>
+            <param name="digest">the digest to use.</param>
+            <param name="salt">the fixed salt to be used.</param>
+        </member>
         <member name="M:Org.BouncyCastle.Crypto.Signers.PssSigner.ClearBlock(System.Byte[])">
             <summary> clear possible sensitive data</summary>
         </member>
@@ -15943,12 +15988,19 @@
             <param name="newSessionTicket">The <see cref="T:Org.BouncyCastle.Crypto.Tls.NewSessionTicket">ticket</see></param>
             <exception cref="T:System.IO.IOException"/>
         </member>
-        <member name="P:Org.BouncyCastle.Crypto.Tls.AbstractTlsClient.ClientHelloRecordLayerVersion">
-            RFC 5246 E.1. "TLS clients that wish to negotiate with older servers MAY send any value
+        <member name="P:Org.BouncyCastle.Crypto.Tls.TlsClient.ClientHelloRecordLayerVersion">
+            <summary>
+            Return the <see cref="T:Org.BouncyCastle.Crypto.Tls.ProtocolVersion"/> to use for the <c>TLSPlaintext.version</c> field prior to
+            receiving the server version. NOTE: This method is <b>not</b> called for DTLS.
+            </summary>
+            <remarks>
+            See RFC 5246 E.1.: "TLS clients that wish to negotiate with older servers MAY send any value
             {03,XX} as the record layer version number. Typical values would be {03,00}, the lowest
             version number supported by the client, and the value of ClientHello.client_version. No
             single value will guarantee interoperability with all old servers, but this is a complex
             topic beyond the scope of this document."
+            </remarks>
+            <returns>The <see cref="T:Org.BouncyCastle.Crypto.Tls.ProtocolVersion"/> to use.</returns>
         </member>
         <member name="M:Org.BouncyCastle.Crypto.Tls.TlsContext.ExportKeyingMaterial(System.String,System.Byte[],System.Int32)">
              Export keying material according to RFC 5705: "Keying Material Exporters for TLS".
