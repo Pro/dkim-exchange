@@ -7,6 +7,8 @@ using Exchange.DkimSigner.Configuration;
 using Microsoft.Exchange.Data.Transport;
 using MimeKit;
 using MimeKit.Cryptography;
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.OpenSsl;
 
 namespace Exchange.DkimSigner
 {
@@ -108,14 +110,46 @@ namespace Exchange.DkimSigner
                         Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
                     if (String.IsNullOrEmpty(privateKey) || !File.Exists(privateKey))
                     {
-                        throw new FileNotFoundException("The private key for domain " + domainElement.Domain + " wasn't found: " + privateKey);
+                        Logger.LogError("The private key for domain " + domainElement.Domain + " wasn't found: " + privateKey + ". Ignoring domain.");
+
                     }
 
-                    MimeKit.Cryptography.DkimSigner signer = new MimeKit.Cryptography.DkimSigner(privateKey,domainElement.Domain, domainElement.Selector)
+                    //check if the private key can be parsed
+                    try
                     {
-                        SignatureAlgorithm = signatureAlgorithm
-                    };
-                    
+                        using (StreamReader file = new StreamReader(privateKey))
+                        {
+                            PemReader pRd = new PemReader(file);
+
+                            AsymmetricKeyParameter rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
+                            pRd.Reader.Close();
+                            if (rdKey == null || !rdKey.IsPrivate)
+                            {
+                                Logger.LogError("The key file for domain " + domainElement.Domain + " is not a valid private key: " + privateKey);
+                                continue;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("Couldn't load private key for domain " + domainElement.Domain + " from " + privateKey + ": " + ex.Message);
+                        continue;
+                    }
+
+                    MimeKit.Cryptography.DkimSigner signer;
+                    try
+                    {
+                        signer = new MimeKit.Cryptography.DkimSigner(privateKey, domainElement.Domain,
+                            domainElement.Selector)
+                        {
+                            SignatureAlgorithm = signatureAlgorithm
+                        };
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("Could not initialize MimeKit DkimSigner for domain  " + domainElement.Domain + ": " + ex.Message);
+                        continue;
+                    }
                     domains.Add(domainElement.Domain, new DomainElementSigner(domainElement, signer));
                 }
 
