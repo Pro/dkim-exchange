@@ -52,9 +52,11 @@ namespace Configuration.DkimSigner
             {
                 installedAgentsList = ExchangeServer.GetTransportServiceAgents();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // ignored
+                MessageBox.Show(this, "Error reading transport agents. " + ex.Message, "Error", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+                return;
             }
 
             dgvTransportServiceAgents.Rows.Clear();
