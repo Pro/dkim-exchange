@@ -5,11 +5,13 @@
 
 
 ## Releases
-* 01.01.2016 [3.0.0-beta]:  
+* 03.01.2016 [3.0.0-beta.2]:  
 	New: Switched to MimeKit implementation for DKIM signer  
 	New: Better handling of private key reading and generation. Now using OpenSSL format 
-    New: The configurator now checks if the public key in the DNS record matches the suggested value  	
+	New: The configurator now checks if the public key in the DNS record matches the suggested value  
+        Fix: Various GUI improvements and smaller fixes  
 	Fix: Agent 'Exchange DkimSigner' went async (#112)  
+        Fix: GUI issues when running Exchange 2007 (#104)
 * 30.10.2015 [2.1.8]:  
 	New: Support for Exchange 2016 RTM  
 	Fix: Performance improvement by creating DKIM signer only once (#103 and #95)  
