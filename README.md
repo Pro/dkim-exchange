@@ -1,4 +1,4 @@
-﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
+Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
 =============
 
 DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
@@ -167,10 +167,12 @@ You can create the private and public keys using Configuration.DkimSigner.exe (r
 You can use the following service for creating public and private keys:
 http://www.port25.com/support/domainkeysdkim-wizard/
 
-Or if you have a linux installation, use (from the opendkim package):
-    opendkim-genkey -D target_directory/ -d example.com -s sel2012
+Or if you have a linux installation, use (from the opendkim package):  
+    `opendkim-genkey -D target_directory/ -d example.com -s sel2012`  
+or openssl:  
+    `openssl genrsa -out private.pem`  
 
-The keys can be in DER or PEM format (the format will be automatically detected).
+The keys have to be in PEM format.
 	
 # Testing the setup
 
