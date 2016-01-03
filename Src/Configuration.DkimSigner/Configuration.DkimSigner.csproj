@@ -93,6 +93,9 @@
     <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
       <Link>Configuration\Settings.cs</Link>
     </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Helper\KeyHelper.cs">
+      <Link>Helper\KeyHelper.cs</Link>
+    </Compile>
     <Compile Include="ConfigureWindow.cs">
       <SubType>Form</SubType>
     </Compile>

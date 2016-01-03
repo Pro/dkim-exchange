@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using System.Security.Cryptography;
 using Exchange.DkimSigner.Configuration;
+using Exchange.DkimSigner.Helper;
 using Microsoft.Exchange.Data.Transport;
 using MimeKit;
 using MimeKit.Cryptography;
@@ -113,27 +114,15 @@ namespace Exchange.DkimSigner
                         Logger.LogError("The private key for domain " + domainElement.Domain + " wasn't found: " + privateKey + ". Ignoring domain.");
 
                     }
-
-
+                    
                     //check if the private key can be parsed
                     try
                     {
-                        using (StreamReader file = new StreamReader(privateKey))
-                        {
-                            PemReader pRd = new PemReader(file);
-
-                            AsymmetricCipherKeyPair rdKey = (AsymmetricCipherKeyPair)pRd.ReadObject();
-                            pRd.Reader.Close();
-                            if (rdKey == null)
-                            {
-                                Logger.LogError("The key file for domain " + domainElement.Domain + " is not a valid PEM RSA private key: " + privateKey);
-                                continue;
-                            }
-                        }
+                        KeyHelper.ParseKeyPair(privateKey);
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError("Couldn't load private key for domain " + domainElement.Domain + " from " + privateKey + ": " + ex.Message);
+                        Logger.LogError("Couldn't load private key for domain " + domainElement.Domain + ": " + ex.Message);
                         continue;
                     }
 

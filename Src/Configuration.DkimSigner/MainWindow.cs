@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.GitHub;
 using Exchange.DkimSigner.Configuration;
+using Exchange.DkimSigner.Helper;
 using Heijden.DNS;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
@@ -507,12 +508,10 @@ namespace Configuration.DkimSigner
                 else
                     sPubKeyPath = sPrivateKeyPath + ".pub";
 
-                bool isPairFile = false;
                 if (!File.Exists(sPubKeyPath))
                 {
                     //the private key may contain the public key
                     sPubKeyPath = sPrivateKeyPath;
-                    isPairFile = true;
                 }
 
                 if (File.Exists(sPubKeyPath))
@@ -520,60 +519,13 @@ namespace Configuration.DkimSigner
 
                     AsymmetricKeyParameter rdKey;
 
-                    if (isPairFile)
+                    try
                     {
-                        try
-                        {
-                            AsymmetricCipherKeyPair rdKeyPair;
-                            using (StreamReader file = new StreamReader(sPubKeyPath))
-                            {
-                                PemReader pRd = new PemReader(file);
-
-                                rdKeyPair = (AsymmetricCipherKeyPair)pRd.ReadObject();
-                                pRd.Reader.Close();
-
-                                if (rdKeyPair == null)
-                                {
-                                    ShowMessageBox("Key file error.", "Couldn't load public key from key pair " + sPubKeyPath + ". The key file is not valid PEM RSA format.", MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                                    return;
-                                }
-                                rdKey = rdKeyPair.Public;
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ShowMessageBox("Key file error.", "Couldn't load public key from key pair " + sPubKeyPath + ":\n" + ex.Message, MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                            return;
-                        }
+                        rdKey = KeyHelper.ParsePublicKey(sPubKeyPath);
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        try
-                        {
-
-                            using (StreamReader file = new StreamReader(sPubKeyPath))
-                            {
-                                PemReader pRd = new PemReader(file);
-
-                                rdKey = (AsymmetricKeyParameter)pRd.ReadObject();
-                                pRd.Reader.Close();
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            ShowMessageBox("Key file error.", "Couldn't load public key from " + sPubKeyPath + ":\n" + ex.Message, MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
-                            return;
-                        }
-                        
-                    }
-
-                    if (rdKey == null)
-                    {
-                        ShowMessageBox("Key file error.", "Couldn't load public key from " + sPubKeyPath + ". The key file is not valid PEM RSA format.", MessageBoxButtons.OK,
-                    MessageBoxIcon.Error);
+                        ShowMessageBox("Key file error.", "Couldn't load public key. " + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
@@ -1010,28 +962,13 @@ namespace Configuration.DkimSigner
                     //Check if key can be parsed
                     try
                     {
-                        using (StreamReader file = new StreamReader(oFileDialog.FileName))
-                        {
-                            PemReader pRd = new PemReader(file);
-
-                            AsymmetricCipherKeyPair rdKey = (AsymmetricCipherKeyPair)pRd.ReadObject();
-                            pRd.Reader.Close();
-                            if (rdKey == null)
-                            {
-                                ShowMessageBox("Key file error.", "The selected key is not a valid private key\n\nPlease select a valid PEM RSA private key file. Use 'openssl genrsa -out private.pem'", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                                return;
-                            }
-                        }
+                        KeyHelper.ParseKeyPair(oFileDialog.FileName);
                     }
                     catch (Exception ex)
                     {
-                        ShowMessageBox("Key file error.", "Couldn't load private key from " + oFileDialog.FileName + ":\n" + ex.Message + "\n\nPlease select a valid PEM RSA private key file.", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                        ShowMessageBox("Key file error.", ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-
-
 
                     SetDomainKeyPath(oFileDialog.FileName);
                     UpdateSuggestedDns();
