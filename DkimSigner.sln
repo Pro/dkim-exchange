@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exchange.DkimSigner", "Src\Exchange.DkimSigner\Exchange.DkimSigner.csproj", "{3AF0EAB4-6135-4908-A659-5E3C974E4718}"
 EndProject
@@ -87,8 +87,8 @@ Global
 		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug Ex2010 SP3|Any CPU.ActiveCfg = Release|Any CPU
 		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug Ex2013 SP1 CU9|Any CPU.ActiveCfg = Release|Any CPU
 		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug Ex2013|Any CPU.ActiveCfg = Release|Any CPU
-		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Ex2007 SP3|Any CPU.ActiveCfg = Release|Any CPU
 		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Ex2010 SP1|Any CPU.ActiveCfg = Release|Any CPU
 		{8AA10740-EC1C-43D9-9BB2-9DF3F82A214F}.Ex2010 SP2|Any CPU.ActiveCfg = Release|Any CPU
