@@ -153,7 +153,7 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                DomainElement oSelected = (DomainElement) lbxDomains.SelectedItem;
+                DomainElement oSelected = (DomainElement)lbxDomains.SelectedItem;
                 txtDomainName.Text = oSelected.Domain;
                 txtDomainSelector.Text = oSelected.Selector;
                 txtDomainPrivateKeyFilename.Text = oSelected.PrivateKeyFile;
@@ -226,7 +226,7 @@ namespace Configuration.DkimSigner
                 throw new Exception("Unexpected error from MessageBox.");
             }
 
-            return (DialogResult) result;
+            return (DialogResult)result;
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace Configuration.DkimSigner
 
             ExchangeServerException ex = null;
             await Task.Run(() => { try { version = ExchangeServer.GetInstalledVersion(); } catch (ExchangeServerException e) { ex = e; } });
-            
+
             if (ex != null)
             {
                 ShowMessageBox("Exchange Version Error", "Couldn't determine installed Exchange Version: " + ex.Message, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -264,14 +264,15 @@ namespace Configuration.DkimSigner
             Version oDkimSignerInstalled = null;
 
             // Check if DKIM Agent is in C:\Program Files\Exchange DkimSigner and get version of DLL
-            await Task.Run(() => {
+            await Task.Run(() =>
+            {
                 try
                 {
                     oDkimSignerInstalled = Version.Parse(FileVersionInfo.GetVersionInfo(Path.Combine(Constants.DkimSignerPath, Constants.DkimSignerAgentDll)).ProductVersion);
                 }
                 catch (Exception)
                 {
-                // ignored
+                    // ignored
                 }
             });
 
@@ -280,14 +281,15 @@ namespace Configuration.DkimSigner
             {
                 bool isDkimAgentTransportInstalled = false;
 
-                await Task.Run(() => {
+                await Task.Run(() =>
+                {
                     try
                     {
                         isDkimAgentTransportInstalled = !ExchangeServer.IsDkimAgentTransportInstalled();
                     }
                     catch (Exception)
                     {
-                    // ignored
+                        // ignored
                     }
                 });
 
@@ -318,7 +320,7 @@ namespace Configuration.DkimSigner
             Exception ex = null;
             await Task.Run(() => { try { aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked); } catch (Exception e) { ex = e; } });
 
-            if(ex != null)
+            if (ex != null)
             {
                 changelog.Append("\r\nError: " + ex.Message);
             }
@@ -328,11 +330,11 @@ namespace Configuration.DkimSigner
             if (aoRelease != null)
             {
                 changelog.Clear();
-                
+
                 dkimSignerAvailable = aoRelease[0];
                 changelog.AppendLine(aoRelease[0].TagName + " (" + aoRelease[0].CreatedAt.Substring(0, 10) + ")\r\n\t" + aoRelease[0].Body.Replace("\r\n", "\r\n\t") + "\r\n");
-                
-                for(int i = 1; i < aoRelease.Count; i++)
+
+                for (int i = 1; i < aoRelease.Count; i++)
                 {
                     if (dkimSignerAvailable.Version < aoRelease[i].Version)
                     {
@@ -448,7 +450,7 @@ namespace Configuration.DkimSigner
             DomainElement oCurrentDomain = null;
             if (lbxDomains.SelectedItem != null)
             {
-                oCurrentDomain = (DomainElement) lbxDomains.SelectedItem;
+                oCurrentDomain = (DomainElement)lbxDomains.SelectedItem;
             }
 
             lbxDomains.Items.Clear();
@@ -504,7 +506,7 @@ namespace Configuration.DkimSigner
                 }
 
                 string sPubKeyPath;
-                
+
                 if (File.Exists(Path.ChangeExtension(sPrivateKeyPath, ".pub")))
                     sPubKeyPath = Path.ChangeExtension(sPrivateKeyPath, ".pub");
                 else
@@ -533,7 +535,7 @@ namespace Configuration.DkimSigner
 
                     SubjectPublicKeyInfo publicKeyInfo = SubjectPublicKeyInfoFactory.CreateSubjectPublicKeyInfo(rdKey);
                     byte[] serializedPublicBytes = publicKeyInfo.ToAsn1Object().GetDerEncoded();
-                    sRsaPublicKeyBase64 = Convert.ToBase64String(serializedPublicBytes); 
+                    sRsaPublicKeyBase64 = Convert.ToBase64String(serializedPublicBytes);
                 }
                 else
                 {
@@ -686,7 +688,7 @@ namespace Configuration.DkimSigner
             }
 
             //now execute the downloaded .exe file
- 
+
             string exePath = Path.Combine(extractPath, @"Src\Configuration.DkimSigner\bin\Release\Configuration.DkimSigner.exe");
             if (!File.Exists(exePath))
             {
@@ -716,12 +718,12 @@ namespace Configuration.DkimSigner
         private void genericTransportService_Click(object sender, EventArgs e)
         {
 
-            Action<string> errorCallback = delegate(string msg)
+            Action<string> errorCallback = delegate (string msg)
             {
                 MessageBox.Show(msg, "Service error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             };
 
-            switch(((Button)sender).Name)
+            switch (((Button)sender).Name)
             {
                 case "btStartTransportService":
                     transportService.Do(TransportServiceAction.Start, errorCallback);
@@ -874,8 +876,8 @@ namespace Configuration.DkimSigner
         private void btDomainKeyGenerate_Click(object sender, EventArgs e)
         {
             UserPreferences.Default.KeyLength = Convert.ToInt32(cbKeyLength.Text, 10);
-            UserPreferences.Default.Save(); 
-            
+            UserPreferences.Default.Save();
+
             using (SaveFileDialog oFileDialog = new SaveFileDialog())
             {
                 oFileDialog.DefaultExt = "pem";
@@ -930,7 +932,7 @@ namespace Configuration.DkimSigner
                     pWrt.WriteObject(pair);
                     pWrt.Writer.Close();
                 }
-                
+
                 //Save public key to filename
                 using (StreamWriter file = new StreamWriter(fileNamePublic))
                 {
@@ -1033,7 +1035,7 @@ namespace Configuration.DkimSigner
                             lblDomainDNSCheckResult.Text = "Could not extract public key from suggested DNS record.";
                             lblDomainDNSCheckResult.ForeColor = Color.Firebrick;
                         }
-                        else if (String.Compare(matchesDns[0].Groups[1].ToString(), matchesSuggested[0].Groups[1].ToString(), StringComparison.Ordinal)==0)
+                        else if (String.Compare(matchesDns[0].Groups[1].ToString(), matchesSuggested[0].Groups[1].ToString(), StringComparison.Ordinal) == 0)
                         {
                             lblDomainDNSCheckResult.Text = "DNS record public key is correct";
                             lblDomainDNSCheckResult.ForeColor = Color.Green;
@@ -1112,7 +1114,7 @@ namespace Configuration.DkimSigner
         private async void btEventLogRefresh_Click(object sender, EventArgs e)
         {
             btEventLogRefresh.Enabled = false;
-            
+
             await Task.Run(() =>
             {
                 dgEventLog.Rows.Clear();
@@ -1120,7 +1122,8 @@ namespace Configuration.DkimSigner
                 {
                     EventLog oLogger = new EventLog();
 
-                    try {
+                    try
+                    {
                         oLogger.Log = EventLog.LogNameFromSourceName(Constants.DkimSignerEventlogSource, ".");
 
                     }
@@ -1135,7 +1138,8 @@ namespace Configuration.DkimSigner
                     for (int i = oLogger.Entries.Count - 1; i > 0; i--)
                     {
                         EventLogEntry oEntry;
-                        try {
+                        try
+                        {
                             oEntry = oLogger.Entries[i];
                         }
                         catch (Exception ex)
@@ -1213,6 +1217,33 @@ namespace Configuration.DkimSigner
             result = "My version: " + configVersion + "\nExchange\n" + result;
 
             ShowMessageBox("Exchange Version Debug", result, MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void btCopyToClipboard_Click(object sender, EventArgs e)
+        {
+            if (txtDNSRecord.Text.Trim() != String.Empty)
+            {
+                txtDNSRecord.SelectAll();
+                txtDNSRecord.Copy();
+                txtDNSRecord.DeselectAll();
+                MessageBox.Show("Suggested DNS record has been copied to clipboard");
+            }
+            else
+                MessageBox.Show("Nothing to copy, please generate a key");
+        }
+
+        private void tcConfiguration_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tcConfiguration.SelectedTab == tpLog)
+            {
+                if (dgEventLog.RowCount == 0)
+                    btEventLogRefresh_Click(this, new EventArgs());
+            }
+            else if (tcConfiguration.SelectedTab == tpDomain)
+            {
+                if (lbxDomains.Items.Count > 0 && lbxDomains.SelectedItem == null)
+                    lbxDomains.SelectedIndex = 0;
+            }
         }
     }
 }
