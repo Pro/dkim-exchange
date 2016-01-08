@@ -211,6 +211,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle">
+      <HintPath>..\..\packages\MimeKit.1.2.19\lib\net40\BouncyCastle.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
       <Private>False</Private>
@@ -341,13 +344,19 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 RTM'">
       <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\Lib\NUnit\nunit.framework.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MimeKit.1.2.19\lib\net40\MimeKit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />
   </ItemGroup>
@@ -381,16 +390,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\Ressources\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MimeKit\submodules\bc-csharp\crypto\BouncyCastle.csproj">
-      <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
-      <Name>BouncyCastle</Name>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
@@ -401,15 +404,7 @@
         </ProjectReference>
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <ProjectReference Include="..\MimeKit\MimeKit\MimeKit.Net40.csproj">
-          <Project>{c909fc86-6084-41e5-b99c-dcdf2a5b7f82}</Project>
-          <Name>MimeKit.Net40</Name>
-          <EmbedInteropTypes>False</EmbedInteropTypes>
-        </ProjectReference>
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

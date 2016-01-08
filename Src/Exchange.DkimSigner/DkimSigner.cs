@@ -8,6 +8,7 @@ using Exchange.DkimSigner.Helper;
 using Microsoft.Exchange.Data.Transport;
 using MimeKit;
 using MimeKit.Cryptography;
+using Org.BouncyCastle.Crypto;
 
 namespace Exchange.DkimSigner
 {
@@ -127,7 +128,8 @@ namespace Exchange.DkimSigner
                     MimeKit.Cryptography.DkimSigner signer;
                     try
                     {
-                        signer = new MimeKit.Cryptography.DkimSigner(KeyHelper.ParsePrivateKey(privateKey), domainElement.Domain,
+                        AsymmetricKeyParameter key = KeyHelper.ParsePrivateKey(privateKey);
+                        signer = new MimeKit.Cryptography.DkimSigner(key, domainElement.Domain,
                             domainElement.Selector)
                         {
                             SignatureAlgorithm = signatureAlgorithm
