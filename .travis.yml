@@ -14,12 +14,14 @@ git:
   # we need recursive init
   submodules: false
 
+mono:
+  - 3.10.0	
+
 before_install:
   - git submodule update --init --recursive
 
 solution: DkimSigner.sln
 
-install:
 install:
   - nuget # lets get version number
   - nuget restore DkimSigner.sln -Verbosity detailed
