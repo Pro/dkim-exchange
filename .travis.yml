@@ -1,4 +1,4 @@
-language: objective-c
+language: csharp
 
 env:
   global:
@@ -7,8 +7,8 @@ env:
     #   via the "travis encrypt" command using the project repo's public key
     - secure: "kC7O0CWm9h4g+tzCwhIZEGwcdiLrb1/1PijeOKGbIWGuWS7cIksAkj2tRNMgtxxcE9CFQr8W7xDv2YzflCIlqN1nGkFjbyD4CrNg6+V1j0fZjPOQ6ssdBBVPrfrvecsAUJ0/48Tqa9VTkEpZSlwOF/VS1sO2ob36FVyWjtxvG9s="
 
-  matrix:
-    - MONO_VERSION="3.10.0"
+#  matrix:
+#    - MONO_VERSION="3.10.0"
 
 git:
   # we need recursive init
@@ -17,10 +17,16 @@ git:
 before_install:
   - git submodule update --init --recursive
 
+solution: DkimSigner.sln
+
 install:
+install:
+  - nuget # lets get version number
+  - nuget restore DkimSigner.sln -Verbosity detailed
+#  - nuget update src/Backoff.sln -Verbosity detailed
   # Fetch Mono
-  - wget "http://download.mono-project.com/archive/${MONO_VERSION}/macos-10-x86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
-  - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
+#  - wget "http://download.mono-project.com/archive/${MONO_VERSION}/macos-10-x86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
+#  - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
 
 script:
   - xbuild travis.proj
