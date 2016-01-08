@@ -14,24 +14,21 @@ git:
   # we need recursive init
   submodules: false
 
-mono:
-  - 3.10.0	
-
-before_install:
-  - git submodule update --init --recursive
+#before_install:
+#  - git submodule update --init --recursive
 
 solution: DkimSigner.sln
 
 install:
-  - nuget # lets get version number
-  - nuget restore DkimSigner.sln -Verbosity detailed
+#  - nuget # lets get version number
+#  - nuget restore DkimSigner.sln -Verbosity detailed
 #  - nuget update src/Backoff.sln -Verbosity detailed
   # Fetch Mono
 #  - wget "http://download.mono-project.com/archive/${MONO_VERSION}/macos-10-x86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
 #  - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
 
 script:
-  - xbuild /p:Configuration=Release DkimSigner.sln 
+  - xbuild /p:Configuration=Travis-CI DkimSigner.sln 
 #  - xbuild  travis.proj
 
 #addons:
