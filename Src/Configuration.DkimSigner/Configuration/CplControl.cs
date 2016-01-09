@@ -3,7 +3,7 @@ using System;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace Configuration.DkimSigner
+namespace Configuration.DkimSigner.Configuration
 {
     // https://msdn.microsoft.com/en-us/library/hh127450(v=vs.85).aspx
 
