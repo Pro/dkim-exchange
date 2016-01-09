@@ -1,7 +1,6 @@
 ﻿using Microsoft.Win32;
 using System;
 using System.Reflection;
-using System.Windows.Forms;
 
 namespace Configuration.DkimSigner.Configuration
 {
@@ -39,7 +38,6 @@ namespace Configuration.DkimSigner.Configuration
         public static void Register()
         {
             Unregister();
-            // Set name of setting
 
             var key = Registry.LocalMachine.CreateSubKey(LocalMachineKey, RegistryKeyPermissionCheck.ReadWriteSubTree);
             key.SetValue(null, "Exchange DKIM Configuration", RegistryValueKind.String);
@@ -53,13 +51,15 @@ namespace Configuration.DkimSigner.Configuration
             key.Close();
 
             var keyPath = string.Format("{0}\\DefaultIcon", ClassesRootKey);
+            var exeFullPath = string.Format("{0}\\{1}", Constants.DkimSignerPath, Constants.DkimSignerConfigurationExe);
+
             key = Registry.ClassesRoot.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-            key.SetValue(null, string.Format("{0}, {1}", Application.ExecutablePath, -2), RegistryValueKind.String);
+            key.SetValue(null, string.Format("{0}, {1}", exeFullPath, -2), RegistryValueKind.String);
             key.Close();
 
             keyPath = string.Format("{0}\\Shell\\Open\\Command", ClassesRootKey);
             key = Registry.ClassesRoot.CreateSubKey(keyPath, RegistryKeyPermissionCheck.ReadWriteSubTree);
-            key.SetValue(null, Application.ExecutablePath, RegistryValueKind.ExpandString);
+            key.SetValue(null, exeFullPath, RegistryValueKind.ExpandString);
             key.Close();
         }
 

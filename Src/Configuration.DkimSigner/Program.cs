@@ -50,19 +50,8 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                if (Array.IndexOf(asArgv, "--register") > 0)
-                {
-                    CplControl.Register();
-                }
-                else if (Array.IndexOf(asArgv, "--unregister") > 0)
-                {
-                    CplControl.Unregister();
-                }
-                else
-                {
-                    int debugIdx = Array.IndexOf(asArgv, "--debug");
-                    oForm = new MainWindow(debugIdx >= 0);
-                }
+                int debugIdx = Array.IndexOf(asArgv, "--debug");
+                oForm = new MainWindow(debugIdx >= 0);
             }
 
             if (oForm != null)
