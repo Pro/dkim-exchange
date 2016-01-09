@@ -26,7 +26,12 @@ namespace Configuration.DkimSigner
             Form oForm = null;
             string[] asArgv = Environment.GetCommandLineArgs();
 
-            int parIdx = Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"), Array.IndexOf(asArgv, "--upgrade-inplace")), Array.IndexOf(asArgv, "--configure"));
+
+
+            int parIdx = Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"),
+                Array.IndexOf(asArgv, "--upgrade-inplace")),
+                Array.IndexOf(asArgv, "--configure"));
+
             if (parIdx >= 0)
             {
                 if (asArgv[parIdx] == "--configure")
@@ -41,19 +46,28 @@ namespace Configuration.DkimSigner
                 {
                     oForm = new InstallWindow();
                 }
-                //else if (asArgv[parIdx] == "--uninstall") { }
-                else
-                {
-                    Application.Exit();
-                }
             }
             else
             {
-                int debugIdx = Array.IndexOf(asArgv, "--debug");
-                oForm = new MainWindow(debugIdx >= 0); 
+                if (Array.IndexOf(asArgv, "--register") > 0)
+                {
+                    CplControl.Register();
+                }
+                else if (Array.IndexOf(asArgv, "--unregister") > 0)
+                {
+                    CplControl.Unregister();
+                }
+                else
+                {
+                    int debugIdx = Array.IndexOf(asArgv, "--debug");
+                    oForm = new MainWindow(debugIdx >= 0);
+                }
             }
 
-            Application.Run(oForm);
+            if (oForm != null)
+            {
+                Application.Run(oForm);
+            }
         }
     }
 }
