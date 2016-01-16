@@ -353,7 +353,7 @@
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -401,10 +401,10 @@
   <Choose>
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
       <ItemGroup>
-		<Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-		  <HintPath>..\..\packages\MimeKit.1.2.19\lib\net35\MimeKit.dll</HintPath>
-		  <Private>True</Private>
-		</Reference>
+        <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+          <HintPath>..\..\packages\MimeKit.1.2.19\lib\net35\MimeKit.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
       </ItemGroup>
     </When>
     <Otherwise />
