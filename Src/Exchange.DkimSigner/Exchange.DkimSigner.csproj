@@ -401,10 +401,10 @@
   <Choose>
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
       <ItemGroup>
-        <ProjectReference Include="..\MimeKit\MimeKit\MimeKit.Net35.csproj">
-          <Project>{c8c90007-c877-4763-8f3e-5ccf307f7e93}</Project>
-          <Name>MimeKit.Net35</Name>
-        </ProjectReference>
+		<Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+		  <HintPath>..\..\packages\MimeKit.1.2.19\lib\net35\MimeKit.dll</HintPath>
+		  <Private>True</Private>
+		</Reference>
       </ItemGroup>
     </When>
     <Otherwise />
