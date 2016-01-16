@@ -14,18 +14,27 @@ git:
   # we need recursive init
   submodules: false
 
+cache: apt
+
 solution: DkimSigner.sln
 
 script:
-  - xbuild /p:Configuration=Travis-CI DkimSigner.sln 
-#  - xbuild  travis.proj
-
-#addons:
-#  coverity_scan:
-#    project:
-#      name: "Pro/dkim-exchange"
-#      description: "Build submitted via Travis CI"
-#    notification_email: git@s.profanter.me
-#    build_command_prepend: "xbuild /t:CleanAll travis.proj"
-#    build_command:   "xbuild /t:Build travis.proj"
-#    branch_pattern: coverity_scan
+- xbuild DkimSigner.sln /p:Configuration="Ex2007 SP3"
+- xbuild DkimSigner.sln /p:Configuration="Ex2010"
+- xbuild DkimSigner.sln /p:Configuration="Ex2010 SP1"
+- xbuild DkimSigner.sln /p:Configuration="Ex2010 SP2"
+- xbuild DkimSigner.sln /p:Configuration="Ex2010 SP3"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 CU1"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 CU2"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 CU3"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU4"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU5"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU6"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU7"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU8"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU9"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU10"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 Preview"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 RTM"
+- xbuild DkimSigner.sln /p:Configuration="Release"
