@@ -12,6 +12,7 @@ using Configuration.DkimSigner.Exchange;
 using Configuration.DkimSigner.FileIO;
 using Configuration.DkimSigner.GitHub;
 using Microsoft.Win32;
+using Configuration.DkimSigner.Configuration;
 
 namespace Configuration.DkimSigner
 {
@@ -401,6 +402,10 @@ namespace Configuration.DkimSigner
                 lbInstallAgent.Enabled = bReturn && !bAnyOperationsAborted;
             }
 
+            // register Control Panel Applet
+            if (lbInstallAgent.Enabled)
+                CplControl.Register();
+                
             picCopyFiles.Image = lbInstallAgent.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
             Refresh();
 

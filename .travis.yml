@@ -1,4 +1,4 @@
-language: objective-c
+language: csharp
 
 env:
   global:
@@ -14,16 +14,11 @@ git:
   # we need recursive init
   submodules: false
 
-before_install:
-  - git submodule update --init --recursive
-
-install:
-  # Fetch Mono
-  - wget "http://download.mono-project.com/archive/${MONO_VERSION}/macos-10-x86/MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg"
-  - sudo installer -pkg "MonoFramework-MDK-${MONO_VERSION}.macos10.xamarin.x86.pkg" -target /
+solution: DkimSigner.sln
 
 script:
-  - xbuild travis.proj
+  - xbuild /p:Configuration=Travis-CI DkimSigner.sln 
+#  - xbuild  travis.proj
 
 #addons:
 #  coverity_scan:

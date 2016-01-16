@@ -57,7 +57,18 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Travis-CI|AnyCPU'">
+    <OutputPath>bin\Travis-CI\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\MimeKit.1.2.19\lib\net45\BouncyCastle.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MimeKit.1.2.19\lib\net45\MimeKit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -65,12 +76,12 @@
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Management" />
-    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
+    <Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Management.Automation.6.1.7601.17515\lib\net45\System.Management.Automation.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
     <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -102,12 +113,7 @@
     <Compile Include="ConfigureWindow.Designer.cs">
       <DependentUpon>ConfigureWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="CustomTextBox.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="CustomTextBox.Designer.cs">
-      <DependentUpon>CustomTextBox.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Configuration\CplControl.cs" />
     <Compile Include="ExchangeTransportServiceWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -258,6 +264,7 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="UserPreferences.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
@@ -288,16 +295,6 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\MimeKit\MimeKit\MimeKit.Net40.csproj">
-      <Project>{c909fc86-6084-41e5-b99c-dcdf2a5b7f82}</Project>
-      <Name>MimeKit.Net40</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MimeKit\submodules\bc-csharp\crypto\BouncyCastle.csproj">
-      <Project>{4c235092-820c-4deb-9074-d356fb797d8b}</Project>
-      <Name>BouncyCastle</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
