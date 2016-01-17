@@ -65,8 +65,10 @@ namespace Configuration.DkimSigner.Configuration
 
         public static void Unregister()
         {
-            Registry.LocalMachine.DeleteSubKey(LocalMachineKey);
-            Registry.ClassesRoot.DeleteSubKeyTree(ClassesRootKey);
+            if (Registry.LocalMachine.OpenSubKey(LocalMachineKey) != null)
+                Registry.LocalMachine.DeleteSubKey(LocalMachineKey);
+            if (Registry.ClassesRoot.OpenSubKey(ClassesRootKey) != null)
+                Registry.ClassesRoot.DeleteSubKeyTree(ClassesRootKey);
         }
     }
 }
