@@ -9,8 +9,8 @@
 	New: Switched to MimeKit implementation for DKIM signer  
 	New: Better handling of private key reading and generation. Now using OpenSSL format 
 	New: The configurator now checks if the public key in the DNS record matches the suggested value 
-    New: The Control Panel now contains a link to the DKIM signer configurator  	
-	New: The DKIM signer can now be uninstalled using `Program and Features` from the control panel
+    New: The Control Panel now contains a link to the DKIM signer configurator  
+	New: The DKIM signer can now be uninstalled using `Program and Features` from the control panel  
     Fix: Various GUI improvements and smaller fixes  
 	Fix: Agent 'Exchange DkimSigner' went async (#112)  
     Fix: GUI issues when running Exchange 2007 (#104)
