@@ -5,7 +5,7 @@
 
 
 ## Releases
-* 03.01.2016 [3.0.0-beta.2]:  
+* 17.01.2016 [3.0.0]:  
 	New: Switched to MimeKit implementation for DKIM signer  
 	New: Better handling of private key reading and generation. Now using OpenSSL format 
 	New: The configurator now checks if the public key in the DNS record matches the suggested value 
