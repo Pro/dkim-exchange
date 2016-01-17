@@ -202,7 +202,7 @@ Before you update the Exchange Server, you have to make sure that the DKIM Signe
 
 # Uninstalling the Transport Agent
 
-If you want to uninstall the Exchange DKIM Transport Agent simply run Configuration.DkimSigner.exe and on the `Information` tab press the Configure button. In the new opened Window make sure the DKIM signer is selected. Then press `Uninstall`.
+If you want to uninstall the Exchange DKIM Transport Agent simply open the Control Panel and then `Programs and Features`. The DKIM Signer should be listed there. You can also start Configuration.DkimSigner.exe with the `--uninstall` parameter, which does the same. Be aware that uninstalling the agent also removes all the keys and files.
 
 If you want to use the powershell script to uninstall the agent (not recommended) follow the manual install instructions but execute `.\uninstall.ps1` instead.
 
