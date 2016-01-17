@@ -10,5 +10,4 @@ REM ----------------------------------------------------------------------------
 SET mypath=%~dp0
 cd %mypath%
 rmdir cov-int /s /q
-msbuild /t:CleanAll travis.proj
-cov-build --dir cov-int msbuild /t:Build travis.proj
+cov-build --dir cov-int msbuild /t:Build coverity.proj
