@@ -27,6 +27,7 @@ namespace Configuration.DkimSigner.GitHub
                     Stream responseStream = oResponse.GetResponseStream();
                     if (responseStream == null)
                     {
+                        oResponse.Dispose();
                         return null;
                     }
                     sResult = new StreamReader(responseStream).ReadToEnd();
