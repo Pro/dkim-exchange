@@ -404,14 +404,25 @@ namespace Configuration.DkimSigner
 
             // register Control Panel Applet
             if (lbInstallAgent.Enabled)
-                CplControl.Register();
+            {
+                try
+                {
+                    CplControl.Register();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Could not create applet in control panel:\n" + ex.Message + "\nThe installation will be successfuly anyways but you won't be able to open the DKIM Configurator from the Control Panel", "Error creating applet", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                
+
+            }
                 
             picCopyFiles.Image = lbInstallAgent.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
             Refresh();
 
-            // ###########################################
-            // ### Install DKIM Signer Excange Agent   ###
-            // ###########################################
+            // ############################################
+            // ### Install DKIM Signer Exchange Agent   ###
+            // ############################################
 
             if (lbInstallAgent.Enabled)
             {
