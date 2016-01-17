@@ -104,6 +104,7 @@
     <Compile Include="..\Exchange.DkimSigner\Helper\KeyHelper.cs">
       <Link>Helper\KeyHelper.cs</Link>
     </Compile>
+    <Compile Include="Configuration\UninstallerRegistry.cs" />
     <Compile Include="ConfigureWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -229,6 +230,12 @@
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="FileIO\ShellFileOperation.cs" />
+    <Compile Include="UninstallWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UninstallWindow.Designer.cs">
+      <DependentUpon>UninstallWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserPreferences.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -256,6 +263,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="InstallWindow.resx">
       <DependentUpon>InstallWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UninstallWindow.resx">
+      <DependentUpon>UninstallWindow.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="app.manifest">

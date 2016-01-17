@@ -55,6 +55,7 @@
             this.gbInstallStatus = new System.Windows.Forms.GroupBox();
             this.picExtractFiles = new System.Windows.Forms.PictureBox();
             this.lbExtractFiles = new System.Windows.Forms.Label();
+            this.progressInstall = new System.Windows.Forms.ProgressBar();
             ((System.ComponentModel.ISupportInitialize)(this.picStopService)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picCopyFiles)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picStartService)).BeginInit();
@@ -67,7 +68,7 @@
             // 
             // picStopService
             // 
-            this.picStopService.Location = new System.Drawing.Point(11, 82);
+            this.picStopService.Location = new System.Drawing.Point(11, 119);
             this.picStopService.Name = "picStopService";
             this.picStopService.Size = new System.Drawing.Size(24, 24);
             this.picStopService.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -80,7 +81,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbStopService.AutoEllipsis = true;
             this.lbStopService.Enabled = false;
-            this.lbStopService.Location = new System.Drawing.Point(41, 82);
+            this.lbStopService.Location = new System.Drawing.Point(41, 119);
             this.lbStopService.Name = "lbStopService";
             this.lbStopService.Size = new System.Drawing.Size(451, 24);
             this.lbStopService.TabIndex = 1;
@@ -93,7 +94,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbCopyFiles.AutoEllipsis = true;
             this.lbCopyFiles.Enabled = false;
-            this.lbCopyFiles.Location = new System.Drawing.Point(41, 112);
+            this.lbCopyFiles.Location = new System.Drawing.Point(41, 149);
             this.lbCopyFiles.Name = "lbCopyFiles";
             this.lbCopyFiles.Size = new System.Drawing.Size(451, 24);
             this.lbCopyFiles.TabIndex = 2;
@@ -102,7 +103,7 @@
             // 
             // picCopyFiles
             // 
-            this.picCopyFiles.Location = new System.Drawing.Point(11, 112);
+            this.picCopyFiles.Location = new System.Drawing.Point(11, 149);
             this.picCopyFiles.Name = "picCopyFiles";
             this.picCopyFiles.Size = new System.Drawing.Size(24, 24);
             this.picCopyFiles.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -115,7 +116,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbStartService.AutoEllipsis = true;
             this.lbStartService.Enabled = false;
-            this.lbStartService.Location = new System.Drawing.Point(41, 172);
+            this.lbStartService.Location = new System.Drawing.Point(41, 209);
             this.lbStartService.Name = "lbStartService";
             this.lbStartService.Size = new System.Drawing.Size(451, 24);
             this.lbStartService.TabIndex = 4;
@@ -124,7 +125,7 @@
             // 
             // picStartService
             // 
-            this.picStartService.Location = new System.Drawing.Point(11, 172);
+            this.picStartService.Location = new System.Drawing.Point(11, 209);
             this.picStartService.Name = "picStartService";
             this.picStartService.Size = new System.Drawing.Size(24, 24);
             this.picStartService.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -141,7 +142,7 @@
             // btClose
             // 
             this.btClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btClose.Location = new System.Drawing.Point(429, 383);
+            this.btClose.Location = new System.Drawing.Point(429, 407);
             this.btClose.Name = "btClose";
             this.btClose.Size = new System.Drawing.Size(75, 23);
             this.btClose.TabIndex = 2;
@@ -155,7 +156,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbInstallAgent.AutoEllipsis = true;
             this.lbInstallAgent.Enabled = false;
-            this.lbInstallAgent.Location = new System.Drawing.Point(41, 142);
+            this.lbInstallAgent.Location = new System.Drawing.Point(41, 179);
             this.lbInstallAgent.Name = "lbInstallAgent";
             this.lbInstallAgent.Size = new System.Drawing.Size(451, 24);
             this.lbInstallAgent.TabIndex = 3;
@@ -164,7 +165,7 @@
             // 
             // picInstallAgent
             // 
-            this.picInstallAgent.Location = new System.Drawing.Point(11, 142);
+            this.picInstallAgent.Location = new System.Drawing.Point(11, 179);
             this.picInstallAgent.Name = "picInstallAgent";
             this.picInstallAgent.Size = new System.Drawing.Size(24, 24);
             this.picInstallAgent.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -177,7 +178,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbDownloadFiles.AutoEllipsis = true;
             this.lbDownloadFiles.Enabled = false;
-            this.lbDownloadFiles.Location = new System.Drawing.Point(41, 22);
+            this.lbDownloadFiles.Location = new System.Drawing.Point(41, 59);
             this.lbDownloadFiles.Name = "lbDownloadFiles";
             this.lbDownloadFiles.Size = new System.Drawing.Size(451, 24);
             this.lbDownloadFiles.TabIndex = 0;
@@ -186,7 +187,7 @@
             // 
             // picDownloadFiles
             // 
-            this.picDownloadFiles.Location = new System.Drawing.Point(11, 22);
+            this.picDownloadFiles.Location = new System.Drawing.Point(11, 59);
             this.picDownloadFiles.Name = "picDownloadFiles";
             this.picDownloadFiles.Size = new System.Drawing.Size(24, 24);
             this.picDownloadFiles.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -304,6 +305,7 @@
             // 
             // gbInstallStatus
             // 
+            this.gbInstallStatus.Controls.Add(this.progressInstall);
             this.gbInstallStatus.Controls.Add(this.picExtractFiles);
             this.gbInstallStatus.Controls.Add(this.lbExtractFiles);
             this.gbInstallStatus.Controls.Add(this.lbDownloadFiles);
@@ -320,14 +322,14 @@
             this.gbInstallStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gbInstallStatus.Location = new System.Drawing.Point(12, 154);
             this.gbInstallStatus.Name = "gbInstallStatus";
-            this.gbInstallStatus.Size = new System.Drawing.Size(498, 223);
+            this.gbInstallStatus.Size = new System.Drawing.Size(498, 247);
             this.gbInstallStatus.TabIndex = 1;
             this.gbInstallStatus.TabStop = false;
             this.gbInstallStatus.Text = "Install Status";
             // 
             // picExtractFiles
             // 
-            this.picExtractFiles.Location = new System.Drawing.Point(11, 52);
+            this.picExtractFiles.Location = new System.Drawing.Point(11, 89);
             this.picExtractFiles.Name = "picExtractFiles";
             this.picExtractFiles.Size = new System.Drawing.Size(24, 24);
             this.picExtractFiles.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -340,19 +342,30 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lbExtractFiles.AutoEllipsis = true;
             this.lbExtractFiles.Enabled = false;
-            this.lbExtractFiles.Location = new System.Drawing.Point(41, 52);
+            this.lbExtractFiles.Location = new System.Drawing.Point(41, 89);
             this.lbExtractFiles.Name = "lbExtractFiles";
             this.lbExtractFiles.Size = new System.Drawing.Size(451, 24);
             this.lbExtractFiles.TabIndex = 14;
             this.lbExtractFiles.Text = "Extract files";
             this.lbExtractFiles.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // progressInstall
+            // 
+            this.progressInstall.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressInstall.Location = new System.Drawing.Point(11, 19);
+            this.progressInstall.Maximum = 6;
+            this.progressInstall.Name = "progressInstall";
+            this.progressInstall.Size = new System.Drawing.Size(481, 23);
+            this.progressInstall.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressInstall.TabIndex = 3;
+            // 
             // InstallWindow
             // 
             this.AcceptButton = this.btClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(522, 418);
+            this.ClientSize = new System.Drawing.Size(522, 442);
             this.ControlBox = false;
             this.Controls.Add(this.gbSelectVersionToInstall);
             this.Controls.Add(this.gbInstallStatus);
@@ -405,5 +418,6 @@
         private System.Windows.Forms.GroupBox gbInstallStatus;
         private System.Windows.Forms.PictureBox picExtractFiles;
         private System.Windows.Forms.Label lbExtractFiles;
+        private System.Windows.Forms.ProgressBar progressInstall;
     }
 }

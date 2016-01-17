@@ -29,9 +29,10 @@ namespace Configuration.DkimSigner
 
 
 
-            int parIdx = Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"),
+            int parIdx = Math.Max(Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"),
                 Array.IndexOf(asArgv, "--upgrade-inplace")),
-                Array.IndexOf(asArgv, "--configure"));
+                Array.IndexOf(asArgv, "--configure")),
+                Array.IndexOf(asArgv, "--uninstall"));
 
             if (parIdx >= 0)
             {
@@ -46,6 +47,10 @@ namespace Configuration.DkimSigner
                 else if (asArgv[parIdx] == "--install")
                 {
                     oForm = new InstallWindow();
+                }
+                else if (asArgv[parIdx] == "--uninstall")
+                {
+                    oForm = new UninstallWindow();
                 }
             }
             else

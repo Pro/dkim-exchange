@@ -141,6 +141,7 @@ namespace Configuration.DkimSigner
         /// </summary>
         private async void CheckExchangeInstalled()
         {
+            progressInstall.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => exchangeVersion = ExchangeServer.GetInstalledVersion());
 
             lblExchangeVersionWait.Hide();
@@ -160,6 +161,7 @@ namespace Configuration.DkimSigner
 
         private void Install()
         {
+            progressInstall.Style = ProgressBarStyle.Continuous;
             btClose.Enabled = false;
             gbSelectVersionToInstall.Enabled = false;
             gbInstallStatus.Enabled = true;
@@ -236,6 +238,7 @@ namespace Configuration.DkimSigner
                 }
 
                 picDownloadFiles.Image = lbExtractFiles.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
+                progressInstall.Value = 1;
                 Refresh();
 
                 // ###########################################
@@ -283,6 +286,7 @@ namespace Configuration.DkimSigner
                 }
 
                 picExtractFiles.Image = lbStopService.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
+                progressInstall.Value = 2;
                 Refresh();
             }
             else
@@ -322,16 +326,16 @@ namespace Configuration.DkimSigner
                     picExtractFiles.Image = statusImageList.Images[1];
 
                     Refresh();
-                    MessageBox.Show(this, @"Failed to determine copy root directory.\nThis executable is expected to be in the subpath: \Src\Configuration.DkimSigner\bin\Release", "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
+                    MessageBox.Show(this, "Failed to determine copy root directory.\nThis executable is expected to be in the subpath: \\Src\\Configuration.DkimSigner\\bin\\Release", "ZIP Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                    btClose.Enabled = true;
+                    return;
                 }
-                else
-                {
-                    picDownloadFiles.Image = statusImageList.Images[0];
-                    picExtractFiles.Image = statusImageList.Images[0];
-                    Refresh();
-                }
+
+                picDownloadFiles.Image = statusImageList.Images[0];
+                picExtractFiles.Image = statusImageList.Images[0];
+                progressInstall.Value = 2;
+                Refresh();
 
                 extractPath = dir.FullName;
 
@@ -360,6 +364,7 @@ namespace Configuration.DkimSigner
             }
 
             picStopService.Image = lbCopyFiles.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
+            progressInstall.Value = 3;
             Refresh();
 
             // ###########################################
@@ -411,13 +416,22 @@ namespace Configuration.DkimSigner
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show(this, "Could not create applet in control panel:\n" + ex.Message + "\nThe installation will be successfuly anyways but you won't be able to open the DKIM Configurator from the Control Panel", "Error creating applet", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(this, "Could not create applet in control panel:\n" + ex.Message + "\nThe installation will be successful anyways but you won't be able to open the DKIM Configurator from the Control Panel", "Error creating applet", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-                
+
+                try
+                {
+                    UninstallerRegistry.Register();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(this, "Could not create uninstall entry in Program and Files:\n" + ex.Message + "\nThe installation will be successful anyways but you won't be able to open the DKIM Configurator from the Control Panel", "Error creating applet", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
 
             }
-                
+
             picCopyFiles.Image = lbInstallAgent.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
+            progressInstall.Value = 4;
             Refresh();
 
             // ############################################
@@ -464,6 +478,7 @@ namespace Configuration.DkimSigner
             }
 
             picInstallAgent.Image = lbStartService.Enabled ? statusImageList.Images[0] : statusImageList.Images[1];
+            progressInstall.Value = 5;
             Refresh();
 
             // ###########################################
@@ -484,6 +499,7 @@ namespace Configuration.DkimSigner
                 picStartService.Image = statusImageList.Images[1];
             }
 
+            progressInstall.Value = 6;
             Refresh();
 
             btClose.Enabled = true;
