@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Configuration.DkimSigner
 {
     public static class Constants
     {
-        public const string DkimSignerPath = @"C:\Program Files\Exchange DkimSigner";
+        public static string DkimSignerPath
+        {
+            get { return string.Format("{0}\\Exchange DkimSigner", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\')); } 
+        }
+
         public const string DkimSignerAgentName = @"Exchange DkimSigner";
         public const string DkimSignerAgentDll = @"ExchangeDkimSigner.dll";
         public const string DkimSignerConfigurationExe = @"Configuration.DkimSigner.exe";
