@@ -5,6 +5,9 @@
 
 
 ## Releases
+* 27.02.2016 [3.0.2]:  
+	Fix: Updated to MimeKit 1.2.21 (Fix to not enforce 7bit encoding of the body: https://github.com/jstedfast/MimeKit/issues/224)  
+	Fix: Now using system variable for Program Files Folder install location instead of hard-coded `C:\Program Files`.  
 * 17.01.2016 [3.0.1]:  
 	New: Switched to MimeKit implementation for DKIM signer  
 	New: Better handling of private key reading and generation. Now using OpenSSL format 
