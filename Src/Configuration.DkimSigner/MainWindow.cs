@@ -56,6 +56,7 @@ namespace Configuration.DkimSigner
                                     Constants.DkimSignerWebsite;
             if (!enableDebugTab)
                 tcConfiguration.TabPages["tpDebug"].Hide();
+            txDebugPath.Text = Constants.DkimSignerPath;
         }
 
         // ##########################################################

@@ -107,6 +107,8 @@
             this.tpDebug = new System.Windows.Forms.TabPage();
             this.btExchangeVersion = new System.Windows.Forms.Button();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
+            this.label3 = new System.Windows.Forms.Label();
+            this.txDebugPath = new System.Windows.Forms.TextBox();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -989,6 +991,8 @@
             // 
             // tpDebug
             // 
+            this.tpDebug.Controls.Add(this.txDebugPath);
+            this.tpDebug.Controls.Add(this.label3);
             this.tpDebug.Controls.Add(this.btExchangeVersion);
             this.tpDebug.Location = new System.Drawing.Point(4, 29);
             this.tpDebug.Name = "tpDebug";
@@ -1011,6 +1015,24 @@
             // epvDomainSelector
             // 
             this.epvDomainSelector.ContainerControl = this;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 54);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(62, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Install Path:";
+            // 
+            // txDebugPath
+            // 
+            this.txDebugPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txDebugPath.Location = new System.Drawing.Point(9, 70);
+            this.txDebugPath.Name = "txDebugPath";
+            this.txDebugPath.Size = new System.Drawing.Size(692, 20);
+            this.txDebugPath.TabIndex = 2;
             // 
             // MainWindow
             // 
@@ -1051,6 +1073,7 @@
             this.tpAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picLogo)).EndInit();
             this.tpDebug.ResumeLayout(false);
+            this.tpDebug.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.epvDomainSelector)).EndInit();
             this.ResumeLayout(false);
 
@@ -1135,6 +1158,8 @@
         private System.Windows.Forms.Button btExchangeVersion;
         private System.Windows.Forms.Label lblDomainDNSCheckResult;
         private System.Windows.Forms.Button btCopyToClipboard;
+        private System.Windows.Forms.TextBox txDebugPath;
+        private System.Windows.Forms.Label label3;
     }
 }
 
