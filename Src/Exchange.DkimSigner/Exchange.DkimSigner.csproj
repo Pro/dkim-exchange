@@ -221,7 +221,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle">
-      <HintPath>..\..\packages\MimeKit.1.2.19\lib\net40\BouncyCastle.dll</HintPath>
+      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
@@ -360,7 +360,7 @@
       <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MimeKit.1.2.19\lib\net40\MimeKit.dll</HintPath>
+      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
@@ -414,7 +414,7 @@
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
       <ItemGroup>
         <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-          <HintPath>..\..\packages\MimeKit.1.2.19\lib\net35\MimeKit.dll</HintPath>
+          <HintPath>..\..\packages\MimeKit.1.2.21\lib\net35\MimeKit.dll</HintPath>
           <Private>True</Private>
         </Reference>
       </ItemGroup>
