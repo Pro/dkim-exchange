@@ -41,12 +41,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Cryptography.ApplicationPgpEncrypted"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitApplicationPgpEncrypted(MimeKit.Cryptography.ApplicationPgpEncrypted)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitApplicationPgpEncrypted(MimeKit.Cryptography.ApplicationPgpEncrypted)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -101,12 +101,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Cryptography.ApplicationPgpSignature"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitApplicationPgpSignature(MimeKit.Cryptography.ApplicationPgpSignature)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitApplicationPgpSignature(MimeKit.Cryptography.ApplicationPgpSignature)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -175,12 +175,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Cryptography.ApplicationPkcs7Mime"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitApplicationPkcs7Mime(MimeKit.Cryptography.ApplicationPkcs7Mime)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitApplicationPkcs7Mime(MimeKit.Cryptography.ApplicationPkcs7Mime)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -705,12 +705,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Cryptography.ApplicationPkcs7Signature"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitApplicationPkcs7Signature(MimeKit.Cryptography.ApplicationPkcs7Signature)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitApplicationPkcs7Signature(MimeKit.Cryptography.ApplicationPkcs7Signature)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -2985,12 +2985,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Cryptography.MultipartEncrypted"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMultipartEncrypted(MimeKit.Cryptography.MultipartEncrypted)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMultipartEncrypted(MimeKit.Cryptography.MultipartEncrypted)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -3402,6 +3402,53 @@
             A default <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> has not been registered.
             </exception>
         </member>
+        <member name="M:MimeKit.Cryptography.MultipartEncrypted.SignAndEncrypt(MimeKit.Cryptography.OpenPgpContext,MimeKit.MailboxAddress,MimeKit.Cryptography.DigestAlgorithm,MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
+            <summary>
+            Create a multipart/encrypted MIME part by signing and encrypting the specified entity.
+            </summary>
+            <remarks>
+            Signs the entity using the supplied signer and digest algorithm and then encrypts to
+            the specified recipients, encapsulating the result in a new multipart/encrypted part.
+            </remarks>
+            <returns>A new <see cref="T:MimeKit.Cryptography.MultipartEncrypted"/> instance containing
+            the signed and encrypted version of the specified entity.</returns>
+            <param name="ctx">The OpenPGP cryptography context to use for singing and encrypting.</param>
+            <param name="signer">The signer to use to sign the entity.</param>
+            <param name="digestAlgo">The digest algorithm to use for signing.</param>
+            <param name="cipherAlgo">The encryption algorithm.</param>
+            <param name="recipients">The recipients for the encrypted entity.</param>
+            <param name="entity">The entity to sign and encrypt.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="ctx"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="signer"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="recipients"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="entity"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <para><paramref name="signer"/> cannot be used for signing.</para>
+            <para>-or-</para>
+            <para>One or more of the recipient keys cannot be used for encrypting.</para>
+            <para>-or-</para>
+            <para>No recipients were specified.</para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The <paramref name="digestAlgo"/> was out of range.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            <para>The <paramref name="digestAlgo"/> is not supported.</para>
+            <para>-or-</para>
+            <para>The <paramref name="cipherAlgo"/> is not supported.</para>
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            The user chose to cancel the password prompt.
+            </exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            3 bad attempts were made to unlock the secret key.
+            </exception>
+        </member>
         <member name="M:MimeKit.Cryptography.MultipartEncrypted.SignAndEncrypt(MimeKit.Cryptography.OpenPgpContext,MimeKit.MailboxAddress,MimeKit.Cryptography.DigestAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
             <summary>
             Create a multipart/encrypted MIME part by signing and encrypting the specified entity.
@@ -3431,6 +3478,52 @@
             </exception>
             <exception cref="T:MimeKit.Cryptography.PublicKeyNotFoundException">
             A public key for one or more of the <paramref name="recipients"/> could not be found.
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            The user chose to cancel the password prompt.
+            </exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            3 bad attempts were made to unlock the secret key.
+            </exception>
+        </member>
+        <member name="M:MimeKit.Cryptography.MultipartEncrypted.SignAndEncrypt(MimeKit.MailboxAddress,MimeKit.Cryptography.DigestAlgorithm,MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
+            <summary>
+            Create a multipart/encrypted MIME part by signing and encrypting the specified entity.
+            </summary>
+            <remarks>
+            Signs the entity using the supplied signer and digest algorithm and then encrypts to
+            the specified recipients, encapsulating the result in a new multipart/encrypted part.
+            </remarks>
+            <returns>A new <see cref="T:MimeKit.Cryptography.MultipartEncrypted"/> instance containing
+            the signed and encrypted version of the specified entity.</returns>
+            <param name="signer">The signer to use to sign the entity.</param>
+            <param name="digestAlgo">The digest algorithm to use for signing.</param>
+            <param name="cipherAlgo">The encryption algorithm.</param>
+            <param name="recipients">The recipients for the encrypted entity.</param>
+            <param name="entity">The entity to sign and encrypt.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="signer"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="recipients"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="entity"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <para><paramref name="signer"/> cannot be used for signing.</para>
+            <para>-or-</para>
+            <para>One or more of the recipient keys cannot be used for encrypting.</para>
+            <para>-or-</para>
+            <para>No recipients were specified.</para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            The <paramref name="digestAlgo"/> was out of range.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            <para>A default <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> has not been registered.</para>
+            <para>-or-</para>
+            <para>The <paramref name="digestAlgo"/> is not supported.</para>
+            <para>-or-</para>
+            <para>The <paramref name="cipherAlgo"/> is not supported.</para>
             </exception>
             <exception cref="T:System.OperationCanceledException">
             The user chose to cancel the password prompt.
@@ -3656,6 +3749,34 @@
             3 bad attempts were made to unlock the secret key.
             </exception>
         </member>
+        <member name="M:MimeKit.Cryptography.MultipartEncrypted.Encrypt(MimeKit.Cryptography.OpenPgpContext,MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
+            <summary>
+            Create a multipart/encrypted MIME part by encrypting the specified entity.
+            </summary>
+            <remarks>
+            Encrypts the entity to the specified recipients, encapsulating the result in a
+            new multipart/encrypted part.
+            </remarks>
+            <returns>A new <see cref="T:MimeKit.Cryptography.MultipartEncrypted"/> instance containing
+            the encrypted version of the specified entity.</returns>
+            <param name="ctx">The OpenPGP cryptography context to use for encrypting.</param>
+            <param name="algorithm">The encryption algorithm.</param>
+            <param name="recipients">The recipients for the encrypted entity.</param>
+            <param name="entity">The entity to sign and encrypt.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="ctx"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="recipients"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="entity"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            One or more of the recipient keys cannot be used for encrypting.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            THe specified encryption algorithm is not supported.
+            </exception>
+        </member>
         <member name="M:MimeKit.Cryptography.MultipartEncrypted.Encrypt(MimeKit.Cryptography.OpenPgpContext,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
             <summary>
             Create a multipart/encrypted MIME part by encrypting the specified entity.
@@ -3678,6 +3799,33 @@
             </exception>
             <exception cref="T:MimeKit.Cryptography.PublicKeyNotFoundException">
             A public key for one or more of the <paramref name="recipients"/> could not be found.
+            </exception>
+        </member>
+        <member name="M:MimeKit.Cryptography.MultipartEncrypted.Encrypt(MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
+            <summary>
+            Create a multipart/encrypted MIME part by encrypting the specified entity.
+            </summary>
+            <remarks>
+            Encrypts the entity to the specified recipients, encapsulating the result in a
+            new multipart/encrypted part.
+            </remarks>
+            <returns>A new <see cref="T:MimeKit.Cryptography.MultipartEncrypted"/> instance containing
+            the encrypted version of the specified entity.</returns>
+            <param name="algorithm">The encryption algorithm.</param>
+            <param name="recipients">The recipients for the encrypted entity.</param>
+            <param name="entity">The entity to sign and encrypt.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="recipients"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="entity"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            One or more of the recipient keys cannot be used for encrypting.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            <para>A default <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> has not been registered.</para>
+            <para>-or-</para>
+            <para>The specified encryption algorithm is not supported.</para>
             </exception>
         </member>
         <member name="M:MimeKit.Cryptography.MultipartEncrypted.Encrypt(System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},MimeKit.MimeEntity)">
@@ -3958,12 +4106,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Cryptography.MultipartSigned"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMultipartSigned(MimeKit.Cryptography.MultipartSigned)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMultipartSigned(MimeKit.Cryptography.MultipartSigned)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -4256,6 +4404,37 @@
             and <see cref="T:MimeKit.Cryptography.MultipartEncrypted"/>.
             </remarks>
         </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> class.
+            </summary>
+            <remarks>
+            Subclasses choosing to use this constructor MUST set the <see cref="P:MimeKit.Cryptography.OpenPgpContext.PublicKeyRingPath"/>,
+            <see cref="P:MimeKit.Cryptography.OpenPgpContext.SecretKeyRingPath"/>, <see cref="P:MimeKit.Cryptography.OpenPgpContext.PublicKeyRingBundle"/>, and the
+            <see cref="P:MimeKit.Cryptography.OpenPgpContext.SecretKeyRingBundle"/> properties themselves.
+            </remarks>
+        </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> class.
+            </summary>
+            <remarks>
+            Creates a new <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> using the specified public and private keyring paths.
+            </remarks>
+            <param name="pubring">The public keyring file path.</param>
+            <param name="secring">The secret keyring file path.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="pubring"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="secring"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.IO.IOException">
+            An error occurred while reading one of the keyring files.
+            </exception>
+            <exception cref="T:Org.BouncyCastle.Bcpg.OpenPgp.PgpException">
+            An error occurred while parsing one of the keyring files.
+            </exception>
+        </member>
         <member name="P:MimeKit.Cryptography.OpenPgpContext.DefaultEncryptionAlgorithm">
             <summary>
             Gets or sets the default encryption algorithm.
@@ -4390,37 +4569,6 @@
             <paramref name="micalg"/> is <c>null</c>.
             </exception>
         </member>
-        <member name="M:MimeKit.Cryptography.OpenPgpContext.#ctor(System.String,System.String)">
-            <summary>
-            Initializes a new instance of the <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> class.
-            </summary>
-            <remarks>
-            Creates a new <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> using the specified public and private keyring paths.
-            </remarks>
-            <param name="pubring">The public keyring file path.</param>
-            <param name="secring">The secret keyring file path.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <para><paramref name="pubring"/> is <c>null</c>.</para>
-            <para>-or-</para>
-            <para><paramref name="secring"/> is <c>null</c>.</para>
-            </exception>
-            <exception cref="T:System.IO.IOException">
-            An error occurred while reading one of the keyring files.
-            </exception>
-            <exception cref="T:Org.BouncyCastle.Bcpg.OpenPgp.PgpException">
-            An error occurred while parsing one of the keyring files.
-            </exception>
-        </member>
-        <member name="M:MimeKit.Cryptography.OpenPgpContext.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:MimeKit.Cryptography.OpenPgpContext"/> class.
-            </summary>
-            <remarks>
-            Subclasses choosing to use this constructor MUST set the <see cref="P:MimeKit.Cryptography.OpenPgpContext.PublicKeyRingPath"/>,
-            <see cref="P:MimeKit.Cryptography.OpenPgpContext.SecretKeyRingPath"/>, <see cref="P:MimeKit.Cryptography.OpenPgpContext.PublicKeyRingBundle"/>, and the
-            <see cref="P:MimeKit.Cryptography.OpenPgpContext.SecretKeyRingBundle"/> properties themselves.
-            </remarks>
-        </member>
         <member name="M:MimeKit.Cryptography.OpenPgpContext.GetPublicKey(MimeKit.MailboxAddress)">
             <summary>
             Gets the public key associated with the mailbox address.
@@ -4534,8 +4682,7 @@
             <paramref name="digestAlgo"/> is out of range.
             </exception>
             <exception cref="T:System.NotSupportedException">
-            <paramref name="digestAlgo"/> does not have an equivalent
-            <see cref="T:Org.BouncyCastle.Bcpg.HashAlgorithmTag"/> value.
+            <paramref name="digestAlgo"/> is not a supported digest algorithm.
             </exception>
         </member>
         <member name="M:MimeKit.Cryptography.OpenPgpContext.Sign(MimeKit.MailboxAddress,MimeKit.Cryptography.DigestAlgorithm,System.IO.Stream)">
@@ -4681,6 +4828,35 @@
             A public key could not be found for one or more of the <paramref name="recipients"/>.
             </exception>
         </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.Encrypt(MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},System.IO.Stream)">
+            <summary>
+            Encrypts the specified content for the specified recipients.
+            </summary>
+            <remarks>
+            Encrypts the specified content for the specified recipients.
+            </remarks>
+            <returns>A new <see cref="T:MimeKit.MimePart"/> instance
+            containing the encrypted data.</returns>
+            <param name="algorithm">The encryption algorithm.</param>
+            <param name="recipients">The recipients.</param>
+            <param name="content">The content.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="recipients"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="content"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <para>One or more of the recipient keys cannot be used for encrypting.</para>
+            <para>-or-</para>
+            <para>No recipients were specified.</para>
+            </exception>
+            <exception cref="T:MimeKit.Cryptography.PublicKeyNotFoundException">
+            A public key could not be found for one or more of the <paramref name="recipients"/>.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            The specified encryption algorithm is not supported.
+            </exception>
+        </member>
         <member name="M:MimeKit.Cryptography.OpenPgpContext.Encrypt(MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{Org.BouncyCastle.Bcpg.OpenPgp.PgpPublicKey},System.IO.Stream)">
             <summary>
             Encrypts the specified content for the specified recipients.
@@ -4765,6 +4941,44 @@
             </exception>
             <exception cref="T:MimeKit.Cryptography.PublicKeyNotFoundException">
             A public key could not be found for one or more of the <paramref name="recipients"/>.
+            </exception>
+            <exception cref="T:System.OperationCanceledException">
+            The user chose to cancel the password prompt.
+            </exception>
+            <exception cref="T:System.UnauthorizedAccessException">
+            3 bad attempts were made to unlock the secret key.
+            </exception>
+        </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.SignAndEncrypt(MimeKit.MailboxAddress,MimeKit.Cryptography.DigestAlgorithm,MimeKit.Cryptography.EncryptionAlgorithm,System.Collections.Generic.IEnumerable{MimeKit.MailboxAddress},System.IO.Stream)">
+            <summary>
+            Cryptographically signs and encrypts the specified content for the specified recipients.
+            </summary>
+            <remarks>
+            Cryptographically signs and encrypts the specified content for the specified recipients.
+            </remarks>
+            <returns>A new <see cref="T:MimeKit.MimePart"/> instance
+            containing the encrypted data.</returns>
+            <param name="signer">The signer.</param>
+            <param name="digestAlgo">The digest algorithm to use for signing.</param>
+            <param name="cipherAlgo">The encryption algorithm.</param>
+            <param name="recipients">The recipients.</param>
+            <param name="content">The content.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="signer"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="recipients"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="content"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <para><paramref name="signer"/> cannot be used for signing.</para>
+            <para>-or-</para>
+            <para>One or more of the recipient keys cannot be used for encrypting.</para>
+            <para>-or-</para>
+            <para>No recipients were specified.</para>
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            The specified encryption algorithm is not supported.
             </exception>
             <exception cref="T:System.OperationCanceledException">
             The user chose to cancel the password prompt.
@@ -4971,6 +5185,30 @@
             An error occured while saving the secret key-ring bundle.
             </exception>
         </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.Import(Org.BouncyCastle.Bcpg.OpenPgp.PgpPublicKeyRing)">
+            <summary>
+            Imports a public pgp keyring.
+            </summary>
+            <remarks>
+            Imports a public pgp keyring.
+            </remarks>
+            <param name="keyring">The pgp keyring.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="keyring"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.Import(Org.BouncyCastle.Bcpg.OpenPgp.PgpPublicKeyRingBundle)">
+            <summary>
+            Imports a public pgp keyring bundle.
+            </summary>
+            <remarks>
+            Imports a public pgp keyring bundle.
+            </remarks>
+            <param name="bundle">The pgp keyring bundle.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bundle"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="M:MimeKit.Cryptography.OpenPgpContext.Import(System.IO.Stream)">
             <summary>
             Imports public pgp keys from the specified stream.
@@ -4988,12 +5226,38 @@
             <para>An error occured while saving the public key-ring bundle.</para>
             </exception>
         </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.Import(Org.BouncyCastle.Bcpg.OpenPgp.PgpSecretKeyRing)">
+            <summary>
+            Imports a secret pgp keyring.
+            </summary>
+            <remarks>
+            Imports a secret pgp keyring.
+            </remarks>
+            <param name="keyring">The pgp keyring.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="keyring"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:MimeKit.Cryptography.OpenPgpContext.Import(Org.BouncyCastle.Bcpg.OpenPgp.PgpSecretKeyRingBundle)">
+            <summary>
+            Imports a secret pgp keyring bundle.
+            </summary>
+            <remarks>
+            Imports a secret pgp keyring bundle.
+            </remarks>
+            <param name="bundle">The pgp keyring bundle.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="bundle"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="M:MimeKit.Cryptography.OpenPgpContext.ImportSecretKeys(System.IO.Stream)">
             <summary>
             Imports secret pgp keys from the specified stream.
             </summary>
             <remarks>
-            Imports secret pgp keys from the specified stream.
+            <para>Imports secret pgp keys from the specified stream.</para>
+            <para>The stream should consist of an armored secret keyring bundle
+            containing 1 or more secret keyrings.</para>
             </remarks>
             <param name="rawData">The raw key data.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -11932,7 +12196,7 @@
             Initializes a new instance of the <see cref="T:MimeKit.IO.Filters.EncoderFilter"/> class.
             </summary>
             <remarks>
-            Creates a new <see cref="T:MimeKit.IO.Filters.EncoderFilter"/> using the specified encoder.
+            Creates a new <see cref="T:MimeKit.IO.Filters.IMimeFilter"/> using the specified encoder.
             </remarks>
             <param name="encoder">A specific encoder for the filter to use.</param>
         </member>
@@ -11941,7 +12205,7 @@
             Create a filter that will encode using specified encoding.
             </summary>
             <remarks>
-            Creates a new <see cref="T:MimeKit.IO.Filters.EncoderFilter"/> for the specified encoding.
+            Creates a new <see cref="T:MimeKit.IO.Filters.IMimeFilter"/> for the specified encoding.
             </remarks>
             <returns>A new encoder filter.</returns>
             <param name="encoding">The encoding to create a filter for.</param>
@@ -15413,10 +15677,11 @@
             <para><paramref name="value"/> is <c>null</c>.</para>
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
-            <para><paramref name="startIndex"/> and <paramref name="count"/> do not specify
-            a valid range in the value.</para>
-            <para>-or-</para>
-            <para><paramref name="quote"/> is not a valid quote character.</para>
+            <paramref name="startIndex"/> and <paramref name="count"/> do not specify
+            a valid range in the value.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="quote"/> is not a valid quote character.
             </exception>
         </member>
         <member name="M:MimeKit.Text.HtmlUtils.HtmlAttributeEncode(System.Char[],System.Int32,System.Int32,System.Char)">
@@ -15435,10 +15700,11 @@
             <paramref name="value"/> is <c>null</c>.
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
-            <para><paramref name="startIndex"/> and <paramref name="count"/> do not specify
-            a valid range in the value.</para>
-            <para>-or-</para>
-            <para><paramref name="quote"/> is not a valid quote character.</para>
+            <paramref name="startIndex"/> and <paramref name="count"/> do not specify
+            a valid range in the value.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="quote"/> is not a valid quote character.
             </exception>
         </member>
         <member name="M:MimeKit.Text.HtmlUtils.HtmlAttributeEncode(System.IO.TextWriter,System.String,System.Int32,System.Int32,System.Char)">
@@ -15459,10 +15725,11 @@
             <para><paramref name="value"/> is <c>null</c>.</para>
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
-            <para><paramref name="startIndex"/> and <paramref name="count"/> do not specify
-            a valid range in the value.</para>
-            <para>-or-</para>
-            <para><paramref name="quote"/> is not a valid quote character.</para>
+            <paramref name="startIndex"/> and <paramref name="count"/> do not specify
+            a valid range in the value.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="quote"/> is not a valid quote character.
             </exception>
         </member>
         <member name="M:MimeKit.Text.HtmlUtils.HtmlAttributeEncode(System.IO.TextWriter,System.String,System.Char)">
@@ -15480,7 +15747,7 @@
             <para>-or-</para>
             <para><paramref name="value"/> is <c>null</c>.</para>
             </exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">
+            <exception cref="T:System.ArgumentException">
             <paramref name="quote"/> is not a valid quote character.
             </exception>
         </member>
@@ -15500,10 +15767,11 @@
             <paramref name="value"/> is <c>null</c>.
             </exception>
             <exception cref="T:System.ArgumentOutOfRangeException">
-            <para><paramref name="startIndex"/> and <paramref name="count"/> do not specify
-            a valid range in the value.</para>
-            <para>-or-</para>
-            <para><paramref name="quote"/> is not a valid quote character.</para>
+            <paramref name="startIndex"/> and <paramref name="count"/> do not specify
+            a valid range in the value.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="quote"/> is not a valid quote character.
             </exception>
         </member>
         <member name="M:MimeKit.Text.HtmlUtils.HtmlAttributeEncode(System.String,System.Char)">
@@ -15519,7 +15787,7 @@
             <exception cref="T:System.ArgumentNullException">
             <paramref name="value"/> is <c>null</c>.
             </exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">
+            <exception cref="T:System.ArgumentException">
             <paramref name="quote"/> is not a valid quote character.
             </exception>
         </member>
@@ -26653,6 +26921,14 @@
             Various utility methods that don't belong anywhere else.
             </remarks>
         </member>
+        <member name="F:MimeKit.Utils.MimeUtils.OrdinalIgnoreCase">
+            <summary>
+            A string comparer that performs a case-insensitive ordinal string comparison.
+            </summary>
+            <remarks>
+            A string comparer that performs a case-insensitive ordinal string comparison.
+            </remarks>
+        </member>
         <member name="M:MimeKit.Utils.MimeUtils.GenerateMessageId(System.String)">
             <summary>
             Generates a Message-Id.
@@ -26664,6 +26940,9 @@
             <param name="domain">A domain to use.</param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="domain"/> is <c>null</c>.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="domain"/> is invalid.
             </exception>
         </member>
         <member name="M:MimeKit.Utils.MimeUtils.GenerateMessageId">
@@ -26853,6 +27132,49 @@
             <param name="text">The text to unquote.</param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="text"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="T:MimeKit.Utils.OptimizedOrdinalIgnoreCaseComparer">
+            <summary>
+            An optimized version of StringComparer.OrdinalIgnoreCase.
+            </summary>
+            <remarks>
+            An optimized version of <see cref="P:System.StringComparer.OrdinalIgnoreCase">StringComparer.OrdinalIgnoreCase</see>.
+            </remarks>
+        </member>
+        <member name="M:MimeKit.Utils.OptimizedOrdinalIgnoreCaseComparer.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:MimeKit.Utils.OptimizedOrdinalIgnoreCaseComparer"/> class.
+            </summary>
+            <remarks>
+            Creates a new <see cref="T:MimeKit.Utils.OptimizedOrdinalIgnoreCaseComparer"/>.
+            </remarks>
+        </member>
+        <member name="M:MimeKit.Utils.OptimizedOrdinalIgnoreCaseComparer.Equals(System.String,System.String)">
+            <summary>
+            Compare the input strings for equality.
+            </summary>
+            <remarks>
+            Compares the input strings for equality.
+            </remarks>
+            <returns><c>true</c>if <paramref name="x"/> and <paramref name="y"/> refer to the same object,
+            or <paramref name="x"/> and <paramref name="y"/> are equal,
+            or <paramref name="x"/> and <paramref name="y"/> are <c>null</c>;
+            otherwise, <c>false</c>.</returns>
+            <param name="x">A string to compare to <paramref name="y"/>.</param>
+            <param name="y">A string to compare to <paramref name="x"/>.</param>
+        </member>
+        <member name="M:MimeKit.Utils.OptimizedOrdinalIgnoreCaseComparer.GetHashCode(System.String)">
+            <summary>
+            Get the hash code for the specified string.
+            </summary>
+            <remarks>
+            Get the hash code for the specified string.
+            </remarks>
+            <returns>A 32-bit signed hash code calculated from the value of the <paramref name="obj"/> parameter.</returns>
+            <param name="obj">The string.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="obj"/> is <c>null</c>.
             </exception>
         </member>
         <member name="T:MimeKit.Utils.Rfc2047">
@@ -27792,6 +28114,23 @@
             <paramref name="buffer"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="M:MimeKit.ContentDisposition.TryParse(MimeKit.ParserOptions,System.String,MimeKit.ContentDisposition@)">
+            <summary>
+            Tries to parse the given text into a new <see cref="T:MimeKit.ContentDisposition"/> instance.
+            </summary>
+            <remarks>
+            Parses a Content-Disposition value from the supplied text.
+            </remarks>
+            <returns><c>true</c>, if the disposition was successfully parsed, <c>false</c> otherwise.</returns>
+            <param name="options">The parser options.</param>
+            <param name="text">The text to parse.</param>
+            <param name="disposition">The parsed disposition.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="options"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="text"/> is <c>null</c>.</para>
+            </exception>
+        </member>
         <member name="M:MimeKit.ContentDisposition.TryParse(System.String,MimeKit.ContentDisposition@)">
             <summary>
             Tries to parse the given text into a new <see cref="T:MimeKit.ContentDisposition"/> instance.
@@ -28459,6 +28798,23 @@
             <paramref name="buffer"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="M:MimeKit.ContentType.TryParse(MimeKit.ParserOptions,System.String,MimeKit.ContentType@)">
+            <summary>
+            Tries to parse the given text into a new <see cref="T:MimeKit.ContentType"/> instance.
+            </summary>
+            <remarks>
+            Parses a Content-Type value from the specified text.
+            </remarks>
+            <returns><c>true</c>, if the content type was successfully parsed, <c>false</c> otherwise.</returns>
+            <param name="options">THe parser options.</param>
+            <param name="text">The text to parse.</param>
+            <param name="type">The parsed content type.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="options"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="text"/> is <c>null</c>.</para>
+            </exception>
+        </member>
         <member name="M:MimeKit.ContentType.TryParse(System.String,MimeKit.ContentType@)">
             <summary>
             Tries to parse the given text into a new <see cref="T:MimeKit.ContentType"/> instance.
@@ -28841,7 +29197,7 @@
             </remarks>
             <returns><c>true</c> if a <see cref="T:MimeKit.DomainList"/> was successfully parsed;
             <c>false</c> otherwise.</returns>
-            <param name="text">The text buffer to parse.</param>
+            <param name="buffer">The buffer to parse.</param>
             <param name="index">The index to start parsing.</param>
             <param name="endIndex">An index of the end of the input.</param>
             <param name="throwOnError">A flag indicating whether or not an
@@ -29104,6 +29460,15 @@
             Creates a new <see cref="T:MimeKit.GroupAddress"/> with the specified name.
             </remarks>
             <param name="name">The name of the group.</param>
+        </member>
+        <member name="M:MimeKit.GroupAddress.Clone">
+            <summary>
+            Clone the group address.
+            </summary>
+            <remarks>
+            Clones the group address.
+            </remarks>
+            <returns>The cloned group address.</returns>
         </member>
         <member name="P:MimeKit.GroupAddress.Members">
             <summary>
@@ -29514,9 +29879,6 @@
             <exception cref="T:System.ArgumentOutOfRangeException">
             <paramref name="id"/> is not a valid <see cref="T:MimeKit.HeaderId"/>.
             </exception>
-            <exception cref="T:System.ArgumentException">
-            <paramref name="charset"/> cannot be empty.
-            </exception>
             <exception cref="T:System.NotSupportedException">
             <paramref name="charset"/> is not supported.
             </exception>
@@ -29583,9 +29945,7 @@
             <para><paramref name="value"/> is <c>null</c>.</para>
             </exception>
             <exception cref="T:System.ArgumentException">
-            <para><paramref name="charset"/> cannot be empty.</para>
-            <para>-or-</para>
-            <para>The <paramref name="field"/> contains illegal characters.</para>
+            The <paramref name="field"/> contains illegal characters.
             </exception>
             <exception cref="T:System.NotSupportedException">
             <paramref name="charset"/> is not supported.
@@ -30417,6 +30777,46 @@
             The <paramref name="field"/> contains illegal characters.
             </exception>
         </member>
+        <member name="M:MimeKit.HeaderList.Add(MimeKit.HeaderId,System.Text.Encoding,System.String)">
+            <summary>
+            Adds a header with the specified field and value.
+            </summary>
+            <remarks>
+            Adds a new header for the specified field and value pair.
+            </remarks>
+            <param name="id">The header identifier.</param>
+            <param name="encoding">The character encoding to use for the value.</param>
+            <param name="value">The header value.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="encoding"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="value"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="id"/> is not a valid <see cref="T:MimeKit.HeaderId"/>.
+            </exception>
+        </member>
+        <member name="M:MimeKit.HeaderList.Add(System.String,System.Text.Encoding,System.String)">
+            <summary>
+            Adds a header with the specified field and value.
+            </summary>
+            <remarks>
+            Adds a new header for the specified field and value pair.
+            </remarks>
+            <param name="field">The name of the header field.</param>
+            <param name="encoding">The character encoding to use for the value.</param>
+            <param name="value">The header value.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="field"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="encoding"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="value"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The <paramref name="field"/> contains illegal characters.
+            </exception>
+        </member>
         <member name="M:MimeKit.HeaderList.Contains(MimeKit.HeaderId)">
             <summary>
             Checks if the <see cref="T:MimeKit.HeaderList"/> contains a header with the specified field name.
@@ -30502,6 +30902,53 @@
             <param name="value">The header value.</param>
             <exception cref="T:System.ArgumentNullException">
             <para><paramref name="field"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="value"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The <paramref name="field"/> contains illegal characters.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="index"/> is out of range.
+            </exception>
+        </member>
+        <member name="M:MimeKit.HeaderList.Insert(System.Int32,MimeKit.HeaderId,System.Text.Encoding,System.String)">
+            <summary>
+            Inserts a header with the specified field and value at the given index.
+            </summary>
+            <remarks>
+            Inserts the header at the specified index in the list.
+            </remarks>
+            <param name="index">The index to insert the header.</param>
+            <param name="id">The header identifier.</param>
+            <param name="encoding">The character encoding to use for the value.</param>
+            <param name="value">The header value.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="encoding"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="value"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <para><paramref name="id"/> is not a valid <see cref="T:MimeKit.HeaderId"/>.</para>
+            <para>-or-</para>
+            <para><paramref name="index"/> is out of range.</para>
+            </exception>
+        </member>
+        <member name="M:MimeKit.HeaderList.Insert(System.Int32,System.String,System.Text.Encoding,System.String)">
+            <summary>
+            Inserts a header with the specified field and value at the given index.
+            </summary>
+            <remarks>
+            Inserts the header at the specified index in the list.
+            </remarks>
+            <param name="index">The index to insert the header.</param>
+            <param name="field">The name of the header field.</param>
+            <param name="encoding">The character encoding to use for the value.</param>
+            <param name="value">The header value.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="field"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="encoding"/> is <c>null</c>.</para>
             <para>-or-</para>
             <para><paramref name="value"/> is <c>null</c>.</para>
             </exception>
@@ -30610,29 +31057,6 @@
             <paramref name="id"/> is not a valid <see cref="T:MimeKit.HeaderId"/>.
             </exception>
         </member>
-        <member name="M:MimeKit.HeaderList.Replace(MimeKit.HeaderId,System.String,System.String)">
-            <summary>
-            Replaces all headers with identical field names with the single specified header.
-            </summary>
-            <remarks>
-            <para>Replaces all headers with identical field names with the single specified header.</para>
-            <para>If no headers with the specified field name exist, it is simply added.</para>
-            </remarks>
-            <param name="id">The header identifier.</param>
-            <param name="charset">The charset to use for the value.</param>
-            <param name="value">The header value.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <para><paramref name="charset"/> is <c>null</c>.</para>
-            <para>-or-</para>
-            <para><paramref name="value"/> is <c>null</c>.</para>
-            </exception>
-            <exception cref="T:System.ArgumentOutOfRangeException">
-            <paramref name="id"/> is not a valid <see cref="T:MimeKit.HeaderId"/>.
-            </exception>
-            <exception cref="T:System.NotSupportedException">
-            <paramref name="charset"/> is not supported.
-            </exception>
-        </member>
         <member name="M:MimeKit.HeaderList.Replace(MimeKit.HeaderId,System.String)">
             <summary>
             Replaces all headers with identical field names with the single specified header.
@@ -30667,31 +31091,6 @@
             <para><paramref name="encoding"/> is <c>null</c>.</para>
             <para>-or-</para>
             <para><paramref name="value"/> is <c>null</c>.</para>
-            </exception>
-        </member>
-        <member name="M:MimeKit.HeaderList.Replace(System.String,System.String,System.String)">
-            <summary>
-            Replaces all headers with identical field names with the single specified header.
-            </summary>
-            <remarks>
-            <para>Replaces all headers with identical field names with the single specified header.</para>
-            <para>If no headers with the specified field name exist, it is simply added.</para>
-            </remarks>
-            <param name="field">The name of the header field.</param>
-            <param name="charset">The charset to use for the value.</param>
-            <param name="value">The header value.</param>
-            <exception cref="T:System.ArgumentNullException">
-            <para><paramref name="field"/> is <c>null</c>.</para>
-            <para>-or-</para>
-            <para><paramref name="charset"/> is <c>null</c>.</para>
-            <para>-or-</para>
-            <para><paramref name="value"/> is <c>null</c>.</para>
-            </exception>
-            <exception cref="T:System.ArgumentException">
-            The <paramref name="field"/> contains illegal characters.
-            </exception>
-            <exception cref="T:System.NotSupportedException">
-            <paramref name="charset"/> is not supported.
             </exception>
         </member>
         <member name="M:MimeKit.HeaderList.Replace(System.String,System.String)">
@@ -31378,6 +31777,15 @@
             or group that own the internet address.
             </remarks>
             <value>The name of the address.</value>
+        </member>
+        <member name="M:MimeKit.InternetAddress.Clone">
+            <summary>
+            Clone the address.
+            </summary>
+            <remarks>
+            Clones the address.
+            </remarks>
+            <returns>The cloned address.</returns>
         </member>
         <member name="M:MimeKit.InternetAddress.CompareTo(MimeKit.InternetAddress)">
             <summary>
@@ -32455,6 +32863,15 @@
             <paramref name="address"/> is <c>null</c>.
             </exception>
         </member>
+        <member name="M:MimeKit.MailboxAddress.Clone">
+            <summary>
+            Clone the mailbox address.
+            </summary>
+            <remarks>
+            Clones the mailbox address.
+            </remarks>
+            <returns>The cloned mailbox address.</returns>
+        </member>
         <member name="P:MimeKit.MailboxAddress.Route">
             <summary>
             Gets the mailbox route.
@@ -32905,12 +33322,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MessageDeliveryStatus"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMessageDeliveryStatus(MimeKit.MessageDeliveryStatus)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMessageDeliveryStatus(MimeKit.MessageDeliveryStatus)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -32961,12 +33378,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MessageDispositionNotification"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMessageDispositionNotification(MimeKit.MessageDispositionNotification)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMessageDispositionNotification(MimeKit.MessageDispositionNotification)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -33065,6 +33482,18 @@
             <param name="messageId">The Message-Id.</param>
             <exception cref="T:System.ArgumentNullException">
             <paramref name="messageId"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:MimeKit.MessageIdList.AddRange(System.Collections.Generic.IEnumerable{System.String})">
+            <summary>
+            Add a collection of Message-Id items.
+            </summary>
+            <remarks>
+            Adds a collection of Message-Id items to append to the list.
+            </remarks>
+            <param name="items">The Message-Id items to add.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="items"/> is <c>null</c>.
             </exception>
         </member>
         <member name="M:MimeKit.MessageIdList.Clear">
@@ -33263,12 +33692,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MessagePart"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMessagePart(MimeKit.MessagePart)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMessagePart(MimeKit.MessagePart)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -33392,12 +33821,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MessagePartial"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMessagePartial(MimeKit.MessagePartial)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMessagePartial(MimeKit.MessagePartial)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -34473,6 +34902,16 @@
             <remarks>
             Creates a new MIME message.
             </remarks>
+        </member>
+        <member name="P:MimeKit.MimeMessage.MboxMarker">
+            <summary>
+            Gets or sets the mbox marker.
+            </summary>
+            <remarks>
+            Set by the <see cref="T:MimeKit.MimeParser"/> when parsing attached message/rfc822 parts
+            so that the message/rfc822 part can be reserialized back to its original form.
+            </remarks>
+            <value>The mbox marker.</value>
         </member>
         <member name="P:MimeKit.MimeMessage.Headers">
             <summary>
@@ -35931,12 +36370,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MimePart"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMimePart(MimeKit.MimePart)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMimePart(MimeKit.MimePart)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -36287,6 +36726,18 @@
             </example>
             <param name="related">The multipart/related MIME entity.</param>
         </member>
+        <member name="M:MimeKit.MimeVisitor.VisitMultipartReport(MimeKit.MultipartReport)">
+            <summary>
+            Visit the multipart/report MIME entity.
+            </summary>
+            <remarks>
+            Visits the multipart/report MIME entity.
+            </remarks>
+            <example>
+            <code language="c#" source="Examples\MimeVisitorExamples.cs" region="HtmlPreviewVisitor" />
+            </example>
+            <param name="report">The multipart/report MIME entity.</param>
+        </member>
         <member name="M:MimeKit.MimeVisitor.VisitMultipartSigned(MimeKit.Cryptography.MultipartSigned)">
             <summary>
             Visit the multipart/signed MIME entity.
@@ -36432,17 +36883,26 @@
             </remarks>
             <value>The epilogue.</value>
         </member>
+        <member name="P:MimeKit.Multipart.WriteEndBoundary">
+            <summary>
+            Gets or sets whether the end boundary should be written.
+            </summary>
+            <remarks>
+            Gets or sets whether the end boundary should be written.
+            </remarks>
+            <value><c>true</c> if the end boundary should be written; otherwise, <c>false</c>.</value>
+        </member>
         <member name="M:MimeKit.Multipart.Accept(MimeKit.MimeVisitor)">
             <summary>
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.Multipart"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMultipart(MimeKit.Multipart)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMultipart(MimeKit.Multipart)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -36714,12 +37174,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MultipartAlternative"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMultipartAlternative(MimeKit.MultipartAlternative)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMultipartAlternative(MimeKit.MultipartAlternative)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -36802,12 +37262,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.MultipartRelated"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMultipartRelated(MimeKit.MultipartRelated)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitMultipartRelated(MimeKit.MultipartRelated)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
@@ -36880,6 +37340,87 @@
             The MIME part for the specified URI could not be found.
             </exception>
         </member>
+        <member name="T:MimeKit.MultipartReport">
+            <summary>
+            A multipart/report MIME entity.
+            </summary>
+            <remarks>
+            A multipart/related MIME entity is a general container part for electronic mail
+            reports of any kind.
+            </remarks>
+        </member>
+        <member name="M:MimeKit.MultipartReport.#ctor(MimeKit.MimeEntityConstructorArgs)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MimeKit.MultipartReport"/> class.
+            </summary>
+            <remarks>
+            This constructor is used by <see cref="T:MimeKit.MimeParser"/>.
+            </remarks>
+            <param name="args">Information used by the constructor.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="args"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:MimeKit.MultipartReport.#ctor(System.String,System.Object[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MimeKit.MultipartReport"/> class.
+            </summary>
+            <remarks>
+            Creates a new <see cref="T:MimeKit.MultipartReport"/> part.
+            </remarks>
+            <param name="reportType">The type of the report.</param>
+            <param name="args">An array of initialization parameters: headers and MIME entities.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <para><paramref name="reportType"/> is <c>null</c>.</para>
+            <para>-or-</para>
+            <para><paramref name="args"/> is <c>null</c>.</para>
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="args"/> contains one or more arguments of an unknown type.
+            </exception>
+        </member>
+        <member name="M:MimeKit.MultipartReport.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:MimeKit.MultipartReport"/> class.
+            </summary>
+            <remarks>
+            Creates a new <see cref="T:MimeKit.MultipartReport"/> part.
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="reportType"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="P:MimeKit.MultipartReport.ReportType">
+            <summary>
+            Gets or sets the type of the report.
+            </summary>
+            <remarks>
+            <para>Gets or sets the type of the report.</para>
+            <para>The report type should be the subtype of the second <see cref="T:MimeKit.MimeEntity"/>
+            of the multipart/report.</para>
+            </remarks>
+            <value>The type of the report.</value>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="value"/> is <c>null</c>.
+            </exception>
+        </member>
+        <member name="M:MimeKit.MultipartReport.Accept(MimeKit.MimeVisitor)">
+            <summary>
+            Dispatches to the specific visit method for this MIME entity.
+            </summary>
+            <remarks>
+            This default implementation for <see cref="T:MimeKit.MultipartReport"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitMultipartReport(MimeKit.MultipartReport)"/>. Override this
+            method to call into a more specific method on a derived visitor class
+            of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
+            support unknown visitors by calling
+            <see cref="M:MimeKit.MimeVisitor.VisitMultipartReport(MimeKit.MultipartReport)"/>.
+            </remarks>
+            <param name="visitor">The visitor.</param>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="visitor"/> is <c>null</c>.
+            </exception>
+        </member>
         <member name="T:MimeKit.Parameter">
             <summary>
             A header parameter as found in the Content-Type and Content-Disposition headers.
@@ -36946,9 +37487,7 @@
             <para><paramref name="value"/> is <c>null</c>.</para>
             </exception>
             <exception cref="T:System.ArgumentException">
-            <para><paramref name="charset"/> cannot be empty.</para>
-            <para>-or-</para>
-            <para><paramref name="name"/> contains illegal characters.</para>
+            <paramref name="name"/> contains illegal characters.
             </exception>
             <exception cref="T:System.NotSupportedException">
             <paramref name="charset"/> is not supported.
@@ -37761,12 +38300,12 @@
             Dispatches to the specific visit method for this MIME entity.
             </summary>
             <remarks>
-            This default implementation for <see cref="T:MimeKit.MimeEntity"/> nodes
-            calls <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>. Override this
+            This default implementation for <see cref="T:MimeKit.TextPart"/> nodes
+            calls <see cref="M:MimeKit.MimeVisitor.VisitTextPart(MimeKit.TextPart)"/>. Override this
             method to call into a more specific method on a derived visitor class
             of the <see cref="T:MimeKit.MimeVisitor"/> class. However, it should still
             support unknown visitors by calling
-            <see cref="M:MimeKit.MimeVisitor.VisitMimeEntity(MimeKit.MimeEntity)"/>.
+            <see cref="M:MimeKit.MimeVisitor.VisitTextPart(MimeKit.TextPart)"/>.
             </remarks>
             <param name="visitor">The visitor.</param>
             <exception cref="T:System.ArgumentNullException">
