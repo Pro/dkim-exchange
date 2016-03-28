@@ -31,7 +31,7 @@ Microsoft.Exchange.Data.Transport.xml
 2. Create a new branch for your changes
 3. Add the above mentioned files (.dll and .xml) to your fork. Create a new directory for the corresponding Exchange version in the [Lib](https://github.com/Pro/dkim-exchange/tree/master/Lib) directory.
 4. If you are not familiar with Visual Studio or coding in C# please stop here and just create a new pull request. Otherwise continue with the following steps.
-5. Now you need to change each of the following files to include the new .dll. Refer e.g. to this commit: f83924a3b9fef6c0dfd1b85526f6182207bac55b
+5. Now you need to change each of the following files to include the new .dll. Refer e.g. to this commit: [f83924a](https://github.com/Pro/dkim-exchange/commit/f83924a3b9fef6c0dfd1b85526f6182207bac55b)
  * DkimSigner.sln
  * README.md
  * Src/Configuration.DkimSigner/Constants.cs
