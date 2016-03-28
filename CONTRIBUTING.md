@@ -7,23 +7,10 @@ This document contains guidelines and helpful information for contributing to th
 #### Table Of Contents
 
 [Notes for developers](#nodes-for-developers)
-  * [Code of Conduct](#code-of-conduct)
-  * [Atom and Packages](#atom-and-packages)
+  * [How to include support for newer Exchange Versions](#how-to-include-support-for-newer-exchange-versions)
+  * [Compiling](#compiling)
+  * [Debugging](#debugging)
 
-[How Can I Contribute?](#how-can-i-contribute)
-  * [Reporting Bugs](#reporting-bugs)
-  * [Suggesting Enhancements](#suggesting-enhancements)
-  * [Your First Code Contribution](#your-first-code-contribution)
-  * [Pull Requests](#pull-requests)
-
-[Styleguides](#styleguides)
-  * [Git Commit Messages](#git-commit-messages)
-  * [CoffeeScript Styleguide](#coffeescript-styleguide)
-  * [Specs Styleguide](#specs-styleguide)
-  * [Documentation Styleguide](#documentation-styleguide)
-
-[Additional Notes](#additional-notes)
-  * [Issue and Pull Request Labels](#issue-and-pull-request-labels)
 
 ## Notes for developers
 
