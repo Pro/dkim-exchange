@@ -209,32 +209,4 @@ If you want to use the powershell script to uninstall the agent (not recommended
 
 # Notes for developers
 
-## Required DLLs for developing
-
-For each Exchange Version we need the following files within the Lib directory:
-<pre>
-C:\Program Files\Microsoft\Exchange Server\V14\Public
-Microsoft.Exchange.Data.Common.dll
-Microsoft.Exchange.Data.Common.xml
-Microsoft.Exchange.Data.Transport.dll
-Microsoft.Exchange.Data.Transport.xml
-</pre>
-
-## Compiling
-
-There are two projects in the Visual Studio Solution.
-To compile the `Configuration.DKIMSigner` executable just go to Project Menu and then `Build Solution`.
-To compile the .dll's for the Exchange Agent, got to Project Menu and then select  `Batch Build`. Make sure all the configurations are selected, then press Build. This will automatically link the agent DLLs with the correct version of the Exchange libraries.
-
-
-## Debugging
-If you want to debug the .dll on your Exchange Server, you need to install [Visual Studio Remote Debugging](http://msdn.microsoft.com/en-us/library/vstudio/bt727f1t.aspx) on the Server.
-
-1. After the Remote Debugging Tools are installed on the Server, open Visual Studio
-2. Compile the .dll with Debug information
-3. Copy the recompiled .dll to the server
-4. In Visual Studio select Debug->Attach to Process
-5. Under 'Qualifier' input the server IP or Host Name
-6. Select "Show processes from all users"
-7. Select the process `EdgeTransport.exe` and then press 'Attach'
-8. When reached, the process should stop at the breakpoint
+See [contribution guideline](https://github.com/Pro/dkim-exchange/blob/master/CONTRIBUTING.md)
