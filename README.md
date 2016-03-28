@@ -71,12 +71,13 @@ If you have problems installing the agent using the options above, you can use t
 
 1. Download the .zip and extract it e.g. on the Desktop: [Latest Release](https://github.com/Pro/dkim-exchange/releases/latest)
 2. Open "Exchange Management Shell" from the Startmenu
-3. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
-4. Cd into the folder where the zip has been extracted.
-5. Execute the install script `.\install.ps1`
-6. Follow the instructions. For the configuration see next section.
-7. Reset the execution policy: `Set-ExecutionPolicy Restricted`
-8. Check EventLog for errors or warnings.
+3. Check your current execution policy and remember it for the last step `Get-ExecutionPolicy –List`
+4. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
+5. Cd into the folder where the zip has been extracted.
+6. Execute the install script `.\install.ps1`
+7. Follow the instructions. For the configuration see next section.
+8. Reset the execution policy to the value from step 3. E.g., `Set-ExecutionPolicy RemoteSigned` or `Set-ExecutionPolicy Restricted`
+9. Check EventLog for errors or warnings.
  Hint: you can create a user defined view in EventLog and then select "Per Source" and as the value "Exchange DkimSigner"
 
 Make sure that the priority of the DkimSigner Agent is quite low so that no other agent messes around with the headers. Best set it to lowest priority.
