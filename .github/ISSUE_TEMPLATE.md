@@ -1,8 +1,8 @@
 ### Versions
 
-**Windows Server Version**: [Your version]
-**Exchange Version**: [Your version]
-**Installed DKIM Exchange Version**: [Your version]
+- **Windows Server Version**: [Your version]
+- **Exchange Version**: [Your version]
+- **Installed DKIM Exchange Version**: [Your version]
 
 ### Description
 
