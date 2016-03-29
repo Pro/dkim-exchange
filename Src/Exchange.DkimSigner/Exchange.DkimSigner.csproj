@@ -201,6 +201,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU12|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU12\</OutputPath>
+    <DefineConstants>TRACE;EX_2013_SP1_CU12</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 Preview|AnyCPU'">
     <OutputPath>bin\Exchange 2016 Preview\</OutputPath>
     <DefineConstants>TRACE;EX_2016_PREV</DefineConstants>
@@ -213,6 +222,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 RTM|AnyCPU'">
     <OutputPath>bin\Exchange 2016 RTM\</OutputPath>
     <DefineConstants>TRACE;EX_2016_RTM</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU1|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU1\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU1</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -347,6 +365,12 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU11'">
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU11\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU12'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU12\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU12'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU12\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 Preview'">
       <HintPath>..\..\Lib\Exchange 2016 Preview\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
@@ -358,6 +382,12 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 RTM'">
       <HintPath>..\..\Lib\Exchange 2016 RTM\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU1'">
+      <HintPath>..\..\Lib\Exchange 2016 CU1\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU1'">
+      <HintPath>..\..\Lib\Exchange 2016 CU1\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
