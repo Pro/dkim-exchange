@@ -29,11 +29,6 @@ namespace Exchange.DkimSigner
         private HeaderId[] eligibleHeaders;
 
         /// <summary>
-        /// The hash algorithm that is to be employed.
-        /// </summary>
-        private HashAlgorithm hashAlgorithm;
-
-        /// <summary>
         /// The DKIM canonicalization algorithm that is to be employed for the header.
         /// </summary>
         private DkimCanonicalizationAlgorithm headerCanonicalization;
@@ -226,36 +221,7 @@ namespace Exchange.DkimSigner
         /// </summary>
         ~DkimSigner()
         {
-            Dispose(false);
         }
 
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, 
-        /// releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releases unmanaged and - optionally - managed resources
-        /// </summary>
-        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources;
-        /// <c>false</c> to release only unmanaged resources.</param>
-        private void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (hashAlgorithm != null)
-                {
-                    hashAlgorithm.Clear();
-                    hashAlgorithm = null;
-                }
-            }
-
-            disposed = true;
-        }
     }
 }
