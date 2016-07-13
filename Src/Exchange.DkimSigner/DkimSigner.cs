@@ -19,11 +19,6 @@ namespace Exchange.DkimSigner
     {
 
         /// <summary>
-        /// A value indicating whether or not the instance of the signer has been disposed.
-        /// </summary>
-        private bool disposed;
-
-        /// <summary>
         /// The headers that should be a part of the DKIM signature, if present in the message.
         /// </summary>
         private HeaderId[] eligibleHeaders;
@@ -183,9 +178,6 @@ namespace Exchange.DkimSigner
         /// <returns></returns>
         public void SignMessage(DomainElementSigner domainSigner, MailItem mailItem)
         {
-            if (disposed)
-                throw new ObjectDisposedException("DkimSigner");
-
             using (Stream stream = mailItem.GetMimeReadStream())
             {
                 stream.Seek(0, SeekOrigin.Begin);
