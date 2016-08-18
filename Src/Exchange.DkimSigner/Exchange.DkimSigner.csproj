@@ -16,7 +16,7 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -427,8 +427,8 @@
     <Compile Include="Configuration\DomainElementSigner.cs" />
     <Compile Include="Configuration\Settings.cs" />
     <Compile Include="Configuration\DomainElement.cs" />
-    <Compile Include="DkimSigningRoutingAgent.cs" />
-    <Compile Include="DkimSigningRoutingAgentFactory.cs" />
+    <Compile Include="DkimSigningAgent.cs" />
+    <Compile Include="DkimSigningAgentFactory.cs" />
     <Compile Include="DkimSigner.cs" />
     <Compile Include="Helper\KeyHelper.cs" />
     <Compile Include="Logger.cs" />
