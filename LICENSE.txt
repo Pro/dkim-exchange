@@ -1,2 +1,0 @@
-This Software is provided under the GNU GPLv3 License.
-Futher details can be found here: http://www.gnu.org/licenses
