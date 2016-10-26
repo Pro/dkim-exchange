@@ -19,6 +19,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2013 SP1 CU11 (15.0.1156.6)
 # Exchange 2013 SP1 CU12 (15.0.1178.4)
 # Exchange 2013 SP1 CU13 (15.0.1210.3)
+# Exchange 2013 SP1 CU14 (15.0.1236.3)
 # Exchange 2016 Preview	 (15.1.225.17)
 # Exchange 2016 RTM	     (15.1.225.42)
 # Exchange 2016 CU1	     (15.1.396.30)
@@ -27,7 +28,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
 $exchserver = Get-ExchangeServer -Identity $hostname
-$EXDIR="C:\Program Files\Exchange DkimSigner" 
+$EXDIR="C:\Program Files\Exchange DkimSigner"
 $EXVER="Unknown"
 if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplayversion).minor -eq 3) {
 	$EXVER="Exchange 2007 SP3"
@@ -67,6 +68,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2013 SP1 CU12"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1210) {
 	$EXVER="Exchange 2013 SP1 CU13"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1236) {
+	$EXVER="Exchange 2013 SP1 CU14"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225 -and ($exchserver.admindisplayversion).revision -eq 17) {
 	$EXVER="Exchange 2016 Preview"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225 -and ($exchserver.admindisplayversion).revision -eq 42) {
@@ -95,10 +98,10 @@ if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exch
 }
 
 
-net stop MSExchangeTransport 
- 
+net stop MSExchangeTransport
+
 write-host "Creating install directory: '$EXDIR' and copying data from '$SRCDIR'"  -f "green"
-new-item -Type Directory -path $EXDIR -ErrorAction SilentlyContinue 
+new-item -Type Directory -path $EXDIR -ErrorAction SilentlyContinue
 
 copy-item "$SRCDIR\*" $EXDIR -force
 copy-item "Src\Configuration.DkimSigner\bin\Release\*" $EXDIR -force
@@ -119,11 +122,11 @@ read-host "Now open '$EXDIR\Configuration.DkimSigner.exe' to configure Exchange 
 write-host "Registering agent" -f "green"
 Install-TransportAgent -Name "Exchange DkimSigner" -TransportAgentFactory "Exchange.DkimSigner.DkimSigningRoutingAgentFactory" -AssemblyPath "$EXDIR\ExchangeDkimSigner.dll"
 
-write-host "Enabling agent" -f "green" 
-enable-transportagent -Identity "Exchange DkimSigner" 
-get-transportagent 
- 
-write-host "Starting Edge Transport" -f "green" 
-net start MSExchangeTransport 
- 
-write-host "Installation complete. Check previous outputs for any errors!" -f "yellow" 
+write-host "Enabling agent" -f "green"
+enable-transportagent -Identity "Exchange DkimSigner"
+get-transportagent
+
+write-host "Starting Edge Transport" -f "green"
+net start MSExchangeTransport
+
+write-host "Installation complete. Check previous outputs for any errors!" -f "yellow"
