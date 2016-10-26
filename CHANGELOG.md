@@ -5,6 +5,8 @@
 
 
 ## Releases
+* 26.10.2016 [3.0.7]:  
+	New: Support for Exchange 2013 CU14  
 * 25.09.2016 [3.0.6]:  
 	New: Support for Exchange 2016 CU3  
 * 09.09.2016 [3.0.5]:  
