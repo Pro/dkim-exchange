@@ -5,6 +5,8 @@
 
 
 ## Releases
+* 22.12.2016 [3.0.8]:  
+	New: Support for 2007 SP3 RU21 & 2013 SP1 CU15 & 2016 CU4  
 * 26.10.2016 [3.0.7]:  
 	New: Support for Exchange 2013 CU14  
 * 25.09.2016 [3.0.6]:  
