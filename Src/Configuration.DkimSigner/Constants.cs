@@ -24,6 +24,8 @@ namespace Configuration.DkimSigner
 
         public static readonly Dictionary<string, string> DkimSignerVersionDirectory = new Dictionary<string, string>
         {
+			// RU21 has newer .dlls than older SP3
+            {"8.3.298.", "Exchange 2007 SP3 RU21"},
             {"8.3.", "Exchange 2007 SP3"},
             {"14.0.", "Exchange 2010"},
             {"14.1.", "Exchange 2010 SP1"},
@@ -44,11 +46,13 @@ namespace Configuration.DkimSigner
             {"15.0.1178.4", "Exchange 2013 SP1 CU12"},
             {"15.0.1210.3", "Exchange 2013 SP1 CU13"},
 			{"15.0.1236.3", "Exchange 2013 SP1 CU14"},
+			{"15.0.1263.5", "Exchange 2013 SP1 CU15"},
 			{"15.1.225.17", "Exchange 2016 Preview"},
             {"15.1.225.42", "Exchange 2016 RTM"},
             {"15.1.396.30", "Exchange 2016 CU1"},
             {"15.1.466.34", "Exchange 2016 CU2"},
             {"15.1.544.27", "Exchange 2016 CU3"},
+            {"15.1.669.32", "Exchange 2016 CU4"},
         };
     }
 }

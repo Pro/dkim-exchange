@@ -12,12 +12,14 @@
     <AssemblyName>ExchangeDkimSigner</AssemblyName>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Debug Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3 RU21|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
 	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">v4.5</TargetFrameworkVersion>
 	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU3|AnyCPU'">v4.5</TargetFrameworkVersion>
+	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU4|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -35,6 +37,14 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Exchange 2007 SP3\</OutputPath>
+    <DefineConstants>TRACE;EX_2007_SP3</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2007 SP3 RU21|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Exchange 2007 SP3 RU21\</OutputPath>
     <DefineConstants>TRACE;EX_2007_SP3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -230,6 +240,15 @@
 		<ErrorReport>prompt</ErrorReport>
 		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
 	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU15|AnyCPU'">
+		<OutputPath>bin\Exchange 2013 SP1 CU15\</OutputPath>
+		<DefineConstants>TRACE;EX_2013_SP1_CU15</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+	</PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 Preview|AnyCPU'">
     <OutputPath>bin\Exchange 2016 Preview\</OutputPath>
     <DefineConstants>TRACE;EX_2016_PREV</DefineConstants>
@@ -275,6 +294,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU4|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU4\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU4</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
@@ -305,6 +333,14 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2007 SP3'">
       <HintPath>..\..\Lib\Exchange 2007 SP3\Microsoft.Exchange.Data.Transport.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2007 SP3 RU21'">
+      <HintPath>..\..\Lib\Exchange 2007 SP3 RU21\Microsoft.Exchange.Data.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2007 SP3 RU21'">
+      <HintPath>..\..\Lib\Exchange 2007 SP3 RU21\Microsoft.Exchange.Data.Transport.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2010'">
@@ -421,6 +457,12 @@
 		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU14'">
 			<HintPath>..\..\Lib\Exchange 2013 SP1 CU14\Microsoft.Exchange.Data.Transport.dll</HintPath>
 		</Reference>
+		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU15'">
+			<HintPath>..\..\Lib\Exchange 2013 SP1 CU15\Microsoft.Exchange.Data.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU15'">
+			<HintPath>..\..\Lib\Exchange 2013 SP1 CU15\Microsoft.Exchange.Data.Transport.dll</HintPath>
+		</Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 Preview'">
       <HintPath>..\..\Lib\Exchange 2016 Preview\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
@@ -449,6 +491,14 @@
       <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU3'">
+      <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU4'">
+	<!-- Same as CU3 -->
+      <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU4'">
+	<!-- Same as CU3 -->
       <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
