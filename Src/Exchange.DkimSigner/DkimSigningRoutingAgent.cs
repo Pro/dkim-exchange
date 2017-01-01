@@ -63,7 +63,7 @@ namespace Exchange.DkimSigner
         {
             try
             {
-#if !EX_2007_SP3 //not supported in Exchange 2007
+#if !Exchange_2007_SP3 //not supported in Exchange 2007
                 // This allows Transport poison detection to correclty handle this message
                 // if there is a crash on this thread.
                 agentAsyncContext.Resume();

@@ -53,7 +53,7 @@ namespace Exchange.DkimSigner
         }
 
 
-#if EX_2007_SP3 || EX_2010 || EX_2010_SP1 || EX_2010_SP2 || EX_2010_SP3
+#if Exchange_2007_SP3 || Exchange_2010 || Exchange_2010_SP1 || Exchange_2010_SP2 || Exchange_2010_SP3
         /// <summary>
         /// Parses a string header to its corresponding enum value. Only needed for .NET 3.5 since it is natively supported in 4.0 and above.
         /// </summary>
@@ -141,7 +141,7 @@ namespace Exchange.DkimSigner
                 foreach (string headerToSign in config.HeadersToSign)
                 {
                     HeaderId headerId;
-#if EX_2007_SP3 || EX_2010 || EX_2010_SP1 || EX_2010_SP2 || EX_2010_SP3
+#if Exchange_2007_SP3 || Exchange_2010 || Exchange_2010_SP1 || Exchange_2010_SP2 || Exchange_2010_SP3
                     if (!TryParseHeader(headerToSign, out headerId))
 #else
                     if (!Enum.TryParse(headerToSign, true, out headerId))

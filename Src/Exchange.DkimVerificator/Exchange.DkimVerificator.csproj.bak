@@ -4,19 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{3AF0EAB4-6135-4908-A659-5E3C974E4718}</ProjectGuid>
+    <ProjectGuid>{A891A6CA-1060-453D-B730-661C91C56C89}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Exchange.DkimSigner</RootNamespace>
-    <AssemblyName>ExchangeDkimSigner</AssemblyName>
+    <RootNamespace>Exchange.DkimVerificator</RootNamespace>
+    <AssemblyName>Exchange.DkimVerificator</AssemblyName>
     <TargetFrameworkVersion Condition="$(Configuration.Contains('2007'))">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="$(Configuration.Contains('2010'))">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="$(Configuration.Contains('2013'))">v4.0</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="$(Configuration.Contains('2016'))">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
     <DebugSymbols>true</DebugSymbols>
@@ -35,9 +32,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>..\..\Res\Wolverine.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug Exchange 2013 SP1 CU9'">
     <OutputPath>bin\Debug Exchange SP1 CU9\</OutputPath>
@@ -70,40 +64,40 @@
     <OutputPath>bin\Exchange 2013 CU3\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU4'">
-    <OutputPath>bin\Exchange 2013 SP1 CU4\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU4\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU5'">
-    <OutputPath>bin\Exchange 2013 SP1 CU5\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU5\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU6'">
-    <OutputPath>bin\Exchange 2013 SP1 CU6\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU6\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU7'">
-    <OutputPath>bin\Exchange 2013 SP1 CU7\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU7\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU8'">
-    <OutputPath>bin\Exchange 2013 SP1 CU8\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU8\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU9'">
-    <OutputPath>bin\Exchange 2013 SP1 CU9\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU9\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU10'">
-    <OutputPath>bin\Exchange 2013 SP1 CU10\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU10\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU11'">
-    <OutputPath>bin\Exchange 2013 SP1 CU11\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU11\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU12'">
-    <OutputPath>bin\Exchange 2013 SP1 CU12\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU12\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU13'">
-    <OutputPath>bin\Exchange 2013 SP1 CU13\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU13\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU14'">
-    <OutputPath>bin\Exchange 2013 SP1 CU14\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU14\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU15'">
-    <OutputPath>bin\Exchange 2013 SP1 CU15\</OutputPath>
+    <OutputPath>bin\Exchange SP1 CU15\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2016 RTM'">
     <OutputPath>bin\Exchange 2016 RTM\</OutputPath>
@@ -127,84 +121,32 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common">
       <HintPath>..\..\Lib\$(Configuration.Replace("Debug ",""))\Microsoft.Exchange.Data.Common.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport">
       <HintPath>..\..\Lib\$(Configuration.Replace("Debug ",""))\Microsoft.Exchange.Data.Transport.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Security" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.XML" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration\DkimAlgorithmKind.cs" />
-    <Compile Include="Configuration\DkimCanonicalizationKind.cs" />
-    <Compile Include="Configuration\DomainElementSigner.cs" />
-    <Compile Include="Configuration\Settings.cs" />
-    <Compile Include="Configuration\DomainElement.cs" />
-    <Compile Include="DkimSigningRoutingAgent.cs" />
-    <Compile Include="DkimSigningRoutingAgentFactory.cs" />
-    <Compile Include="DkimSigner.cs" />
-    <Compile Include="Helper\KeyHelper.cs" />
-    <Compile Include="Logger.cs" />
+    <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Tests\TestDkimSigner.cs" />
-    <Compile Include="Tests\TestDomainKey.cs" />
-    <Compile Include="Tests\TestSettings.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Tests\Ressources\" />
-  </ItemGroup>
-  <Choose>
-    <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
-      <ItemGroup>
-        <Reference Include="MimeKit, Version=1.10.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-          <HintPath>..\..\packages\MimeKit.1.10.0\lib\net35\MimeKit.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="MimeKit, Version=1.10.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-          <HintPath>..\..\packages\MimeKit.1.10.0\lib\net40\MimeKit.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-      </ItemGroup>
-	</Otherwise>
-  </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

@@ -9,32 +9,132 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Exchange.DkimVerificator</RootNamespace>
     <AssemblyName>Exchange.DkimVerificator</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="$(Configuration.Contains('2007'))">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="$(Configuration.Contains('2010'))">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="$(Configuration.Contains('2013'))">v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="$(Configuration.Contains('2016'))">v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition="$(Configuration.StartsWith('Debug'))">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;$(Configuration.Replace("Debug ","").Replace(" ","_"))</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition="$(Configuration.StartsWith('Exchange'))">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;$(Configuration.Replace(" ","_"))</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug Exchange 2013 SP1 CU9'">
+    <OutputPath>bin\Debug Exchange SP1 CU9\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug Exchange 2013 SP1 CU9'">
+    <OutputPath>bin\Debug Exchange SP1 CU9\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2007 SP3'">
+    <OutputPath>bin\Exchange 2007 SP3\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2010'">
+    <OutputPath>bin\Exchange 2010\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2010 SP1'">
+    <OutputPath>bin\Exchange 2010 SP1\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2010 SP2'">
+    <OutputPath>bin\Exchange 2010 SP2\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2010 SP3'">
+    <OutputPath>bin\Exchange 2010 SP3\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013'">
+    <OutputPath>bin\Exchange 2013\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 CU1'">
+    <OutputPath>bin\Exchange 2013 CU1\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 CU2'">
+    <OutputPath>bin\Exchange 2013 CU2\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 CU3'">
+    <OutputPath>bin\Exchange 2013 CU3\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU4'">
+    <OutputPath>bin\Exchange 2013 SP1 CU4\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU5'">
+    <OutputPath>bin\Exchange 2013 SP1 CU5\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU6'">
+    <OutputPath>bin\Exchange 2013 SP1 CU6\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU7'">
+    <OutputPath>bin\Exchange 2013 SP1 CU7\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU8'">
+    <OutputPath>bin\Exchange 2013 SP1 CU8\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU9'">
+    <OutputPath>bin\Exchange 2013 SP1 CU9\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU10'">
+    <OutputPath>bin\Exchange 2013 SP1 CU10\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU11'">
+    <OutputPath>bin\Exchange 2013 SP1 CU11\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU12'">
+    <OutputPath>bin\Exchange 2013 SP1 CU12\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU13'">
+    <OutputPath>bin\Exchange 2013 SP1 CU13\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU14'">
+    <OutputPath>bin\Exchange 2013 SP1 CU14\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2013 SP1 CU15'">
+    <OutputPath>bin\Exchange 2013 SP1 CU15\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2016 RTM'">
+    <OutputPath>bin\Exchange 2016 RTM\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2016 CU1'">
+    <OutputPath>bin\Exchange 2016 CU1\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2016 CU2'">
+    <OutputPath>bin\Exchange 2016 CU2\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2016 CU3'">
+    <OutputPath>bin\Exchange 2016 CU3\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Exchange 2016 CU4'">
+    <OutputPath>bin\Exchange 2016 CU4\</OutputPath>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common">
+      <HintPath>..\..\Lib\$(Configuration.Replace("Debug ",""))\Microsoft.Exchange.Data.Common.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport">
+      <HintPath>..\..\Lib\$(Configuration.Replace("Debug ",""))\Microsoft.Exchange.Data.Transport.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -43,8 +143,27 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <Choose>
+    <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
+      <ItemGroup>
+        <Reference Include="MimeKit, Version=1.10.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+          <HintPath>..\..\packages\MimeKit.1.10.0\lib\net35\MimeKit.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+      </ItemGroup>
+    </When>
+    <Otherwise>
+      <ItemGroup>
+        <Reference Include="MimeKit, Version=1.10.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+          <HintPath>..\..\packages\MimeKit.1.10.0\lib\net40\MimeKit.dll</HintPath>
+          <Private>True</Private>
+        </Reference>
+      </ItemGroup>
+	</Otherwise>
+  </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
