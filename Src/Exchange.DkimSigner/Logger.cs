@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace Exchange.DkimSigner
+namespace Exchange.Dkim
 {
     public class Logger
     {

@@ -139,7 +139,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DkimAlgorithmKind.cs">
+      <Link>Configuration\DkimAlgorithmKind.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
+      <Link>Configuration\DkimCanonicalizationKind.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DomainElement.cs">
+      <Link>Configuration\DomainElement.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DomainElementSigner.cs">
+      <Link>Configuration\DomainElementSigner.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
+      <Link>Configuration\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Logger.cs">
+      <Link>Logger.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\SettingsReceiver.cs">
+      <Link>SettingsReceiver.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\SettingsWatcher.cs">
+      <Link>SettingsWatcher.cs</Link>
+    </Compile>
+    <Compile Include="DkimVerificator.cs" />
+    <Compile Include="DkimVerificatorAgentFactory.cs" />
+    <Compile Include="DkimVerificatorAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -162,7 +188,7 @@
           <Private>True</Private>
         </Reference>
       </ItemGroup>
-	</Otherwise>
+    </Otherwise>
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

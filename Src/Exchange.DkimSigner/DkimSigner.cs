@@ -9,13 +9,14 @@ using Microsoft.Exchange.Data.Transport;
 using MimeKit;
 using MimeKit.Cryptography;
 using Org.BouncyCastle.Crypto;
+using Exchange.Dkim;
 
 namespace Exchange.DkimSigner
 {
     /// <summary>
     /// Signs MIME messages according to the DKIM standard.
     /// </summary>
-    public class DkimSigner
+    public class DkimSigner: SettingsReceiver
     {
 
         /// <summary>
@@ -160,6 +161,7 @@ namespace Exchange.DkimSigner
                 }
                 eligibleHeaders = headerList.ToArray();
             }
+            Logger.LogInformation("Exchange DKIM signer settings loaded: " + config.SigningAlgorithm + ", Canonicalization Header Algorithm: " + config.HeaderCanonicalization + ", Canonicalization Body Algorithm: " + config.BodyCanonicalization + ", Number of domains: " + GetDomains().Count);
         }
 
         public Dictionary<string, DomainElementSigner> GetDomains()

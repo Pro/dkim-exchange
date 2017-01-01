@@ -4,6 +4,7 @@ using System.Net.Mail;
 using System.Threading;
 using Microsoft.Exchange.Data.Transport;
 using Microsoft.Exchange.Data.Transport.Routing;
+using Exchange.Dkim;
 
 namespace Exchange.DkimSigner
 {

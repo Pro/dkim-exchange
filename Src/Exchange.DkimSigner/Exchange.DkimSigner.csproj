@@ -162,6 +162,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SettingsReceiver.cs" />
+    <Compile Include="SettingsWatcher.cs" />
     <Compile Include="Tests\TestDkimSigner.cs" />
     <Compile Include="Tests\TestDomainKey.cs" />
     <Compile Include="Tests\TestSettings.cs" />
@@ -196,7 +198,7 @@
           <Private>True</Private>
         </Reference>
       </ItemGroup>
-	</Otherwise>
+    </Otherwise>
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
