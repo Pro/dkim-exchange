@@ -139,6 +139,213 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Header.cs">
+      <Link>DNS\Header.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Question.cs">
+      <Link>DNS\Question.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\RecordReader.cs">
+      <Link>DNS\RecordReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordA6.cs">
+      <Link>DNS\Records\NotUsed\RecordA6.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordAPL.cs">
+      <Link>DNS\Records\NotUsed\RecordAPL.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordATMA.cs">
+      <Link>DNS\Records\NotUsed\RecordATMA.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordCERT.cs">
+      <Link>DNS\Records\NotUsed\RecordCERT.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordDHCID.cs">
+      <Link>DNS\Records\NotUsed\RecordDHCID.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordDNSKEY.cs">
+      <Link>DNS\Records\NotUsed\RecordDNSKEY.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordEID.cs">
+      <Link>DNS\Records\NotUsed\RecordEID.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordGID.cs">
+      <Link>DNS\Records\NotUsed\RecordGID.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordHIP.cs">
+      <Link>DNS\Records\NotUsed\RecordHIP.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordIPSECKEY.cs">
+      <Link>DNS\Records\NotUsed\RecordIPSECKEY.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordNIMLOC.cs">
+      <Link>DNS\Records\NotUsed\RecordNIMLOC.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordNSEC.cs">
+      <Link>DNS\Records\NotUsed\RecordNSEC.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordNSEC3.cs">
+      <Link>DNS\Records\NotUsed\RecordNSEC3.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordNSEC3PARAM.cs">
+      <Link>DNS\Records\NotUsed\RecordNSEC3PARAM.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordOPT.cs">
+      <Link>DNS\Records\NotUsed\RecordOPT.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordRRSIG.cs">
+      <Link>DNS\Records\NotUsed\RecordRRSIG.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordSINK.cs">
+      <Link>DNS\Records\NotUsed\RecordSINK.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordSPF.cs">
+      <Link>DNS\Records\NotUsed\RecordSPF.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordSSHFP.cs">
+      <Link>DNS\Records\NotUsed\RecordSSHFP.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordUID.cs">
+      <Link>DNS\Records\NotUsed\RecordUID.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordUINFO.cs">
+      <Link>DNS\Records\NotUsed\RecordUINFO.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordUnknown.cs">
+      <Link>DNS\Records\NotUsed\RecordUnknown.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\NotUsed\RecordUNSPEC.cs">
+      <Link>DNS\Records\NotUsed\RecordUNSPEC.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\Obsolete\RecordGPOS.cs">
+      <Link>DNS\Records\Obsolete\RecordGPOS.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\Obsolete\RecordMD.cs">
+      <Link>DNS\Records\Obsolete\RecordMD.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\Obsolete\RecordMF.cs">
+      <Link>DNS\Records\Obsolete\RecordMF.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\Obsolete\RecordNSAPPTR.cs">
+      <Link>DNS\Records\Obsolete\RecordNSAPPTR.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\Obsolete\RecordNXT.cs">
+      <Link>DNS\Records\Obsolete\RecordNXT.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\Record.cs">
+      <Link>DNS\Records\Record.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordA.cs">
+      <Link>DNS\Records\RecordA.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordAAAA.cs">
+      <Link>DNS\Records\RecordAAAA.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordAFSDB.cs">
+      <Link>DNS\Records\RecordAFSDB.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordCNAME.cs">
+      <Link>DNS\Records\RecordCNAME.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordDNAME.cs">
+      <Link>DNS\Records\RecordDNAME.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordDS.cs">
+      <Link>DNS\Records\RecordDS.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordHINFO.cs">
+      <Link>DNS\Records\RecordHINFO.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordISDN.cs">
+      <Link>DNS\Records\RecordISDN.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordKEY.cs">
+      <Link>DNS\Records\RecordKEY.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordKX.cs">
+      <Link>DNS\Records\RecordKX.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordLOC.cs">
+      <Link>DNS\Records\RecordLOC.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordMB.cs">
+      <Link>DNS\Records\RecordMB.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordMG.cs">
+      <Link>DNS\Records\RecordMG.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordMINFO.cs">
+      <Link>DNS\Records\RecordMINFO.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordMR.cs">
+      <Link>DNS\Records\RecordMR.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordMX.cs">
+      <Link>DNS\Records\RecordMX.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordNAPTR.cs">
+      <Link>DNS\Records\RecordNAPTR.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordNS.cs">
+      <Link>DNS\Records\RecordNS.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordNSAP.cs">
+      <Link>DNS\Records\RecordNSAP.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordNULL.cs">
+      <Link>DNS\Records\RecordNULL.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordPTR.cs">
+      <Link>DNS\Records\RecordPTR.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordPX.cs">
+      <Link>DNS\Records\RecordPX.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordRP.cs">
+      <Link>DNS\Records\RecordRP.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordRT.cs">
+      <Link>DNS\Records\RecordRT.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordSIG.cs">
+      <Link>DNS\Records\RecordSIG.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordSOA.cs">
+      <Link>DNS\Records\RecordSOA.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordSRV.cs">
+      <Link>DNS\Records\RecordSRV.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordTKEY.cs">
+      <Link>DNS\Records\RecordTKEY.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordTSIG.cs">
+      <Link>DNS\Records\RecordTSIG.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordTXT.cs">
+      <Link>DNS\Records\RecordTXT.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordWKS.cs">
+      <Link>DNS\Records\RecordWKS.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Records\RecordX25.cs">
+      <Link>DNS\Records\RecordX25.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Request.cs">
+      <Link>DNS\Request.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Resolver.cs">
+      <Link>DNS\Resolver.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Response.cs">
+      <Link>DNS\Response.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\RR.cs">
+      <Link>DNS\RR.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimConfiguration\Dns\Structs.cs">
+      <Link>DNS\Structs.cs</Link>
+    </Compile>
     <Compile Include="..\Exchange.DkimSigner\Configuration\DkimAlgorithmKind.cs">
       <Link>Configuration\DkimAlgorithmKind.cs</Link>
     </Compile>
@@ -167,10 +374,19 @@
     <Compile Include="DkimVerificatorAgentFactory.cs" />
     <Compile Include="DkimVerificatorAgent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublicKeyLocator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Exchange.DkimConfiguration\Dns\Records\totla.txt">
+      <Link>DNS\Records\totla.txt</Link>
+    </Content>
+    <Content Include="..\Exchange.DkimConfiguration\Dns\Root\named_root.txt">
+      <Link>DNS\Root\named_root.txt</Link>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">

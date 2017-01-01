@@ -41,7 +41,7 @@ namespace Exchange.DkimVerificator
         /// <returns>An agent instance.</returns>
         public override SmtpReceiveAgent CreateAgent(SmtpServer server)
         {
-            return new DkimVerificatorAgent(dkimVerificator);
+            return new DkimVerificatorAgent(server.Name, dkimVerificator);
         }
 
     }
