@@ -105,10 +105,10 @@
             this.txtAbout = new System.Windows.Forms.TextBox();
             this.picLogo = new System.Windows.Forms.PictureBox();
             this.tpDebug = new System.Windows.Forms.TabPage();
+            this.txDebugPath = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.btExchangeVersion = new System.Windows.Forms.Button();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
-            this.label3 = new System.Windows.Forms.Label();
-            this.txDebugPath = new System.Windows.Forms.TextBox();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -600,6 +600,7 @@
             this.lbxDomains.Location = new System.Drawing.Point(6, 19);
             this.lbxDomains.Name = "lbxDomains";
             this.lbxDomains.Size = new System.Drawing.Size(139, 377);
+            this.lbxDomains.Sorted = true;
             this.lbxDomains.TabIndex = 0;
             this.lbxDomains.SelectedIndexChanged += new System.EventHandler(this.lbxDomains_SelectedIndexChanged);
             // 
@@ -1002,6 +1003,24 @@
             this.tpDebug.Text = "Debug Helper";
             this.tpDebug.UseVisualStyleBackColor = true;
             // 
+            // txDebugPath
+            // 
+            this.txDebugPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txDebugPath.Location = new System.Drawing.Point(9, 70);
+            this.txDebugPath.Name = "txDebugPath";
+            this.txDebugPath.Size = new System.Drawing.Size(692, 20);
+            this.txDebugPath.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(6, 54);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(62, 13);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "Install Path:";
+            // 
             // btExchangeVersion
             // 
             this.btExchangeVersion.Location = new System.Drawing.Point(6, 6);
@@ -1015,24 +1034,6 @@
             // epvDomainSelector
             // 
             this.epvDomainSelector.ContainerControl = this;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 54);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(62, 13);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "Install Path:";
-            // 
-            // txDebugPath
-            // 
-            this.txDebugPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txDebugPath.Location = new System.Drawing.Point(9, 70);
-            this.txDebugPath.Name = "txDebugPath";
-            this.txDebugPath.Size = new System.Drawing.Size(692, 20);
-            this.txDebugPath.TabIndex = 2;
             // 
             // MainWindow
             // 
