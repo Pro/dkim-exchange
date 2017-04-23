@@ -1,6 +1,12 @@
 ﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
 =============
 
+**Developer/Maintainer wanted!**
+
+**Unfortunately I don't have time to maintain and implement all the features I would like to. If you would like to help developing within this project contact me by creating an issue.
+Thanks!!**
+
+
 DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
 
 We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
