@@ -1,7 +1,7 @@
-﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
+﻿Exchange DKIM Signer and Verifier [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
 =============
 
-DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
+DKIM Signing and Verifier Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications and verifies the DKIM signature for inbound emails. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
 
 We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
 
@@ -11,7 +11,7 @@ We are also happy for any donations to keep new versions flowing :) Especially i
 
 ## Supported versions
 
-The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013 & 2016)
+The DKIM Signer Agent [ExchangeDkimSigner.dll] and Verifier Agent [ExchangeDkimVerificator.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013 & 2016)
 
 * Exchange 2007 SP3     (8.3.*)
 * Exchange 2010         (14.0.*)
@@ -43,7 +43,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 ## Requirements
 
 * .NET 3.5 (Exchange 2007 or Exchange 2010) or .NET 4.0 (Exchange 2013, 2016)
-* .NET 4.5 (optional - Configuration tool [Configuration.DkimSigner.exe])
+* .NET 4.5 (optional - Configuration tool [Exchange.DkimConfiguration.exe])
 
 Note : Manual install (see section below) is required if .NET 4.5 isn't installed
 
