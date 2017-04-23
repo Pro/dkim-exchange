@@ -34,6 +34,7 @@
 		<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU2;Platform=Any CPU" />
 		<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU3;Platform=Any CPU" />
 		<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU4;Platform=Any CPU" />
+		<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU5;Platform=Any CPU" />
   </Target>
 
  </Project>
