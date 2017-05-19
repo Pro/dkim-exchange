@@ -47,6 +47,7 @@ namespace Configuration.DkimSigner
             {"15.0.1210.3", "Exchange 2013 SP1 CU13"},
 			{"15.0.1236.3", "Exchange 2013 SP1 CU14"},
 			{"15.0.1263.5", "Exchange 2013 SP1 CU15"},
+			{"15.0.1293.2", "Exchange 2013 SP1 CU16"},
 			{"15.1.225.17", "Exchange 2016 Preview"},
             {"15.1.225.42", "Exchange 2016 RTM"},
             {"15.1.396.30", "Exchange 2016 CU1"},
