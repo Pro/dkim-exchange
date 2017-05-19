@@ -122,6 +122,8 @@ After installing the agent, you can use the Configuration.DkimSigner.exe within 
 
 <img alt='About' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/About.png' border='0' >
 
+<img alt='Debug Helper' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/DebugHelper.png' border='0' >
+
 ## Manual configuration
 
 Open `C:\Program Files\Exchange DkimSigner\settigs.xml` and configure the DKIM agent.
