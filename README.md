@@ -40,6 +40,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2013 CU13    (15.0.1210.3)
 * Exchange 2013 CU14    (15.0.1236.3)
 * Exchange 2013 CU15    (15.0.1263.5)
+* Exchange 2013 CU16    (15.0.1293.2)
 * Exchange 2016 Preview (15.1.225.17)
 * Exchange 2016 RTM     (15.1.225.42)
 * Exchange 2016 CU1     (15.1.396.30)
@@ -120,6 +121,8 @@ After installing the agent, you can use the Configuration.DkimSigner.exe within 
 <img alt='EventLogViewer' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/EventLogViewer.png' border='0' >
 
 <img alt='About' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/About.png' border='0' >
+
+<img alt='Debug Helper' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/DebugHelper.png' border='0' >
 
 ## Manual configuration
 
