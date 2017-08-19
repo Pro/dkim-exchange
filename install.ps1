@@ -23,6 +23,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2013 SP1 CU14 (15.0.1236.3)
 # Exchange 2013 SP1 CU15 (15.0.1263.5)
 # Exchange 2013 SP1 CU16 (15.0.1293.2)
+# Exchange 2013 SP1 CU17 (15.0.1320.4)
 # Exchange 2016 Preview	 (15.1.225.17)
 # Exchange 2016 RTM	     (15.1.225.42)
 # Exchange 2016 CU1	     (15.1.396.30)
@@ -81,6 +82,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2013 SP1 CU15"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1293) {
 	$EXVER="Exchange 2013 SP1 CU16"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 1320) {
+	$EXVER="Exchange 2013 SP1 CU17"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225 -and ($exchserver.admindisplayversion).revision -eq 17) {
 	$EXVER="Exchange 2016 Preview"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 225 -and ($exchserver.admindisplayversion).revision -eq 42) {
