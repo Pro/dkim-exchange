@@ -1,9 +1,10 @@
 {
   "ExpandedNodes": [
     "",
+    "\\Lib\\Exchange 2013 SP1 CU17",
     "\\Src",
     "\\Src\\Exchange.DkimSigner"
   ],
-  "SelectedNode": "\\Src\\Exchange.DkimSigner\\App.config",
+  "SelectedNode": "\\Src\\Exchange.DkimSigner\\Exchange.DkimSigner.csproj",
   "PreviewInSolutionExplorer": false
 }
