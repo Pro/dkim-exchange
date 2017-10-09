@@ -41,6 +41,9 @@ ipch/
 *.opensdf
 *.sdf
 
+# Visual Studio cache/options directory
+.vs/
+
 # Visual Studio profiler
 *.psess
 *.vsp
