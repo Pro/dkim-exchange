@@ -5,6 +5,9 @@
 
 
 ## Releases
+* 12.10.2017 [3.0.11]:  
+	New: Support for Exchange 2013 SP1 CU17
+	New: Support for Exchange 2013 SP1 CU18
 * 24.05.2017 [3.0.10]:  
 	New: Support for Exchange 2013 SP1 CU16
 * 23.04.2017 [3.0.9]:  
