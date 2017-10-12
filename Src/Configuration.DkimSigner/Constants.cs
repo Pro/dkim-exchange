@@ -7,7 +7,7 @@ namespace Configuration.DkimSigner
     {
         public static string DkimSignerPath
         {
-            get { return string.Format("{0}\\Exchange DkimSigner", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\')); } 
+            get { return string.Format("{0}\\Exchange DkimSigner", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles).TrimEnd('\\')); }
         }
 
         public const string DkimSignerAgentName = @"Exchange DkimSigner";
@@ -45,10 +45,11 @@ namespace Configuration.DkimSigner
             {"15.0.1156.6", "Exchange 2013 SP1 CU11"},
             {"15.0.1178.4", "Exchange 2013 SP1 CU12"},
             {"15.0.1210.3", "Exchange 2013 SP1 CU13"},
-	    {"15.0.1236.3", "Exchange 2013 SP1 CU14"},
-	    {"15.0.1263.5", "Exchange 2013 SP1 CU15"},
-	    {"15.0.1293.2", "Exchange 2013 SP1 CU16"},
-	    {"15.1.225.17", "Exchange 2016 Preview"},
+            {"15.0.1236.3", "Exchange 2013 SP1 CU14"},
+            {"15.0.1263.5", "Exchange 2013 SP1 CU15"},
+            {"15.0.1293.2", "Exchange 2013 SP1 CU16"},
+            {"15.0.1347.2", "Exchange 2013 SP1 CU18"},
+            {"15.1.225.17", "Exchange 2016 Preview"},
             {"15.1.225.42", "Exchange 2016 RTM"},
             {"15.1.396.30", "Exchange 2016 CU1"},
             {"15.1.466.34", "Exchange 2016 CU2"},
