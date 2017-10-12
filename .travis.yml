@@ -17,6 +17,7 @@ solution: DkimSigner.sln
 
 script:
 - xbuild DkimSigner.sln /p:Configuration="Ex2007 SP3"
+- xbuild DkimSigner.sln /p:Configuration="Ex2007 SP3 RU21"
 - xbuild DkimSigner.sln /p:Configuration="Ex2010"
 - xbuild DkimSigner.sln /p:Configuration="Ex2010 SP1"
 - xbuild DkimSigner.sln /p:Configuration="Ex2010 SP2"
@@ -34,6 +35,13 @@ script:
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU10"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU16"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU17"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU18"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU1"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU2"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU3"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU4"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU5"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU6"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 Preview"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 RTM"
 - xbuild DkimSigner.sln /p:Configuration="Release"
