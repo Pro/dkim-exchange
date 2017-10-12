@@ -17,10 +17,10 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v3.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">v4.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU3|AnyCPU'">v4.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU4|AnyCPU'">v4.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU5|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU3|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU4|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU5|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -232,36 +232,45 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU14|AnyCPU'">
-		<OutputPath>bin\Exchange 2013 SP1 CU14\</OutputPath>
-		<DefineConstants>TRACE;EX_2013_SP1_CU14</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU15|AnyCPU'">
-		<OutputPath>bin\Exchange 2013 SP1 CU15\</OutputPath>
-		<DefineConstants>TRACE;EX_2013_SP1_CU15</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU16|AnyCPU'">
-		<OutputPath>bin\Exchange 2013 SP1 CU16\</OutputPath>
-		<DefineConstants>TRACE;EX_2013_SP1_CU16</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU14|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU14\</OutputPath>
+    <DefineConstants>TRACE;EX_2013_SP1_CU14</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU15|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU15\</OutputPath>
+    <DefineConstants>TRACE;EX_2013_SP1_CU15</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU16|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU16\</OutputPath>
+    <DefineConstants>TRACE;EX_2013_SP1_CU16</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU17|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU17\</OutputPath>
     <DefineConstants>TRACE;EX_2013_SP1_CU17</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU18|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU18\</OutputPath>
+    <DefineConstants>TRACE;EX_2013_SP1_CU18</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -479,30 +488,36 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU13'">
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU13\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU14'">
-			<HintPath>..\..\Lib\Exchange 2013 SP1 CU14\Microsoft.Exchange.Data.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU14'">
-			<HintPath>..\..\Lib\Exchange 2013 SP1 CU14\Microsoft.Exchange.Data.Transport.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU15'">
-			<HintPath>..\..\Lib\Exchange 2013 SP1 CU15\Microsoft.Exchange.Data.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU15'">
-			<HintPath>..\..\Lib\Exchange 2013 SP1 CU15\Microsoft.Exchange.Data.Transport.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU16'">
-			<HintPath>..\..\Lib\Exchange 2013 SP1 CU16\Microsoft.Exchange.Data.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU16'">
-			<HintPath>..\..\Lib\Exchange 2013 SP1 CU16\Microsoft.Exchange.Data.Transport.dll</HintPath>
-		</Reference>
-      <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU17'">
-          <HintPath>..\..\Lib\Exchange 2013 SP1 CU17\Microsoft.Exchange.Data.Common.dll</HintPath>
-      </Reference>
-      <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU17'">
-          <HintPath>..\..\Lib\Exchange 2013 SP1 CU17\Microsoft.Exchange.Data.Transport.dll</HintPath>
-      </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU14'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU14\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU14'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU14\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU15'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU15\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU15'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU15\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU16'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU16\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU16'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU16\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU17'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU17\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU17'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU17\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU18'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU18\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU18'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU18\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 Preview'">
       <HintPath>..\..\Lib\Exchange 2016 Preview\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
@@ -534,11 +549,11 @@
       <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU4'">
-	<!-- Same as CU3 -->
+      <!-- Same as CU3 -->
       <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU4'">
-	<!-- Same as CU3 -->
+      <!-- Same as CU3 -->
       <HintPath>..\..\Lib\Exchange 2016 CU3\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU5'">
