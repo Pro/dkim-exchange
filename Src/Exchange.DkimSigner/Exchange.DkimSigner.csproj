@@ -259,6 +259,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU17|AnyCPU'">
+    <OutputPath>bin\Exchange 2013 SP1 CU17\</OutputPath>
+    <DefineConstants>TRACE;EX_2013_SP1_CU17</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU18|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU18\</OutputPath>
     <DefineConstants>TRACE;EX_2013_SP1_CU18</DefineConstants>
@@ -496,6 +505,12 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU16'">
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU16\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU17'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU17\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2013 SP1 CU17'">
+      <HintPath>..\..\Lib\Exchange 2013 SP1 CU17\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2013 SP1 CU18'">
       <HintPath>..\..\Lib\Exchange 2013 SP1 CU18\Microsoft.Exchange.Data.Common.dll</HintPath>
