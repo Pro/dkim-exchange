@@ -63,11 +63,6 @@ namespace Exchange.DkimSigner
         {
             try
             {
-#if !EX_2007_SP3 //not supported in Exchange 2007
-                // This allows Transport poison detection to correclty handle this message
-                // if there is a crash on this thread.
-                agentAsyncContext.Resume();
-#endif
                 SignMailItem((MailItem)mailItem);
             }
             catch (Exception ex)
@@ -76,6 +71,11 @@ namespace Exchange.DkimSigner
             }
             finally
             {
+#if !EX_2007_SP3 //not supported in Exchange 2007
+                // This allows Transport poison detection to correclty handle this message
+                // if there is a crash on this thread.
+                agentAsyncContext.Resume();
+#endif
                 agentAsyncContext.Complete();
                 agentAsyncContext = null;
             }
