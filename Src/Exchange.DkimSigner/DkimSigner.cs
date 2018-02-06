@@ -79,7 +79,7 @@ namespace Exchange.DkimSigner
                 domains.Clear();
 
                 DkimSignatureAlgorithm signatureAlgorithm;
-                
+
                 switch (config.SigningAlgorithm)
                 {
                     case DkimAlgorithmKind.RsaSha1:
@@ -101,9 +101,8 @@ namespace Exchange.DkimSigner
                     if (String.IsNullOrEmpty(privateKey) || !File.Exists(privateKey))
                     {
                         Logger.LogError("The private key for domain " + domainElement.Domain + " wasn't found: " + privateKey + ". Ignoring domain.");
-
                     }
-                    
+
                     //check if the private key can be parsed
                     try
                     {
@@ -134,7 +133,7 @@ namespace Exchange.DkimSigner
                 }
 
                 headerCanonicalization = config.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed ? DkimCanonicalizationAlgorithm.Relaxed : DkimCanonicalizationAlgorithm.Simple;
-                
+
                 bodyCanonicalization = config.BodyCanonicalization == DkimCanonicalizationKind.Relaxed ? DkimCanonicalizationAlgorithm.Relaxed : DkimCanonicalizationAlgorithm.Simple;
 
                 List<HeaderId> headerList = new List<HeaderId>();
@@ -152,8 +151,7 @@ namespace Exchange.DkimSigner
                     headerList.Add(headerId);
                 }
 
-                // The From header must always be signed according to the 
-                // DKIM specification.
+                // The From header must always be signed according to the DKIM specification.
                 if (!headerList.Contains(HeaderId.From))
                 {
                     headerList.Add(HeaderId.From);
@@ -178,12 +176,41 @@ namespace Exchange.DkimSigner
         /// <returns></returns>
         public void SignMessage(DomainElementSigner domainSigner, MailItem mailItem)
         {
-            using (Stream stream = mailItem.GetMimeReadStream())
+            // MailItem.GetMimeWriteStream() internally uses
+            // Microsoft.Exchange.Data.Mime.MimeDocument.GetLoadStream(), which may reformat the
+            // message using different formatting than is originally read from
+            // MailItem.GetMimeReadStream().  To prevent these formatting changes from invalidating
+            // the DKIM signature, we must read then write then re-read the message to ensure that
+            // any formatting changes are made before we sign the message.
+            using (MemoryStream memStream = new MemoryStream())
             {
-                stream.Seek(0, SeekOrigin.Begin);
-                
+                using (Stream inputStream = mailItem.GetMimeReadStream())
+                {
+                    inputStream.Seek(0, SeekOrigin.Begin);
+#if EX_2007_SP3 || EX_2010 || EX_2010_SP1 || EX_2010_SP2 || EX_2010_SP3
+                    byte[] buffer = new byte[16*1024];
+                    int size;
+                    while((size = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+                    {
+                        memStream.Write(buffer, 0, size);
+                    }
+#else
+                    inputStream.CopyTo(memStream);
+#endif
+                }
+                memStream.Seek(0, SeekOrigin.Begin);
+                using (Stream outputStream = mailItem.GetMimeWriteStream())
+                {
+                    memStream.WriteTo(outputStream);
+                }
+            }
+
+            using (Stream inputStream = mailItem.GetMimeReadStream())
+            {
+                inputStream.Seek(0, SeekOrigin.Begin);
                 Logger.LogDebug("Parsing the MimeMessage");
-                MimeMessage message = MimeMessage.Load(stream, true);
+                MimeMessage message = MimeMessage.Load(inputStream, true);
+                // 'inputStream' cannot be disposed until we are done with 'message'
 
                 Logger.LogDebug("Signing the message");
                 lock (settingsMutex)
@@ -193,18 +220,20 @@ namespace Exchange.DkimSigner
                 var value = message.Headers[HeaderId.DkimSignature];
                 Logger.LogDebug("Got signing header: " + value);
 
-                // we first need to create a memory stream, because if WriteTo is called with mailItem Stream directly, it throws an exception somehow.
-                MemoryStream memoryOutputStream = new MemoryStream();
-                message.WriteTo(FormatOptions.Default, memoryOutputStream);
-                memoryOutputStream.Seek(0, SeekOrigin.Begin);
-
-                using (Stream outputStream = mailItem.GetMimeWriteStream())
+                // The Stream returned by mailItem.GetMimeWriteStream() will throw an exception if
+                // Stream.Write() is called after Stream.Flush() has been called, but
+                // MimeMessage.WriteTo(FormatOptions, Stream) may call Stream.Flush() before the full
+                // message has been written.  To avoid exceptions we must buffer the message in a
+                // MemoryStream.
+                using (MemoryStream memStream = new MemoryStream())
                 {
-                    memoryOutputStream.WriteTo(outputStream);
-                    outputStream.Close();
+                    message.WriteTo(FormatOptions.Default, memStream);
+                    memStream.Seek(0, SeekOrigin.Begin);
+                    using (Stream outputStream = mailItem.GetMimeWriteStream())
+                    {
+                        memStream.WriteTo(outputStream);
+                    }
                 }
-
-                stream.Close();
             }
         }
 
