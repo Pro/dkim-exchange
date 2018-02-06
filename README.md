@@ -102,9 +102,8 @@ If you have problems installing the agent using the options above, you can use t
 9. Check EventLog for errors or warnings.
  Hint: you can create a user defined view in EventLog and then select "Per Source" and as the value "Exchange DkimSigner"
 
-Make sure that the priority of the DkimSigner Agent is quite low so that no other agent messes around with the headers. Best set it to lowest priority.
+Make sure that the DkimSigner Agent has a "low priority" (high priority number) so that it runs after other agents which might modify the headers. Best to set it to lowest priority (highest number).
 To get a list of all the Export Agents use the Command `Get-TransportAgent`
-
 To change the priority use `Set-TransportAgent -Identity "Exchange DkimSigner" -Priority 3`
 
 ## Problems?
