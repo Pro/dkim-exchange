@@ -8,7 +8,6 @@
 * 31.05.2018 [3.1.0]:  
 	New: Added support for Exchange Exchange 2013 CU20  
 	New: Added support for Exchange 2016 CU9  
-	New: Update to MimeKit 1.22  
 	Fix: Ignore Unknown header in header to sign list (#177)  
 	Fix: Update through GUI not working due to SSL issue (#224)  
 * 12.10.2017 [3.0.12]:  
