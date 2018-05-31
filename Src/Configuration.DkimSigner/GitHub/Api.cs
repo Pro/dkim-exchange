@@ -13,7 +13,10 @@ namespace Configuration.DkimSigner.GitHub
 
         public static string MakeRequest(string sUrl)
         {
-            HttpWebRequest oRequest = (HttpWebRequest) WebRequest.Create(sUrl);
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
+				SecurityProtocolType.Tls12 |
+				SecurityProtocolType.Tls11 | SecurityProtocolType.Ssl3;
+			HttpWebRequest oRequest = (HttpWebRequest) WebRequest.Create(sUrl);
             HttpWebResponse oResponse = null;
             oRequest.UserAgent = ".NET Framework API Client";
 
