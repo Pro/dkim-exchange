@@ -115,6 +115,13 @@ If you have any problems installing, please check out the [troubleshooting guide
 
 After installing the agent, you can use the Configuration.DkimSigner.exe within `C:\Program Files\Exchange DkimSigner` to configure the agent and all the settings. If the GUI doesn't work, you can also configure it manually (see section below).
 
+Please Note:  
+If you have configured your server to only send in the TNEF message format, your mails will not be signed.
+To disable it, use the following powershell command (see also [#170](https://github.com/Pro/dkim-exchange/issues/170))
+```
+Set-RemoteDomain -Identity * -TNEFEnabled $false
+```
+
 ## Configuration tool
 
 <img alt='Information' src='https://github.com/Pro/dkim-exchange/blob/master/Screenshots/Information.png' border='0' >
