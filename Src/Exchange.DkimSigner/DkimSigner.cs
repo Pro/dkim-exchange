@@ -141,9 +141,9 @@ namespace Exchange.DkimSigner
                 {
                     HeaderId headerId;
 #if EX_2007_SP3 || EX_2010 || EX_2010_SP1 || EX_2010_SP2 || EX_2010_SP3
-                    if (!TryParseHeader(headerToSign, out headerId))
+                    if (!TryParseHeader(headerToSign, out headerId) || (headerId == HeaderId.Unknown))
 #else
-                    if (!Enum.TryParse(headerToSign, true, out headerId))
+                    if (!Enum.TryParse(headerToSign, true, out headerId) || (headerId == HeaderId.Unknown))
 #endif
                     {
                         Logger.LogWarning("Invalid value for header to sign: '" + headerToSign + "'. This header will be ignored.");
