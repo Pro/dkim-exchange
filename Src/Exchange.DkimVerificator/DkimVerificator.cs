@@ -80,7 +80,7 @@ namespace Exchange.DkimVerificator
 
         // Transport decodes message headers when creating MailItem object
         // This function will get the raw message headers and body and create a stream for MimeKit
-        private static Stream GetRawMessageStream(MailItem mailItem)
+        private Stream GetRawMessageStream(MailItem mailItem)
         {
             StringBuilder builder = new StringBuilder();
 
@@ -105,7 +105,7 @@ namespace Exchange.DkimVerificator
             return StringToStream(eml);
         }
 
-        private static string StreamToString(Stream stream)
+        private string StreamToString(Stream stream)
         {
             stream.Position = 0;
             using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
@@ -114,7 +114,7 @@ namespace Exchange.DkimVerificator
             }
         }
 
-        private static Stream StringToStream(string src)
+        private Stream StringToStream(string src)
         {
             byte[] byteArray = Encoding.UTF8.GetBytes(src);
             return new MemoryStream(byteArray);
