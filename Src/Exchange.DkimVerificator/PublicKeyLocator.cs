@@ -28,7 +28,7 @@ namespace Exchange.DkimVerificator
 
             string txtRecord = getTxtRecord(domain, selector);
 
-            txtRecord = txtRecord.Replace(" ", "");
+            txtRecord = txtRecord.Replace(" ", "").TrimEnd(';');
             Dictionary<string, string> dict = txtRecord.Split(';').Select(x => x.Split('=')).ToDictionary(x => x[0], x => x[1]);
 
             // k must be rsa

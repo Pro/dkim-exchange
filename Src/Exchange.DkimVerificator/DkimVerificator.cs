@@ -7,6 +7,7 @@ using Exchange.Dkim;
 using Exchange.DkimSigner.Configuration;
 using System.IO;
 using MimeKit;
+using System.Text;
 
 namespace Exchange.DkimVerificator
 {
@@ -41,7 +42,7 @@ namespace Exchange.DkimVerificator
         public bool VerifyMessage(MailItem mailItem)
         {
             bool verifyResult = false;
-            using (Stream stream = mailItem.GetMimeReadStream())
+            using (Stream stream = GetRawMessageStream(mailItem))
             {
                 stream.Seek(0, SeekOrigin.Begin);
 
@@ -75,6 +76,48 @@ namespace Exchange.DkimVerificator
                 stream.Close();
             }
             return verifyResult;
+        }
+
+        // Transport decodes message headers when creating MailItem object
+        // This function will get the raw message headers and body and create a stream for MimeKit
+        private static Stream GetRawMessageStream(MailItem mailItem)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                EncodingOptions options = new EncodingOptions("US-ASCII", "en-US", EncodingFlags.None);
+
+                // Get the raw message headers and convert to string
+                mailItem.Message.RootPart.Headers.WriteTo(stream, options);
+                string messageHeaders = StreamToString(stream);
+                builder.Append(messageHeaders);
+                builder.AppendLine("");
+            }
+
+            // Get the message body and convert to string
+            string messageBody = StreamToString(mailItem.Message.MimeDocument.RootPart.GetRawContentReadStream());
+            builder.Append(messageBody);
+
+            // Merge headers and body to string
+            string eml = builder.ToString();
+
+            return StringToStream(eml);
+        }
+
+        private static string StreamToString(Stream stream)
+        {
+            stream.Position = 0;
+            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
+        private static Stream StringToStream(string src)
+        {
+            byte[] byteArray = Encoding.UTF8.GetBytes(src);
+            return new MemoryStream(byteArray);
         }
     }
 }
