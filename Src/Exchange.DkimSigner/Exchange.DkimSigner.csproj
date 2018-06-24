@@ -21,10 +21,10 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU3|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU4|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU5|AnyCPU'">v4.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU6|AnyCPU'">v4.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU7|AnyCPU'">v4.5</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU8|AnyCPU'">v4.6.2</TargetFrameworkVersion>
-	<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU9|AnyCPU'">v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU6|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU7|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU8|AnyCPU'">v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU9|AnyCPU'">v4.6.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -398,6 +398,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU10|AnyCPU'">
+      <OutputPath>bin\Exchange 2016 CU10\</OutputPath>
+      <DefineConstants>TRACE;EX_2016_CU10</DefineConstants>
+      <Optimize>true</Optimize>
+      <DebugType>pdbonly</DebugType>
+      <PlatformTarget>AnyCPU</PlatformTarget>
+      <ErrorReport>prompt</ErrorReport>
+      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
@@ -656,6 +665,12 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU9'">
       <HintPath>..\..\Lib\Exchange 2016 CU9\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU9'">
+      <HintPath>..\..\Lib\Exchange 2016 CU10\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU9'">
+      <HintPath>..\..\Lib\Exchange 2016 CU10\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
       <Private>True</Private>
@@ -706,6 +721,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Tests\Ressources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Choose>
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
