@@ -182,9 +182,6 @@
   <ItemGroup>
     <Folder Include="Tests\Ressources\" />
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
-  </ItemGroup>
   <Choose>
     <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
       <ItemGroup>
