@@ -236,6 +236,7 @@
     <Compile Include="UninstallWindow.Designer.cs">
       <DependentUpon>UninstallWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserPreferences.cs" />
     <Compile Include="UserPreferences.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
