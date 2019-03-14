@@ -62,6 +62,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2016 CU8		(15.1.1415.2)
 * Exchange 2016 CU9             (15.1.1466.3)
 * Exchange 2016 CU10            (15.1.1531.3)
+* Exchange 2019 CU1		(15.2.330.5)
 
 ## Requirements
 
