@@ -1,6 +1,6 @@
 ﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
 =============
-
+For Exchange 2019 CU1 follow manual installation
 -----------------------------------------------------------------------------------------------------------------------
 
 **Developer/Maintainer wanted!**
