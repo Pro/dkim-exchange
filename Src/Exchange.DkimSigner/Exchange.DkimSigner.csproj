@@ -686,7 +686,7 @@
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU1'">
       <HintPath>..\..\Lib\Exchange 2019 CU1\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU10'">
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU1'">
       <HintPath>..\..\Lib\Exchange 2019 CU1\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">

@@ -6,7 +6,6 @@ using System;
 using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
-
 [assembly: AssemblyTitle("DKIM Signer for Exchange")]
 [assembly: AssemblyDescription("Signs outbound e-mails using DKIM.")]
 #if DEBUG
