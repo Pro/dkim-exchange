@@ -1,4 +1,4 @@
-﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
+Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
 =============
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -50,6 +50,7 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2013 CU18    (15.0.1347.2)
 * Exchange 2013 CU19    (15.0.1365.1)
 * Exchange 2013 CU20    (15.0.1367.3)
+* Exchange 2013 CU22    (15.0.1473.3)
 * Exchange 2016 Preview (15.1.225.17)
 * Exchange 2016 RTM     (15.1.225.42)
 * Exchange 2016 CU1     (15.1.396.30)
@@ -101,7 +102,7 @@ If you have problems installing the agent using the options above, you can use t
 
 1. Download the .zip and extract it e.g. on the Desktop: [Latest Release](https://github.com/Pro/dkim-exchange/releases/latest)
 2. Open "Exchange Management Shell" from the Startmenu
-3. Check your current execution policy and remember it for the last step `Get-ExecutionPolicy –List`
+3. Check your current execution policy and remember it for the last step `Get-ExecutionPolicy �List`
 4. Execute the following command to allow execution of local scripts (will be reset at last step): `Set-ExecutionPolicy Unrestricted`
 5. Cd into the folder where the zip has been extracted.
 6. Execute the install script `.\install.ps1`
