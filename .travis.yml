@@ -37,7 +37,7 @@ script:
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU17"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU18"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU19"
-- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU20"
+#- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU20"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU21"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU22"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU1"
