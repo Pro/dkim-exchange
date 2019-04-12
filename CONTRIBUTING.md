@@ -48,6 +48,21 @@ There are two projects in the Visual Studio Solution.
 To compile the `Configuration.DKIMSigner` executable just go to Project Menu and then `Build Solution`.
 To compile the .dll's for the Exchange Agent, go to Project Menu and then select  `Batch Build`. Make sure all the configurations are selected, then press Build. This will automatically link the agent DLLs with the correct version of the Exchange libraries.
 
+### Creating Releases
+
+1. Make sure that the new version number is set correctly in the Visual Studio Project AssemblyInfo (Right click project -> Settings -> Assembly Info). This needs to be updated for both projects, the configurator and the lib
+2. Optionally update the Copyright year
+3. Update the CHANGELOG.md
+4. Build all the .dll versions and the Configurator as described in the Compiling Section
+5. Commit the changed files, including resulting binary files (`Src/Exchange.DkimSigner/bin`, and `Src/Configuration.DkimSigner/bin/Release`)
+6. Push all the changes
+7. Go to GitHub -> Releases (https://github.com/Pro/dkim-exchange/releases)
+8. Create a new release. As the tag use the same version you used in step 1, e.g. `v3.2.0`. The title should summarize the release. And as text use the change log content. Just refer to previous releases.
+9. Create a new .zip File for the binary:
+   Right-click on `Src/Configuration.DkimSigner/bin/Release` and then zip the folder. Rename the resulting .zip to `Configuration.DkimSigner.zip`. Make sure that this .zip does not contain any subfolders, but all the files directly.
+10. Add the .zip to the release
+11. Create the release as a pre-release. This will allow other users to test it as a beta version
+12. After two weeks or so just remove the pre-release flag, and it will be picked up by the configurator.exe as a new update
 
 ### Debugging
 If you want to debug the .dll on your Exchange Server, you need to install [Visual Studio Remote Debugging](http://msdn.microsoft.com/en-us/library/vstudio/bt727f1t.aspx) on the Server.
