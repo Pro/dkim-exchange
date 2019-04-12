@@ -1,4 +1,4 @@
-﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)&nbsp;[![Coverity Scan Build Status](https://scan.coverity.com/projects/3482/badge.svg)](https://scan.coverity.com/projects/3482)
+﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)
 =============
 
 -----------------------------------------------------------------------------------------------------------------------
@@ -50,6 +50,8 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2013 CU18    (15.0.1347.2)
 * Exchange 2013 CU19    (15.0.1365.1)
 * Exchange 2013 CU20    (15.0.1367.3)
+* Exchange 2013 CU21    (15.0.1395.4)
+* Exchange 2013 CU22    (15.0.1473.3)
 * Exchange 2016 Preview (15.1.225.17)
 * Exchange 2016 RTM     (15.1.225.42)
 * Exchange 2016 CU1     (15.1.396.30)
@@ -59,9 +61,14 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2016 CU5		(15.1.845.34)
 * Exchange 2016 CU6		(15.1.1034.26)
 * Exchange 2016 CU7		(15.1.1261.35)
-* Exchange 2016 CU8		(15.1.1415.2)
-* Exchange 2016 CU9             (15.1.1466.3)
-* Exchange 2016 CU10            (15.1.1531.3)
+* Exchange 2016 CU8   (15.1.1415.2)
+* Exchange 2016 CU9   (15.1.1466.3)
+* Exchange 2016 CU10  (15.1.1531.3)
+* Exchange 2016 CU11  (15.1.1591.10)
+* Exchange 2016 CU12  (15.1.1713.5)
+* Exchange 2019 Preview   (15.2.196.0)
+* Exchange 2019 RTM  (15.2.221.12)
+* Exchange 2019 CU1  (15.2.330.5)
 
 ## Requirements
 
