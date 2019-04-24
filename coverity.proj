@@ -11,6 +11,7 @@
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP1;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP2;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP3;Platform=Any CPU" />
+  <MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP3 UR27;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU1;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU2;Platform=Any CPU" />
