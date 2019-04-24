@@ -6,7 +6,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2010 SP1 (14.1.*)
 # Exchange 2010 SP2 (14.2.*)
 # Exchange 2010 SP3 (14.3.*)
-# Exchange 2010 SP3 UR27 (14.3.452.0)
+# Exchange 2010 SP3 UR27 (14.3.123.0)
 # Exchange 2013     (15.0.516.32)
 # Exchange 2013 CU1 (15.0.620.29)
 # Exchange 2013 CU2 (15.0.712.24)
@@ -65,8 +65,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2010 SP2"
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 3) {
 	$EXVER="Exchange 2010 SP3"
-} elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 3 -and ($exchserver.admindisplayversion).build -eq 452) {
-	$EXVER="Exchange 2010 UR27"
+} elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 3 -and ($exchserver.admindisplayversion).build -eq 123) {
+	$EXVER="Exchange 2010 SP3 UR27"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 516) {
 	$EXVER="Exchange 2013"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 620) {
