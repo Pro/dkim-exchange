@@ -66,7 +66,7 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 3) {
 	$EXVER="Exchange 2010 SP3"
 } elseif (($exchserver.admindisplayversion).major -eq 14 -and ($exchserver.admindisplayversion).minor -eq 3 -and ($exchserver.admindisplayversion).build -eq 452) {
-	$EXVER="Exchange 2010 SP3 UR27"
+	$EXVER="Exchange 2010 UR27"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 516) {
 	$EXVER="Exchange 2013"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 0 -and ($exchserver.admindisplayversion).build -eq 620) {
