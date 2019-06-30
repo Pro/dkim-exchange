@@ -5,6 +5,16 @@
 
 
 ## Releases
+* 16.04.2019 [3.2.0]:
+	New: Added support for Exchange 2013 CU22
+	New: Added support for Exchange 2016 CU11
+	New: Added support for Exchange 2016 CU12
+	New: Added support for Exchange 2019 Preview
+	New: Added support for Exchange 2019 RTM
+	New: Added support for Exchange 2019 CU1
+* 23.08.2018 [3.1.1]:
+	New: Added support for Exchange Exchange 2013 CU21
+	New: Added support for Exchange 2016 CU10
 * 31.05.2018 [3.1.0]:  
 	New: Added support for Exchange Exchange 2013 CU20  
 	New: Added support for Exchange 2016 CU9  
