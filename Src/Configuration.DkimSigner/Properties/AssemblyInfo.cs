@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("github.com/pro")]
 [assembly: AssemblyProduct("Exchange DKIM Signer Configuration")]
-[assembly: AssemblyCopyright("Gnu LGPL 3 by Stefan Profanter © 2018")]
+[assembly: AssemblyCopyright("Gnu LGPL 3 by Stefan Profanter © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

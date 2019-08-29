@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 #endif
 [assembly: AssemblyCompany("github.com/Pro")]
 [assembly: AssemblyProduct("Exchange DKIM")]
-[assembly: AssemblyCopyright("Gnu LGPL 3 by Stefan Profanter © 2018")]
+[assembly: AssemblyCopyright("Gnu LGPL 3 by Stefan Profanter © 2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
