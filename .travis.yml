@@ -40,6 +40,7 @@ script:
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU20"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU21"
 - xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU22"
+- xbuild DkimSigner.sln /p:Configuration="Ex2013 SP1 CU23"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU1"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU2"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU3"
@@ -52,11 +53,13 @@ script:
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU10"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU11"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU12"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU13"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 Preview"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 RTM"
 - xbuild DkimSigner.sln /p:Configuration="Ex2019 Preview"
 - xbuild DkimSigner.sln /p:Configuration="Ex2019 RTM"
 - xbuild DkimSigner.sln /p:Configuration="Ex2019 CU1"
+- xbuild DkimSigner.sln /p:Configuration="Ex2019 CU2"
 - xbuild DkimSigner.sln /p:Configuration="Release"
 
 #addons:
