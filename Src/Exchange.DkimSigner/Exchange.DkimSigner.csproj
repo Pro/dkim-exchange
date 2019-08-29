@@ -10,13 +10,13 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Exchange.DkimSigner</RootNamespace>
     <AssemblyName>ExchangeDkimSigner</AssemblyName>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Debug Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3 RU21|AnyCPU'">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010|AnyCPU'">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v3.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Debug Ex2010 SP3|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2007 SP3 RU21|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU'">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU22|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">v4.5</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU3|AnyCPU'">v4.5</TargetFrameworkVersion>
@@ -34,7 +34,7 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 RTM|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU2|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -435,80 +435,80 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU10|AnyCPU'">
-      <OutputPath>bin\Exchange 2016 CU10\</OutputPath>
-      <DefineConstants>TRACE;EX_2016_CU10</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2016 CU10\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU10</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU11|AnyCPU'">
-      <OutputPath>bin\Exchange 2016 CU11\</OutputPath>
-      <DefineConstants>TRACE;EX_2016_CU11</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2016 CU11\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU11</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU12|AnyCPU'">
-      <OutputPath>bin\Exchange 2016 CU12\</OutputPath>
-      <DefineConstants>TRACE;EX_2016_CU12</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2016 CU12\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU12</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU13|AnyCPU'">
-      <OutputPath>bin\Exchange 2016 CU13\</OutputPath>
-      <DefineConstants>TRACE;EX_2016_CU13</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2016 CU13\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU13</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">
-      <OutputPath>bin\Exchange 2019 Preview\</OutputPath>
-      <DefineConstants>TRACE;EX_2019_Preview</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2019 Preview\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_Preview</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 RTM|AnyCPU'">
-      <OutputPath>bin\Exchange 2019 RTM\</OutputPath>
-      <DefineConstants>TRACE;EX_2019_RTM</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2019 RTM\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_RTM</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">
-      <OutputPath>bin\Exchange 2019 CU1\</OutputPath>
-      <DefineConstants>TRACE;EX_2019_CU1</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2019 CU1\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU1</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU2|AnyCPU'">
-      <OutputPath>bin\Exchange 2019 CU2\</OutputPath>
-      <DefineConstants>TRACE;EX_2019_CU2</DefineConstants>
-      <Optimize>true</Optimize>
-      <DebugType>pdbonly</DebugType>
-      <PlatformTarget>AnyCPU</PlatformTarget>
-      <ErrorReport>prompt</ErrorReport>
-      <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\Exchange 2019 CU2\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU2</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle">
-      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\..\packages\BouncyCastle.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
@@ -830,9 +830,8 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU2'">
       <HintPath>..\..\Lib\Exchange 2019 CU2\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-    <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="MimeKit, Version=2.3.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\MimeKit.2.3.0\lib\net45\MimeKit.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
@@ -842,6 +841,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.XML" />

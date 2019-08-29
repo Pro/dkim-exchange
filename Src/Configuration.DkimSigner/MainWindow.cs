@@ -134,6 +134,39 @@ namespace Configuration.DkimSigner
         private void generic_ValueChanged(object sender, EventArgs e)
         {
             bDataUpdated = true;
+
+            if (sender == rbEd25519SHA256 || sender == rbRsaSha1 || sender == rbRsaSha256)
+            {
+                updateKeyComboBox();
+            }
+        }
+
+        private void updateKeyComboBox()
+        {
+            string userKeyLength = UserPreferences.Default.KeyLength.ToString();
+
+            if (rbEd25519SHA256.Checked)
+            {
+                cbKeyLength.Items.Clear();
+                cbKeyLength.Items.Add("128");
+                cbKeyLength.Items.Add("192");
+                cbKeyLength.Items.Add("256");
+            }
+            else
+            {
+                cbKeyLength.Items.Clear();
+                cbKeyLength.Items.Add("1024");
+                cbKeyLength.Items.Add("2048");
+            }
+
+            if (false == cbKeyLength.Items.Contains(userKeyLength))
+            {
+                cbKeyLength.SelectedItem = (rbEd25519SHA256.Checked ? "256" : "2048");
+            }
+            else
+            {
+                cbKeyLength.SelectedItem = UserPreferences.Default.KeyLength.ToString();
+            }
         }
 
         private void lbxHeadersToSign_SelectedIndexChanged(object sender, EventArgs e)
@@ -431,6 +464,7 @@ namespace Configuration.DkimSigner
             //
             rbRsaSha1.Checked = (oConfig.SigningAlgorithm == DkimAlgorithmKind.RsaSha1);
             rbRsaSha256.Checked = (oConfig.SigningAlgorithm == DkimAlgorithmKind.RsaSha256);
+            rbEd25519SHA256.Checked = (oConfig.SigningAlgorithm == DkimAlgorithmKind.Ed25519SHA256);
             rbSimpleHeaderCanonicalization.Checked = (oConfig.HeaderCanonicalization == DkimCanonicalizationKind.Simple);
             rbRelaxedHeaderCanonicalization.Checked = (oConfig.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed);
             rbSimpleBodyCanonicalization.Checked = (oConfig.BodyCanonicalization == DkimCanonicalizationKind.Simple);
@@ -474,7 +508,8 @@ namespace Configuration.DkimSigner
         private bool SaveDkimSignerConfig()
         {
             oConfig.Loglevel = cbLogLevel.SelectedIndex + 1;
-            oConfig.SigningAlgorithm = (rbRsaSha1.Checked ? DkimAlgorithmKind.RsaSha1 : DkimAlgorithmKind.RsaSha256);
+            oConfig.SigningAlgorithm = (rbRsaSha1.Checked ? DkimAlgorithmKind.RsaSha1 : 
+                (rbRsaSha256.Checked ? DkimAlgorithmKind.RsaSha256 : DkimAlgorithmKind.Ed25519SHA256));
             oConfig.BodyCanonicalization = (rbSimpleBodyCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
             oConfig.HeaderCanonicalization = (rbSimpleHeaderCanonicalization.Checked ? DkimCanonicalizationKind.Simple : DkimCanonicalizationKind.Relaxed);
 
@@ -540,13 +575,13 @@ namespace Configuration.DkimSigner
                 }
                 else
                 {
-                    sDnsRecord = "No RSA pub key found:\n" + sPubKeyPath;
+                    sDnsRecord = "No public key found:\n" + sPubKeyPath;
                 }
             }
 
             if (sRsaPublicKeyBase64 != null && sRsaPublicKeyBase64 != string.Empty)
             {
-                sDnsRecord = "v=DKIM1; k=rsa; p=" + sRsaPublicKeyBase64;
+                sDnsRecord = string.Format("v=DKIM1; k={0}; p={1}", rbEd25519SHA256.Checked ? "ed25519" : "rsa", sRsaPublicKeyBase64);
             }
 
             txtDNSRecord.Text = sDnsRecord;
@@ -898,12 +933,12 @@ namespace Configuration.DkimSigner
 
                 if (oFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    GenerateKey(oFileDialog.FileName);
+                    GenerateKey(oFileDialog.FileName, rbEd25519SHA256.Checked);
                 }
             }
         }
 
-        private void GenerateKey(string fileName)
+        private void GenerateKey(string fileName, bool is_eddsa)
         {
             string fileNamePublic = fileName + ".pub";
 
@@ -914,7 +949,17 @@ namespace Configuration.DkimSigner
                 return;
             }
 
-            RsaKeyPairGenerator g = new RsaKeyPairGenerator();
+            IAsymmetricCipherKeyPairGenerator g;
+
+            if (is_eddsa)
+            {
+                g = new ECKeyPairGenerator();
+            }
+            else
+            {
+                g = new RsaKeyPairGenerator();
+            }
+
             g.Init(new KeyGenerationParameters(new SecureRandom(), Convert.ToInt32(cbKeyLength.Text, 10)));
             AsymmetricCipherKeyPair pair = g.GenerateKeyPair();
 

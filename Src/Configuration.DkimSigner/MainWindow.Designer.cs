@@ -109,6 +109,7 @@
             this.label3 = new System.Windows.Forms.Label();
             this.btExchangeVersion = new System.Windows.Forms.Button();
             this.epvDomainSelector = new System.Windows.Forms.ErrorProvider(this.components);
+            this.rbEd25519SHA256 = new System.Windows.Forms.RadioButton();
             this.tcConfiguration.SuspendLayout();
             this.tbInformation.SuspendLayout();
             this.gbDkimSigner.SuspendLayout();
@@ -438,7 +439,7 @@
             // gbLogLevel
             // 
             this.gbLogLevel.Controls.Add(this.cbLogLevel);
-            this.gbLogLevel.Location = new System.Drawing.Point(243, 64);
+            this.gbLogLevel.Location = new System.Drawing.Point(243, 86);
             this.gbLogLevel.Name = "gbLogLevel";
             this.gbLogLevel.Size = new System.Drawing.Size(203, 52);
             this.gbLogLevel.TabIndex = 2;
@@ -464,7 +465,7 @@
             // 
             this.gbBodyCanonicalization.Controls.Add(this.rbRelaxedBodyCanonicalization);
             this.gbBodyCanonicalization.Controls.Add(this.rbSimpleBodyCanonicalization);
-            this.gbBodyCanonicalization.Location = new System.Drawing.Point(452, 64);
+            this.gbBodyCanonicalization.Location = new System.Drawing.Point(452, 86);
             this.gbBodyCanonicalization.Name = "gbBodyCanonicalization";
             this.gbBodyCanonicalization.Size = new System.Drawing.Size(217, 52);
             this.gbBodyCanonicalization.TabIndex = 4;
@@ -501,7 +502,7 @@
             this.gbHeaderCanonicalization.Controls.Add(this.rbSimpleHeaderCanonicalization);
             this.gbHeaderCanonicalization.Location = new System.Drawing.Point(452, 6);
             this.gbHeaderCanonicalization.Name = "gbHeaderCanonicalization";
-            this.gbHeaderCanonicalization.Size = new System.Drawing.Size(217, 52);
+            this.gbHeaderCanonicalization.Size = new System.Drawing.Size(217, 74);
             this.gbHeaderCanonicalization.TabIndex = 3;
             this.gbHeaderCanonicalization.TabStop = false;
             this.gbHeaderCanonicalization.Text = "Header Canonicalization";
@@ -532,11 +533,12 @@
             // 
             // gbAlgorithm
             // 
+            this.gbAlgorithm.Controls.Add(this.rbEd25519SHA256);
             this.gbAlgorithm.Controls.Add(this.rbRsaSha256);
             this.gbAlgorithm.Controls.Add(this.rbRsaSha1);
             this.gbAlgorithm.Location = new System.Drawing.Point(243, 6);
             this.gbAlgorithm.Name = "gbAlgorithm";
-            this.gbAlgorithm.Size = new System.Drawing.Size(203, 52);
+            this.gbAlgorithm.Size = new System.Drawing.Size(203, 74);
             this.gbAlgorithm.TabIndex = 1;
             this.gbAlgorithm.TabStop = false;
             this.gbAlgorithm.Text = "Algorithm";
@@ -1035,6 +1037,17 @@
             // 
             this.epvDomainSelector.ContainerControl = this;
             // 
+            // rbEd25519SHA256
+            // 
+            this.rbEd25519SHA256.AutoSize = true;
+            this.rbEd25519SHA256.Location = new System.Drawing.Point(21, 43);
+            this.rbEd25519SHA256.Name = "rbEd25519SHA256";
+            this.rbEd25519SHA256.Size = new System.Drawing.Size(111, 17);
+            this.rbEd25519SHA256.TabIndex = 2;
+            this.rbEd25519SHA256.Text = "Ed25519-SHA256";
+            this.rbEd25519SHA256.UseVisualStyleBackColor = true;
+            this.rbEd25519SHA256.CheckedChanged += new System.EventHandler(this.generic_ValueChanged);
+            // 
             // MainWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1161,6 +1174,7 @@
         private System.Windows.Forms.Button btCopyToClipboard;
         private System.Windows.Forms.TextBox txDebugPath;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RadioButton rbEd25519SHA256;
     }
 }
 

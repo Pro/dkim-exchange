@@ -88,11 +88,16 @@ namespace Exchange.DkimSigner
                     case DkimAlgorithmKind.RsaSha256:
                         signatureAlgorithm = DkimSignatureAlgorithm.RsaSha256;
                         break;
+                    case DkimAlgorithmKind.Ed25519SHA256:
+                        signatureAlgorithm = DkimSignatureAlgorithm.Ed25519Sha256;
+                        break;
                     default:
                         // ReSharper disable once NotResolvedInText
                         throw new ArgumentOutOfRangeException("config.SigningAlgorithm");
                 }
 
+                headerCanonicalization = config.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed ? DkimCanonicalizationAlgorithm.Relaxed : DkimCanonicalizationAlgorithm.Simple;
+                bodyCanonicalization = config.BodyCanonicalization == DkimCanonicalizationKind.Relaxed ? DkimCanonicalizationAlgorithm.Relaxed : DkimCanonicalizationAlgorithm.Simple;
 
                 foreach (DomainElement domainElement in config.Domains)
                 {
@@ -121,7 +126,9 @@ namespace Exchange.DkimSigner
                         signer = new MimeKit.Cryptography.DkimSigner(key, domainElement.Domain,
                             domainElement.Selector)
                         {
-                            SignatureAlgorithm = signatureAlgorithm
+                            SignatureAlgorithm = signatureAlgorithm,
+                            HeaderCanonicalizationAlgorithm = headerCanonicalization,
+                            BodyCanonicalizationAlgorithm = bodyCanonicalization
                         };
                     }
                     catch (Exception ex)
@@ -129,12 +136,9 @@ namespace Exchange.DkimSigner
                         Logger.LogError("Could not initialize MimeKit DkimSigner for domain " + domainElement.Domain + ": " + ex.Message);
                         continue;
                     }
+
                     domains.Add(domainElement.Domain, new DomainElementSigner(domainElement, signer));
                 }
-
-                headerCanonicalization = config.HeaderCanonicalization == DkimCanonicalizationKind.Relaxed ? DkimCanonicalizationAlgorithm.Relaxed : DkimCanonicalizationAlgorithm.Simple;
-
-                bodyCanonicalization = config.BodyCanonicalization == DkimCanonicalizationKind.Relaxed ? DkimCanonicalizationAlgorithm.Relaxed : DkimCanonicalizationAlgorithm.Simple;
 
                 List<HeaderId> headerList = new List<HeaderId>();
                 foreach (string headerToSign in config.HeadersToSign)
@@ -215,7 +219,8 @@ namespace Exchange.DkimSigner
                 Logger.LogDebug("Signing the message");
                 lock (settingsMutex)
                 {
-                    message.Sign(domainSigner.Signer, eligibleHeaders, headerCanonicalization, bodyCanonicalization);
+                    domainSigner.Signer.Sign(message, eligibleHeaders);
+                    // message.Sign(domainSigner.Signer, eligibleHeaders, headerCanonicalization, bodyCanonicalization);
                 }
                 var value = message.Headers[HeaderId.DkimSignature];
                 Logger.LogDebug("Got signing header: " + value);

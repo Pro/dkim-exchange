@@ -14,6 +14,11 @@
         /// <summary>
         /// The RSA SHA-2 (256) hashing algorithm should be used.
         /// </summary>
-        RsaSha256
+        RsaSha256,
+
+        /// <summary>
+        /// The Ed25519-SHA256 hashing algorithm should be used.
+        /// </summary>
+        Ed25519SHA256,
     }
 }
