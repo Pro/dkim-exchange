@@ -54,6 +54,7 @@ script:
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU11"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU12"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 CU13"
+- xbuild DkimSigner.sln /p:Configuration="Ex2016 CU14"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 Preview"
 - xbuild DkimSigner.sln /p:Configuration="Ex2016 RTM"
 - xbuild DkimSigner.sln /p:Configuration="Ex2019 Preview"
