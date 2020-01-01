@@ -36,6 +36,7 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU2|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU3|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU4|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -47,7 +48,7 @@
     <OutputPath>bin\Debug Exchange 2010 SP3\</OutputPath>
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;EX_2010_SP3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2007 SP3|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -526,6 +527,15 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU4|AnyCPU'">
+    <OutputPath>bin\Exchange 2019 CU4\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU4</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
@@ -861,6 +871,12 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU3'">
       <HintPath>..\..\Lib\Exchange 2019 CU3\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU4'">
+      <HintPath>..\..\Lib\Exchange 2019 CU4\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU4'">
+      <HintPath>..\..\Lib\Exchange 2019 CU4\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
