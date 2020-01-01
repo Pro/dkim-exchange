@@ -230,6 +230,11 @@
       <DependentUpon>InstallWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="FileIO\ShellFileOperation.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Include="UninstallWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -272,6 +277,10 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="UserPreferences.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
