@@ -51,11 +51,13 @@
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU12;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU13;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU14;Platform=Any CPU" />
+	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU15;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 Preview;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 RTM;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU1;Platform=Any CPU" />
 	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU2;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU3;Platform=Any CPU" />	
+	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU3;Platform=Any CPU" />
+	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU4;Platform=Any CPU" />  
   </Target>
 
  </Project>
