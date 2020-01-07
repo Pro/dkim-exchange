@@ -3,7 +3,7 @@
 
 -----------------------------------------------------------------------------------------------------------------------
 
-**Announcement**
+## Announcement
 
 Stefan (@Pro) has kindly added me, Jonathan (@DJBenson) to the collaborators list so that I can help to keep this repository up to date. My changes have been merged into the master branch and I have created binary releases for v3.2.2 and v3.2.3 bringing support up to Exchange Server 2016 CU15 and Exchange Server 2019 CU4.
 
