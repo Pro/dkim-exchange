@@ -51,8 +51,8 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2019 RTM  (15.2.221.12)
 # Exchange 2019 CU1 (15.2.330.5)
 # Exchange 2019 CU2 (15.2.397.3)
-# Exchange 2019 CU2 (15.2.464.5)
-# Exchange 2019 CU2 (15.2.529.5)
+# Exchange 2019 CU3 (15.2.464.5)
+# Exchange 2019 CU4 (15.2.529.5)
 
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
@@ -165,7 +165,7 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 464) {
 	$EXVER="Exchange 2019 CU3"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 529) {
-		$EXVER="Exchange 2019 CU4"			
+	$EXVER="Exchange 2019 CU4"			
 } else {
 	throw "The exchange version is not yet supported: " + $exchserver.admindisplayversion
 }
