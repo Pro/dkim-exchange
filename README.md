@@ -5,7 +5,7 @@
 
 **Announcement**
 
-Stefan (@Pro) has kindly added me, Jonathan (@DJBenson) to the collaborators list so that I can help to keep this repository up to date. I have already released binaries supporting Exchange 2016 CU15, Exchange 2019 CU3 and Exchange 2019 CU4 in my own [repository](https://github.com/Pro/dkim-exchange) but please bear with me whilst I get the releases here up to date. Once that's done, all official releases of the DKIM Signer will come only from this repository.
+Stefan (@Pro) has kindly added me, Jonathan (@DJBenson) to the collaborators list so that I can help to keep this repository up to date. I have already released binaries supporting Exchange 2016 CU15, Exchange 2019 CU3 and Exchange 2019 CU4 in my own [repository](https://github.com/DJBenson/dkim-exchange) but please bear with me whilst I get the releases here up to date. Once that's done, all official releases of the DKIM Signer will come only from this repository.
 
 I will do my best to add new CU's as and when Microsoft release them, but will predominently be focussing on the latest version of Exchange (currently Exchange 2019) as I have that on-premise. I can and will add Exchange 2016 CU's but they will be untested by me.
 
