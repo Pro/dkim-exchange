@@ -74,7 +74,8 @@ namespace Configuration.DkimSigner
             {"15.2.196.0", "Exchange 2019 Preview" },
             {"15.2.221.12", "Exchange 2019 RTM" },
             {"15.2.330.5", "Exchange 2019 CU1" },
-            {"15.2.397.3", "Exchange 2019 CU2"}
+            {"15.2.397.3", "Exchange 2019 CU2"},
+			{"15.2.464.5", "Exchange 2019 CU3"}
         };
     }
 }
