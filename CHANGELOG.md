@@ -5,6 +5,9 @@
 
 
 ## Releases
+* 02.01.2020 [3.2.3]:
+	New: Added support for Exchange 2016 CU15
+	New: Added support for Exchange 2019 CU4
 * 08.11.2019 [3.2.2]:
 	New: Added support for Exchange 2019 CU3
 * 20.10.2019 [3.2.1]:
@@ -52,8 +55,8 @@
 	Fix: Now using system variable for Program Files Folder install location instead of hard-coded `C:\Program Files`  
 * 17.01.2016 [3.0.1]:  
 	New: Switched to MimeKit implementation for DKIM signer  
-	New: Better handling of private key reading and generation. Now using OpenSSL format 
-	New: The configurator now checks if the public key in the DNS record matches the suggested value 
+	New: Better handling of private key reading and generation. Now using OpenSSL format
+	New: The configurator now checks if the public key in the DNS record matches the suggested value
     New: The Control Panel now contains a link to the DKIM signer configurator  
 	New: The DKIM signer can now be uninstalled using `Program and Features` from the control panel  
 	New: Support for Exchange 2013 SP1 CU11  
@@ -131,4 +134,3 @@
 	New: Build for Exchange 2010 and Exchange 2007.
 * 24.02.2013:  
 	New: multi domain support
-
