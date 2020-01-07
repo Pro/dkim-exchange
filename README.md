@@ -10,6 +10,10 @@ Thanks!!**
 
 **This project is currently not actively maintained which means that new releases for new Exchange Versions will only be made very sporadically. So do not rely on full support here**
 
+Currently maintained versions:
+
+- https://github.com/DJBenson/dkim-exchange
+
 -----------------------------------------------------------------------------------------------------------------------
 
 DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
