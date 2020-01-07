@@ -17,7 +17,7 @@ We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/
 
 ## Supported versions
 
-The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013 & 2016)
+The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchange 2007 and 2010) or .NET 4 (Exchange 2013, 2016 and 2019).
 
 * Exchange 2007 SP3     (8.3.*)
 * Exchange 2010         (14.0.*)
