@@ -3,22 +3,17 @@
 
 -----------------------------------------------------------------------------------------------------------------------
 
-**Developer/Maintainer wanted!**
+**Announcement**
 
-**Unfortunately I don't have time to maintain and implement all the features I would like to. If you would like to help developing within this project contact me by creating an issue.
-Thanks!!**
+Stefan (@Pro) has kindly added me, Jonathan (@DJBenson) to the collaborators list so that I can help to keep this repository up to date. I have already released binaries supporting Exchange 2016 CU15, Exchange 2019 CU3 and Exchange 2019 CU4 in my own [repository](https://github.com/Pro/dkim-exchange) but please bear with me whilst I get the releases here up to date. Once that's done, all official releases of the DKIM Signer will come only from this repository.
 
-**This project is currently not actively maintained which means that new releases for new Exchange Versions will only be made very sporadically. So do not rely on full support here**
+I will do my best to add new CU's as and when Microsoft release them, but will predominently be focussing on the latest version of Exchange (currently Exchange 2019) as I have that on-premise. I can and will add Exchange 2016 CU's but they will be untested by me.
 
 -----------------------------------------------------------------------------------------------------------------------
 
 DKIM Signing Agent for Microsoft Exchange Server. This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
 
 We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
-
-We are also happy for any donations to keep new versions flowing :) Especially if you think our DKIM signing agent helped you or your company preventing email spam.
-
-<a href='https://pledgie.com/campaigns/28487'><img alt='Click here to lend your support to: DKIM Exchange Signer and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/28487.png?skin_name=chrome' border='0' ></a>
 
 ## Supported versions
 
@@ -57,25 +52,25 @@ The DKIM Signer Agent [ExchangeDkimSigner.dll] is compiled for .NET 3.5 (Exchang
 * Exchange 2016 RTM     (15.1.225.42)
 * Exchange 2016 CU1     (15.1.396.30)
 * Exchange 2016 CU2 	(15.1.466.34)
-* Exchange 2016 CU3		(15.1.544.27)
-* Exchange 2016 CU4		(15.1.669.32)
-* Exchange 2016 CU5		(15.1.845.34)
-* Exchange 2016 CU6		(15.1.1034.26)
-* Exchange 2016 CU7		(15.1.1261.35)
-* Exchange 2016 CU8   (15.1.1415.2)
-* Exchange 2016 CU9   (15.1.1466.3)
-* Exchange 2016 CU10  (15.1.1531.3)
-* Exchange 2016 CU11  (15.1.1591.10)
-* Exchange 2016 CU12  (15.1.1713.5)
-* Exchange 2016 CU13  (15.1.1779.2)
-* Exchange 2016 CU14  (15.1.1847.3)
-* Exchange 2016 CU14  (15.1.1913.5)
-* Exchange 2019 Preview   (15.2.196.0)
-* Exchange 2019 RTM  (15.2.221.12)
-* Exchange 2019 CU1  (15.2.330.5)
-* Exchange 2019 CU2  (15.2.397.3)
-* Exchange 2019 CU3  (15.2.464.5)
-* Exchange 2019 CU4  (15.2.529.5)
+* Exchange 2016 CU3	(15.1.544.27)
+* Exchange 2016 CU4	(15.1.669.32)
+* Exchange 2016 CU5	(15.1.845.34)
+* Exchange 2016 CU6	(15.1.1034.26)
+* Exchange 2016 CU7	(15.1.1261.35)
+* Exchange 2016 CU8	(15.1.1415.2)
+* Exchange 2016 CU9	(15.1.1466.3)
+* Exchange 2016 CU10	(15.1.1531.3)
+* Exchange 2016 CU11	(15.1.1591.10)
+* Exchange 2016 CU12	(15.1.1713.5)
+* Exchange 2016 CU13	(15.1.1779.2)
+* Exchange 2016 CU14	(15.1.1847.3)
+* Exchange 2016 CU14	(15.1.1913.5)
+* Exchange 2019 Preview	(15.2.196.0)
+* Exchange 2019 RTM	(15.2.221.12)
+* Exchange 2019 CU1	(15.2.330.5)
+* Exchange 2019 CU2	(15.2.397.3)
+* Exchange 2019 CU3	(15.2.464.5)
+* Exchange 2019 CU4	(15.2.529.5)
 
 ## Requirements
 
@@ -130,7 +125,8 @@ To change the priority use `Set-TransportAgent -Identity "Exchange DkimSigner" -
 
 ## Problems?
 
-If you have any problems installing, please check out the [troubleshooting guideline](https://github.com/Pro/dkim-exchange/blob/master/TROUBLESHOOT.md).  
+If you have any problems installing, please check out the [troubleshooting guideline](https://github.com/Pro/dkim-exchange/blob/master/TROUBLESHOOT.md). 
+
 **Exchange 2013 SP1**: If you have any problems installing the agent on Exchange 2013 SP1 please first try to apply the fix mentioned in issue [#24](https://github.com/Pro/dkim-exchange/issues/24)
 
 # Configuring the agent
