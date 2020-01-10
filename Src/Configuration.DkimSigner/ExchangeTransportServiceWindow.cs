@@ -78,6 +78,7 @@ namespace Configuration.DkimSigner
             bool isDkimAgentTransportInstalled = ExchangeServer.IsDkimAgentTransportInstalled();
             bool isDkimAgentTransportEnabled = isDkimAgentTransportInstalled && ExchangeServer.IsDkimAgentTransportEnabled();
             btDisable.Text = (isDkimAgentTransportEnabled ? "Disable" : "Enable");
+            RefreshMoveButtons(true);
         }
 
 
@@ -90,8 +91,8 @@ namespace Configuration.DkimSigner
             }
             else
             {
-                btMoveUp.Enabled = currentAgentPriority > 1;
-                btMoveDown.Enabled = true;
+                btMoveUp.Enabled = dgvTransportServiceAgents.RowCount > 0 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].RowIndex > 0;
+                btMoveDown.Enabled = dgvTransportServiceAgents.RowCount > 0 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].RowIndex < (dgvTransportServiceAgents.RowCount -1);
             }
         }
 
