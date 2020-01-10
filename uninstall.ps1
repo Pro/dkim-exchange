@@ -2,7 +2,29 @@ write-host " *** Exchange DkimSigner UNINSTALL Script ***" -f "blue"
 
 $EXDIR="C:\Program Files\Exchange DkimSigner" 
  
-Net Stop MSExchangeTransport 
+write-host "Stopping Edge Transport Service..." -f "green"
+net stop MSExchangeTransport
+
+$serviceName = 'W3SVC'
+
+If (Get-Service $serviceName -ErrorAction SilentlyContinue) {
+
+    If ((Get-Service $serviceName).Status -eq 'Running') {
+
+        Stop-Service $serviceName
+        Write-Host "Stopping $serviceName (World Wide Web Publishing Service...)"
+
+    } Else {
+
+        Write-Host "$serviceName found, but it is not running."
+
+    }
+
+} Else {
+
+    Write-Host "$serviceName not found"
+
+}
  
 write-host "Disabling agent..."  -f "green"
 Disable-TransportAgent -Identity "Exchange DkimSigner" 
@@ -27,7 +49,26 @@ if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exch
 }
 
 
-write-host "Starting Transport..."  -f "green"
-Net Start MSExchangeTransport 
+write-host "Starting Edge Transport Service..." -f "green"
+net start MSExchangeTransport
+
+If (Get-Service $serviceName -ErrorAction SilentlyContinue) {
+
+    If ((Get-Service $serviceName).Status -ne 'Running') {
+
+        Start-Service $serviceName
+        Write-Host "Starting $serviceName (World Wide Web Publishing Service...)"
+
+    } Else {
+
+        Write-Host "$serviceName found, but it is already running."
+
+    }
+
+} Else {
+
+    Write-Host "$serviceName not found"
+
+}
  
 write-host "Uninstallation complete. Check previous outputs for any errors!"  -f "yellow"
