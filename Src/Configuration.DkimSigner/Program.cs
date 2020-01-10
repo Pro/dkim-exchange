@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Configuration.DkimSigner.Exchange;
+using System;
+using System.Drawing.Text;
+using System.IO;
 using System.Windows.Forms;
 
 namespace Configuration.DkimSigner
@@ -26,8 +29,6 @@ namespace Configuration.DkimSigner
             Form oForm = null;
             string[] asArgv = Environment.GetCommandLineArgs();
 
-
-
             int parIdx = Math.Max(Math.Max(Math.Max(Array.IndexOf(asArgv, "--install"),
                 Array.IndexOf(asArgv, "--upgrade-inplace")),
                 Array.IndexOf(asArgv, "--configure")),
@@ -45,7 +46,23 @@ namespace Configuration.DkimSigner
                 }
                 else if (asArgv[parIdx] == "--install")
                 {
-                    oForm = new InstallWindow();
+                    try
+                    {
+                        if (!Exchange.ExchangeServer.IsDkimAgentTransportInstalled())
+                        {
+                            oForm = new InstallWindow();
+                        }
+                    }
+                    catch
+                    {
+                        int debugIdx = Array.IndexOf(asArgv, "--debug");
+                        MessageBox.Show(
+                            "The check to see whether DKIM Signer is installed crashed!" + Environment.NewLine + Environment.NewLine +
+                            "This probably means you are running the application on a machine" + Environment.NewLine +
+                            "which does not have Exchange installed. The program will still" + Environment.NewLine +
+                            "open but it won't be of much use.", Application.ProductName, MessageBoxButtons.OK);
+                        oForm = new MainWindow(debugIdx >= 0);
+                    }
                 }
                 else if (asArgv[parIdx] == "--uninstall")
                 {
@@ -55,7 +72,30 @@ namespace Configuration.DkimSigner
             else
             {
                 int debugIdx = Array.IndexOf(asArgv, "--debug");
-                oForm = new MainWindow(debugIdx >= 0);
+                    // Quick check to see if binary and DLL exist - ensures UI opens quickly if program is installed
+                    if(File.Exists("" + Constants.DkimSignerPath + "\\" + Constants.DkimSignerAgentDll) && File.Exists("" + Constants.DkimSignerPath + "\\" + Constants.DkimSignerConfigurationExe))
+                    { 
+                    oForm = new MainWindow(debugIdx >= 0); 
+                } else {
+                    try
+                    {
+                        // If the quick check fails, perform a thorough check before launching the installer. This also
+                        // ensures the installer doesn't crash when Exhange isn't installed (useless but user friendly).
+                        if(!Exchange.ExchangeServer.IsDkimAgentTransportInstalled())
+                        {
+                            oForm = new InstallWindow();
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show(
+                            "The check to see whether DKIM Signer is installed crashed!" + Environment.NewLine + Environment.NewLine +
+                            "This probably means you are running the application on a machine" + Environment.NewLine +
+                            "which does not have Exchange installed. The program will still" + Environment.NewLine +
+                            "open but it won't be of much use.", Application.ProductName, MessageBoxButtons.OK);
+                        oForm = new MainWindow(debugIdx >= 0);
+                    }
+                }
             }
 
             if (oForm != null)
