@@ -11,6 +11,12 @@ I will do my best to add new CU's as and when Microsoft release them, but will p
 
 -----------------------------------------------------------------------------------------------------------------------
 
+## Advance Notice: Exchange Server 2007 and 2010 Deprecation
+
+Please refer to [this](https://github.com/Pro/dkim-exchange/issues/293) topic for the full announcement.
+
+-----------------------------------------------------------------------------------------------------------------------
+
 ## DKIM Signing Agent for Microsoft Exchange Server
 
 This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
