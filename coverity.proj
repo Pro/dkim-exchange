@@ -1,63 +1,62 @@
 <?xml version="1.0"?>
 <Project ToolsVersion="4.0" DefaultTargets="CI" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-
   <Target Name="CI" DependsOnTargets="Build" />
-
   <Target Name="Build">
     <MSBuild Projects="Src\Configuration.DkimSigner\Configuration.DkimSigner.csproj" Properties="Configuration=Release;Platform=AnyCPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2007 SP3;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2007 SP3 RU21;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP1;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP2;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP3;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU1;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU2;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU3;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU4;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU5;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU6;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU7;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU8;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU9;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU10;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU11;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU12;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU13;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU14;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU15;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU16;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU17;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU18;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU19;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU20;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU21;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU22;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU23;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 Preview;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 RTM;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU1;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU2;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU3;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU4;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU5;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU6;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU7;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU8;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU9;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU10;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU11;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU12;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU13;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU14;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU15;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 Preview;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 RTM;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU1;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU2;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU3;Platform=Any CPU" />
-	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU4;Platform=Any CPU" />  
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2007 SP3;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2007 SP3 RU21;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP1;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP2;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2010 SP3;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU1;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU2;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 CU3;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU4;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU5;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU6;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU7;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU8;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU9;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU10;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU11;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU12;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU13;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU14;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU15;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU16;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU17;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU18;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU19;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU20;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU21;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU22;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2013 SP1 CU23;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 Preview;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 RTM;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU1;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU2;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU3;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU4;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU5;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU6;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU7;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU8;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU9;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU10;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU11;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU12;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU13;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU14;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU15;Platform=Any CPU" />
+    <MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2016 CU16;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 Preview;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 RTM;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU1;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU2;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU3;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU4;Platform=Any CPU" />
+  	<MSBuild Projects="DkimSigner.sln" Properties="Configuration=Ex2019 CU5;Platform=Any CPU" />
   </Target>
-
- </Project>
+</Project>
