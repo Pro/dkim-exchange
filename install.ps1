@@ -58,7 +58,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2019 CU4 (15.2.529.5)
 # Exchange 2019 CU5 (15.2.595.3)
 # Exchange 2019 CU6 (15.2.659.4)
-# Exchange 2019 CU6 (15.2.721.2)
+# Exchange 2019 CU7 (15.2.721.2)
 
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
