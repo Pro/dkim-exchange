@@ -1,5 +1,4 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29505.145
 MinimumVisualStudioVersion = 10.0.40219.1
@@ -52,7 +51,7 @@ Global
 		Ex2016 CU15|Any CPU = Ex2016 CU15|Any CPU
 		Ex2016 CU16|Any CPU = Ex2016 CU16|Any CPU
 		Ex2016 CU17|Any CPU = Ex2016 CU17|Any CPU
-		Ex2016 CU17|Any CPU = Ex2016 CU18|Any CPU
+		Ex2016 CU18|Any CPU = Ex2016 CU18|Any CPU
 		Ex2016 CU2|Any CPU = Ex2016 CU2|Any CPU
 		Ex2016 CU3|Any CPU = Ex2016 CU3|Any CPU
 		Ex2016 CU4|Any CPU = Ex2016 CU4|Any CPU
@@ -69,7 +68,7 @@ Global
 		Ex2019 CU4|Any CPU = Ex2019 CU4|Any CPU
 		Ex2019 CU5|Any CPU = Ex2019 CU5|Any CPU
 		Ex2019 CU6|Any CPU = Ex2019 CU6|Any CPU
-		Ex2019 CU6|Any CPU = Ex2019 CU7|Any CPU
+		Ex2019 CU7|Any CPU = Ex2019 CU7|Any CPU
 		Ex2019 Preview|Any CPU = Ex2019 Preview|Any CPU
 		Ex2019 RTM|Any CPU = Ex2019 RTM|Any CPU
 		Release|Any CPU = Release|Any CPU
