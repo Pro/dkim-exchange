@@ -10,7 +10,7 @@ namespace Configuration.DkimSigner.GitHub
 {
     public class ApiWrapper
     {
-        public static List<Release> GetAllRelease(bool bIncludePrerelease = false, Version oMinimalVersion = null)
+        public static List<Release> GetAllRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
         {
             List<Release> aoRelease = null;
 
@@ -28,7 +28,7 @@ namespace Configuration.DkimSigner.GitHub
 
                 foreach (Release oRelease in aoRelease.ToList())
                 {
-                    if (oRelease.Draft || (!bIncludePrerelease && oRelease.Prerelease))
+                    if (oRelease.Draft || (!bIncludePreRelease && oRelease.Prerelease))
                     {
                         aoRelease.Remove(oRelease);
                         continue;
@@ -56,9 +56,9 @@ namespace Configuration.DkimSigner.GitHub
             return aoRelease;
         }
 
-        public static Release GetNewestRelease(bool bIncludePrerelease = false, Version oMinimalVersion = null)
+        public static Release GetNewestRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
         {
-            List<Release> aoRelease = GetAllRelease(bIncludePrerelease, oMinimalVersion);
+            List<Release> aoRelease = GetAllRelease(bIncludePreRelease, oMinimalVersion);
             if (aoRelease == null)
                 return null;
             Release oNewestRelease = null;

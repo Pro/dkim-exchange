@@ -317,7 +317,7 @@ namespace Configuration.DkimSigner
             List<Release> aoRelease = null;
             StringBuilder changelog = new StringBuilder("Couldn't get current version.\r\nCheck your Internet connection or restart the application.");
 
-            // Check the lastest Release
+            // Check the latest Release
             Exception ex = null;
             await Task.Run(() => { try { aoRelease = ApiWrapper.GetAllRelease(cbxPrereleases.Checked); } catch (Exception e) { ex = e; } });
 
@@ -1000,18 +1000,22 @@ namespace Configuration.DkimSigner
             try
             {
                 Resolver oResolver = new Resolver();
+                Response oResponse;
                 oResolver.Recursion = true;
                 oResolver.UseCache = false;
 
-                // Get the name server for the domain to avoid DNS caching
-                Response oResponse = oResolver.Query(sFullDomain, QType.NS, QClass.IN);
-                if (oResponse.RecordsRR.GetLength(0) > 0)
+                if (cbBypasNSCache.Checked)
                 {
-                    RR oNsRecord = oResponse.RecordsRR[0];
-                    if (oNsRecord.RECORD.RR.RECORD.GetType() == typeof(RecordSOA))
+                    // Get the name server for the domain to avoid DNS caching
+                    oResponse = oResolver.Query(sFullDomain, QType.NS, QClass.IN);
+                    if (oResponse.RecordsRR.GetLength(0) > 0)
                     {
-                        RecordSOA oSoaRecord = (RecordSOA)oNsRecord.RECORD.RR.RECORD;
-                        oResolver.DnsServer = oSoaRecord.MNAME;
+                        RR oNsRecord = oResponse.RecordsRR[0];
+                        if (oNsRecord.RECORD.RR.RECORD.GetType() == typeof(RecordSOA))
+                        {
+                            RecordSOA oSoaRecord = (RecordSOA) oNsRecord.RECORD.RR.RECORD;
+                            oResolver.DnsServer = oSoaRecord.MNAME;
+                        }
                     }
                 }
 
