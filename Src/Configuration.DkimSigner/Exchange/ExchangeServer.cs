@@ -178,28 +178,28 @@ namespace Configuration.DkimSigner.Exchange
             }
         }
 
-        public static void MoveUpTransportAgent()
-        {
-            foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
-            {
-                if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
-                {
-                    SetPriorityDkimTransportAgent(++oAgent.Priority);
-                    break;
-                }
-            }
-        }
+        //public static void MoveUpTransportAgent()
+        //{
+        //    foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
+        //    {
+        //        if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
+        //        {
+        //            SetPriorityDkimTransportAgent(++oAgent.Priority);
+        //            break;
+        //        }
+        //    }
+        //}
 
-        public static void MoveDownTransportAgent()
-        {
-            foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
-            {
-                if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
-                {
-                    SetPriorityDkimTransportAgent(--oAgent.Priority);
-                    break;
-                }
-            }
-        }
+        //public static void MoveDownTransportAgent()
+        //{
+        //    foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
+        //    {
+        //        if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
+        //        {
+        //            SetPriorityDkimTransportAgent(--oAgent.Priority);
+        //            break;
+        //        }
+        //    }
+        //}
     }
 }

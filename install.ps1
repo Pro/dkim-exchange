@@ -206,8 +206,29 @@ if (Test-Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exch
 	New-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\EventLog\Application\Exchange DKIM" -Name EventMessageFile -PropertyType String -Value "C:\Windows\Microsoft.NET\Framework\v4.0.30319\EventLogMessages.dll"
 }
 
-
+write-host "Stopping Edge Transport Service..." -f "green"
 net stop MSExchangeTransport
+
+$serviceName = 'W3SVC'
+
+If (Get-Service $serviceName -ErrorAction SilentlyContinue) {
+
+    If ((Get-Service $serviceName).Status -eq 'Running') {
+
+        Stop-Service $serviceName
+        Write-Host "Stopping $serviceName (World Wide Web Publishing Service...)"
+
+    } Else {
+
+        Write-Host "$serviceName found, but it is not running."
+
+    }
+
+} Else {
+
+    Write-Host "$serviceName not found"
+
+}
 
 write-host "Creating install directory: '$EXDIR' and copying data from '$SRCDIR'"  -f "green"
 new-item -Type Directory -path $EXDIR -ErrorAction SilentlyContinue
@@ -235,7 +256,26 @@ write-host "Enabling agent" -f "green"
 enable-transportagent -Identity "Exchange DkimSigner"
 get-transportagent
 
-write-host "Starting Edge Transport" -f "green"
+write-host "Starting Edge Transport Service..." -f "green"
 net start MSExchangeTransport
+
+If (Get-Service $serviceName -ErrorAction SilentlyContinue) {
+
+    If ((Get-Service $serviceName).Status -ne 'Running') {
+
+        Start-Service $serviceName
+        Write-Host "Starting $serviceName (World Wide Web Publishing Service...)"
+
+    } Else {
+
+        Write-Host "$serviceName found, but it is already running."
+
+    }
+
+} Else {
+
+    Write-Host "$serviceName not found"
+
+}
 
 write-host "Installation complete. Check previous outputs for any errors!" -f "yellow"
