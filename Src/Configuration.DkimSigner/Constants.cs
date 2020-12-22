@@ -75,6 +75,7 @@ namespace Configuration.DkimSigner
             {"15.1.1979.3", "Exchange 2016 CU16"},
             {"15.1.2044.4", "Exchange 2016 CU17"},
             {"15.1.2106.2", "Exchange 2016 CU18"},
+            {"15.1.2176.2", "Exchange 2016 CU19"},
             {"15.2.196.0", "Exchange 2019 Preview" },
             {"15.2.221.12", "Exchange 2019 RTM" },
             {"15.2.330.5", "Exchange 2019 CU1" },
@@ -83,7 +84,8 @@ namespace Configuration.DkimSigner
             {"15.2.529.5", "Exchange 2019 CU4"},
             {"15.2.595.3", "Exchange 2019 CU5"},
             {"15.2.659.4", "Exchange 2019 CU6"},
-            {"15.2.721.2", "Exchange 2019 CU7"}
+            {"15.2.721.2", "Exchange 2019 CU7"},
+            {"15.2.792.2", "Exchange 2019 CU7"}
         };
     }
 }
