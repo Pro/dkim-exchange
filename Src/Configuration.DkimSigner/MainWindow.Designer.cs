@@ -73,6 +73,7 @@
             this.btAddDomain = new System.Windows.Forms.Button();
             this.btDomainDelete = new System.Windows.Forms.Button();
             this.gbxDomainDetails = new System.Windows.Forms.GroupBox();
+            this.cbBypasNSCache = new System.Windows.Forms.CheckBox();
             this.btCopyToClipboard = new System.Windows.Forms.Button();
             this.lblDomainDNSCheckResult = new System.Windows.Forms.Label();
             this.cbKeyLength = new System.Windows.Forms.ComboBox();
@@ -631,6 +632,7 @@
             this.gbxDomainDetails.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbxDomainDetails.Controls.Add(this.cbBypasNSCache);
             this.gbxDomainDetails.Controls.Add(this.btCopyToClipboard);
             this.gbxDomainDetails.Controls.Add(this.lblDomainDNSCheckResult);
             this.gbxDomainDetails.Controls.Add(this.cbKeyLength);
@@ -658,6 +660,18 @@
             this.gbxDomainDetails.TabIndex = 1;
             this.gbxDomainDetails.TabStop = false;
             this.gbxDomainDetails.Text = "Domain details";
+            // 
+            // cbBypasNSCache
+            // 
+            this.cbBypasNSCache.AutoSize = true;
+            this.cbBypasNSCache.Checked = true;
+            this.cbBypasNSCache.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBypasNSCache.Location = new System.Drawing.Point(10, 309);
+            this.cbBypasNSCache.Name = "cbBypasNSCache";
+            this.cbBypasNSCache.Size = new System.Drawing.Size(105, 17);
+            this.cbBypasNSCache.TabIndex = 20;
+            this.cbBypasNSCache.Text = "Direct NS check";
+            this.cbBypasNSCache.UseVisualStyleBackColor = true;
             // 
             // btCopyToClipboard
             // 
@@ -1161,6 +1175,7 @@
         private System.Windows.Forms.Button btCopyToClipboard;
         private System.Windows.Forms.TextBox txDebugPath;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox cbBypasNSCache;
     }
 }
 

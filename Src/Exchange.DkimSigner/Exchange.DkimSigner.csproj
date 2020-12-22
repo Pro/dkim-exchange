@@ -32,13 +32,19 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU13|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU14|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU15|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU16|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU17|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU18|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 RTM|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU2|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU3|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU4|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU5|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU6|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU7|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -50,6 +56,7 @@
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;EX_2010_SP3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2007 SP3|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -58,6 +65,7 @@
     <DefineConstants>TRACE;EX_2007_SP3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2007 SP3 RU21|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -66,6 +74,7 @@
     <DefineConstants>TRACE;EX_2007_SP3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2010|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -74,6 +83,7 @@
     <DefineConstants>TRACE;EX_2010</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2010 SP1|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -82,6 +92,7 @@
     <DefineConstants>TRACE;EX_2010_SP1</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2010 SP2|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -90,6 +101,7 @@
     <DefineConstants>TRACE;EX_2010_SP2</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ex2010 SP3|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -98,6 +110,7 @@
     <DefineConstants>TRACE;EX_2010_SP3</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
@@ -113,6 +126,7 @@
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;EX_2013</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Ex2013 SP1 CU9|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -122,6 +136,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013|AnyCPU'">
     <OutputPath>bin\Exchange 2013\</OutputPath>
@@ -131,6 +146,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 CU1|AnyCPU'">
     <OutputPath>bin\Exchange 2013 CU1\</OutputPath>
@@ -140,6 +156,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 CU2|AnyCPU'">
     <OutputPath>bin\Exchange 2013 CU2\</OutputPath>
@@ -149,6 +166,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 CU3|AnyCPU'">
     <OutputPath>bin\Exchange 2013 CU3\</OutputPath>
@@ -158,6 +176,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU4|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU4\</OutputPath>
@@ -167,6 +186,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU5|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU5\</OutputPath>
@@ -176,6 +196,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU6|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU6\</OutputPath>
@@ -185,6 +206,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU7|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU7\</OutputPath>
@@ -194,6 +216,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU8|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU8\</OutputPath>
@@ -203,6 +226,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU9|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU9\</OutputPath>
@@ -212,6 +236,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU10|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU10\</OutputPath>
@@ -221,6 +246,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU11|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU11\</OutputPath>
@@ -230,6 +256,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU12|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU12\</OutputPath>
@@ -239,6 +266,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU13|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU13\</OutputPath>
@@ -248,6 +276,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU14|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU14\</OutputPath>
@@ -257,6 +286,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU15|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU15\</OutputPath>
@@ -266,6 +296,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU16|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU16\</OutputPath>
@@ -275,6 +306,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU17|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU17\</OutputPath>
@@ -284,6 +316,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU18|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU18\</OutputPath>
@@ -293,6 +326,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU19|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU19\</OutputPath>
@@ -302,6 +336,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU20|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU20\</OutputPath>
@@ -311,6 +346,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU21|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU21\</OutputPath>
@@ -320,6 +356,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU22|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU22\</OutputPath>
@@ -329,6 +366,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2013 SP1 CU23|AnyCPU'">
     <OutputPath>bin\Exchange 2013 SP1 CU23\</OutputPath>
@@ -338,6 +376,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 Preview|AnyCPU'">
     <OutputPath>bin\Exchange 2016 Preview\</OutputPath>
@@ -347,6 +386,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 RTM|AnyCPU'">
     <OutputPath>bin\Exchange 2016 RTM\</OutputPath>
@@ -356,6 +396,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU1|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU1\</OutputPath>
@@ -365,6 +406,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU2|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU2\</OutputPath>
@@ -374,6 +416,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU3|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU3\</OutputPath>
@@ -383,6 +426,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU4|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU4\</OutputPath>
@@ -392,6 +436,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU5|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU5\</OutputPath>
@@ -401,6 +446,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU6|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU6\</OutputPath>
@@ -410,6 +456,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU7|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU7\</OutputPath>
@@ -419,6 +466,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU8|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU8\</OutputPath>
@@ -428,6 +476,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU9|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU9\</OutputPath>
@@ -437,6 +486,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU10|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU10\</OutputPath>
@@ -446,6 +496,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU11|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU11\</OutputPath>
@@ -455,6 +506,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU12|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU12\</OutputPath>
@@ -464,6 +516,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU13|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU13\</OutputPath>
@@ -473,6 +526,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU14|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU14\</OutputPath>
@@ -482,6 +536,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU15|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU15\</OutputPath>
@@ -491,6 +546,37 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU16|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU16\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU16</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU17|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU17\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU17</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU18|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU18\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU18</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">
     <OutputPath>bin\Exchange 2019 Preview\</OutputPath>
@@ -500,6 +586,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 RTM|AnyCPU'">
     <OutputPath>bin\Exchange 2019 RTM\</OutputPath>
@@ -509,6 +596,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">
     <OutputPath>bin\Exchange 2019 CU1\</OutputPath>
@@ -518,6 +606,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU2|AnyCPU'">
     <OutputPath>bin\Exchange 2019 CU2\</OutputPath>
@@ -527,6 +616,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU3|AnyCPU'">
     <OutputPath>bin\Exchange 2019 CU3\</OutputPath>
@@ -536,6 +626,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU4|AnyCPU'">
     <OutputPath>bin\Exchange 2019 CU4\</OutputPath>
@@ -545,6 +636,37 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU5|AnyCPU'">
+    <OutputPath>bin\Exchange 2019 CU5\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU5</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU6|AnyCPU'">
+    <OutputPath>bin\Exchange 2019 CU6\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU6</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU7|AnyCPU'">
+    <OutputPath>bin\Exchange 2019 CU7\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU7</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle">
@@ -858,6 +980,24 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU15'">
       <HintPath>..\..\Lib\Exchange 2016 CU15\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU16'">
+      <HintPath>..\..\Lib\Exchange 2016 CU16\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU16'">
+      <HintPath>..\..\Lib\Exchange 2016 CU16\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU17'">
+      <HintPath>..\..\Lib\Exchange 2016 CU17\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU17'">
+      <HintPath>..\..\Lib\Exchange 2016 CU17\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU18'">
+      <HintPath>..\..\Lib\Exchange 2016 CU18\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU18'">
+      <HintPath>..\..\Lib\Exchange 2016 CU18\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 Preview'">
       <HintPath>..\..\Lib\Exchange 2019 Preview\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
@@ -893,6 +1033,24 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU4'">
       <HintPath>..\..\Lib\Exchange 2019 CU4\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU5'">
+      <HintPath>..\..\Lib\Exchange 2019 CU5\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU5'">
+      <HintPath>..\..\Lib\Exchange 2019 CU5\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU6'">
+      <HintPath>..\..\Lib\Exchange 2019 CU6\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU6'">
+      <HintPath>..\..\Lib\Exchange 2019 CU6\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU7'">
+      <HintPath>..\..\Lib\Exchange 2019 CU7\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU7'">
+      <HintPath>..\..\Lib\Exchange 2019 CU7\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
