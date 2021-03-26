@@ -51,6 +51,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2016 CU17 (15.1.2044.4)
 # Exchange 2016 CU18 (15.1.2106.2)
 # Exchange 2016 CU19 (15.1.2176.2)
+# Exchange 2016 CU19 (15.1.2242.4)
 # Exchange 2019 Preview   (15.2.196.0)
 # Exchange 2019 RTM  (15.2.221.12)
 # Exchange 2019 CU1 (15.2.330.5)
@@ -61,6 +62,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 # Exchange 2019 CU6 (15.2.659.4)
 # Exchange 2019 CU7 (15.2.721.2)
 # Exchange 2019 CU8 (15.2.792.3)
+# Exchange 2019 CU8 (15.2.858.5)
 
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
@@ -170,6 +172,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2016 CU18"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2176) {
 	$EXVER="Exchange 2016 CU19"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2242) {
+	$EXVER="Exchange 2016 CU20"	
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 196) {
 	$EXVER="Exchange 2019 Preview"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 221) {
@@ -190,6 +194,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2019 CU7"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 792) {
 	$EXVER="Exchange 2019 CU8"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 858) {
+	$EXVER="Exchange 2019 CU9"	
 } else {
 	throw "The exchange version is not yet supported: " + $exchserver.admindisplayversion
 }
