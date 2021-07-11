@@ -67,7 +67,7 @@ write-host "*** Exchange DkimSigner Install Script ***" -f "blue"
 write-host "Detecting Exchange version ... " -f "cyan"
 $hostname = hostname
 $exchserver = Get-ExchangeServer -Identity $hostname
-$EXDIR="C:\Program Files\Exchange DkimSigner"
+$EXDIR="$env:ProgramFiles\Exchange DkimSigner"
 $EXVER="Unknown"
 if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplayversion).minor -eq 3 -and ($exchserver.admindisplayversion).build -eq 298) {
 	$EXVER="Exchange 2007 SP3 RU21"
@@ -173,7 +173,9 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2176) {
 	$EXVER="Exchange 2016 CU19"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2242) {
-	$EXVER="Exchange 2016 CU20"	
+	$EXVER="Exchange 2016 CU20"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2308) {
+	$EXVER="Exchange 2016 CU21"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 196) {
 	$EXVER="Exchange 2019 Preview"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 221) {
@@ -195,7 +197,9 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 792) {
 	$EXVER="Exchange 2019 CU8"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 858) {
-	$EXVER="Exchange 2019 CU9"	
+	$EXVER="Exchange 2019 CU9"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 922) {
+	$EXVER="Exchange 2019 CU10"
 } else {
 	throw "The exchange version is not yet supported: " + $exchserver.admindisplayversion
 }
