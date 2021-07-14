@@ -36,7 +36,8 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU17|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU18|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU19|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU20|AnyCPU'">v4.7.2</TargetFrameworkVersion>	
+		<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU20|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+		<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU21|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 RTM|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">v4.7.1</TargetFrameworkVersion>
@@ -47,7 +48,8 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU6|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU7|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU8|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU9|AnyCPU'">v4.7.2</TargetFrameworkVersion>	
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU9|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+		<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU10|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -601,8 +603,18 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup> 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU21|AnyCPU'">
+		<OutputPath>bin\Exchange 2016 CU21\</OutputPath>
+		<DefineConstants>TRACE;EX_2016_CU21</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">
     <OutputPath>bin\Exchange 2019 Preview\</OutputPath>
     <DefineConstants>TRACE;EX_2019_Preview</DefineConstants>
     <Optimize>true</Optimize>
@@ -711,7 +723,17 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>  
+  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU10|AnyCPU'">
+		<OutputPath>bin\Exchange 2019 CU10\</OutputPath>
+		<DefineConstants>TRACE;EX_2019_CU10</DefineConstants>
+		<Optimize>true</Optimize>
+		<DebugType>pdbonly</DebugType>
+		<PlatformTarget>AnyCPU</PlatformTarget>
+		<ErrorReport>prompt</ErrorReport>
+		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+		<Prefer32Bit>false</Prefer32Bit>
+	</PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
@@ -1053,7 +1075,13 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU20'">
       <HintPath>..\..\Lib\Exchange 2016 CU20\Microsoft.Exchange.Data.Transport.dll</HintPath>
-    </Reference>	
+    </Reference>
+		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU21'">
+			<HintPath>..\..\Lib\Exchange 2016 CU21\Microsoft.Exchange.Data.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU21'">
+			<HintPath>..\..\Lib\Exchange 2016 CU21\Microsoft.Exchange.Data.Transport.dll</HintPath>
+		</Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 Preview'">
       <HintPath>..\..\Lib\Exchange 2019 Preview\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
@@ -1119,7 +1147,13 @@
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU9'">
       <HintPath>..\..\Lib\Exchange 2019 CU9\Microsoft.Exchange.Data.Transport.dll</HintPath>
-    </Reference>	
+    </Reference>
+		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU10'">
+			<HintPath>..\..\Lib\Exchange 2019 CU10\Microsoft.Exchange.Data.Common.dll</HintPath>
+		</Reference>
+		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU10'">
+			<HintPath>..\..\Lib\Exchange 2019 CU10\Microsoft.Exchange.Data.Transport.dll</HintPath>
+		</Reference>
     <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
       <Private>True</Private>
