@@ -176,6 +176,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2016 CU20"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2308) {
 	$EXVER="Exchange 2016 CU21"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 1 -and ($exchserver.admindisplayversion).build -eq 2375) {
+	$EXVER="Exchange 2016 CU22"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 196) {
 	$EXVER="Exchange 2019 Preview"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 221) {
@@ -200,6 +202,8 @@ if (($exchserver.admindisplayversion).major -eq 8 -and ($exchserver.admindisplay
 	$EXVER="Exchange 2019 CU9"
 } elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 922) {
 	$EXVER="Exchange 2019 CU10"
+} elseif (($exchserver.admindisplayversion).major -eq 15 -and ($exchserver.admindisplayversion).minor -eq 2 -and ($exchserver.admindisplayversion).build -eq 986) {
+	$EXVER="Exchange 2019 CU11"
 } else {
 	throw "The exchange version is not yet supported: " + $exchserver.admindisplayversion
 }
