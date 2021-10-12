@@ -29,28 +29,30 @@
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU10|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU11|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU12|AnyCPU'">v4.7.1</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU13|AnyCPU'">v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU13|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU14|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU15|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU16|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU17|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU18|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU19|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-		<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU20|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-		<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU21|AnyCPU'">v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU15|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU16|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU17|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU18|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU19|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU20|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU21|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU22|AnyCPU'">v4.8</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 RTM|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU1|AnyCPU'">v4.7.1</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU2|AnyCPU'">v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU3|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU4|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU5|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU6|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU7|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU8|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU9|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-		<TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU10|AnyCPU'">v4.7.2</TargetFrameworkVersion>
-    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU4|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU5|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU6|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU7|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU8|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU9|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU10|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU11|AnyCPU'">v4.8</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(TargetFrameworkVersion)' == '' ">v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -594,7 +596,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU20|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU20|AnyCPU'">
     <OutputPath>bin\Exchange 2016 CU20\</OutputPath>
     <DefineConstants>TRACE;EX_2016_CU20</DefineConstants>
     <Optimize>true</Optimize>
@@ -604,17 +606,27 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU21|AnyCPU'">
-		<OutputPath>bin\Exchange 2016 CU21\</OutputPath>
-		<DefineConstants>TRACE;EX_2016_CU21</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-		<Prefer32Bit>false</Prefer32Bit>
-	</PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU21|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU21\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU21</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2016 CU22|AnyCPU'">
+    <OutputPath>bin\Exchange 2016 CU22\</OutputPath>
+    <DefineConstants>TRACE;EX_2016_CU22</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 Preview|AnyCPU'">
     <OutputPath>bin\Exchange 2019 Preview\</OutputPath>
     <DefineConstants>TRACE;EX_2019_Preview</DefineConstants>
     <Optimize>true</Optimize>
@@ -724,19 +736,32 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-	<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU10|AnyCPU'">
-		<OutputPath>bin\Exchange 2019 CU10\</OutputPath>
-		<DefineConstants>TRACE;EX_2019_CU10</DefineConstants>
-		<Optimize>true</Optimize>
-		<DebugType>pdbonly</DebugType>
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<ErrorReport>prompt</ErrorReport>
-		<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-		<Prefer32Bit>false</Prefer32Bit>
-	</PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU10|AnyCPU'">
+    <OutputPath>bin\Exchange 2019 CU10\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU10</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Ex2019 CU11|AnyCPU'">
+    <OutputPath>bin\Exchange 2019 CU11\</OutputPath>
+    <DefineConstants>TRACE;EX_2019_CU11</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle">
-      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\BouncyCastle.dll</HintPath>
+    <Reference Include="BouncyCastle" Condition="'$(TargetFrameworkVersion)'=='v3.5'">
+      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net35\BouncyCastle.dll</HintPath>
+    </Reference>
+    <Reference Include="BouncyCastle" Condition="'$(TargetFrameworkVersion)'!='v3.5'">
+      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net45\BouncyCastle.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Debug Ex2010 SP3'">
       <HintPath>..\..\Lib\Exchange 2010 SP3\Microsoft.Exchange.Data.Common.dll</HintPath>
@@ -1076,12 +1101,18 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU20'">
       <HintPath>..\..\Lib\Exchange 2016 CU20\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU21'">
-			<HintPath>..\..\Lib\Exchange 2016 CU21\Microsoft.Exchange.Data.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU21'">
-			<HintPath>..\..\Lib\Exchange 2016 CU21\Microsoft.Exchange.Data.Transport.dll</HintPath>
-		</Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU21'">
+      <HintPath>..\..\Lib\Exchange 2016 CU21\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU21'">
+      <HintPath>..\..\Lib\Exchange 2016 CU21\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2016 CU22'">
+      <HintPath>..\..\Lib\Exchange 2016 CU22\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2016 CU22'">
+      <HintPath>..\..\Lib\Exchange 2016 CU22\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 Preview'">
       <HintPath>..\..\Lib\Exchange 2019 Preview\Microsoft.Exchange.Data.Common.dll</HintPath>
     </Reference>
@@ -1148,15 +1179,23 @@
     <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU9'">
       <HintPath>..\..\Lib\Exchange 2019 CU9\Microsoft.Exchange.Data.Transport.dll</HintPath>
     </Reference>
-		<Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU10'">
-			<HintPath>..\..\Lib\Exchange 2019 CU10\Microsoft.Exchange.Data.Common.dll</HintPath>
-		</Reference>
-		<Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU10'">
-			<HintPath>..\..\Lib\Exchange 2019 CU10\Microsoft.Exchange.Data.Transport.dll</HintPath>
-		</Reference>
-    <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net40\MimeKit.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU10'">
+      <HintPath>..\..\Lib\Exchange 2019 CU10\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU10'">
+      <HintPath>..\..\Lib\Exchange 2019 CU10\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Common" Condition="'$(Configuration)'=='Ex2019 CU11'">
+      <HintPath>..\..\Lib\Exchange 2019 CU11\Microsoft.Exchange.Data.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Exchange.Data.Transport" Condition="'$(Configuration)'=='Ex2019 CU11'">
+      <HintPath>..\..\Lib\Exchange 2019 CU11\Microsoft.Exchange.Data.Transport.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit" Condition="'$(TargetFrameworkVersion)'=='v3.5'">
+      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net35\MimeKit.dll</HintPath>
+    </Reference>
+    <Reference Include="MimeKit" Condition="'$(TargetFrameworkVersion)'!='v3.5'">
+      <HintPath>..\..\packages\MimeKit.1.2.21\lib\net45\MimeKit.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
@@ -1199,7 +1238,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -1209,14 +1247,7 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Choose>
-    <When Condition="'$(TargetFrameworkVersion)'=='v3.5'">
-      <ItemGroup>
-        <Reference Include="MimeKit, Version=1.2.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
-          <HintPath>..\..\packages\MimeKit.1.2.21\lib\net35\MimeKit.dll</HintPath>
-          <Private>True</Private>
-        </Reference>
-      </ItemGroup>
-    </When>
+    <When Condition="'$(TargetFrameworkVersion)'=='v3.5'" />
     <Otherwise />
   </Choose>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

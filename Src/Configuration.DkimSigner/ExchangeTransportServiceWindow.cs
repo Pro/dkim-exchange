@@ -84,15 +84,15 @@ namespace Configuration.DkimSigner
 
         private void RefreshMoveButtons(bool isEnabled)
         {
-            if (!isEnabled)
+            if (isEnabled && (dgvTransportServiceAgents.SelectedRows.Count >= 1))
             {
-                btMoveUp.Enabled = false;
-                btMoveDown.Enabled = false;
+                btMoveUp.Enabled = dgvTransportServiceAgents.RowCount > 0 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].RowIndex > 0;
+                btMoveDown.Enabled = dgvTransportServiceAgents.RowCount > 0 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].RowIndex < (dgvTransportServiceAgents.RowCount - 1);
             }
             else
             {
-                btMoveUp.Enabled = dgvTransportServiceAgents.RowCount > 0 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].RowIndex > 0;
-                btMoveDown.Enabled = dgvTransportServiceAgents.RowCount > 0 && dgvTransportServiceAgents.SelectedRows[0].Cells["dgvcName"].RowIndex < (dgvTransportServiceAgents.RowCount -1);
+                btMoveUp.Enabled = false;
+                btMoveDown.Enabled = false;
             }
         }
 

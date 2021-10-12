@@ -175,7 +175,7 @@ namespace Configuration.DkimSigner
 
             foreach (KeyValuePair<string, string> entry in Constants.DkimSignerVersionDirectory)
             {
-                if (exchangeVersion.StartsWith(entry.Key))
+                if (exchangeVersion.StartsWith(entry.Key.TrimEnd('*')))
                 {
                     agentExchangeVersionPath = entry.Value;
                     break;
