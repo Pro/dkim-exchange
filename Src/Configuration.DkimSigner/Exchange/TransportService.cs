@@ -6,224 +6,224 @@ using System.Threading;
 
 namespace Configuration.DkimSigner.Exchange
 {
-    public class TransportService : IDisposable
-    {
-        public event EventHandler StatusChanged;
-        
-        private Thread thread;
-        private Timer transportServiceStatus;
+	public class TransportService : IDisposable
+	{
+		public event EventHandler StatusChanged;
 
-        private Queue<TransportServiceAction> actions;
-        private Action<string> errorCallback;
-        private ServiceController service;
-        private string status;
+		private Thread thread;
+		private Timer transportServiceStatus;
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        public TransportService()
-        {
-            if(!IsTransportServiceInstalled())
-            {
-                throw new ExchangeServerException("No service 'MSExchangeTransport' available.");
-            }
+		private Queue<TransportServiceAction> actions;
+		private Action<string> errorCallback;
+		private ServiceController service;
+		private string status;
 
-            actions = new Queue<TransportServiceAction>();
-            service = new ServiceController("MSExchangeTransport");
-            transportServiceStatus = new Timer(CheckExchangeTransportServiceStatus, null, 0, 1000);
-        }
+		/// <summary>
+		/// Constructor
+		/// </summary>
+		public TransportService()
+		{
+			if (!IsTransportServiceInstalled())
+			{
+				throw new ExchangeServerException("No service 'MSExchangeTransport' available.");
+			}
 
-        /// <summary>
-        /// Check if Microsoft Exchange Transport service is installed
-        /// </summary>
-        /// <returns>bool</returns>
-        private bool IsTransportServiceInstalled()
-        {
-            return (ServiceController.GetServices().FirstOrDefault(s => s.ServiceName == "MSExchangeTransport") != null);
-        }
+			actions = new Queue<TransportServiceAction>();
+			service = new ServiceController("MSExchangeTransport");
+			transportServiceStatus = new Timer(CheckExchangeTransportServiceStatus, null, 0, 1000);
+		}
 
-        /// <summary>
-        /// Get Microsoft Exchange Transport service status
-        /// </summary>
-        /// <returns>ServiceControllerStatus</returns>
-        private ServiceControllerStatus GetTransportServiceStatus()
-        {
-            return service.Status;
-        }
+		/// <summary>
+		/// Check if Microsoft Exchange Transport service is installed
+		/// </summary>
+		/// <returns>bool</returns>
+		private bool IsTransportServiceInstalled()
+		{
+			return (ServiceController.GetServices().FirstOrDefault(s => s.ServiceName == "MSExchangeTransport") != null);
+		}
 
-        /// <summary>
-        /// Check if Microsoft Exchange Transport service is running
-        /// </summary>
-        /// <returns>bool</returns>
-        private bool IsTransportServiceRunning()
-        {
-            return (GetTransportServiceStatus() == ServiceControllerStatus.Running);
-        }
+		/// <summary>
+		/// Get Microsoft Exchange Transport service status
+		/// </summary>
+		/// <returns>ServiceControllerStatus</returns>
+		private ServiceControllerStatus GetTransportServiceStatus()
+		{
+			return service.Status;
+		}
 
-        /// <summary>
-        /// Check if Microsoft Exchange Transport service is stopped
-        /// </summary>
-        /// <returns>bool</returns>
-        private bool IsTransportServiceStopped()
-        {
-            return (GetTransportServiceStatus() == ServiceControllerStatus.Stopped);
-        }
+		/// <summary>
+		/// Check if Microsoft Exchange Transport service is running
+		/// </summary>
+		/// <returns>bool</returns>
+		private bool IsTransportServiceRunning()
+		{
+			return (GetTransportServiceStatus() == ServiceControllerStatus.Running);
+		}
 
-        /// <summary>
-        /// Check the Microsoft Exchange Transport service status
-        /// </summary>
-        /// <param name="state"></param>
-        private void CheckExchangeTransportServiceStatus(object state)
-        {
-            try
-            {
-                string s = GetTransportServiceStatus().ToString();
+		/// <summary>
+		/// Check if Microsoft Exchange Transport service is stopped
+		/// </summary>
+		/// <returns>bool</returns>
+		private bool IsTransportServiceStopped()
+		{
+			return (GetTransportServiceStatus() == ServiceControllerStatus.Stopped);
+		}
 
-                if (status != s)
-                {
-                    status = s;
-                    if(StatusChanged != null)
-                    {
-                        StatusChanged(this, null);
-                    }
-                }
-            }
-            catch (ExchangeServerException)
-            {
-                transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
-            }
-        }
+		/// <summary>
+		/// Check the Microsoft Exchange Transport service status
+		/// </summary>
+		/// <param name="state"></param>
+		private void CheckExchangeTransportServiceStatus(object state)
+		{
+			try
+			{
+				string s = GetTransportServiceStatus().ToString();
 
-        /// <summary>
-        /// Execute a action (start, stop, restart) on Microsoft Exchange Transport service
-        /// </summary>
-        private void ExecuteAction()
-        {
-            bool queueIsNotEmpty;
+				if (status != s)
+				{
+					status = s;
+					if (StatusChanged != null)
+					{
+						StatusChanged(this, null);
+					}
+				}
+			}
+			catch (ExchangeServerException)
+			{
+				transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+			}
+		}
 
-            lock (actions)
-            {
-                queueIsNotEmpty = actions.Count > 0;
-            }
+		/// <summary>
+		/// Execute a action (start, stop, restart) on Microsoft Exchange Transport service
+		/// </summary>
+		private void ExecuteAction()
+		{
+			bool queueIsNotEmpty;
 
-            while (queueIsNotEmpty)
-            {
-                TransportServiceAction action;
+			lock (actions)
+			{
+				queueIsNotEmpty = actions.Count > 0;
+			}
 
-                lock(actions)
-                {
-                    action = actions.Dequeue();
-                }
-            
-                if(action == TransportServiceAction.Start)
-                {
-                    if (IsTransportServiceStopped())
-                    {
-                        try
-                        {
-                            service.Start();
-                            service.WaitForStatus(ServiceControllerStatus.Running);
-                        }
-                        catch (Exception e)
-                        {
-                            if (errorCallback != null)
-                                errorCallback("Couldn't start 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.");
-                            else
-                                throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.", e);
-                        }
-                    }
-                }
-                else // action == TransportServiceAction.Stop
-                {
-                    if(IsTransportServiceRunning())
-                    {
-                        try
-                        {
-                            service.Stop();
-                            service.WaitForStatus(ServiceControllerStatus.Stopped);
-                        }
-                        catch (Exception e)
-                        {
-                            if (errorCallback != null)
-                                errorCallback("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.");
-                            else
-                                throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.", e);
-                        }
-                    }
-                }
+			while (queueIsNotEmpty)
+			{
+				TransportServiceAction action;
 
-                lock (actions)
-                {
-                    queueIsNotEmpty = actions.Count > 0;
-                }
-            }
-        }
+				lock (actions)
+				{
+					action = actions.Dequeue();
+				}
 
-        /// <summary>
-        /// Get the current status of Microsoft Exchange Transport service
-        /// </summary>
-        /// <returns>string</returns>
-        public string GetStatus()
-        {
-            return status;
-        }
+				if (action == TransportServiceAction.Start)
+				{
+					if (IsTransportServiceStopped())
+					{
+						try
+						{
+							service.Start();
+							service.WaitForStatus(ServiceControllerStatus.Running);
+						}
+						catch (Exception e)
+						{
+							if (errorCallback != null)
+								errorCallback("Couldn't start 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.");
+							else
+								throw new ExchangeServerException("Couldn't start 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.", e);
+						}
+					}
+				}
+				else // action == TransportServiceAction.Stop
+				{
+					if (IsTransportServiceRunning())
+					{
+						try
+						{
+							service.Stop();
+							service.WaitForStatus(ServiceControllerStatus.Stopped);
+						}
+						catch (Exception e)
+						{
+							if (errorCallback != null)
+								errorCallback("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.");
+							else
+								throw new ExchangeServerException("Couldn't stop 'MSExchangeTransport' service :\n" + e.Message + "\nMake sure you are running the program as an administrator.", e);
+						}
+					}
+				}
 
-        /// <summary>
-        /// Execute a action (start, stop, restart) on Microsoft Exchange Transport service
-        /// </summary>
-        /// <param name="action">TransportServiceAction</param>
-        public void Do(TransportServiceAction action, Action<string> errorCallback)
-        {
-            this.errorCallback = errorCallback;
-            lock(actions)
-            {
-                switch (action)
-                {
-                    case TransportServiceAction.Start:
-                    case TransportServiceAction.Stop:
-                        actions.Enqueue(action);
-                        break;
-                    case TransportServiceAction.Restart:
-                        actions.Enqueue(TransportServiceAction.Stop);
-                        actions.Enqueue(TransportServiceAction.Start);
-                        break;
-                }
-            }
+				lock (actions)
+				{
+					queueIsNotEmpty = actions.Count > 0;
+				}
+			}
+		}
 
-            if(thread == null || thread.ThreadState == ThreadState.Stopped)
-            {
-                thread = new Thread(ExecuteAction);
-                thread.Start();
-            }
-        }
+		/// <summary>
+		/// Get the current status of Microsoft Exchange Transport service
+		/// </summary>
+		/// <returns>string</returns>
+		public string GetStatus()
+		{
+			return status;
+		}
 
-        /// <summary>
-        /// Dispose
-        /// </summary>
-        public void Dispose()
-        {
-            if (thread != null)
-            {
-                if(thread.ThreadState != ThreadState.Stopped)
-                {
-                    thread.Join();
-                }
+		/// <summary>
+		/// Execute a action (start, stop, restart) on Microsoft Exchange Transport service
+		/// </summary>
+		/// <param name="action">TransportServiceAction</param>
+		public void Do(TransportServiceAction action, Action<string> errorCallback)
+		{
+			this.errorCallback = errorCallback;
+			lock (actions)
+			{
+				switch (action)
+				{
+					case TransportServiceAction.Start:
+					case TransportServiceAction.Stop:
+						actions.Enqueue(action);
+						break;
+					case TransportServiceAction.Restart:
+						actions.Enqueue(TransportServiceAction.Stop);
+						actions.Enqueue(TransportServiceAction.Start);
+						break;
+				}
+			}
 
-                thread = null;
-            }
+			if (thread == null || thread.ThreadState == ThreadState.Stopped)
+			{
+				thread = new Thread(ExecuteAction);
+				thread.Start();
+			}
+		}
 
-            if (transportServiceStatus != null)
-            {
-                transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
-                transportServiceStatus.Dispose();
-                transportServiceStatus = null;
-            }
+		/// <summary>
+		/// Dispose
+		/// </summary>
+		public void Dispose()
+		{
+			if (thread != null)
+			{
+				if (thread.ThreadState != ThreadState.Stopped)
+				{
+					thread.Join();
+				}
 
-            if (service != null)
-            {
-                service.Dispose();
-                service = null;
-            }
-        }
-    }
+				thread = null;
+			}
+
+			if (transportServiceStatus != null)
+			{
+				transportServiceStatus.Change(Timeout.Infinite, Timeout.Infinite);
+				transportServiceStatus.Dispose();
+				transportServiceStatus = null;
+			}
+
+			if (service != null)
+			{
+				service.Dispose();
+				service = null;
+			}
+		}
+	}
 }

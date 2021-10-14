@@ -1,0 +1,6 @@
+These files are the lowest common denominator versions of the Microsoft.Exchange.Data.Common and Microsoft.Exchange.Data.Transport assemblies for Exchange 15 (Exchange 2013, 2016 and 2019). They represent the earliest version of Exchange supported by this project. To change the base-level supported version of Exchange, replace these files, fix project references to them, and update the version number in this file.
+
+Do not include in the project build output as the latest versions of both these assemblies are available in the GAC on machines that have Exchange installed.
+
+Current version:
+15.0.1497.2	(Exchange 2013 CU23)
