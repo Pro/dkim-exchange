@@ -8,8 +8,6 @@ DKIM is an email authentication method that can help detect forged sender addres
 
 Exchange DKIM Signer is 'clean' - it doesn't contain any advertising or send any telemetry. The configuration tool includes an online check (to GitHub) to see whether a new version is available, and has a download and install feature.
 
----
-
 ## Requirements
 
 Exchange DKIM Signer is compatible with the following versions of Microsoft Exchange Server:
@@ -21,15 +19,11 @@ If you require support for earlier versions of Exchange, use [Exchange DKIM Sign
 
 Currently, Windows Server Core is not recommended when used with Exchange Server 2019 as Exchange DKIM Signer uses a GUI configuration tool.
 
----
-
 ## DKIM Signing Agent for Microsoft Exchange Server
 
 The Agent signs outgoing emails from your Exchange server according to the DKIM specifications. It uses the DKIM signing implementation from the [MimeKit](http://www.mimekit.net/) project.
 
 We recommend to set up SPF (http://www.open-spf.org/) and DMARC (https://dmarc.org/) too. Test your email configuration by using a service such as [DKIM Test](https://www.appmaildev.com/en/dkim).
-
----
 
 ## Documentation
 
