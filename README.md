@@ -1,29 +1,30 @@
-﻿Exchange DKIM Signer [![Build Status](https://travis-ci.org/Pro/dkim-exchange.png?branch=master)](https://travis-ci.org/Pro/dkim-exchange)
-=============
+﻿# Exchange DKIM Signer
 
------------------------------------------------------------------------------------------------------------------------
+## About
 
-## Announcement
+Exchange DKIM Signer adds support to Microsoft Exchange Server for applying a [DomainKeys Identified Mail](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) signature to outgoing messages.
 
-Stefan (@Pro) has kindly added me, Jonathan (@DJBenson) to the collaborators list so that I can help to keep this repository up to date. My changes have been merged into the master branch and I have created binary releases for v3.2.2 and v3.2.3 bringing support up to Exchange Server 2016 CU15 and Exchange Server 2019 CU4.
+DKIM is an email authentication method that can help detect forged sender addresses in email, a technique often used in phishing and email spam. It's often used along with other email authentication methods such as SPF and DMARC.
 
-I will do my best to add new CU's as and when Microsoft release them, but will predominently be focussing on the latest version of Exchange (currently Exchange 2019) as I have that on-premise. I can and will add Exchange 2016 CU's but they will be untested by me.
+Exchange DKIM Signer is 'clean' - it doesn't contain any advertising or send any telemetry. The configuration tool includes an online check (to GitHub) to see whether a new version is available, and has a download and install feature.
 
------------------------------------------------------------------------------------------------------------------------
+## Requirements
 
-## Advance Notice: Exchange Server 2007 and 2010 Deprecation
+Exchange DKIM Signer is compatible with the following versions of Microsoft Exchange Server:
+* Exchange Server 2019 (RTM version and later)
+* Exchange Server 2016 (CU13 and later)
+* Exchange Server 2013 (CU23 and later)
 
-Please refer to [this](https://github.com/Pro/dkim-exchange/issues/293) topic for the full announcement.
+If you require support for earlier versions of Exchange, use [Exchange DKIM Signer 3.3.4](https://github.com/Pro/dkim-exchange/releases/tag/v3.3.4).
 
------------------------------------------------------------------------------------------------------------------------
+Currently, Windows Server Core is not recommended when used with Exchange Server 2019 as Exchange DKIM Signer uses a GUI configuration tool.
 
 ## DKIM Signing Agent for Microsoft Exchange Server
 
-This agent signs outgoing emails from your Exchange Server according to the DKIM specifications. It uses the DKIM signer implementation from the awesome [MimeKit](https://github.com/jstedfast/MimeKit) project.
+The Agent signs outgoing emails from your Exchange server according to the DKIM specifications. It uses the DKIM signing implementation from the [MimeKit](http://www.mimekit.net/) project.
 
-We recommend to set up SPF (http://www.openspf.org) and DMARC (http://dmarc.org/) too. Test your email setup by sending an email to mailtest@unlocktheinbox.com (you will get an automatically generated report).
+We recommend to set up SPF (http://www.open-spf.org/) and DMARC (https://dmarc.org/) too. Test your email configuration by using a service such as [DKIM Test](https://www.appmaildev.com/en/dkim).
 
 ## Documentation
 
-All documentation has now been migrated to the [Wiki](https://github.com/Pro/dkim-exchange/wiki) for ease of navigation and maintenance.
-
+Full documentation is available in the [Wiki](https://github.com/Pro/dkim-exchange/wiki).

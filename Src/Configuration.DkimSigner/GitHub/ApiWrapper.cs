@@ -8,70 +8,70 @@ using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner.GitHub
 {
-    public class ApiWrapper
-    {
-        public static List<Release> GetAllRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
-        {
-            List<Release> aoRelease = null;
+	public class ApiWrapper
+	{
+		public static List<Release> GetAllRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
+		{
+			List<Release> aoRelease = null;
 
-            string sJson = Api.MakeRequest(Api.CreateRequest("/repos/pro/dkim-exchange/releases"));
+			string sJson = Api.MakeRequest(Api.CreateRequest("/repos/pro/dkim-exchange/releases"));
 
-            if (sJson != null)
-            {
-                DataContractJsonSerializer oJsonSerializer = new DataContractJsonSerializer(typeof(Release[]));
-                MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(sJson));
-                
-                object objResponse = oJsonSerializer.ReadObject(stream);
-                Release[] oTemp = (Release[]) objResponse;
+			if (sJson != null)
+			{
+				DataContractJsonSerializer oJsonSerializer = new DataContractJsonSerializer(typeof(Release[]));
+				MemoryStream stream = new MemoryStream(Encoding.UTF8.GetBytes(sJson));
 
-                aoRelease = new List<Release>(oTemp);
+				object objResponse = oJsonSerializer.ReadObject(stream);
+				Release[] oTemp = (Release[])objResponse;
 
-                foreach (Release oRelease in aoRelease.ToList())
-                {
-                    if (oRelease.Draft || (!bIncludePreRelease && oRelease.Prerelease))
-                    {
-                        aoRelease.Remove(oRelease);
-                        continue;
-                    }
+				aoRelease = new List<Release>(oTemp);
 
-                    // Check for valid version string
-                    Match oMatch = Regex.Match(oRelease.TagName, @"v?((?:\d+\.){0,3}\d+)",RegexOptions.IgnoreCase);
-                    if (!oMatch.Success)
-                    {
-                        aoRelease.Remove(oRelease);
-                    }
-                    else
-                    {
-                        string sVersion = oMatch.Groups[1].Value;
-                        oRelease.Version = new Version(sVersion);
+				foreach (Release oRelease in aoRelease.ToList())
+				{
+					if (oRelease.Draft || (!bIncludePreRelease && oRelease.Prerelease))
+					{
+						aoRelease.Remove(oRelease);
+						continue;
+					}
 
-                        if (oMinimalVersion != null && oRelease.Version < oMinimalVersion)
-                        {
-                            aoRelease.Remove(oRelease);
-                        }
-                    }
-                }
-            }
+					// Check for valid version string
+					Match oMatch = Regex.Match(oRelease.TagName, @"v?((?:\d+\.){0,3}\d+)", RegexOptions.IgnoreCase);
+					if (!oMatch.Success)
+					{
+						aoRelease.Remove(oRelease);
+					}
+					else
+					{
+						string sVersion = oMatch.Groups[1].Value;
+						oRelease.Version = new Version(sVersion);
 
-            return aoRelease;
-        }
+						if (oMinimalVersion != null && oRelease.Version < oMinimalVersion)
+						{
+							aoRelease.Remove(oRelease);
+						}
+					}
+				}
+			}
 
-        public static Release GetNewestRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
-        {
-            List<Release> aoRelease = GetAllRelease(bIncludePreRelease, oMinimalVersion);
-            if (aoRelease == null)
-                return null;
-            Release oNewestRelease = null;
+			return aoRelease;
+		}
 
-            foreach (Release oRelease in aoRelease)
-            {
-                if (oNewestRelease == null || oNewestRelease.Version < oRelease.Version)
-                {
-                    oNewestRelease = oRelease;
-                }
-            }
+		public static Release GetNewestRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
+		{
+			List<Release> aoRelease = GetAllRelease(bIncludePreRelease, oMinimalVersion);
+			if (aoRelease == null)
+				return null;
+			Release oNewestRelease = null;
 
-            return oNewestRelease;
-        }
-    }
+			foreach (Release oRelease in aoRelease)
+			{
+				if (oNewestRelease == null || oNewestRelease.Version < oRelease.Version)
+				{
+					oNewestRelease = oRelease;
+				}
+			}
+
+			return oNewestRelease;
+		}
+	}
 }
