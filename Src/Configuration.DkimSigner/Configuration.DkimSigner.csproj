@@ -1,203 +1,203 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-	<Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-	<PropertyGroup>
-		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-		<ProjectGuid>{522FE7A3-2756-48B3-BE64-68B291B50863}</ProjectGuid>
-		<OutputType>WinExe</OutputType>
-		<RootNamespace>Configuration.DkimSigner</RootNamespace>
-		<AssemblyName>Configuration.DkimSigner</AssemblyName>
-		<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-		<FileAlignment>512</FileAlignment>
-		<AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
-		<Deterministic>false</Deterministic>
-		<PublishUrl>publish\</PublishUrl>
-		<Install>true</Install>
-		<InstallFrom>Disk</InstallFrom>
-		<UpdateEnabled>false</UpdateEnabled>
-		<UpdateMode>Foreground</UpdateMode>
-		<UpdateInterval>7</UpdateInterval>
-		<UpdateIntervalUnits>Days</UpdateIntervalUnits>
-		<UpdatePeriodically>false</UpdatePeriodically>
-		<UpdateRequired>false</UpdateRequired>
-		<MapFileExtensions>true</MapFileExtensions>
-		<ApplicationRevision>0</ApplicationRevision>
-		<ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-		<IsWebBootstrapper>false</IsWebBootstrapper>
-		<UseApplicationTrust>false</UseApplicationTrust>
-		<BootstrapperEnabled>true</BootstrapperEnabled>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
-		<Optimize>false</Optimize>
-		<OutputPath>bin\Debug\</OutputPath>
-		<DefineConstants>DEBUG;TRACE</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-		<WarningLevel>4</WarningLevel>
-		<Prefer32Bit>false</Prefer32Bit>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<PlatformTarget>AnyCPU</PlatformTarget>
-		<DebugType>none</DebugType>
-		<Optimize>true</Optimize>
-		<OutputPath>bin\Release\</OutputPath>
-		<DefineConstants>TRACE</DefineConstants>
-		<ErrorReport>prompt</ErrorReport>
-		<WarningLevel>4</WarningLevel>
-		<Prefer32Bit>false</Prefer32Bit>
-	</PropertyGroup>
-	<PropertyGroup>
-		<ApplicationManifest>app.manifest</ApplicationManifest>
-	</PropertyGroup>
-	<PropertyGroup>
-		<ApplicationIcon>..\..\Resources\Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
-	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="System" />
-		<Reference Include="System.Core" />
-		<Reference Include="System.IO.Compression" />
-		<Reference Include="System.IO.Compression.FileSystem" />
-		<Reference Include="System.Runtime.Serialization" />
-		<Reference Include="System.Security" />
-		<Reference Include="System.ServiceProcess" />
-		<Reference Include="System.Xml.Linq" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.Data" />
-		<Reference Include="System.Deployment" />
-		<Reference Include="System.Drawing" />
-		<Reference Include="System.Net.Http" />
-		<Reference Include="System.Windows.Forms" />
-		<Reference Include="System.Xml" />
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\Exchange.DkimSigner\Configuration\DkimAlgorithmKind.cs">
-			<Link>Configuration\DkimAlgorithmKind.cs</Link>
-		</Compile>
-		<Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
-			<Link>Configuration\DkimCanonicalizationKind.cs</Link>
-		</Compile>
-		<Compile Include="..\Exchange.DkimSigner\Configuration\DomainElement.cs">
-			<Link>Configuration\DomainElement.cs</Link>
-		</Compile>
-		<Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
-			<Link>Configuration\Settings.cs</Link>
-		</Compile>
-		<Compile Include="..\Exchange.DkimSigner\Helper\KeyHelper.cs">
-			<Link>Helper\KeyHelper.cs</Link>
-		</Compile>
-		<Compile Include="Configuration\CplControl.cs" />
-		<Compile Include="Configuration\UninstallerRegistry.cs" />
-		<Compile Include="Constants.cs" />
-		<Compile Include="DownloadProgressWindow.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Include="DownloadProgressWindow.Designer.cs">
-			<DependentUpon>DownloadProgressWindow.cs</DependentUpon>
-		</Compile>
-		<Compile Include="ExchangeTransportServiceWindow.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Include="ExchangeTransportServiceWindow.Designer.cs">
-			<DependentUpon>ExchangeTransportServiceWindow.cs</DependentUpon>
-		</Compile>
-		<Compile Include="Exchange\ExchangeServer.cs" />
-		<Compile Include="Exchange\ExchangeServerException.cs" />
-		<Compile Include="Exchange\PowershellHelper.cs" />
-		<Compile Include="Exchange\TransportService.cs" />
-		<Compile Include="Exchange\TransportServiceAction.cs" />
-		<Compile Include="Exchange\TransportServiceAgent.cs" />
-		<Compile Include="FileIO\FileOperation.cs" />
-		<Compile Include="FileIO\ShellFileOperation.cs" />
-		<Compile Include="GitHub\Api.cs" />
-		<Compile Include="GitHub\ApiWrapper.cs" />
-		<Compile Include="GitHub\DataContract.cs" />
-		<Compile Include="HeaderInputWindow.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Include="HeaderInputWindow.Designer.cs">
-			<DependentUpon>HeaderInputWindow.cs</DependentUpon>
-		</Compile>
-		<Compile Include="InstallWindow.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Include="InstallWindow.Designer.cs">
-			<DependentUpon>InstallWindow.cs</DependentUpon>
-		</Compile>
-		<Compile Include="MainWindow.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Include="MainWindow.Designer.cs">
-			<DependentUpon>MainWindow.cs</DependentUpon>
-		</Compile>
-		<Compile Include="Program.cs" />
-		<Compile Include="Properties\AssemblyInfo.cs" />
-		<Compile Include="UninstallWindow.cs">
-			<SubType>Form</SubType>
-		</Compile>
-		<Compile Include="UninstallWindow.Designer.cs">
-			<DependentUpon>UninstallWindow.cs</DependentUpon>
-		</Compile>
-		<Compile Include="UserPreferences.Designer.cs">
-			<AutoGen>True</AutoGen>
-			<DesignTimeSharedInput>True</DesignTimeSharedInput>
-			<DependentUpon>UserPreferences.settings</DependentUpon>
-		</Compile>
-		<EmbeddedResource Include="DownloadProgressWindow.resx">
-			<DependentUpon>DownloadProgressWindow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Include="ExchangeTransportServiceWindow.resx">
-			<DependentUpon>ExchangeTransportServiceWindow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Include="HeaderInputWindow.resx">
-			<DependentUpon>HeaderInputWindow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Include="MainWindow.resx">
-			<DependentUpon>MainWindow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Include="InstallWindow.resx">
-			<DependentUpon>InstallWindow.cs</DependentUpon>
-		</EmbeddedResource>
-		<EmbeddedResource Include="UninstallWindow.resx">
-			<DependentUpon>UninstallWindow.cs</DependentUpon>
-		</EmbeddedResource>
-	</ItemGroup>
-	<ItemGroup>
-		<None Include="App.config" />
-		<None Include="app.manifest" />
-		<None Include="COPYING.LESSER">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
-		<None Include="UserPreferences.settings">
-			<Generator>SettingsSingleFileGenerator</Generator>
-			<LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
-		</None>
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Heijden.Dns">
-			<Version>2.0.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.PowerShell.4.ReferenceAssemblies">
-			<Version>1.0.0</Version>
-		</PackageReference>
-		<PackageReference Include="MimeKit">
-			<Version>2.15.1</Version>
-		</PackageReference>
-	</ItemGroup>
-	<ItemGroup>
-		<BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
-			<Visible>False</Visible>
-			<ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
-			<Install>true</Install>
-		</BootstrapperPackage>
-		<BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-			<Visible>False</Visible>
-			<ProductName>.NET Framework 3.5 SP1</ProductName>
-			<Install>false</Install>
-		</BootstrapperPackage>
-	</ItemGroup>
-	<Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{522FE7A3-2756-48B3-BE64-68B291B50863}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>Configuration.DkimSigner</RootNamespace>
+    <AssemblyName>Configuration.DkimSigner</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <Deterministic>false</Deterministic>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>none</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>..\..\Resources\Saki-NuoveXT-2-Mimetypes-document-seal.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IO.Compression" />
+    <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DkimAlgorithmKind.cs">
+      <Link>Configuration\DkimAlgorithmKind.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DkimCanonicalizationKind.cs">
+      <Link>Configuration\DkimCanonicalizationKind.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\DomainElement.cs">
+      <Link>Configuration\DomainElement.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Configuration\Settings.cs">
+      <Link>Configuration\Settings.cs</Link>
+    </Compile>
+    <Compile Include="..\Exchange.DkimSigner\Helper\KeyHelper.cs">
+      <Link>Helper\KeyHelper.cs</Link>
+    </Compile>
+    <Compile Include="Configuration\CplControl.cs" />
+    <Compile Include="Configuration\UninstallerRegistry.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="DownloadProgressWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DownloadProgressWindow.Designer.cs">
+      <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ExchangeTransportServiceWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ExchangeTransportServiceWindow.Designer.cs">
+      <DependentUpon>ExchangeTransportServiceWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Exchange\ExchangeServer.cs" />
+    <Compile Include="Exchange\ExchangeServerException.cs" />
+    <Compile Include="Exchange\PowershellHelper.cs" />
+    <Compile Include="Exchange\TransportService.cs" />
+    <Compile Include="Exchange\TransportServiceAction.cs" />
+    <Compile Include="Exchange\TransportServiceAgent.cs" />
+    <Compile Include="FileIO\FileOperation.cs" />
+    <Compile Include="FileIO\ShellFileOperation.cs" />
+    <Compile Include="GitHub\Api.cs" />
+    <Compile Include="GitHub\ApiWrapper.cs" />
+    <Compile Include="GitHub\DataContract.cs" />
+    <Compile Include="HeaderInputWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HeaderInputWindow.Designer.cs">
+      <DependentUpon>HeaderInputWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InstallWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstallWindow.Designer.cs">
+      <DependentUpon>InstallWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UninstallWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UninstallWindow.Designer.cs">
+      <DependentUpon>UninstallWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserPreferences.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>UserPreferences.settings</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="DownloadProgressWindow.resx">
+      <DependentUpon>DownloadProgressWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExchangeTransportServiceWindow.resx">
+      <DependentUpon>ExchangeTransportServiceWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HeaderInputWindow.resx">
+      <DependentUpon>HeaderInputWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InstallWindow.resx">
+      <DependentUpon>InstallWindow.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UninstallWindow.resx">
+      <DependentUpon>UninstallWindow.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="app.manifest" />
+    <None Include="COPYING.LESSER">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="UserPreferences.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>UserPreferences.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Heijden.Dns">
+      <Version>2.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.PowerShell.4.ReferenceAssemblies">
+      <Version>1.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="MimeKit">
+      <Version>2.15.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

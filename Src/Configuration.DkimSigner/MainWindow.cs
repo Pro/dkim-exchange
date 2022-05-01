@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -876,6 +877,7 @@ namespace Configuration.DkimSigner
 		/// <param name="e"></param>
 		private void btDomainKeyGenerate_Click(object sender, EventArgs e)
 		{
+			System.Windows.Forms.DialogResult result;
 			UserPreferences.Default.KeyLength = Convert.ToInt32(cbKeyLength.Text, 10);
 			UserPreferences.Default.Save();
 
@@ -896,7 +898,23 @@ namespace Configuration.DkimSigner
 					oFileDialog.FileName = txtDomainName.Text + ".pem";
 				}
 
-				if (oFileDialog.ShowDialog() == DialogResult.OK)
+				try
+                {
+					result = oFileDialog.ShowDialog();
+                }
+				catch (COMException) when (oFileDialog.AutoUpgradeEnabled)
+                {
+					oFileDialog.AutoUpgradeEnabled = false;
+					try
+                    {
+						result = oFileDialog.ShowDialog();
+                    }
+                    finally
+                    {
+						oFileDialog.AutoUpgradeEnabled = true;
+                    }
+                }
+				if (result == DialogResult.OK)
 				{
 					GenerateKey(oFileDialog.FileName);
 				}
@@ -961,6 +979,7 @@ namespace Configuration.DkimSigner
 		/// <param name="e"></param>
 		private void btDomainKeySelect_Click(object sender, EventArgs e)
 		{
+			System.Windows.Forms.DialogResult result;
 			using (OpenFileDialog oFileDialog = new OpenFileDialog())
 			{
 				oFileDialog.FileName = "key";
@@ -968,7 +987,24 @@ namespace Configuration.DkimSigner
 				oFileDialog.Title = "Select a private key for signing";
 				oFileDialog.InitialDirectory = Path.Combine(Constants.DkimSignerPath, "keys");
 
-				if (oFileDialog.ShowDialog() == DialogResult.OK)
+				try
+				{
+					result = oFileDialog.ShowDialog();
+				}
+				catch (COMException) when (oFileDialog.AutoUpgradeEnabled)
+				{
+					oFileDialog.AutoUpgradeEnabled = false;
+					try
+					{
+						result = oFileDialog.ShowDialog();
+					}
+					finally
+					{
+						oFileDialog.AutoUpgradeEnabled = true;
+					}
+				}
+
+				if (result == DialogResult.OK)
 				{
 					//Check if key can be parsed
 					try

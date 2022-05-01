@@ -119,3 +119,4 @@ UpgradeLog*.XML
 /Src/Configuration.DkimSigner/bin/Release/Configuration.DkimSigner.vshost.exe.manifest
 /cov-int
 /cov-int.zip
+.vscode/tasks.json
