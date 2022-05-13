@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -496,13 +497,30 @@ namespace Configuration.DkimSigner
 
 		private void btBrowse_Click(object sender, EventArgs e)
 		{
+			System.Windows.Forms.DialogResult result;
 			using (OpenFileDialog oFileDialog = new OpenFileDialog())
 			{
 				oFileDialog.FileName = "dkim-exchange.zip";
 				oFileDialog.Filter = "ZIP files|*.zip";
 				oFileDialog.Title = "Select the .zip file downloaded from github.com";
 
-				if (oFileDialog.ShowDialog() == DialogResult.OK)
+				try
+				{
+					result = oFileDialog.ShowDialog();
+				}
+				catch (COMException) when (oFileDialog.AutoUpgradeEnabled)
+				{
+					oFileDialog.AutoUpgradeEnabled = false;
+					try
+					{
+						result = oFileDialog.ShowDialog();
+					}
+					finally
+					{
+						oFileDialog.AutoUpgradeEnabled = true;
+					}
+				}
+				if (result == DialogResult.OK)
 				{
 					cbVersionWeb.SelectedIndex = -1;
 					txtVersionFile.Text = oFileDialog.FileName;
