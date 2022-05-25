@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 [assembly: AssemblyTitle("DKIM Signing Configuration")]
 [assembly: AssemblyProduct("dkim-exchange")]
-[assembly: AssemblyCopyright("Copyright © Contributors of the dkim-exchange Project 2021")]
+[assembly: AssemblyCopyright("Copyright © Contributors of the dkim-exchange Project 2022")]
 
 // Setting ComVisible to false makes the types in this assembly not visible
 // to COM components.  If you need to access a type in this assembly from
@@ -26,4 +26,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.4.0")]
+[assembly: AssemblyVersion("3.4.1")]
+[assembly: AssemblyFileVersion("3.4.1")]
