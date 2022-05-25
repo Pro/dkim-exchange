@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exchange.DkimSigner", "Src\Exchange.DkimSigner\Exchange.DkimSigner.csproj", "{B268609E-DDDF-44E3-A246-04A1E4A55AC4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{522FE7A3-2756-48B3-BE64-68B291B50863} = {522FE7A3-2756-48B3-BE64-68B291B50863}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Configuration.DkimSigner", "Src\Configuration.DkimSigner\Configuration.DkimSigner.csproj", "{522FE7A3-2756-48B3-BE64-68B291B50863}"
 EndProject
