@@ -70,6 +70,7 @@ namespace Exchange.DkimSigner
 			}
 			finally
 			{
+				agentAsyncContext.Resume();
 				agentAsyncContext.Complete();
 				agentAsyncContext = null;
 			}

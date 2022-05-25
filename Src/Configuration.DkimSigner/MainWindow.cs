@@ -1290,5 +1290,10 @@ namespace Configuration.DkimSigner
 		{
 			Process.Start(linkLabelWebsite.Text);
 		}
+
+		private void labelVersion_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }
