@@ -2,7 +2,7 @@
 
 ## About
 
-Exchange DKIM Signer adds support to Microsoft Exchange Server for applying a [DomainKeys Identified Mail](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) signature to outgoing messages.
+Exchange DKIM Signer adds support to Microsoft Exchange Server for applying a [DomainKeys Identified Mail](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) signature to outfffgoing messages.
 
 DKIM is an email authentication method that can help detect forged sender addresses in email, a technique often used in phishing and email spam. It's often used along with other email authentication methods such as SPF and DMARC.
 
