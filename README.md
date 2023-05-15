@@ -1,5 +1,11 @@
 ﻿# Exchange DKIM Signer
 
+## Notice 2023-05-15
+
+You may have noticed there haven't been updates for a while. I've been incredibly busy and since the last update I've migrated away from on-prem Exchange to O365 so I no longer have a personal use for the application.
+
+If anybody would like to pick up the baton and continue development of the project, feel free to reach out to @Pro who is the original author and the owner of this repository as I'm unable to grant anybody access.
+
 ## About
 
 Exchange DKIM Signer adds support to Microsoft Exchange Server for applying a [DomainKeys Identified Mail](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) signature to outgoing messages.
