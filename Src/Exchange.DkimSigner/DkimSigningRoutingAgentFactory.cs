@@ -11,7 +11,6 @@ namespace Exchange.DkimSigner
 	/// </summary>
 	public sealed class DkimSigningRoutingAgentFactory : RoutingAgentFactory
 	{
-
 		/// <summary>
 		/// The main DKIM Signer instance used for all emails
 		/// </summary>
@@ -27,12 +26,10 @@ namespace Exchange.DkimSigner
 		/// </summary>
 		public DkimSigningRoutingAgentFactory()
 		{
-			Logger.LogDebug("Initializing DkimSigner Service");
-
-			/*Logger.LogDebug("Waiting for debugger");
-            while (!System.Diagnostics.Debugger.IsAttached)
-                System.Threading.Thread.Sleep(100);
-            Logger.LogDebug("Debugger connected");*/
+			if (Logger.IsDebugEnabled())
+			{
+				Logger.LogDebug("Initializing DkimSigner Service");
+			}
 
 			Settings config = new Settings();
 			config.InitHeadersToSign();

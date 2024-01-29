@@ -67,7 +67,9 @@ namespace Configuration.DkimSigner
 				{
 					dgvTransportServiceAgents.Rows.Add(oAgent.Priority, oAgent.Name, oAgent.Enabled);
 					if (oAgent.Name == Constants.DkimSignerAgentName)
+					{
 						currentAgentPriority = oAgent.Priority;
+					}
 				}
 			}
 			foreach (DataGridViewRow row in dgvTransportServiceAgents.Rows)

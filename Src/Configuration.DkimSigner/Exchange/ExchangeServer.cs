@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner.Exchange
 {
-	public class ExchangeServer
+	public static class ExchangeServer
 	{
 		/**********************************************************/
 		/*********************** Constants ************************/
@@ -116,34 +117,22 @@ namespace Configuration.DkimSigner.Exchange
 
 		public static bool IsDkimAgentTransportInstalled()
 		{
-			bool bResult = false;
-
-			foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
+			var agent = GetTransportServiceAgents().Find(oAgent => string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal));
+			if (agent != null)
 			{
-				if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
-				{
-					bResult = true;
-					break;
-				}
+				return true;
 			}
-
-			return bResult;
+			return false;
 		}
 
 		public static bool IsDkimAgentTransportEnabled()
 		{
-			bool bResult = false;
-
-			foreach (TransportServiceAgent oAgent in GetTransportServiceAgents())
+			var agent = GetTransportServiceAgents().Find(oAgent => string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal));
+			if (agent != null)
 			{
-				if (string.Equals(oAgent.Name, Constants.DkimSignerAgentName, StringComparison.Ordinal))
-				{
-					bResult = oAgent.Enabled;
-					break;
-				}
+				return agent.Enabled;
 			}
-
-			return bResult;
+			return false;
 		}
 
 		public static void InstallDkimTransportAgent()
