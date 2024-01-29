@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace Configuration.DkimSigner.GitHub
 {
-	public class ApiWrapper
+	public static class ApiWrapper
 	{
 		public static List<Release> GetAllRelease(bool bIncludePreRelease = false, Version oMinimalVersion = null)
 		{

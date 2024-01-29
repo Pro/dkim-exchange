@@ -46,7 +46,10 @@ namespace Exchange.DkimSigner
 		/// <param name="e">The <see cref="Microsoft.Exchange.Data.Transport.Routing.QueuedMessageEventArgs"/> instance containing the event data.</param>
 		private void WhenMessageCategorized(CategorizedMessageEventSource source, QueuedMessageEventArgs e)
 		{
-			Logger.LogDebug("Got new message, checking if I can sign it...");
+			if (Logger.IsDebugEnabled())
+			{
+				Logger.LogDebug("Got new message, checking if I can sign it...");
+			}
 
 			// get the async context. For an example see: http://www.getcodesamples.com/src/D062E1E9/2552BA7
 			// The agent uses the agentAsyncContext object when the agent uses asynchronous execution.
@@ -96,7 +99,7 @@ namespace Exchange.DkimSigner
 				{
 					// The FromAddress is empty. Try to get the domain from somewhere else (see https://github.com/Pro/dkim-exchange/issues/99)
 					string smtpAddress = (mailItem.Message != null && mailItem.Message.Sender != null) ? mailItem.Message.Sender.SmtpAddress : null;
-					if (smtpAddress != null && smtpAddress.Length > 0)
+					if (!string.IsNullOrEmpty(smtpAddress))
 					{
 						try
 						{
@@ -132,13 +135,18 @@ namespace Exchange.DkimSigner
 					}
 
 				}
-				else
+				else 
 				{
-					Logger.LogDebug("No entry found in config for domain '" + domainPart + "'");
+					if (Logger.IsDebugEnabled())
+					{
+						Logger.LogDebug("No entry found in config for domain '" + domainPart + "'");
+					}
 				}
 			}
-			else
+			else if (Logger.IsDebugEnabled())
+			{
 				Logger.LogDebug("Message is a System message or of TNEF format. Not signing.");
+			}
 		}
 	}
 }

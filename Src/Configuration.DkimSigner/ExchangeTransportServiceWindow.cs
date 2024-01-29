@@ -67,7 +67,9 @@ namespace Configuration.DkimSigner
 				{
 					dgvTransportServiceAgents.Rows.Add(oAgent.Priority, oAgent.Name, oAgent.Enabled);
 					if (oAgent.Name == Constants.DkimSignerAgentName)
+					{
 						currentAgentPriority = oAgent.Priority;
+					}
 				}
 			}
 			foreach (DataGridViewRow row in dgvTransportServiceAgents.Rows)
@@ -132,16 +134,6 @@ namespace Configuration.DkimSigner
 					}
 					MessageBox.Show(this, "Transport Agent unregistered from Exchange. Please remove the folder manually: '" + Constants.DkimSignerPath + "'\nWARNING: If you remove the folder, keep a backup of your settings and keys!", "Uninstalled", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-					/*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove all the settings for Exchange DKIM Signer?'", "Remove settings?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        if (File.Exists(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml")))
-                            File.Delete(Path.Combine(Constants.DKIM_SIGNER_PATH, "settings.xml"));
-                    }*/
-					/*if (MessageBox.Show(this, "Transport Agent removed from Exchange. Would you like me to remove the folder '" + Constants.DKIM_SIGNER_PATH + "' and all its content?\nWARNING: All your settings and keys will be deleted too!", "Remove files?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        var dir = new DirectoryInfo(Constants.DKIM_SIGNER_PATH);
-                        dir.Delete(true);
-                    }*/
 				}
 				catch (ExchangeServerException ex)
 				{

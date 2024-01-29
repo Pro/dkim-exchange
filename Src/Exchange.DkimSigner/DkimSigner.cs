@@ -174,17 +174,29 @@ namespace Exchange.DkimSigner
 			using (Stream inputStream = mailItem.GetMimeReadStream())
 			{
 				inputStream.Seek(0, SeekOrigin.Begin);
-				Logger.LogDebug("Parsing the MimeMessage");
+				if (Logger.IsDebugEnabled())
+				{
+					Logger.LogDebug("Parsing the MimeMessage");
+				}
+
 				MimeMessage message = MimeMessage.Load(inputStream, true);
 				// 'inputStream' cannot be disposed until we are done with 'message'
 
-				Logger.LogDebug("Signing the message");
+				if (Logger.IsDebugEnabled())
+				{
+					Logger.LogDebug("Signing the message");
+				}
+
 				lock (settingsMutex)
 				{
 					domainSigner.Signer.Sign(message, eligibleHeaders);
 				}
 				var value = message.Headers[HeaderId.DkimSignature];
-				Logger.LogDebug("Got signing header: " + value);
+				
+				if (Logger.IsDebugEnabled())
+				{
+					Logger.LogDebug("Got signing header: " + value);
+				}
 
 				// The Stream returned by mailItem.GetMimeWriteStream() will throw an exception if
 				// Stream.Write() is called after Stream.Flush() has been called, but
