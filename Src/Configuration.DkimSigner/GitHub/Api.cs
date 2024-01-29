@@ -4,7 +4,7 @@ using System.Net;
 
 namespace Configuration.DkimSigner.GitHub
 {
-	public class Api
+	public static class Api
 	{
 		public static string CreateRequest(string sQuery)
 		{
@@ -13,9 +13,8 @@ namespace Configuration.DkimSigner.GitHub
 
 		public static string MakeRequest(string sUrl)
 		{
-			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
-				SecurityProtocolType.Tls12 |
-				SecurityProtocolType.Tls11 | SecurityProtocolType.Ssl3;
+			ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 |
+			                                       SecurityProtocolType.Tls13;
 			HttpWebRequest oRequest = (HttpWebRequest)WebRequest.Create(sUrl);
 			HttpWebResponse oResponse = null;
 			oRequest.UserAgent = ".NET Framework API Client";
@@ -35,10 +34,6 @@ namespace Configuration.DkimSigner.GitHub
 					}
 					sResult = new StreamReader(responseStream).ReadToEnd();
 				}
-				//else
-				//{
-				//    throw new Exception(String.Format("Server error (HTTP {0}: {1}).", oResponse.StatusCode, oResponse.StatusDescription));
-				//}
 			}
 			catch (Exception)
 			{
