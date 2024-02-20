@@ -131,7 +131,7 @@ namespace Exchange.DkimSigner
 					}
 					catch (Exception ex)
 					{
-						Logger.LogError("Could not sign message: " + ex.Message);
+						Logger.LogError("Could not sign message: " + ex);
 					}
 
 				}
